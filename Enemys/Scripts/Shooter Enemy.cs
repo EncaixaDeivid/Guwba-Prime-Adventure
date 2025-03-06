@@ -23,7 +23,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			Vector2 direction = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward) * Vector2.up;
 			if (this._circulateDetection)
 			{
-				foreach (Collider2D collider in Physics2D.OverlapCircleAll(origin, this._perceptionDistance, this._targetLayerMask))
+				Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, this._perceptionDistance, this._targetLayerMask);
+				foreach (Collider2D collider in colliders)
 					if (collider.TryGetComponent<IDamageable>(out _))
 					{
 						this._targetDirection = collider.transform.position - this.transform.position;
@@ -66,22 +67,19 @@ namespace GuwbaPrimeAdventure.Enemy
 						this._rigidybody.gravityScale = 0f;
 				}
 				foreach (Projectile projectile in this._projectiles)
-				{
-					float positionDirection = this._collider.bounds.extents.x * this._movementSide;
-					Vector2 position = this.transform.position;
-					if (!this._instanceOnSelf)
-						position = new(this.transform.position.x + positionDirection, this.transform.position.y);
 					if (this._pureInstance)
-						Instantiate(projectile, position, projectile.transform.rotation, this.transform);
+						Instantiate(projectile, this.transform.position, projectile.transform.rotation, this.transform);
 					else
 					{
+						Vector2 position = this.transform.position;
 						float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
 						Quaternion rotation = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward);
 						if (this._circulateDetection)
 							rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+						if (!this._instanceOnSelf)
+							position += (Vector2)(rotation * Vector2.up);
 						Instantiate(projectile, position, rotation, this.transform);
 					}
-				}
 			}
 		}
 	};
