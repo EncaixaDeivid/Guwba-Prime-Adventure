@@ -19,7 +19,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private bool
 			_isInoffensive,
 			_stayInPlace,
-			_goDown,
 			_sideMovement,
 			_invertSide,
 			_rotationMatter,
@@ -75,7 +74,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void CellInstanceRange()
 		{
-			Vector2 direction = this._goDown ? -this.transform.up : this.transform.up;
+			Vector2 direction = this._invertSide ? -this.transform.up : this.transform.up;
 			float instanceDistance = Physics2D.Raycast(this.transform.position, direction, this._distanceRay, this._groundLayerMask).distance;
 			if (this._useQuantity)
 				instanceDistance = this._quantityToSummon;
@@ -145,7 +144,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Start()
 		{
 			if (!this._stayInPlace)
-				this._rigidbody.linearVelocity = (this._goDown ? -this.transform.up : this.transform.up) * this._movementSpeed;
+				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
 		}
 		private void FixedUpdate()
 		{
@@ -155,13 +154,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.CellInstanceOnce();
 			this._rigidbody.rotation += this._rotationSpeed * this._movementSpeed * Time.deltaTime;
 			if (!this._stayInPlace && this._rotationMatter)
-				this._rigidbody.linearVelocity = (this._goDown ? -this.transform.up : this.transform.up) * this._movementSpeed;
+				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._isParalyzed)
+			if (this._isParalyzed && this._isInoffensive)
 				return;
-			if (!this._isInoffensive && other.TryGetComponent<IDamageable>(out var damageable))
+			if (other.TryGetComponent<IDamageable>(out var damageable))
 			{
 				if (damageable.Damage(this._damage))
 					Destroy(this.gameObject);
