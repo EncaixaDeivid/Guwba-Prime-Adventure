@@ -13,22 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			if (this._useCrawlMovement)
-				this._rigidybody.gravityScale = 0f;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
-		}
-		private bool EndWalkableSurface()
-		{
-			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
-			float yAxis = this.transform.position.y - this._collider.bounds.extents.y;
-			return !Physics2D.Raycast(new Vector2(xAxis, yAxis), Vector2.down, 0.05f, this._groundLayer);
-		}
-		private bool BlockPerception()
-		{
-			float pointDirection = (this._collider.bounds.extents.x + 0.025f) * this._movementSide;
-			Vector2 point = new(this.transform.position.x + pointDirection, this.transform.position.y);
-			Vector2 size = new(0.05f, this._collider.bounds.extents.y - 0.05f);
-			return Physics2D.OverlapBox(point, size, this.transform.rotation.z, this._groundLayer);
 		}
 		private void FixedUpdate()
 		{
@@ -58,7 +43,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (this._useCrawlMovement)
 			{
-				bool rayValue = Physics2D.Raycast(this.transform.position, -this.transform.up, this._crawlRayDistance, this._groundLayer);
+				float crawlRayDistance = this._collider.bounds.extents.y + this._crawlRayDistance;
+				bool rayValue = Physics2D.Raycast(this.transform.position, -this.transform.up, crawlRayDistance, this._groundLayer);
 				if (this._rotate && !rayValue)
 				{
 					this._rotate = false;
@@ -66,14 +52,20 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				if (rayValue)
 					this._rotate = true;
-				Vector2 normalSpeed = this._movementSpeed * this._movementSide * this.transform.right;
-				Vector2 upedSpeed = speedIncreased * this._movementSide * this.transform.right;
+				Vector2 normalSpeed = this._movementSpeed * this.transform.right;
+				Vector2 upedSpeed = speedIncreased * this.transform.right;
 				this._rigidybody.linearVelocity = faceLook || groundWalk ? upedSpeed : normalSpeed;
 				return;
 			}
-			if (this.BlockPerception() || this.EndWalkableSurface())
+			Vector2 size = new(this._collider.bounds.size.x + .05f, this._collider.bounds.extents.y - .05f);
+			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, 0f, this._groundLayer);
+			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
+			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
+			bool endWalkableSurface = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer);
+			if (blockPerception || endWalkableSurface)
 				this._movementSide *= -1;
-			this._rigidybody.linearVelocityX = faceLook || groundWalk ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
+			bool goStraight = faceLook || groundWalk;
+			this._rigidybody.linearVelocityX = goStraight ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
 		}
 	};
 };
