@@ -1,0 +1,18 @@
+{
+    "name": "GuwbaPrimeAdventure.Item.EventItem",
+    "rootNamespace": "GuwbaPrimeAdventure.Item.EventItem",
+    "references": [
+        "GUID:c5fb3f71187e39a44a05216e6e758570",
+        "GUID:0c6f303019211e84c93c043283376af8",
+        "GUID:bf4adeaf926423d44b217adbe90d9c00"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
