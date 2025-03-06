@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _shootInterval = 0f, _timeStop = 0f, _gravityScale = 0f;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy"), SerializeField] private Projectile[] _projectiles;
-		[SerializeField] private float _perceptionDistance, _intervalToShoot, _stopTime;
+		[SerializeField] private float _perceptionDistance, _rayAngleDirection, _intervalToShoot, _stopTime;
 		[SerializeField] private bool _stop, _paralyze, _returnGravity, _circulateDetection, _shootInfinity, _pureInstance, _instanceOnSelf;
 		private new void Awake()
 		{
@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			float originDirection = this._collider.bounds.extents.x * this._movementSide;
 			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
-			Vector2 direction = Vector2.right * this._movementSide;
+			Vector2 direction = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward) * Vector2.up;
 			if (this._circulateDetection)
 			{
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(origin, this._perceptionDistance, this._targetLayerMask))
@@ -76,7 +76,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					else
 					{
 						float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
-						Quaternion rotation = new(0f, 0f, this._movementSide * 90f, 0f);
+						Quaternion rotation = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward);
 						if (this._circulateDetection)
 							rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 						Instantiate(projectile, position, rotation, this.transform);
