@@ -17,7 +17,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
-			this._rigidybody.gravityScale = 0f;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
 		private void FixedUpdate()
