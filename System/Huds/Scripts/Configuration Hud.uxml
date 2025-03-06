@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/System/Huds/Scripts/Configuration%20Hud.uss?fileID=7433441132597879392&amp;guid=4f8e5fb2134b126419f920e8afca4538&amp;type=3#Configuration Hud" />
+    <ui:GroupBox name="BaseElement">
+        <ui:GroupBox name="Confirmation">
+            <ui:Label text="Deseja ir para o sair da fase?" name="Text" style="font-size: 60px;" />
+            <ui:GroupBox name="ConfirmationButtons">
+                <ui:Button text="Sim" name="Yes" />
+                <ui:Button text="Não" name="No" />
+            </ui:GroupBox>
+        </ui:GroupBox>
+        <ui:GroupBox name="Buttons">
+            <ui:Button text="Sair" name="OutLevel" class="Button" />
+            <ui:Button text="Fechar" name="Close" class="Button" />
+            <ui:Button text="Salvar" name="SaveGame" class="Button" />
+        </ui:GroupBox>
+    </ui:GroupBox>
+</ui:UXML>
