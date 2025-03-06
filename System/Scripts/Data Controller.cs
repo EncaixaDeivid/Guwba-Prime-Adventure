@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure
 {
 	internal static class DataController
 	{
-		private const string ScriptPassword = "BeToNeIrAdEqUaTrOÈUmAgRaNdEiDeIa!";
+		private const string ScriptPassword = "BoLoDeCeNoUrAcOmCoBeRtUrAdEcHoCoLaTeAmArGo!";
 		private static string ScriptData(string data)
 		{
 			string scriptedData = "";
