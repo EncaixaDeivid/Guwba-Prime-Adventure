@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected Collider2D _collider;
 		protected UnityAction<bool> _toggleEvent;
 		private Vector2 _guardVelocity = new();
-		private float _gravityScale = 0f;
+		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
 		private bool _paralyzed = false;
 		[Header("Enemy Controller"), SerializeField] protected LayerMask _groundLayer;
@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._animator = this.GetComponent<Animator>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._gravityScale = this._rigidybody.gravityScale;
+			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1 : 1);
 		}
 		private new void OnDestroy()
@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void OnEnable()
 		{
 			this._animator.enabled = true;
-			this._rigidybody.gravityScale = this._gravityScale;
+			this._rigidybody.gravityScale = this._guardGravityScale;
 			this._rigidybody.linearVelocity = this._guardVelocity;
 		}
 		private void OnDisable()
