@@ -3,8 +3,7 @@ using UnityEngine.U2D;
 using System.Collections;
 namespace GuwbaPrimeAdventure.Effects
 {
-	[DisallowMultipleComponent]
-	[RequireComponent(typeof(Transform), typeof(Light2DBase))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
