@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[DisallowMultipleComponent]
-	[RequireComponent(typeof(Transform), typeof(Collider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class JumpPoint : StateController
 	{
 		private UnityAction<ushort> _getTouch;
