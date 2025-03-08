@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._pointOrigin = this.transform.position;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Movement
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
