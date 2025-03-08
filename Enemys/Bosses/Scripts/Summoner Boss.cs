@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _stopSummon = false;
 		[Header("Summoner Boss"), SerializeField] private SummonPlaces[] _summonPlaces;
 		[SerializeField] private SummonObject[] _eventSummons, _timedSummons;
-		private new void Awake()
+		private new void Awake() // Set Summon Points
 		{
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
