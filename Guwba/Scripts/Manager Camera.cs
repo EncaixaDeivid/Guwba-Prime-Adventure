@@ -24,7 +24,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._cameraGuwba = this.GetComponent<Camera>();
 			this._cameraCollider = this.GetComponent<BoxCollider2D>();
-			this._childrenTransforms = new Transform[this._backgroundImages.Length];
+			this._childrenTransforms = new Transform[this._backgroundImages.Length]; // Background Movement : Start
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
 			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
 			{
@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
-			}
+			} // Background Movement : End
 			float sizeY = this._cameraGuwba.orthographicSize * 2f;
 			float sizeX = sizeY * this._cameraGuwba.aspect;
 			this._cameraCollider.size = new Vector2(sizeX, sizeY);
@@ -63,7 +63,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				for (ushort i = 0; i < hiddenCamera.transform.childCount; i++)
 					hiddenCamera.transform.GetChild(i).gameObject.SetActive(activeValue);
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Background Movement
 		{
 			for (ushort i = 0; i < this._backgroundImages.Length; i++)
 			{
