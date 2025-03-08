@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System;
 using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure
 {
@@ -35,12 +36,12 @@ namespace GuwbaPrimeAdventure
 			this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
 			this._deathScreenHud.GameOver.clicked -= this.GameOver;
 		}
-		private void Continue() => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
-		private void OutLevel() => this.GetComponent<TransitionController>().Transicion();
-		private void GameOver()
+		private Action Continue => () => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
+		private Action OutLevel => () => this.GetComponent<TransitionController>().Transicion();
+		private Action GameOver => () =>
 		{
 			SaveFileData.RefreshData();
 			this.GetComponent<TransitionController>().Transicion();
-		}
+		};
 	};
 };
