@@ -2,7 +2,7 @@ using UnityEngine;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : EnemyController
+	internal sealed class GroundEnemy : OpositeEnemy
 	{
 		private bool _rotate = true;
 		[Header("Ground Enemy"), SerializeField] private Vector2 _sensorOriginPoint;
