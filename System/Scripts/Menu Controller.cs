@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System;
 using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure
 {
@@ -62,18 +63,18 @@ namespace GuwbaPrimeAdventure
 		}
 		private void OnEnable() => this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		private void OnDisable() => this._menuHud.Buttons.style.display = DisplayStyle.None;
-		private void Play()
+		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
-		}
-		private void OpenConfigurations() => Instantiate(this._configurationController).gameObject.SetActive(true);
-		private void Quit() => Application.Quit();
-		private void Back()
+		};
+		private Action OpenConfigurations => () => Instantiate(this._configurationController).gameObject.SetActive(true);
+		private Action Quit => () => Application.Quit();
+		private Action Back => () =>
 		{
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-		}
+		};
 		private EventCallback<ChangeEvent<string>> ChangeName1 =>
 			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(1, eventCallback.newValue);
 		private EventCallback<ChangeEvent<string>> ChangeName2 =>
@@ -93,29 +94,29 @@ namespace GuwbaPrimeAdventure
 			this.GetComponent<TransitionController>().Transicion(this._level0Scene);
 			SaveFileData.SaveData();
 		}
-		private void SelectSaveFile1() => this.SetSaveFile(1);
-		private void SelectSaveFile2() => this.SetSaveFile(2);
-		private void SelectSaveFile3() => this.SetSaveFile(3);
-		private void SelectSaveFile4() => this.SetSaveFile(4);
-		private void DeleteSaveFile1()
+		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
+		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
+		private Action SelectSaveFile3 => () => this.SetSaveFile(3);
+		private Action SelectSaveFile4 => () => this.SetSaveFile(4);
+		private Action DeleteSaveFile1 => () =>
 		{
 			SaveFileData.DeleteData(1);
 			this._menuHud.SaveName[0].value = SaveFileData.DataFileName1;
-		}
-		private void DeleteSaveFile2()
+		};
+		private Action DeleteSaveFile2 => () =>
 		{
 			SaveFileData.DeleteData(2);
 			this._menuHud.SaveName[1].value = SaveFileData.DataFileName2;
-		}
-		private void DeleteSaveFile3()
+		};
+		private Action DeleteSaveFile3 => () =>
 		{
 			SaveFileData.DeleteData(3);
 			this._menuHud.SaveName[2].value = SaveFileData.DataFileName3;
-		}
-		private void DeleteSaveFile4()
+		};
+		private Action DeleteSaveFile4 => () =>
 		{
 			SaveFileData.DeleteData(4);
 			this._menuHud.SaveName[3].value = SaveFileData.DataFileName4;
-		}
+		};
 	};
 };
