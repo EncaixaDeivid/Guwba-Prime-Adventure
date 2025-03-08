@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			_sequentialFallIndex,
 			_useTarget,
 			_randomFollow;
-		private new void Awake()
+		private new void Awake() // Set Jump Points
 		{
 			base.Awake();
 			this._toggleEvent = (bool toggleValue) => this._stopJump = !toggleValue;
@@ -120,7 +120,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 			}
 		}
-		private new void FixedUpdate()
+		private new void FixedUpdate() // Fall Summon
 		{
 			if (this._jumped && this.SurfacePerception())
 			{
