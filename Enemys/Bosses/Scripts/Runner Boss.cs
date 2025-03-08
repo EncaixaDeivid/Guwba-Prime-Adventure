@@ -94,7 +94,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(TimedDash());
 			}
 		}
-		private new void FixedUpdate()
+		private new void FixedUpdate() // Movement
 		{
 			base.FixedUpdate();
 			if (this._stopMovement && !this._dashIsOn)
