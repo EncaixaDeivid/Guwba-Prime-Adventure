@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.Cinemachine;
+using System;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
@@ -31,8 +32,8 @@ namespace GuwbaPrimeAdventure.Item
 			if (this._levelGateInstance)
 				this._levelGateInstance.BaseElement.style.display = DisplayStyle.None;
 		}
-		private void EnterLevel() => this.GetComponent<TransitionController>().Transicion(this._levelScene);
-		private void EnterBoss() => this.GetComponent<TransitionController>().Transicion(this._bossScene);
+		private Action EnterLevel => () => this.GetComponent<TransitionController>().Transicion(this._levelScene);
+		private Action EnterBoss => () => this.GetComponent<TransitionController>().Transicion(this._bossScene);
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
