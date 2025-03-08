@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private ushort _quantityToGenerate;
 		[SerializeField] private float _generationTime;
 		[SerializeField] private bool _especifiedGeneration, _existentItems;
-		private void FixedUpdate()
+		private void FixedUpdate() // Generation
 		{
 			if (this._stopGenerate)
 				return;
