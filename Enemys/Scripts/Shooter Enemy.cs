@@ -37,7 +37,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						return true;
 			return false;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Shoot Time
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
