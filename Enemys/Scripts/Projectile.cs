@@ -146,7 +146,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (!this._stayInPlace)
 				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Movemnet
 		{
 			if (this._isParalyzed)
 				return;
