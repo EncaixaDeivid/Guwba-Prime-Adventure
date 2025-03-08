@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Generation
 		{
 			if (this._stopGenerate)
 				return;
