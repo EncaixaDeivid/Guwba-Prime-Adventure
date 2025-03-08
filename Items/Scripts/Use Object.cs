@@ -14,5 +14,5 @@ namespace GuwbaPrimeAdventure.Item
 		private void OnEnable() => this._animator.SetFloat(this._isOn, 1f);
 		private void OnDisable() => this._animator.SetFloat(this._isOn, 0f);
 		private void OnTriggerEnter2D(Collider2D other) => this._animator.SetTrigger(this._use);
-	}
-}
+	};
+};
