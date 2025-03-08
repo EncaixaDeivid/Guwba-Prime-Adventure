@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Movement
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
