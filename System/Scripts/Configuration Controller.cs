@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using System;
 using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure
 {
@@ -33,7 +34,7 @@ namespace GuwbaPrimeAdventure
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
 		}
-		private void HideHudAction(InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
+		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
 			if (this._configurationHudInstance)
@@ -61,25 +62,25 @@ namespace GuwbaPrimeAdventure
 				this._configurationHudInstance.Close.clicked += this.CloseConfigurations;
 			}
 		}
-		private void OutLevel()
+		private Action OutLevel => () =>
 		{
 			this._configurationHudInstance.Buttons.style.display = DisplayStyle.None;
 			this._configurationHudInstance.Confirmation.style.display = DisplayStyle.Flex;
-		}
-		private void YesBackLevel()
+		};
+		private Action YesBackLevel => () =>
 		{
 			if (this.gameObject.scene.name != this._levelSelectorScene)
 				this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
 			else
 				this.GetComponent<TransitionController>().Transicion(this._menuScene);
-		}
-		private void NoBackLevel()
+		};
+		private Action NoBackLevel => () =>
 		{
 			this._configurationHudInstance.Buttons.style.display = DisplayStyle.Flex;
 			this._configurationHudInstance.Confirmation.style.display = DisplayStyle.None;
-		}
-		private void SaveGame() => SaveFileData.SaveData();
-		private void CloseConfigurations()
+		};
+		private Action SaveGame => () => SaveFileData.SaveData();
+		private Action CloseConfigurations => () =>
 		{
 			this._configurationHudInstance.OutLevel.clicked -= this.OutLevel;
 			this._configurationHudInstance.Yes.clicked -= this.YesBackLevel;
@@ -90,7 +91,7 @@ namespace GuwbaPrimeAdventure
 			StateController.SetState(true);
 			if (this.gameObject.scene.name == this._menuScene)
 				Destroy(this.gameObject);
-		}
+		};
 		public static void DeathScreen()
 		{
 			Instantiate(_instance._deathScreenController);
