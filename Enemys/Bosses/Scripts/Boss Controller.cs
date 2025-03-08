@@ -52,7 +52,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2 size = new(this._collider.bounds.size.x - this._groundSize, this._collider.bounds.size.y - this._groundSize);
 			return Physics2D.BoxCast(this.transform.position, size, 0f, -this.transform.up, this._groundSize, this._groundLayer);
 		}
-		protected void FixedUpdate()
+		protected void FixedUpdate() // Animation
 		{
 			if (this.SurfacePerception())
 			{
