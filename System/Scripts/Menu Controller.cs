@@ -1,6 +1,6 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Hud;
 using UnityEngine.UIElements;
+using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
@@ -74,10 +74,14 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		}
-		private void ChangeName1(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(1, eventCallback.newValue);
-		private void ChangeName2(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(2, eventCallback.newValue);
-		private void ChangeName3(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(3, eventCallback.newValue);
-		private void ChangeName4(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(4, eventCallback.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName1 =>
+			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(1, eventCallback.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName2 =>
+			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(2, eventCallback.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName3 =>
+			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(3, eventCallback.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName4 =>
+			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(4, eventCallback.newValue);
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveFileData.SetActualSaveFile(newSaveFile);
