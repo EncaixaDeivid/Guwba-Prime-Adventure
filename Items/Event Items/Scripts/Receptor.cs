@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptor))]
 	internal sealed class Receptor : StateController
 	{
 		private readonly List<Activator> _usedActivators = new();
