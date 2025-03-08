@@ -185,7 +185,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (this._movementAction != 0f)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float movementValue = this._movementAction > 0f ? 1f : -1f;
+				float movementValue = this._movementAction > 0f ? 1f : -1f; // Up Stairs : Start
 				float rootHeight = this._collider.size.y / this._collider.size.y;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
@@ -206,7 +206,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
 						this.transform.position = new Vector2(xDistance, yDistance);
 					}
-				}
+				} // Up Stairs : End
 			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			if (this._grabState)
