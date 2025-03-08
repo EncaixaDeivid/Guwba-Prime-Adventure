@@ -14,7 +14,7 @@ namespace GuwbaPrimeAdventure.Dialog
 		private bool _dialogClosed;
 		[SerializeField] private DialogHud _dialogHudObject;
 		[SerializeField] private DialogObject[] _dialogObject;
-		public void Interaction()
+		public void Interaction() // Initialize Dialog
 		{
 			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject)
 			{
