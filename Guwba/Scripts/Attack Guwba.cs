@@ -27,7 +27,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
-		private void FixedUpdate()
+		private void FixedUpdate() // Movement
 		{
 			if (!_activeState)
 			{
