@@ -47,11 +47,13 @@ namespace GuwbaPrimeAdventure.Enemy
 						this._rigidybody.gravityScale = this._gravityScale;
 					}
 					GameObject summon = null;
-					Vector2 combinePoint = (Vector2)this.transform.position + this._summonObject.SummonPoints[0];
 					if (this._summonObject.Self)
 						summon = Instantiate(this._summonObject.Summon, this.transform.position, this.transform.rotation);
 					else if (this._summonObject.Combine)
+					{
+						Vector2 combinePoint = (Vector2)this.transform.position + this._summonObject.SummonPoints[0];
 						summon = Instantiate(this._summonObject.Summon, combinePoint, this.transform.rotation);
+					}
 					else if (this._summonObject.Random)
 					{
 						ushort pointIndex = (ushort)Random.Range(0f, this._summonObject.SummonPoints.Length - 1f);
