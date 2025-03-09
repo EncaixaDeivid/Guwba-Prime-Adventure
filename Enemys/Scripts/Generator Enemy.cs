@@ -16,7 +16,17 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
-		private void FixedUpdate() // Generation
+		private void OnEnable()
+		{
+			foreach (GameObject gameObject in _enemysGenerated.FindAll(gameObject => gameObject))
+				gameObject.SetActive(true);
+		}
+		private void OnDisable()
+		{
+			foreach (GameObject gameObject in _enemysGenerated.FindAll(gameObject => gameObject))
+				gameObject.SetActive(false);
+		}
+		private void FixedUpdate()
 		{
 			if (this._stopGenerate)
 				return;
