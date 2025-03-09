@@ -27,7 +27,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
-		private void FixedUpdate() // Movement
+		private void FixedUpdate()
 		{
 			if (!_activeState)
 			{
@@ -46,7 +46,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			if (_returnState)
 			{
-				Vector2 targetDirection = (Vector2)this.transform.position - targetPosition;
+				Vector2 targetDirection = ((Vector2)this.transform.position - targetPosition).normalized;
 				float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
 				this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 				this._rigidbody.linearVelocity = this._movementSpeed * -this.transform.up;
