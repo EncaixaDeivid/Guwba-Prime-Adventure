@@ -16,7 +16,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
-		protected bool _contactDamage = false;
 		[Header("Boss Controller"), SerializeField] protected LayerMask _groundLayer;
 		[SerializeField] protected LayerMask _targetLayerMask;
 		[SerializeField] private float _groundSize;
@@ -52,7 +51,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2 size = new(this._collider.bounds.size.x - this._groundSize, this._collider.bounds.size.y - this._groundSize);
 			return Physics2D.BoxCast(this.transform.position, size, 0f, -this.transform.up, this._groundSize, this._groundLayer);
 		}
-		protected void FixedUpdate() // Animation
+		protected void FixedUpdate()
 		{
 			if (this.SurfacePerception())
 			{
@@ -77,8 +76,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if (this._contactDamage && collision.TryGetComponent<IDamageable>(out var destructable))
-				destructable.Damage(this._damage);
+			if (collision.TryGetComponent<IDamageable>(out var damageable))
+				damageable.Damage(this._damage);
 		}
 		internal void Toggle<BossInstance>(bool toggleValue) where BossInstance : BossController
 		{
