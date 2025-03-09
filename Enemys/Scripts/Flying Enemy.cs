@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 			if (followTarget)
 			{
-				Vector2 direction = targetPoint - (Vector2)this.transform.position;
+				Vector2 direction = (targetPoint - (Vector2)this.transform.position).normalized;
 				float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90f;
 				direction = Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up;
 				this._rigidybody.linearVelocity = direction * this._movementSpeed;
@@ -55,7 +55,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._rigidybody.linearVelocity = Vector2.zero;
 				this.transform.position = Vector2.Lerp(this.transform.position, this._pointOrigin, this._speedReturn * Time.deltaTime);
 			}
-			if (this._trail.Length > 0f && !followTarget)
+			else if (this._trail.Length > 0f && !followTarget)
 			{
 				Vector2 target = this._trail[this._pointIndex];
 				if (this._normal)
@@ -71,7 +71,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._normal = this._pointIndex == 0f;
 				}
 				this._spriteRenderer.flipX = target.x < this.transform.position.x;
-				this.transform.position = Vector2.Lerp(this.transform.position, target, this._speedTrail * Time.deltaTime);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._speedTrail * Time.deltaTime);
 				this._pointOrigin = this.transform.position;
 			}
 		}
