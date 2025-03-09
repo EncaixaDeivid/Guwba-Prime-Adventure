@@ -101,7 +101,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._canJump = false;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._rigidbody.AddForceY(this._jumpStrenght);
+				this._rigidbody.AddForce(this.transform.up * this._jumpStrenght);
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackRotationConsole =>
@@ -110,7 +110,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			Vector2 attackTarget = attackAction.ReadValue<Vector2>();
 			Vector2 attackValue = Camera.main.ScreenToWorldPoint(new Vector3(attackTarget.x, attackTarget.y, 0f));
-			this._attackValue = attackValue - (Vector2)this.transform.position;
+			this._attackValue = (attackValue - (Vector2)this.transform.position).normalized;
 		};
 		private Action<InputAction.CallbackContext> AttackUse => (InputAction.CallbackContext attackAction) =>
 		{
@@ -120,8 +120,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				_activeState = false;
 				GuwbaTransformer<AttackGuwba>._activeState = false;
 				this._grabState = false;
-				Vector2 throwPosition = (Vector2)this.transform.position + this._attackValue;
-				_grabObject.transform.position = throwPosition;
+				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
 				_grabObject = null;
@@ -185,7 +184,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (this._movementAction != 0f)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float movementValue = this._movementAction > 0f ? 1f : -1f; // Up Stairs : Start
+				float movementValue = this._movementAction > 0f ? 1f : -1f;
 				float rootHeight = this._collider.size.y / this._collider.size.y;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
@@ -206,7 +205,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
 						this.transform.position = new Vector2(xDistance, yDistance);
 					}
-				} // Up Stairs : End
+				}
 			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			if (this._grabState)
