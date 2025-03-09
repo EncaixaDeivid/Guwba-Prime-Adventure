@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 	internal abstract class EnemyController : StateController, IGrabtable, IDamageable
     {
 		protected SpriteRenderer _spriteRenderer;
