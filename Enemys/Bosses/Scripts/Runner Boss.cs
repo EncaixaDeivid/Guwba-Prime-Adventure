@@ -23,9 +23,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			_eventOnBlock,
 			_eventOnDash,
 			_indexSummon,
-			_useOtherTarget,
-			_damageOnRun,
-			_damageOnDash;
+			_useOtherTarget;
 		[SerializeField] private ushort _dashSpeed, _summonIndex;
 		[SerializeField] private float _groundDistance, _rayDistance, _climbSpeedUp, _stopDashTime, _dashDistance, _timeToDash;
 		private IEnumerator Dash()
@@ -58,7 +56,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						this._rigidybody.linearVelocity = this._movementSide * this._dashSpeed * this.transform.right;
 				else
 					this._rigidybody.linearVelocity = Vector2.zero;
-				this._contactDamage = this._damageOnDash;
 				cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 				if (oldCellPosition != cellPosition)
 				{
@@ -94,7 +91,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(TimedDash());
 			}
 		}
-		private new void FixedUpdate() // Movement
+		private new void FixedUpdate()
 		{
 			base.FixedUpdate();
 			if (this._stopMovement && !this._dashIsOn)
@@ -191,7 +188,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this._rigidybody.linearVelocity = (this._movementSide + speedUp) * this._movementSpeed * this.transform.right;
 				else
 					this._rigidybody.linearVelocity = this._movementSide * this._movementSpeed * this.transform.right;
-				this._contactDamage = this._damageOnRun;
 			}
 		}
 	};
