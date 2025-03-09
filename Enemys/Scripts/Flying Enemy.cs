@@ -12,14 +12,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private ushort _speedTrail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance;
-		[SerializeField] private bool _stopOnTarget, _sphericalMovement;
+		[SerializeField] private bool _stopOnTarget;
 		private new void Awake()
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
-		private void FixedUpdate() // Movement
+		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
@@ -71,10 +71,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._normal = this._pointIndex == 0f;
 				}
 				this._spriteRenderer.flipX = target.x < this.transform.position.x;
-				if (this._sphericalMovement)
-					this.transform.position = Vector3.Slerp(this.transform.position, target, this._speedTrail * Time.deltaTime);
-				else
-					this.transform.position = Vector2.Lerp(this.transform.position, target, this._speedTrail * Time.deltaTime);
+				this.transform.position = Vector2.Lerp(this.transform.position, target, this._speedTrail * Time.deltaTime);
 				this._pointOrigin = this.transform.position;
 			}
 		}
