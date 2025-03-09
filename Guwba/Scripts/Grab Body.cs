@@ -37,27 +37,29 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (this._isThrew)
-			{
-				if (other.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._throwDamage) && this._isThrew)
+				if (other.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._throwDamage))
+				{
 					EffectsController.SetHitStop(this._throwHitStopTime, this._throwHitSlowTime);
-				Destroy(this.gameObject);
-			}
+					Destroy(this.gameObject);
+				}
 		}
 		internal void Stop(ushort objectLayer)
 		{
 			this.GetComponent<IGrabtable>()?.Paralyze();
 			if (this._gravityOnThrow)
 				this._gravityScale = this._rigidbody.gravityScale;
-			Collider2D collider = this.GetComponent<Collider2D>();
 			this.gameObject.layer = objectLayer;
 			this.transform.parent = null;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
-			collider.isTrigger = true;
-			collider.includeLayers = this._hitLayers;
-			collider.excludeLayers = this._noHitLayers;
-			collider.contactCaptureLayers = this._hitLayers;
-			collider.callbackLayers = this._hitLayers;
+			foreach (Collider2D collider in this.GetComponents<Collider2D>())
+			{
+				collider.isTrigger = true;
+				collider.includeLayers = this._hitLayers;
+				collider.excludeLayers = this._noHitLayers;
+				collider.contactCaptureLayers = this._hitLayers;
+				collider.callbackLayers = this._hitLayers;
+			}
 		}
 		internal void Throw(Vector2 direction)
 		{
