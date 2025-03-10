@@ -17,15 +17,13 @@ namespace GuwbaPrimeAdventure.Item
 				SaveFileData.LevelsCompleted[sceneIndex] = true;
 			if (this._saveOnSpecifics)
 				SaveFileData.GeneralObjects.Add(this.gameObject.name);
-			if (this._enterInDialog)
-				this.GetComponent<IInteractable>().Interaction();
-			else
-			{
-				if (sceneIndex - 1 >= 0f && !SaveFileData.DeafetedBosses[sceneIndex - 1])
-					this.GetComponent<TransitionController>().Transicion(this._goToBoss);
+			if (sceneIndex - 1 >= 0f && !SaveFileData.DeafetedBosses[sceneIndex - 1])
+				if (this._enterInDialog)
+					this.GetComponent<IInteractable>().Interaction();
 				else
-					this.GetComponent<TransitionController>().Transicion();
-			}
+					this.GetComponent<TransitionController>().Transicion(this._goToBoss);
+			else
+				this.GetComponent<TransitionController>().Transicion();
 		}
 	};
 };
