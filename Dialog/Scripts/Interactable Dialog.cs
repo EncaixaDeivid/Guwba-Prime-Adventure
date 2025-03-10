@@ -14,7 +14,7 @@ namespace GuwbaPrimeAdventure.Dialog
 		private bool _dialogClosed;
 		[SerializeField] private DialogHud _dialogHudObject;
 		[SerializeField] private DialogObject[] _dialogObject;
-		public void Interaction() // Initialize Dialog
+		public void Interaction()
 		{
 			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject)
 			{
@@ -63,8 +63,10 @@ namespace GuwbaPrimeAdventure.Dialog
 				}
 				else
 				{
-					if (this._dialogTalk.Speachs[this._speachIndex].ActivateEvent)
+					if (this._dialogTalk.Speachs[this._speachIndex].SaveOnEspecific)
 						SaveFileData.GeneralObjects.Add(this.gameObject.name);
+					if (this._dialogTalk.Speachs[this._speachIndex].ActivateTransition)
+						this.GetComponent<TransitionController>().Transicion(this._dialogTalk.Speachs[this._speachIndex].SceneToTransition);
 					this._text = null;
 					this._speachIndex = 0;
 					this._dialogIndex = 0;
