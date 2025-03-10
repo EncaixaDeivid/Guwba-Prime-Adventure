@@ -12,12 +12,12 @@ namespace GuwbaPrimeAdventure.Dialog
 		private string _text = "";
 		private ushort _dialogObjectIndex = 0, _dialogIndex = 0, _speachIndex = 0;
 		private float _dialogTime = 0f;
-		private bool _dialogClosed = false, _desactiveInteraction = false;
+		private bool _dialogClosed = false;
 		[SerializeField] private DialogHud _dialogHudObject;
 		[SerializeField] private DialogObject[] _dialogObject;
 		public void Interaction()
 		{
-			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject && !this._desactiveInteraction)
+			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject)
 			{
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
@@ -72,7 +72,7 @@ namespace GuwbaPrimeAdventure.Dialog
 					else if (this._dialogTalk.ActivateAnimation)
 						this._animator.SetBool(this._dialogTalk.Animation, true);
 					if (this._dialogTalk.DesactiveInteraction)
-						this._desactiveInteraction = true;
+						this.enabled = true;
 					if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
 						Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
 					this._text = null;
