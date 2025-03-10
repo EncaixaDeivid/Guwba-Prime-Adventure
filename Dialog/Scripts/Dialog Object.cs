@@ -12,12 +12,14 @@ namespace GuwbaPrimeAdventure.Dialog
 	internal struct Dialog
 	{
 		[SerializeField] private Speach[] _speach;
-		[SerializeField] private string _sceneToTransition;
-		[SerializeField] private bool _activateTransition, _activateAnimation, _activateDestroy, _saveOnEspecific;
+		[SerializeField] private string _sceneToTransition, _animation;
+		[SerializeField] private bool _activateTransition, _desactiveInteraction, _activateAnimation, _activateDestroy, _saveOnEspecific;
 		[SerializeField] private float _timeToDestroy;
 		internal readonly Speach[] Speachs => this._speach;
 		internal readonly string SceneToTransition => this._sceneToTransition;
+		internal readonly string Animation => this._animation;
 		internal readonly bool ActivateTransition => this._activateTransition;
+		internal readonly bool DesactiveInteraction => this._desactiveInteraction;
 		internal readonly bool ActivateAnimation => this._activateAnimation;
 		internal readonly bool ActivateDestroy => this._activateDestroy;
 		internal readonly bool SaveOnEspecific => this._saveOnEspecific;
