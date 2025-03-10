@@ -63,10 +63,10 @@ namespace GuwbaPrimeAdventure.Dialog
 				}
 				else
 				{
-					if (this._dialogTalk.Speachs[this._speachIndex].SaveOnEspecific)
+					if (this._dialogTalk.SaveOnEspecific)
 						SaveFileData.GeneralObjects.Add(this.gameObject.name);
-					if (this._dialogTalk.Speachs[this._speachIndex].ActivateTransition)
-						this.GetComponent<TransitionController>().Transicion(this._dialogTalk.Speachs[this._speachIndex].SceneToTransition);
+					if (this._dialogTalk.ActivateTransition)
+						this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
 					this._text = null;
 					this._speachIndex = 0;
 					this._dialogIndex = 0;
