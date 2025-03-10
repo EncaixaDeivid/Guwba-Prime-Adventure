@@ -1,37 +1,112 @@
 using UnityEngine;
-using System;
+using UnityEngine.UIElements;
+using System.Collections;
 namespace GuwbaPrimeAdventure.Dialog
 {
-	[CreateAssetMenu(fileName = "Dialog", menuName = "Scriptable Objects/Dialog", order = 0)]
-	internal class DialogObject : ScriptableObject
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
+	internal sealed class InteractableDialog : MonoBehaviour, IInteractable
     {
-		[SerializeField] private Dialog[] _dialog;
-		internal Dialog[] Dialogs => this._dialog;
-	};
-	[Serializable]
-	internal struct Dialog
-	{
-		[SerializeField] private Speach[] _speach;
-		[SerializeField] private string _sceneToTransition, _animation;
-		[SerializeField] private bool _activateTransition, _activateAnimation, _activateDestroy, _saveOnEspecific;
-		[SerializeField] private float _timeToDestroy;
-		internal readonly Speach[] Speachs => this._speach;
-		internal readonly string SceneToTransition => this._sceneToTransition;
-		internal readonly string Animation => this._animation;
-		internal readonly bool ActivateTransition => this._activateTransition;
-		internal readonly bool ActivateAnimation => this._activateAnimation;
-		internal readonly bool ActivateDestroy => this._activateDestroy;
-		internal readonly bool SaveOnEspecific => this._saveOnEspecific;
-		internal readonly float TimeToDestroy => this._timeToDestroy;
-		[Serializable]
-		internal struct Speach
+		private DialogHud _dialogHud;
+		private Animator _animator;
+		private Dialog _dialogTalk;
+		private string _text;
+		private ushort _dialogObjectIndex = 0, _dialogIndex = 0, _speachIndex = 0;
+		private float _dialogTime;
+		private bool _dialogClosed;
+		[SerializeField] private DialogHud _dialogHudObject;
+		[SerializeField] private DialogObject[] _dialogObject;
+		public void Interaction()
 		{
-			[SerializeField] private string _characterName;
-			[SerializeField] private Sprite _model;
-			[SerializeField, TextArea(1, 12)] private string _speachText;
-			internal readonly string CharacterName => this._characterName;
-			internal readonly Sprite Model => this._model;
-			internal readonly string SpeachText => this._speachText;
-		};
+			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject)
+			{
+				this._animator = this.GetComponent<Animator>();
+				this._dialogHud = Instantiate(this._dialogHudObject);
+				this._dialogTalk = this._dialogObject[this._dialogObjectIndex].Dialogs[this._dialogIndex];
+				this._dialogClosed = true;
+				this._dialogObjectIndex = (ushort)(this._dialogObjectIndex < this._dialogObject.Length - 1f ? this._dialogObjectIndex + 1f : 0f);
+				this._dialogTime = SettingsData.DialogSpeed;
+				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
+				this._dialogHud.CloseDialog.clicked += this.CloseDialog;
+			}
+		}
+		private IEnumerator TextDigitation()
+		{
+			StyleBackground image = new(this._dialogTalk.Speachs[this._speachIndex].Model);
+			this._dialogHud.CharacterIcon.style.backgroundImage = image;
+			this._dialogHud.CharacterName.text = this._dialogTalk.Speachs[this._speachIndex].CharacterName;
+			this._text = this._dialogTalk.Speachs[this._speachIndex].SpeachText;
+			this._dialogHud.CharacterSpeach.text = null;
+			foreach (char letter in this._text.ToCharArray())
+			{
+				this._dialogHud.CharacterSpeach.text += letter;
+				if (this._dialogClosed)
+				{
+					this._dialogClosed = false;
+					break;
+				}
+				yield return new WaitForSeconds(this._dialogTime);
+			}
+		}
+		private void AdvanceSpeach()
+		{
+			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
+			{
+				this._dialogTime = SettingsData.DialogSpeed;
+				if (this._speachIndex < this._text.Length - 1f)
+				{
+					this._speachIndex += 1;
+					this.StartCoroutine(this.TextDigitation());
+				}
+				else if (this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f)
+				{
+					this._speachIndex = 0;
+					this._dialogIndex += 1;
+					this.StartCoroutine(this.TextDigitation());
+				}
+				else
+				{
+					if (this._dialogTalk.SaveOnEspecific)
+						SaveFileData.GeneralObjects.Add(this.gameObject.name);
+					if (this._dialogTalk.ActivateTransition)
+						this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
+					else if (this._dialogTalk.ActivateAnimation)
+						this._animator.SetBool(this._dialogTalk.Animation, true);
+					if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
+						Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
+					this._text = null;
+					this._speachIndex = 0;
+					this._dialogIndex = 0;
+					this._dialogHud.CharacterIcon.style.backgroundImage = null;
+					this._dialogHud.CharacterName.text = null;
+					this._dialogHud.CharacterSpeach.text = null;
+					this._dialogClosed = false;
+					this._dialogHud.AdvanceSpeach.clicked -= this.AdvanceSpeach;
+					this._dialogHud.CloseDialog.clicked -= this.CloseDialog;
+					Destroy(this._dialogHud.gameObject);
+					StateController.SetState(true);
+				}
+			}
+			else
+				this._dialogTime = 0f;
+		}
+		private void CloseDialog()
+		{
+			this._text = null;
+			this._speachIndex = 0;
+			this._dialogIndex = 0;
+			this._dialogHud.CharacterIcon.style.backgroundImage = null;
+			this._dialogHud.CharacterName.text = null;
+			this._dialogHud.CharacterSpeach.text = null;
+			if (this._dialogClosed)
+				if (this._dialogObjectIndex > 0)
+					this._dialogObjectIndex -= 1;
+				else if (this._dialogObjectIndex <= 0)
+					this._dialogObjectIndex = (ushort)(this._dialogObject.Length - 1);
+			this._dialogClosed = false;
+			this._dialogHud.AdvanceSpeach.clicked -= this.AdvanceSpeach;
+			this._dialogHud.CloseDialog.clicked -= this.CloseDialog;
+			Destroy(this._dialogHud.gameObject);
+			StateController.SetState(true);
+		}
 	};
 };
