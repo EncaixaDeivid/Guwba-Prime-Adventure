@@ -22,6 +22,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
 				this._dialogTalk = this._dialogObject[this._dialogObjectIndex].Dialogs[this._dialogIndex];
+				this._dialogIndex = (ushort)(this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f ? 1f : 0f);
 				this._dialogObjectIndex = (ushort)(this._dialogObjectIndex < this._dialogObject.Length - 1f ? this._dialogObjectIndex + 1f : 0f);
 				this._dialogTime = SettingsData.DialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
@@ -47,15 +48,9 @@ namespace GuwbaPrimeAdventure.Dialog
 			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
 			{
 				this._dialogTime = SettingsData.DialogSpeed;
-				if ((this._speachIndex + 1f) < this._text.Length - 1f)
+				if (this._speachIndex < this._dialogTalk.Speachs.Length - 1f)
 				{
 					this._speachIndex += 1;
-					this.StartCoroutine(this.TextDigitation());
-				}
-				else if ((this._dialogIndex + 1f) < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f)
-				{
-					this._speachIndex = 0;
-					this._dialogIndex += 1;
 					this.StartCoroutine(this.TextDigitation());
 				}
 				else
@@ -72,7 +67,6 @@ namespace GuwbaPrimeAdventure.Dialog
 						Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
 					this._text = null;
 					this._speachIndex = 0;
-					this._dialogIndex = 0;
 					this._dialogHud.CharacterIcon.style.backgroundImage = null;
 					this._dialogHud.CharacterName.text = null;
 					this._dialogHud.CharacterSpeach.text = null;
@@ -89,10 +83,13 @@ namespace GuwbaPrimeAdventure.Dialog
 		{
 			this._text = null;
 			this._speachIndex = 0;
-			this._dialogIndex = 0;
 			this._dialogHud.CharacterIcon.style.backgroundImage = null;
 			this._dialogHud.CharacterName.text = null;
 			this._dialogHud.CharacterSpeach.text = null;
+			if (this._dialogIndex > 0)
+				this._dialogIndex -= 1;
+			else if (this._dialogIndex <= 0)
+				this._dialogIndex = (ushort)(this._dialogObject.Length - 1);
 			if (this._dialogObjectIndex > 0)
 				this._dialogObjectIndex -= 1;
 			else if (this._dialogObjectIndex <= 0)
