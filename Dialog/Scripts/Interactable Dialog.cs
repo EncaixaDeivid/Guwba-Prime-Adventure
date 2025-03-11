@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure.Dialog
 		[SerializeField] private DialogObject[] _dialogObject;
 		public void Interaction()
 		{
-			if (this._dialogObject != null && this._dialogObject.Length > 0f && !this._dialogHudObject)
+			if (this._dialogObject?.Length > 0f && this._dialogHudObject)
 			{
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
@@ -27,6 +27,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				this._dialogTime = SettingsData.DialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this._dialogHud.CloseDialog.clicked += this.CloseDialog;
+				this.StartCoroutine(this.TextDigitation());
 			}
 		}
 		private IEnumerator TextDigitation()
