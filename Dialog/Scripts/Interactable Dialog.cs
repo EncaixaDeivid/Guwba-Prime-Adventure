@@ -47,12 +47,12 @@ namespace GuwbaPrimeAdventure.Dialog
 			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
 			{
 				this._dialogTime = SettingsData.DialogSpeed;
-				if (this._speachIndex < this._text.Length - 1f)
+				if ((this._speachIndex + 1f) < this._text.Length - 1f)
 				{
 					this._speachIndex += 1;
 					this.StartCoroutine(this.TextDigitation());
 				}
-				else if (this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f)
+				else if ((this._dialogIndex + 1f) < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f)
 				{
 					this._speachIndex = 0;
 					this._dialogIndex += 1;
