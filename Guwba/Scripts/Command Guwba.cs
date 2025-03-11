@@ -101,7 +101,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._canJump = false;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._rigidbody.AddForce(this.transform.up * this._jumpStrenght);
+				this._rigidbody.AddForceY(this._jumpStrenght);
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackRotationConsole =>
