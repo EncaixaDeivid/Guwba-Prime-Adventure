@@ -11,13 +11,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Flying Enemy"), SerializeField] private GameObject _target;
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private ushort _speedTrail;
-		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance;
-		[SerializeField] private bool _stopOnTarget;
+		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
+		[SerializeField] private bool _stopOnTarget, _endlessPursue;
 		private new void Awake()
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
+			if (this._endlessPursue)
+				Destroy(this.gameObject, this._fadeTime);
 		}
 		private void FixedUpdate()
 		{
@@ -25,7 +27,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (this._target)
 			{
-				this._rigidybody.linearVelocity = this._target.transform.position - this.transform.position * this._movementSpeed;
+				this._rigidybody.linearVelocity = (this._target.transform.position - this.transform.position).normalized * this._movementSpeed;
+				return;
+			}
+			if (this._endlessPursue)
+			{
+				Vector2 direction = (GuwbaTransformer<VisualHudGuwba>.Position - (Vector2)this.transform.position).normalized;
+				this._rigidybody.linearVelocity = direction * this._movementSpeed;
 				return;
 			}
 			Vector2 targetPoint = new();
