@@ -31,6 +31,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					_instance.transform.rotation = Quaternion.RotateTowards(_instance.transform.rotation, rotation, speed * Time.deltaTime);
 					yield return new WaitForFixedUpdate();
+					yield return new WaitUntil(() => _instance.enabled);
 				}
 			}
 		}
