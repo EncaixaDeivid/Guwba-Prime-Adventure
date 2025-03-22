@@ -1,98 +1,81 @@
 using UnityEngine;
-using UnityEngine.UIElements;
-using System.Collections;
 using GuwbaPrimeAdventure.Effects;
 namespace GuwbaPrimeAdventure.Guwba
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument), typeof(BoxCollider2D))]
-	public sealed class VisualGuwba : GuwbaTransformer<VisualGuwba>, IDamageable
+	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
+	public sealed class AttackGuwba : GuwbaTransformer<AttackGuwba>
 	{
-		private static VisualGuwba _instance;
+		private static AttackGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
-		private Animator _animator;
-		private GroupBox _baseElement;
-		private Label _lifeText, _coinsText;
-		private bool _invencibility = false;
-		[SerializeField] private string _death, _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
-		[SerializeField] private short _vitality;
-		[SerializeField] private ushort _invencibilityTime;
-		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
+		private Rigidbody2D _rigidbody;
+		private Vector2 _guardVelocity = new();
+		[SerializeField] private ushort _movementSpeed, _movementDistance, _damage;
+		[SerializeField] private float _hitStopTime, _hitSlowTime;
 		private new void Awake()
 		{
 			base.Awake();
 			if (_instance)
 				Destroy(_instance.gameObject);
 			_instance = this;
-			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
-			this._animator = this.GetComponentInParent<Animator>();
-			UIDocument hudDocument = this.GetComponent<UIDocument>();
-			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
-			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
-			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
-			this._lifeText.text = $"X {SaveFileData.Lifes}";
-			this._coinsText.text = $"X {SaveFileData.Coins}";
+			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
+			this._rigidbody = this.GetComponent<Rigidbody2D>();
+			this._spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
 		}
-		private new void OnDestroy()
+		private void OnEnable() => this._rigidbody.linearVelocity = this._guardVelocity;
+		private void OnDisable()
 		{
-			base.OnDestroy();
-			this.StopAllCoroutines();
+			this._guardVelocity = this._rigidbody.linearVelocity;
+			this._rigidbody.linearVelocity = Vector2.zero;
+		}
+		private void FixedUpdate()
+		{
+			if (!_activeState)
+			{
+				this._spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
+				this._rigidbody.bodyType = RigidbodyType2D.Kinematic;
+				this._rigidbody.linearVelocity = Vector2.zero;
+				return;
+			}
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-		}
-		private void OnEnable()
-		{
-			if (this.gameObject.scene.name == this._levelSelectorScene)
-				this._baseElement.style.display = DisplayStyle.None;
+			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
+			Vector2 targetPosition = GuwbaTransformer<CommandGuwba>.Position;
+			if (Vector2.Distance(this.transform.position, targetPosition) >= this._movementDistance)
+			{
+				GuwbaTransformer<CommandGuwba>._returnState = true;
+				_returnState = true;
+			}
+			if (_returnState)
+			{
+				Vector2 targetDirection = ((Vector2)this.transform.position - targetPosition).normalized;
+				float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
+				this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+				this._rigidbody.linearVelocity = this._movementSpeed * -this.transform.up;
+				if (_grabObject)
+					_grabObject.transform.position = this.transform.position;
+			}
 			else
-				this._baseElement.style.display = DisplayStyle.Flex;
+				this._rigidbody.linearVelocity = this._movementSpeed * this.transform.up;
 		}
-		private void OnDisable() => this._baseElement.style.display = DisplayStyle.None;
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (other.TryGetComponent<ICollectable>(out var collectable))
+			if (_returnState || !_activeState)
+				return;
+			if (other.TryGetComponent<GrabBody>(out var grabBody) && grabBody.IsGrabtable)
 			{
-				collectable.Collect();
-				this._lifeText.text = $"X {SaveFileData.Lifes}";
-				this._coinsText.text = $"X {SaveFileData.Coins}";
+				GuwbaTransformer<CommandGuwba>._returnState = true;
+				_returnState = true;
+				GuwbaTransformer<CommandGuwba>._grabObject = grabBody;
+				GuwbaTransformer<VisualGuwba>._grabObject = grabBody;
+				_grabObject = grabBody;
+				_grabObject.Stop((ushort)this.gameObject.layer);
 			}
-		}
-		public bool Damage(ushort damage)
-		{
-			if (this._invencibility || damage < 1f)
-				return false;
-			this._invencibility = true;
-			if ((this._vitality -= (short)damage) <= 0f)
+			else if (other.TryGetComponent<IDamageable>(out var damageable))
 			{
-				this._vitality = 0;
-				SaveFileData.Lifes -= 1;
-				this._lifeText.text = $"X {(SaveFileData.Lifes >= 0f ? SaveFileData.Lifes : 0f)}";
-				this._animator.SetTrigger(this._death);
-				if (_grabObject)
-					Destroy(_grabObject.gameObject);
-				GuwbaTransformer<CommandGuwba>._activeState = false;
-				GuwbaTransformer<AttackGuwba>._activeState = false;
-				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
-				SetState(false);
-				ConfigurationController.DeathScreen();
-				return true;
+				GuwbaTransformer<CommandGuwba>._returnState = true;
+				_returnState = true;
+				if (damageable.Damage(this._damage))
+					EffectsController.SetHitStop(this._hitStopTime, this._hitSlowTime);
 			}
-			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
-			this.StartCoroutine(Invencibility());
-			IEnumerator Invencibility()
-			{
-				this.StartCoroutine(VisualEffect());
-				IEnumerator VisualEffect()
-				{
-					while (this._invencibility)
-					{
-						this._spriteRenderer.color = new Color(1f, 1f, 1f, this._spriteRenderer.color.a >= 1f ? this._invencibilityValue : 1f);
-						yield return new WaitTime(this, this._timeStep);
-					}
-				}
-				yield return new WaitTime(this, this._invencibilityTime);
-				this._invencibility = false;
-				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-			}
-			return true;
 		}
 	};
 };
