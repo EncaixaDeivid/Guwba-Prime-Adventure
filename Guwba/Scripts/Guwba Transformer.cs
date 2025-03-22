@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		protected new void Awake()
 		{
 			_instance = this.GetComponent<GuwbaInstance>();
-			if (!_instance || _instance is not CommandGuwba && _instance is not VisualHudGuwba && _instance is not AttackGuwba)
+			if (!_instance || _instance is not CommandGuwba && _instance is not VisualGuwba && _instance is not AttackGuwba)
 				Destroy(this.gameObject, 0.001f);
 			else
 				base.Awake();
