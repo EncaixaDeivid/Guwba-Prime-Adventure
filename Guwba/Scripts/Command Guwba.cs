@@ -125,7 +125,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
 				_grabObject = null;
-				GuwbaTransformer<VisualHudGuwba>._grabObject = null;
+				GuwbaTransformer<VisualGuwba>._grabObject = null;
 				GuwbaTransformer<AttackGuwba>._grabObject = null;
 			}
 			else if (this._attackValue != Vector2.zero)
