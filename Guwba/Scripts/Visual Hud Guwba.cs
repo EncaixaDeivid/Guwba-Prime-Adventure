@@ -5,9 +5,9 @@ using GuwbaPrimeAdventure.Effects;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument), typeof(BoxCollider2D))]
-	public sealed class VisualHudGuwba : GuwbaTransformer<VisualHudGuwba>, IDamageable
+	public sealed class VisualGuwba : GuwbaTransformer<VisualGuwba>, IDamageable
 	{
-		private static VisualHudGuwba _instance;
+		private static VisualGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
 		private Animator _animator;
 		private GroupBox _baseElement;
