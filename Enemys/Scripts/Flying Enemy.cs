@@ -32,7 +32,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (this._endlessPursue)
 			{
-				Vector2 direction = (GuwbaTransformer<VisualHudGuwba>.Position - (Vector2)this.transform.position).normalized;
+				Vector2 direction = (GuwbaTransformer<VisualGuwba>.Position - (Vector2)this.transform.position).normalized;
 				this._rigidybody.linearVelocity = direction * this._movementSpeed;
 				return;
 			}
@@ -40,7 +40,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			bool followTarget = false;
 			if (this._targetLayerMask > -1f)
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._radiusDetection, this._targetLayerMask))
-					if (GuwbaTransformer<VisualHudGuwba>.EqualObject(collider.gameObject))
+					if (GuwbaTransformer<VisualGuwba>.EqualObject(collider.gameObject))
 					{
 						targetPoint = collider.transform.position;
 						followTarget = !Physics2D.Linecast(this.transform.position, targetPoint, this._groundLayer);
