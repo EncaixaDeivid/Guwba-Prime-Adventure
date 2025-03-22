@@ -151,7 +151,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
 			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
 			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, 0f, this._groundLayerMask);
-			float movementValue = this._movementAction > 0f ? 1f : -1f;
+			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f)
 			{
