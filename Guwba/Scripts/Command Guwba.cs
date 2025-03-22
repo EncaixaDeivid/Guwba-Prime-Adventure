@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private ActionsGuwba _actions;
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
-		private bool _isOnGround = false, _canJump = false, _grabState = false;
+		private bool _isOnGround = false, _downStairs = false, _canJump = false, _grabState = false;
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
 		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
@@ -101,6 +101,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._canJump = false;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
+				this._downStairs = false;
 				this._rigidbody.AddForceY(this._jumpStrenght);
 			}
 		};
@@ -150,6 +151,16 @@ namespace GuwbaPrimeAdventure.Guwba
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
 			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
 			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, 0f, this._groundLayerMask);
+			float movementValue = this._movementAction > 0f ? 1f : -1f;
+			float rootHeight = this._collider.size.y / this._collider.size.y;
+			if (!this._isOnGround && this._downStairs && this._movementAction != 0f)
+			{
+				float xOrigin = this.transform.position.x - (this._collider.bounds.extents.x / 2f * movementValue);
+				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
+				if (downRay)
+					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
+			}
 			if (this._isOnGround)
 			{
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
@@ -161,6 +172,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._canJump = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
+				this._downStairs = true;
 			}
 			else if (this._rigidbody.linearVelocityY > 0f)
 			{
@@ -169,6 +181,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
+				this._downStairs = false;
 			}
 			else if (this._rigidbody.linearVelocityY < 0f)
 			{
@@ -180,12 +193,11 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._rigidbody.gravityScale += this._gravityScale * 2f * Time.deltaTime;
 				else
 					this._rigidbody.gravityScale = this._gravityScale * 2f;
+				this._downStairs = false;
 			}
 			if (this._movementAction != 0f)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float movementValue = this._movementAction > 0f ? 1f : -1f;
-				float rootHeight = this._collider.size.y / this._collider.size.y;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
 				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * 1.5f);
@@ -210,7 +222,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			if (this._grabState)
 			{
-				Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + (this._collider.size.y - this._lowHoldOffset));
+				Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + this._collider.size.y - this._lowHoldOffset);
 				_grabObject.transform.position = newPosition;
 			}
 		}
