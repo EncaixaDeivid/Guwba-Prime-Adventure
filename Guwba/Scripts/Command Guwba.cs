@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
 		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
-		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _lowHoldOffset;
+		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _bottomCheckerOffset, _lowHoldOffset;
 		[SerializeField] private bool _turnLeft;
 		private new void Awake()
 		{
@@ -200,7 +200,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
-				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * 1.5f);
+				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
 				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
 				Vector2 bottomSize = new(this._wallChecker, rootHeight - .1f);
 				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, 0f, this._groundLayerMask);
