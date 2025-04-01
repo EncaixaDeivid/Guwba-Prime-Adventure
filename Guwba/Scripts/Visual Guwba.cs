@@ -68,6 +68,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (isGrabbing)
 				this.StartCoroutine(this.Invencibility());
+			else
+				this.StopCoroutine(this.Invencibility());
 		};
 		private void OnTriggerEnter2D(Collider2D other)
 		{
