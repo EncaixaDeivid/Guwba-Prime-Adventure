@@ -118,8 +118,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (this._grabState)
 			{
 				this._animator.SetBool(this._hold, this._grabState = false);
-				_activeState = false;
-				GuwbaTransformer<AttackGuwba>._activeState = false;
+				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
@@ -132,18 +131,15 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._attack, true);
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				GuwbaTransformer<AttackGuwba>.SetRotation(angle);
-				_activeState = true;
-				GuwbaTransformer<AttackGuwba>._activeState = true;
+				GuwbaTransformer<AttackGuwba>._actualState.Invoke(true);
 			}
 		};
 		private Action<InputAction.CallbackContext> Interaction => (InputAction.CallbackContext interactionAction) =>
 		{
 			Vector2 point = this.transform.position;
-			if (this._grabState)
+			if (this._grabState && !_grabObject.IsDamageable)
 			{
 				this._animator.SetBool(this._hold, this._grabState = false);
-				_activeState = false;
-				GuwbaTransformer<AttackGuwba>._activeState = false;
 				_grabObject.Drop();
 				_grabObject = null;
 				GuwbaTransformer<VisualGuwba>._grabObject = null;
@@ -237,17 +233,16 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (_returnState && GuwbaTransformer<AttackGuwba>.EqualObject(collisionObject))
+			if (_returnAttack && GuwbaTransformer<AttackGuwba>.EqualObject(collisionObject))
 			{
 				if (_grabObject)
 					this._animator.SetBool(this._hold, this._grabState = true);
 				else
 					this._animator.SetBool(this._hold, false);
 				this._animator.SetBool(this._attack, false);
-				_activeState = false;
-				GuwbaTransformer<AttackGuwba>._activeState = false;
-				_returnState = false;
-				GuwbaTransformer<AttackGuwba>._returnState = false;
+				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
+				_returnAttack = false;
+				GuwbaTransformer<AttackGuwba>._returnAttack = false;
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
 			}
 		}
