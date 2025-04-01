@@ -177,5 +177,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 		}
 		public void Paralyze() => this._isParalyzed = true;
+  		public void Unparalyze() => this._isParalyzed = false;
 	};
 };
