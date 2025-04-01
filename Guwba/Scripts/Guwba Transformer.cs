@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 namespace GuwbaPrimeAdventure.Guwba
 {
@@ -7,8 +8,8 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static GuwbaInstance _instance;
 		protected static GrabBody _grabObject;
-		protected static bool _activeState;
-		protected static bool _returnState;
+		protected static UnityAction<bool> _activeState;
+		protected static bool _returnAttack;
 		protected new void Awake()
 		{
 			_instance = this.GetComponent<GuwbaInstance>();
