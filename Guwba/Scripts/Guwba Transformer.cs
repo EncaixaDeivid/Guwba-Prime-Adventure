@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static GuwbaInstance _instance;
 		protected static GrabBody _grabObject;
-		protected static UnityAction<bool> _activeState;
+		protected static UnityAction<bool> _actualState;
 		protected static bool _returnAttack;
 		protected new void Awake()
 		{
