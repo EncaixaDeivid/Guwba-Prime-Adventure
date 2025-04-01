@@ -77,7 +77,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (_returnAttack || this._isAttacking)
+			if (_returnAttack || !this._isAttacking)
 				return;
 			if (other.TryGetComponent<GrabBody>(out var grabBody) && grabBody.IsGrabtable)
 			{
