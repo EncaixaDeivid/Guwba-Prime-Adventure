@@ -117,10 +117,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (this._grabState)
 			{
-				this._animator.SetBool(this._hold, false);
+				this._animator.SetBool(this._hold, this._grabState = false);
 				_activeState = false;
 				GuwbaTransformer<AttackGuwba>._activeState = false;
-				this._grabState = false;
 				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
@@ -140,7 +139,17 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Action<InputAction.CallbackContext> Interaction => (InputAction.CallbackContext interactionAction) =>
 		{
 			Vector2 point = this.transform.position;
-			if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
+			if (this._grabState)
+			{
+				this._animator.SetBool(this._hold, this._grabState = false);
+				_activeState = false;
+				GuwbaTransformer<AttackGuwba>._activeState = false;
+				_grabObject.Drop();
+				_grabObject = null;
+				GuwbaTransformer<VisualGuwba>._grabObject = null;
+				GuwbaTransformer<AttackGuwba>._grabObject = null;
+			}
+			else if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, 0f, this._interactionLayerMask))
 					if (collider.TryGetComponent<IInteractable>(out var interactionObject))
 						interactionObject.Interaction();
