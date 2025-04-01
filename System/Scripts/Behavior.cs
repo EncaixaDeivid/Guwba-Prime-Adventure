@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure
 	public interface IGrabtable
 	{
 		public void Paralyze();
+		public void Desparalyze();
 	};
 	public interface ICollectable
 	{
