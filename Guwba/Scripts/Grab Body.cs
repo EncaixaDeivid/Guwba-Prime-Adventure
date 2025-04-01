@@ -15,8 +15,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private LayerMask _noHitLayers;
 		[SerializeField] private ushort _throwSpeed, _throwDamage;
 		[SerializeField] private float _throwHitStopTime, _throwHitSlowTime, _fadeTime, _timeToBack;
-		[SerializeField] private bool _isNotGrabtable, _gravityOnThrow;
+		[SerializeField] private bool _isNotGrabtable, _gravityOnThrow, _isDamageable;
 		internal bool IsGrabtable => !this._isNotGrabtable;
+		internal bool IsDamageable => this._isDamageable;
 		private new void Awake()
 		{
 			base.Awake();
