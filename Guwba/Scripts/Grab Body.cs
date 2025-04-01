@@ -79,7 +79,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		internal void Drop()
 		{
-			this.GetComponent<IGrabtable>()?.Desparalyze();
+			this.GetComponent<IGrabtable>()?.Unparalyze();
 			if (this._gravityScale != 0f)
 				this._rigidbody.gravityScale = _gravityScale;
 			this.gameObject.layer = this._backDrop._layer;
