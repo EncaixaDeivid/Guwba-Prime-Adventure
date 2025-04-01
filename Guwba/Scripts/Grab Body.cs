@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private Rigidbody2D _rigidbody;
 		private Vector2 _guardVelocity = new();
-		private (int _layer, Transform _parent, LayerMask[] _hitLayers, LayerMask[] _noHitLayers) _backDrop;
+		private (int _layer, Transform _parent, LayerMask[] _include, LayerMask[] _exclude, LayerMask[] _contact, LayerMask[] _callback) _backDrop;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
@@ -56,12 +56,16 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 			Collider2D[] colliders = this.GetComponents<Collider2D>();
-			this._backDrop._hitLayers = new LayerMask[colliders.Length];
-			this._backDrop._noHitLayers = new LayerMask[colliders.Length];
+			this._backDrop._include = new LayerMask[colliders.Length];
+			this._backDrop._exclude = new LayerMask[colliders.Length];
+			this._backDrop._contact = new LayerMask[colliders.Length];
+			this._backDrop._callback = new LayerMask[colliders.Length];
 			for (ushort i = 0; i < colliders.Length; i++)
 			{
-				this._backDrop._hitLayers[i] = colliders[i].contactCaptureLayers;
-				this._backDrop._noHitLayers[i] = colliders[i].excludeLayers;
+				this._backDrop._include[i] = colliders[i].includeLayers;
+				this._backDrop._exclude[i] = colliders[i].excludeLayers;
+				this._backDrop._contact[i] = colliders[i].contactCaptureLayers;
+				this._backDrop._callback[i] = colliders[i].callbackLayers;
 				colliders[i].isTrigger = true;
 				colliders[i].includeLayers = this._hitLayers;
 				colliders[i].excludeLayers = this._noHitLayers;
@@ -88,10 +92,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			for (ushort i = 0; i < colliders.Length; i ++)
 			{
 				colliders[i].isTrigger = false;
-				colliders[i].includeLayers = this._backDrop._hitLayers[i];
-				colliders[i].excludeLayers = this._backDrop._noHitLayers[i];
-				colliders[i].contactCaptureLayers = this._backDrop._hitLayers[i];
-				colliders[i].callbackLayers = this._backDrop._hitLayers[i];
+				colliders[i].includeLayers = this._backDrop._include[i];
+				colliders[i].excludeLayers = this._backDrop._exclude[i];
+				colliders[i].contactCaptureLayers = this._backDrop._contact[i];
+				colliders[i].callbackLayers = this._backDrop._callback[i];
 			}
 		}
 	};
