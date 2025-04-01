@@ -8,6 +8,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private Rigidbody2D _rigidbody;
 		private Vector2 _guardVelocity = new();
+		private (int _layer, Transform _parent, LayerMask[] _hitLayers, LayerMask[] _noHitLayers) _backDrop;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
@@ -45,20 +46,27 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		internal void Stop(ushort objectLayer)
 		{
+			this._backDrop._layer = this.gameObject.layer;
+			this._backDrop._parent = this.transform.parent;
 			this.GetComponent<IGrabtable>()?.Paralyze();
-			if (this._gravityOnThrow)
+			if (this._gravityOnThrow || this._rigidbody.gravityScale != 0f)
 				this._gravityScale = this._rigidbody.gravityScale;
 			this.gameObject.layer = objectLayer;
 			this.transform.parent = null;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
-			foreach (Collider2D collider in this.GetComponents<Collider2D>())
+			Collider2D[] colliders = this.GetComponents<Collider2D>();
+			this._backDrop._hitLayers = new LayerMask[colliders.Length];
+			this._backDrop._noHitLayers = new LayerMask[colliders.Length];
+			for (ushort i = 0; i < colliders.Length; i++)
 			{
-				collider.isTrigger = true;
-				collider.includeLayers = this._hitLayers;
-				collider.excludeLayers = this._noHitLayers;
-				collider.contactCaptureLayers = this._hitLayers;
-				collider.callbackLayers = this._hitLayers;
+				this._backDrop._hitLayers[i] = colliders[i].contactCaptureLayers;
+				this._backDrop._noHitLayers[i] = colliders[i].excludeLayers;
+				colliders[i].isTrigger = true;
+				colliders[i].includeLayers = this._hitLayers;
+				colliders[i].excludeLayers = this._noHitLayers;
+				colliders[i].contactCaptureLayers = this._hitLayers;
+				colliders[i].callbackLayers = this._hitLayers;
 			}
 		}
 		internal void Throw(Vector2 direction)
@@ -68,6 +76,23 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._isThrew = true;
 			this._rigidbody.linearVelocity = direction * this._throwSpeed;
 			Destroy(this.gameObject, this._fadeTime);
+		}
+		internal void Drop()
+		{
+			this.GetComponent<IGrabtable>()?.Desparalyze();
+			if (this._gravityScale != 0f)
+				this._rigidbody.gravityScale = _gravityScale;
+			this.gameObject.layer = this._backDrop._layer;
+			this.transform.parent = this._backDrop._parent;
+			Collider2D[] colliders = this.GetComponents<Collider2D>();
+			for (ushort i = 0; i < colliders.Length; i ++)
+			{
+				colliders[i].isTrigger = false;
+				colliders[i].includeLayers = this._backDrop._hitLayers[i];
+				colliders[i].excludeLayers = this._backDrop._noHitLayers[i];
+				colliders[i].contactCaptureLayers = this._backDrop._hitLayers[i];
+				colliders[i].callbackLayers = this._backDrop._hitLayers[i];
+			}
 		}
 	};
 };
