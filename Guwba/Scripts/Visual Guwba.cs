@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using System.Collections;
 using GuwbaPrimeAdventure.Effects;
@@ -31,10 +32,12 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
 			this._lifeText.text = $"X {SaveFileData.Lifes}";
 			this._coinsText.text = $"X {SaveFileData.Coins}";
+			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			_actualState -= this.ManualInvencibility;
 			this.StopAllCoroutines();
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
@@ -46,6 +49,26 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._baseElement.style.display = DisplayStyle.Flex;
 		}
 		private void OnDisable() => this._baseElement.style.display = DisplayStyle.None;
+		private IEnumerator Invencibility()
+		{
+			this.StartCoroutine(VisualEffect());
+			IEnumerator VisualEffect()
+			{
+				while (this._invencibility)
+				{
+					this._spriteRenderer.color = new Color(1f, 1f, 1f, this._spriteRenderer.color.a >= 1f ? this._invencibilityValue : 1f);
+					yield return new WaitTime(this, this._timeStep);
+				}
+			}
+			yield return new WaitTime(this, this._invencibilityTime);
+			this._invencibility = false;
+			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+		}
+		private UnityAction<bool> ManualInvencibility => (bool isGrabbing) =>
+		{
+			if (isGrabbing)
+				this.StartCoroutine(this.Invencibility());
+		};
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (other.TryGetComponent<ICollectable>(out var collectable))
@@ -68,30 +91,15 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetTrigger(this._death);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
-				GuwbaTransformer<CommandGuwba>._activeState = false;
-				GuwbaTransformer<AttackGuwba>._activeState = false;
+				GuwbaTransformer<CommandGuwba>._actualState.Invoke(false);
+				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
 				SetState(false);
 				ConfigurationController.DeathScreen();
 				return true;
 			}
 			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
-			this.StartCoroutine(Invencibility());
-			IEnumerator Invencibility()
-			{
-				this.StartCoroutine(VisualEffect());
-				IEnumerator VisualEffect()
-				{
-					while (this._invencibility)
-					{
-						this._spriteRenderer.color = new Color(1f, 1f, 1f, this._spriteRenderer.color.a >= 1f ? this._invencibilityValue : 1f);
-						yield return new WaitTime(this, this._timeStep);
-					}
-				}
-				yield return new WaitTime(this, this._invencibilityTime);
-				this._invencibility = false;
-				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-			}
+			this.StartCoroutine(this.Invencibility());
 			return true;
 		}
 	};
