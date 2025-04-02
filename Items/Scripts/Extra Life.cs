@@ -8,16 +8,16 @@ namespace GuwbaPrimeAdventure.Item
 		private new void Awake()
 		{
 			base.Awake();
-			if (SaveFileData.LifesAcquired.Contains(this.gameObject.name))
+			if (DataFile.LifesAcquired.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
 		}
 		public void Collect()
 		{
-			if (SaveFileData.Lifes < 99f)
-				SaveFileData.Lifes += 1;
-			SaveFileData.LifesAcquired.Add(this.gameObject.name);
+			if (DataFile.Lifes < 99f)
+				DataFile.Lifes += 1;
+			DataFile.LifesAcquired.Add(this.gameObject.name);
 			if (this._saveOnSpecifics)
-				SaveFileData.GeneralObjects.Add(this.gameObject.name);
+				DataFile.GeneralObjects.Add(this.gameObject.name);
 			Destroy(this.gameObject);
 		}
 	};
