@@ -154,8 +154,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			else if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, 0f, this._interactionLayerMask))
-					if (collider.TryGetComponent<IInteractable>(out var interactionObject))
-						interactionObject.Interaction();
+					if (collider.TryGetComponent<IInteractable>(out var interactable))
+					{
+						interactable.Interaction();
+						return;
+					}
 		};
 		private void FixedUpdate()
 		{
