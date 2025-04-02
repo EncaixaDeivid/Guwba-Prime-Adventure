@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.OnDestroy();
 			if (this._saveObject)
-				SaveFileData.GeneralObjects.Add(this.gameObject.name);
+				DataFile.GeneralObjects.Add(this.gameObject.name);
 		}
 		private void OnEnable()
 		{
@@ -63,7 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				enemyInstance?._toggleEvent?.Invoke(toggleValue);
 		}
 		public void Paralyze() => this._paralyzed = true;
-  		public void Unparalyze() => this._paralyzed = false;
+		public void Unparalyze() => this._paralyzed = false;
 		public bool Damage(ushort damage)
 		{
 			if (this._noDamage || this._paralyzed)
