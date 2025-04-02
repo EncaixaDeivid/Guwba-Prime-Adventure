@@ -25,7 +25,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			base.Awake();
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._animator = this.GetComponent<Animator>();
@@ -36,6 +39,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnEnable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._actions = new ActionsGuwba();
 			this._actions.commands.movement.performed += this.Movement;
 			this._actions.commands.movement.canceled += this.Movement;
@@ -57,6 +62,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnDisable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._actions.commands.movement.performed -= this.Movement;
 			this._actions.commands.movement.canceled -= this.Movement;
 			this._actions.commands.jump.started -= this.Jump;
