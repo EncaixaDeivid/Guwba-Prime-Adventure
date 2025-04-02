@@ -9,10 +9,10 @@ namespace GuwbaPrimeAdventure.Item
 		private new void Awake()
 		{
 			base.Awake();
-			if (this._isBossProgress ? SaveFileData.DeafetedBosses[this._progressIndex] : SaveFileData.LevelsCompleted[this._progressIndex])
+			if (this._isBossProgress ? DataFile.DeafetedBosses[this._progressIndex] : DataFile.LevelsCompleted[this._progressIndex])
 			{
 				if (this._saveOnSpecifics)
-					SaveFileData.GeneralObjects.Add(this.gameObject.name);
+					DataFile.GeneralObjects.Add(this.gameObject.name);
 				Destroy(this.gameObject, 0.001f);
 			}
 		}
