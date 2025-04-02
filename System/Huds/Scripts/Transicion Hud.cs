@@ -12,7 +12,10 @@ namespace GuwbaPrimeAdventure.Hud
 		private void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			this._baseElement = this.GetComponent<UIDocument>().rootVisualElement.Q<GroupBox>(this._baseElementGroup);
 		}
