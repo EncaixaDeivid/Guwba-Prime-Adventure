@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.0001f);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
@@ -47,6 +47,8 @@ namespace GuwbaPrimeAdventure
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			if (!_instance || _instance != this)
+				return;
 			this._menuHud.Play.clicked -= this.Play;
 			this._menuHud.Configurations.clicked += this.OpenConfigurations;
 			this._menuHud.Quit.clicked -= this.Quit;
@@ -64,8 +66,18 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
 		}
-		private void OnEnable() => this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-		private void OnDisable() => this._menuHud.Buttons.style.display = DisplayStyle.None;
+		private void OnEnable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
+		}
+		private void OnDisable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			this._menuHud.Buttons.style.display = DisplayStyle.None;
+		}
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
