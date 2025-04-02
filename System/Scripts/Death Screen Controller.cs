@@ -14,7 +14,7 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.0001f);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
@@ -29,12 +29,16 @@ namespace GuwbaPrimeAdventure
 		}
 		private void OnEnable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._deathScreenHud.Continue.clicked += this.Continue;
 			this._deathScreenHud.OutLevel.clicked += this.OutLevel;
 			this._deathScreenHud.GameOver.clicked += this.GameOver;
 		}
 		private void OnDisable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._deathScreenHud.Continue.clicked -= this.Continue;
 			this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
 			this._deathScreenHud.GameOver.clicked -= this.GameOver;
