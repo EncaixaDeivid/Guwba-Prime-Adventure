@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
-			if (this._saveObject && SaveFileData.GeneralObjects.Contains(this.gameObject.name))
+			if (this._saveObject && DataFile.GeneralObjects.Contains(this.gameObject.name))
 				this.Activation();
 		}
 		private void OnEnable()
@@ -40,8 +40,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (receptor)
 					receptor.ReceiveSignal(this);
 			this._useOneActivation = true;
-			if (this._saveObject && !SaveFileData.GeneralObjects.Contains(this.gameObject.name))
-				SaveFileData.GeneralObjects.Add(this.gameObject.name);
+			if (this._saveObject && !DataFile.GeneralObjects.Contains(this.gameObject.name))
+				DataFile.GeneralObjects.Add(this.gameObject.name);
 		}
 	};
 };
