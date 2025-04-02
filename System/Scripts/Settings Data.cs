@@ -2,56 +2,53 @@ using UnityEngine;
 using System.IO;
 namespace GuwbaPrimeAdventure
 {
-	public static class SettingsData
+	public struct Settings
 	{
+		private bool _fullScreen;
+		private bool _generalVolumeToggle;
+		[Range(0f, 1f)] private float _generalVolume;
+		private bool _effectsVolumeToggle;
+		[Range(0f, 1f)] private float _effectsVolume;
+		private bool _musicVolumeToggle;
+		[Range(0f, 1f)] private float _musicVolume;
+		[Range(0f, .1f)] private float _dialogSpeed;
 		private static readonly string SettingsPath = Application.persistentDataPath + "/Settings.txt";
-		private struct Settings
-		{
-			public bool FullScreen;
-			public bool GeneralVolumeToggle;
-			[Range(0f, 1f)] public float GeneralVolume;
-			public bool EffectsVolumeToggle;
-			[Range(0f, 1f)] public float EffectsVolume;
-			public bool MusicVolumeToggle;
-			[Range(0f, 1f)] public float MusicVolume;
-			[Range(0f, .1f)] public float DialogSpeed;
-		};
-		public static bool FullScreen = LoadSettings().FullScreen;
-		public static bool GeneralVolumeToggle = LoadSettings().GeneralVolumeToggle;
-		public static float GeneralVolume = LoadSettings().GeneralVolume;
-		public static bool EffectsVolumeToggle = LoadSettings().EffectsVolumeToggle;
-		public static float EffectsVolume = LoadSettings().EffectsVolume;
-		public static bool MusicVolumeToggle = LoadSettings().MusicVolumeToggle;
-		public static float MusicVolume = LoadSettings().MusicVolume;
-		public static float DialogSpeed = LoadSettings().DialogSpeed;
 		private static Settings LoadSettings()
 		{
 			if (File.Exists(SettingsPath))
 				return DataController.ReadData<Settings>(SettingsPath);
 			return new Settings()
 			{
-				FullScreen = true,
-				GeneralVolumeToggle = true,
-				GeneralVolume = 1f,
-				EffectsVolumeToggle = true,
-				EffectsVolume = 1f,
-				MusicVolumeToggle = true,
-				MusicVolume = 1f,
-				DialogSpeed = .05f
+				_fullScreen = true,
+				_generalVolumeToggle = true,
+				_generalVolume = 1f,
+				_effectsVolumeToggle = true,
+				_effectsVolume = 1f,
+				_musicVolumeToggle = true,
+				_musicVolume = 1f,
+				_dialogSpeed = .05f
 			};
 		}
 		internal static void SaveSettings()
 		{
 			Settings settings = LoadSettings();
-			settings.FullScreen = FullScreen;
-			settings.GeneralVolumeToggle = GeneralVolumeToggle;
-			settings.GeneralVolume = GeneralVolume;
-			settings.EffectsVolumeToggle = EffectsVolumeToggle;
-			settings.EffectsVolume = EffectsVolume;
-			settings.MusicVolumeToggle = MusicVolumeToggle;
-			settings.MusicVolume = MusicVolume;
-			settings.DialogSpeed = DialogSpeed;
+			settings._fullScreen = FullScreen;
+			settings._generalVolumeToggle = GeneralVolumeToggle;
+			settings._generalVolume = GeneralVolume;
+			settings._effectsVolumeToggle = EffectsVolumeToggle;
+			settings._effectsVolume = EffectsVolume;
+			settings._musicVolumeToggle = MusicVolumeToggle;
+			settings._musicVolume = MusicVolume;
+			settings._dialogSpeed = DialogSpeed;
 			DataController.WriteData(settings, SettingsPath);
 		}
+		public static bool FullScreen = LoadSettings()._fullScreen;
+		public static bool GeneralVolumeToggle = LoadSettings()._generalVolumeToggle;
+		public static float GeneralVolume = LoadSettings()._generalVolume;
+		public static bool EffectsVolumeToggle = LoadSettings()._effectsVolumeToggle;
+		public static float EffectsVolume = LoadSettings()._effectsVolume;
+		public static bool MusicVolumeToggle = LoadSettings()._musicVolumeToggle;
+		public static float MusicVolume = LoadSettings()._musicVolume;
+		public static float DialogSpeed = LoadSettings()._dialogSpeed;
 	};
 };
