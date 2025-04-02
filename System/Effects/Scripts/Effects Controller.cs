@@ -12,7 +12,10 @@ namespace GuwbaPrimeAdventure.Effects
 		private new void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			base.Awake();
 			this._selfLight = this.GetComponent<Light2DBase>();
