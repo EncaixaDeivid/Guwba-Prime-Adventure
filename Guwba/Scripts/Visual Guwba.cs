@@ -22,7 +22,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			base.Awake();
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
 			this._animator = this.GetComponentInParent<Animator>();
@@ -37,18 +40,27 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			if (_instance != this)
+				return;
 			_actualState -= this.ManualInvencibility;
 			this.StopAllCoroutines();
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
 		private void OnEnable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			if (this.gameObject.scene.name == this._levelSelectorScene)
 				this._baseElement.style.display = DisplayStyle.None;
 			else
 				this._baseElement.style.display = DisplayStyle.Flex;
 		}
-		private void OnDisable() => this._baseElement.style.display = DisplayStyle.None;
+		private void OnDisable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			this._baseElement.style.display = DisplayStyle.None;
+		}
 		private IEnumerator Invencibility()
 		{
 			this.StartCoroutine(VisualEffect());
