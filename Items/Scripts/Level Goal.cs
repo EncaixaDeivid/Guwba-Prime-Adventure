@@ -13,11 +13,11 @@ namespace GuwbaPrimeAdventure.Item
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
 			short sceneIndex = short.Parse($"{this.gameObject.scene.name[^1]}");
-			if (!SaveFileData.LevelsCompleted[sceneIndex])
-				SaveFileData.LevelsCompleted[sceneIndex] = true;
+			if (!DataFile.LevelsCompleted[sceneIndex])
+				DataFile.LevelsCompleted[sceneIndex] = true;
 			if (this._saveOnSpecifics)
-				SaveFileData.GeneralObjects.Add(this.gameObject.name);
-			if (sceneIndex - 1 >= 0f && !SaveFileData.DeafetedBosses[sceneIndex - 1])
+				DataFile.GeneralObjects.Add(this.gameObject.name);
+			if (sceneIndex - 1 >= 0f && !DataFile.DeafetedBosses[sceneIndex - 1])
 				if (this._enterInDialog)
 					this.GetComponent<IInteractable>().Interaction();
 				else
