@@ -15,7 +15,10 @@ namespace GuwbaPrimeAdventure.Dialog
 		private void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			UIDocument hudDocument = this.GetComponent<UIDocument>();
 			this.CharacterIcon = hudDocument.rootVisualElement.Q<VisualElement>(this._characterIcon);
