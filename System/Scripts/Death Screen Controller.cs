@@ -13,7 +13,10 @@ namespace GuwbaPrimeAdventure
 		private void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
 			if (SaveFileData.Lifes < 0f)
