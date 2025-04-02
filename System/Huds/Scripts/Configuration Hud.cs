@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.0001f);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
