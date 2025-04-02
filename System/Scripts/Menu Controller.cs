@@ -23,10 +23,10 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			this._configurationController = this.GetComponentInChildren<ConfigurationController>(true);
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
-			this._menuHud.SaveName[0].value = SaveFileData.DataFileName1;
-			this._menuHud.SaveName[1].value = SaveFileData.DataFileName2;
-			this._menuHud.SaveName[2].value = SaveFileData.DataFileName3;
-			this._menuHud.SaveName[3].value = SaveFileData.DataFileName4;
+			this._menuHud.SaveName[0].value = FilesNames.SelectDataFile(1);
+			this._menuHud.SaveName[1].value = FilesNames.SelectDataFile(2);
+			this._menuHud.SaveName[2].value = FilesNames.SelectDataFile(3);
+			this._menuHud.SaveName[3].value = FilesNames.SelectDataFile(4);
 			this._menuHud.Play.clicked += this.Play;
 			this._menuHud.Configurations.clicked += this.OpenConfigurations;
 			this._menuHud.Quit.clicked += this.Quit;
@@ -91,47 +91,31 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		};
 		private EventCallback<ChangeEvent<string>> ChangeName1 =>
-			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(1, eventCallback.newValue);
+			(ChangeEvent<string> eventCallback) => DataFile.RenameData(1, eventCallback.newValue);
 		private EventCallback<ChangeEvent<string>> ChangeName2 =>
-			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(2, eventCallback.newValue);
+			(ChangeEvent<string> eventCallback) => DataFile.RenameData(2, eventCallback.newValue);
 		private EventCallback<ChangeEvent<string>> ChangeName3 =>
-			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(3, eventCallback.newValue);
+			(ChangeEvent<string> eventCallback) => DataFile.RenameData(3, eventCallback.newValue);
 		private EventCallback<ChangeEvent<string>> ChangeName4 =>
-			(ChangeEvent<string> eventCallback) => SaveFileData.RenameData(4, eventCallback.newValue);
+			(ChangeEvent<string> eventCallback) => DataFile.RenameData(4, eventCallback.newValue);
 		private void SetSaveFile(ushort newSaveFile)
 		{
-			SaveFileData.SetActualSaveFile(newSaveFile);
-			if (SaveFileData.FileExists())
+			DataFile.SetActualSaveFile(newSaveFile);
+			if (DataFile.FileExists())
 			{
 				this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
 				return;
 			}
 			this.GetComponent<TransitionController>().Transicion(this._level0Scene);
-			SaveFileData.SaveData();
+			DataFile.SaveData();
 		}
 		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
 		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
 		private Action SelectSaveFile3 => () => this.SetSaveFile(3);
 		private Action SelectSaveFile4 => () => this.SetSaveFile(4);
-		private Action DeleteSaveFile1 => () =>
-		{
-			SaveFileData.DeleteData(1);
-			this._menuHud.SaveName[0].value = SaveFileData.DataFileName1;
-		};
-		private Action DeleteSaveFile2 => () =>
-		{
-			SaveFileData.DeleteData(2);
-			this._menuHud.SaveName[1].value = SaveFileData.DataFileName2;
-		};
-		private Action DeleteSaveFile3 => () =>
-		{
-			SaveFileData.DeleteData(3);
-			this._menuHud.SaveName[2].value = SaveFileData.DataFileName3;
-		};
-		private Action DeleteSaveFile4 => () =>
-		{
-			SaveFileData.DeleteData(4);
-			this._menuHud.SaveName[3].value = SaveFileData.DataFileName4;
-		};
+		private Action DeleteSaveFile1 => () => this._menuHud.SaveName[0].value = DataFile.DeleteData(1);
+		private Action DeleteSaveFile2 => () => this._menuHud.SaveName[1].value = DataFile.DeleteData(2);
+		private Action DeleteSaveFile3 => () => this._menuHud.SaveName[2].value = DataFile.DeleteData(3);
+		private Action DeleteSaveFile4 => () => this._menuHud.SaveName[3].value = DataFile.DeleteData(4);
 	};
 };
