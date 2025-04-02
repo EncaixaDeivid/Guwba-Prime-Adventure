@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.0001f);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
@@ -27,12 +27,16 @@ namespace GuwbaPrimeAdventure
 		}
 		private void OnEnable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._actions = new ActionsGuwba();
 			this._actions.commands.hideHud.canceled += this.HideHudAction;
 			this._actions.commands.hideHud.Enable();
 		}
 		private void OnDisable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
