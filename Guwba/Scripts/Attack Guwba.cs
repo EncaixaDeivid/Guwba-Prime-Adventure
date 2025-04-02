@@ -18,7 +18,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			base.Awake();
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
@@ -28,12 +31,21 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			if (!_instance || _instance != this)
+				return;
 			_actualState -= this.Movement;
 			this.StopAllCoroutines();
 		}
-		private void OnEnable() => this._rigidbody.linearVelocity = this._guardVelocity;
+		private void OnEnable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			this._rigidbody.linearVelocity = this._guardVelocity;
+		}
 		private void OnDisable()
 		{
+			if (!_instance || _instance != this)
+				return;
 			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
