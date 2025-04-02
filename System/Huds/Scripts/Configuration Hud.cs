@@ -19,7 +19,10 @@ namespace GuwbaPrimeAdventure.Hud
 		private void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject, 0.0001f);
+				return;
+			}
 			_instance = this;
 			UIDocument hudDocument = this.GetComponent<UIDocument>();
 			this._confirmation = hudDocument.rootVisualElement.Q<GroupBox>(this._confirmationGroup);
