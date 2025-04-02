@@ -3,129 +3,80 @@ using System.IO;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure
 {
-	public static class SaveFileData
+	public struct DataFile
 	{
-		private static readonly string SaveFilePath = Application.persistentDataPath + "/Files Names.txt";
+		private ushort _lifes;
+		private List<string> _lifesAcquired;
+		private ushort _coins;
+		private Dictionary<string, bool> _books;
+		private List<string> _booksName;
+		private List<bool> _booksValue;
+		private List<string> _generalObjects;
+		private string _lastLevelEntered;
+		private bool[] _levelsCompleted;
+		private bool[] _deafetedBosses;
 		private static ushort ActualSaveFile = 0;
-		private struct FilesNames
-		{
-			public string DataFileName1;
-			public string DataFileName2;
-			public string DataFileName3;
-			public string DataFileName4;
-		};
-		private static string DataFile1 = LoadFilesNames().DataFileName1;
-		private static string DataFile2 = LoadFilesNames().DataFileName2;
-		private static string DataFile3 = LoadFilesNames().DataFileName3;
-		private static string DataFile4 = LoadFilesNames().DataFileName4;
-		internal static string DataFileName1 => DataFile1;
-		internal static string DataFileName2 => DataFile2;
-		internal static string DataFileName3 => DataFile3;
-		internal static string DataFileName4 => DataFile4;
-		private static FilesNames LoadFilesNames()
-		{
-			if (File.Exists(SaveFilePath))
-				return DataController.ReadData<FilesNames>(SaveFilePath);
-			return new FilesNames()
-			{
-				DataFileName1 = "Data File 1",
-				DataFileName2 = "Data File 2",
-				DataFileName3 = "Data File 3",
-				DataFileName4 = "Data File 4"
-			};
-		}
-		private static string SelectDataFile(ushort actualSaveFile)
-		{
-			return actualSaveFile switch
-			{
-				1 => DataFile1,
-				2 => DataFile2,
-				3 => DataFile3,
-				4 => DataFile4,
-				_ => null
-			};
-		}
-		private static void SetDataFile(ushort actualSaveFile, string newSaveName)
-		{
-			_ = actualSaveFile switch
-			{
-				1 => DataFile1 = newSaveName,
-				2 => DataFile2 = newSaveName,
-				3 => DataFile3 = newSaveName,
-				4 => DataFile4 = newSaveName,
-				_ => null
-			};
-		}
-		private struct DataFile
-		{
-			public ushort Lifes;
-			public ushort Coins;
-			public List<string> LifesAcquired;
-			public Dictionary<string, bool> Books;
-			public List<string> BooksName;
-			public List<bool> BooksValue;
-			public List<string> GeneralObjects;
-			public string LastLevelEntered;
-			public bool[] LevelsCompleted;
-			public bool[] DeafetedBosses;
-		};
-		public static ushort Lifes = LoadFile().Lifes;
-		public static ushort Coins = LoadFile().Coins;
-		internal static string InternalLastLevelEntered = LoadFile().LastLevelEntered;
-		private static List<string> PrivateLifesAcquired = LoadFile().LifesAcquired;
-		private static Dictionary<string, bool> PrivateBooks = LoadFile().Books;
-		private static List<string> PrivateGeneralObjects = LoadFile().GeneralObjects;
-		private static bool[] PrivateLevelsCompleted = LoadFile().LevelsCompleted;
-		private static bool[] PrivateDeafetedBosses = LoadFile().DeafetedBosses;
+		public static ushort Lifes = LoadFile()._lifes;
+		public static ushort Coins = LoadFile()._coins;
+		internal static string InternalLastLevelEntered = LoadFile()._lastLevelEntered;
+		private static List<string> _privateLifesAcquired = LoadFile()._lifesAcquired;
+		private static Dictionary<string, bool> _privateBooks = LoadFile()._books;
+		private static List<string> _privateGeneralObjects = LoadFile()._generalObjects;
+		private static bool[] _privateLevelsCompleted = LoadFile()._levelsCompleted;
+		private static bool[] _privateDeafetedBosses = LoadFile()._deafetedBosses;
 		public static string LastLevelEntered => InternalLastLevelEntered;
-		public static List<string> LifesAcquired => PrivateLifesAcquired;
-		public static Dictionary<string, bool> Books => PrivateBooks;
-		public static List<string> GeneralObjects => PrivateGeneralObjects;
-		public static bool[] LevelsCompleted => PrivateLevelsCompleted;
-		public static bool[] DeafetedBosses => PrivateDeafetedBosses;
+		public static List<string> LifesAcquired => _privateLifesAcquired;
+		public static Dictionary<string, bool> Books => _privateBooks;
+		public static List<string> GeneralObjects => _privateGeneralObjects;
+		public static bool[] LevelsCompleted => _privateLevelsCompleted;
+		public static bool[] DeafetedBosses => _privateDeafetedBosses;
 		internal static void RefreshData()
 		{
-			Lifes = LoadFile().Lifes;
-			Coins = LoadFile().Coins;
-			PrivateLifesAcquired = LoadFile().LifesAcquired;
-			PrivateBooks = LoadFile().Books;
-			PrivateGeneralObjects = LoadFile().GeneralObjects;
-			InternalLastLevelEntered = LoadFile().LastLevelEntered;
-			PrivateLevelsCompleted = LoadFile().LevelsCompleted;
-			PrivateDeafetedBosses = LoadFile().DeafetedBosses;
+			Lifes = LoadFile()._lifes;
+			_privateLifesAcquired = LoadFile()._lifesAcquired;
+			Coins = LoadFile()._coins;
+			_privateBooks = LoadFile()._books;
+			_privateGeneralObjects = LoadFile()._generalObjects;
+			InternalLastLevelEntered = LoadFile()._lastLevelEntered;
+			_privateLevelsCompleted = LoadFile()._levelsCompleted;
+			_privateDeafetedBosses = LoadFile()._deafetedBosses;
 		}
-		internal static bool FileExists() => File.Exists($"{Application.persistentDataPath}/{SelectDataFile(ActualSaveFile)}.txt");
+		internal static bool FileExists() => File.Exists($"{Application.persistentDataPath}/{FilesNames.SelectDataFile(ActualSaveFile)}.txt");
 		private static DataFile LoadFile()
 		{
-			string actualSaveFile = SelectDataFile(ActualSaveFile);
+			string actualSaveFile = FilesNames.SelectDataFile(ActualSaveFile);
 			if (actualSaveFile == null)
 				return new DataFile();
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 			{
-				if (actualSaveFile != DataFile1 && actualSaveFile != DataFile2 && actualSaveFile != DataFile3 && actualSaveFile != DataFile4)
+				bool[] filesExists = new bool[4];
+				for (ushort i = 0; i < 4; i++)
+					if (FilesNames.SelectDataFile(i) != actualSaveFile)
+						filesExists[i] = true;
+				if (filesExists[0] == true && filesExists[1] == true && filesExists[2] == true && filesExists[3] == true)
 				{
 					File.Delete(actualPath);
 					return new DataFile();
 				}
 				DataFile loadedData = DataController.ReadData<DataFile>(actualPath);
-				loadedData.Books = new Dictionary<string, bool>();
-				for (ushort i = 0; i < loadedData.BooksName.Count; i++)
-					loadedData.Books.Add(loadedData.BooksName[i], loadedData.BooksValue[i]);
+				loadedData._books = new Dictionary<string, bool>();
+				for (ushort i = 0; i < loadedData._booksName.Count; i++)
+					loadedData._books.Add(loadedData._booksName[i], loadedData._booksValue[i]);
 				return loadedData;
 			}
 			return new DataFile()
 			{
-				Lifes = 10,
-				LifesAcquired = new List<string>(),
-				Coins = 0,
-				Books = new Dictionary<string, bool>(),
-				BooksName = new List<string>(),
-				BooksValue = new List<bool>(),
-				GeneralObjects = new List<string>(),
-				LastLevelEntered = "",
-				LevelsCompleted = new bool[2],
-				DeafetedBosses = new bool[1]
+				_lifes = 10,
+				_lifesAcquired = new List<string>(),
+				_coins = 0,
+				_books = new Dictionary<string, bool>(),
+				_booksName = new List<string>(),
+				_booksValue = new List<bool>(),
+				_generalObjects = new List<string>(),
+				_lastLevelEntered = "",
+				_levelsCompleted = new bool[2],
+				_deafetedBosses = new bool[1]
 			};
 		}
 		internal static void SetActualSaveFile(ushort actualSaveFile)
@@ -135,7 +86,7 @@ namespace GuwbaPrimeAdventure
 		}
 		internal static void RenameData(ushort actualSave, string newName)
 		{
-			string actualSaveFile = SelectDataFile(actualSave);
+			string actualSaveFile = FilesNames.SelectDataFile(actualSave);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			string newSaveName = Application.persistentDataPath + $"/{newName}.txt";
 			if (File.Exists(actualPath))
@@ -144,60 +95,36 @@ namespace GuwbaPrimeAdventure
 				File.Delete(actualPath);
 				DataController.WriteData(loadedData, newSaveName);
 			}
-			SetDataFile(actualSave, newName);
-			if (File.Exists(SaveFilePath))
-			{
-				FilesNames newFilesNames = new()
-				{
-					DataFileName1 = DataFileName1,
-					DataFileName2 = DataFileName2,
-					DataFileName3 = DataFileName3,
-					DataFileName4 = DataFileName4
-				};
-				DataController.WriteData(newFilesNames, SaveFilePath);
-			}
+			FilesNames.SaveData(actualSave, newName);
 		}
-		internal static void DeleteData(ushort actualSave)
+		internal static string DeleteData(ushort actualSave)
 		{
-			string actualSaveFile = SelectDataFile(actualSave);
+			string actualSaveFile = FilesNames.SelectDataFile(actualSave);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
-			SetDataFile(actualSave, $"Data File {actualSave}");
 			if (File.Exists(actualPath))
 				File.Delete(actualPath);
-			FilesNames newFilesNames = new()
-			{
-				DataFileName1 = DataFileName1,
-				DataFileName2 = DataFileName2,
-				DataFileName3 = DataFileName3,
-				DataFileName4 = DataFileName4
-			};
-			DataController.WriteData(newFilesNames, SaveFilePath);
+			FilesNames.SaveData(actualSave, $"Data File {actualSave}");
+			return FilesNames.SelectDataFile(actualSave);
 		}
 		internal static void SaveData()
 		{
-			FilesNames newFilesNames = LoadFilesNames();
-			newFilesNames.DataFileName1 = DataFileName1;
-			newFilesNames.DataFileName2 = DataFileName2;
-			newFilesNames.DataFileName3 = DataFileName3;
-			newFilesNames.DataFileName4 = DataFileName4;
-			DataController.WriteData(newFilesNames, SaveFilePath);
-			string actualSaveFile = SelectDataFile(ActualSaveFile);
+			string actualSaveFile = FilesNames.SelectDataFile(ActualSaveFile);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			DataFile newDataFile = LoadFile();
-			newDataFile.Lifes = Lifes;
-			newDataFile.LifesAcquired = LifesAcquired;
-			newDataFile.Coins = Coins;
+			newDataFile._lifes = Lifes;
+			newDataFile._lifesAcquired = LifesAcquired;
+			newDataFile._coins = Coins;
 			if (Books.Count > 0f)
 			{
-				newDataFile.BooksName = new List<string>();
-				newDataFile.BooksValue = new List<bool>();
-				newDataFile.BooksName.AddRange(Books.Keys);
-				newDataFile.BooksValue.AddRange(Books.Values);
+				newDataFile._booksName = new List<string>();
+				newDataFile._booksValue = new List<bool>();
+				newDataFile._booksName.AddRange(Books.Keys);
+				newDataFile._booksValue.AddRange(Books.Values);
 			}
-			newDataFile.GeneralObjects = GeneralObjects;
-			newDataFile.LastLevelEntered = LastLevelEntered;
-			newDataFile.LevelsCompleted = LevelsCompleted;
-			newDataFile.DeafetedBosses = DeafetedBosses;
+			newDataFile._generalObjects = GeneralObjects;
+			newDataFile._lastLevelEntered = LastLevelEntered;
+			newDataFile._levelsCompleted = LevelsCompleted;
+			newDataFile._deafetedBosses = DeafetedBosses;
 			DataController.WriteData(newDataFile, actualPath);
 		}
 	};
