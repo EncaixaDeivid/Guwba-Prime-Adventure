@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-			if (SaveFileData.Lifes < 0f)
+			if (DataFile.Lifes < 0f)
 			{
 				this._deathScreenHud.Text.text = "Fim de Jogo";
 				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
@@ -47,7 +47,7 @@ namespace GuwbaPrimeAdventure
 		private Action OutLevel => () => this.GetComponent<TransitionController>().Transicion();
 		private Action GameOver => () =>
 		{
-			SaveFileData.RefreshData();
+			DataFile.RefreshData();
 			this.GetComponent<TransitionController>().Transicion();
 		};
 	};
