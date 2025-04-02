@@ -111,8 +111,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			if (bossProp)
 			{
-				if (!SaveFileData.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1])
-					SaveFileData.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1] = true;
+				if (!DataFile.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1])
+					DataFile.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1] = true;
 				this.GetComponent<TransitionController>().Transicion();
 			}
 		}
@@ -144,7 +144,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (!this._useDestructuion)
 					return;
 				if (this._saveOnSpecifics)
-					SaveFileData.GeneralObjects.Add(this.gameObject.name);
+					DataFile.GeneralObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
 					this._bossesControllers[0].Destroy(this);
 			}
