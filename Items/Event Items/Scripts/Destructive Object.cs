@@ -10,7 +10,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			if (this._saveObject && SaveFileData.GeneralObjects.Contains(this.gameObject.name))
+			if (this._saveObject && DataFile.GeneralObjects.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
 		}
 		public void ActivationEvent()
@@ -23,8 +23,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public void DesactivationEvent() => this.ActivationEvent();
 		private void SaveObject()
 		{
-			if (this._saveObject && !SaveFileData.GeneralObjects.Contains(this.gameObject.name))
-				SaveFileData.GeneralObjects.Add(this.gameObject.name);
+			if (this._saveObject && !DataFile.GeneralObjects.Contains(this.gameObject.name))
+				DataFile.GeneralObjects.Add(this.gameObject.name);
 		}
 		private void DestroyOnCollision()
 		{
