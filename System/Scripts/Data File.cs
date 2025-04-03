@@ -86,6 +86,8 @@ namespace GuwbaPrimeAdventure
 		}
 		internal static void RenameData(ushort actualSave, string newName)
 		{
+			if (string.IsNullOrEmpty(newName))
+				return;
 			string actualSaveFile = FilesNames.SelectDataFile(actualSave);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			string newSaveName = Application.persistentDataPath + $"/{newName}.txt";
@@ -103,17 +105,25 @@ namespace GuwbaPrimeAdventure
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 				File.Delete(actualPath);
-			FilesNames.SaveData(actualSave, $"Data File {actualSave}");
-			return FilesNames.SelectDataFile(actualSave);
+			return FilesNames.SaveData(actualSave, $"Data File {actualSave}");
 		}
 		internal static void SaveData()
 		{
 			string actualSaveFile = FilesNames.SelectDataFile(ActualSaveFile);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
-			DataFile newDataFile = LoadFile();
-			newDataFile._lifes = Lifes;
-			newDataFile._lifesAcquired = LifesAcquired;
-			newDataFile._coins = Coins;
+			DataFile newDataFile = new()
+			{
+				_lifes = Lifes,
+				_lifesAcquired = LifesAcquired,
+				_coins = Coins,
+				_books = new Dictionary<string, bool>(),
+				_booksName = new List<string>(),
+				_booksValue = new List<bool>(),
+				_generalObjects = GeneralObjects,
+				_lastLevelEntered = LastLevelEntered,
+				_levelsCompleted = LevelsCompleted,
+				_deafetedBosses = DeafetedBosses
+			};
 			if (Books.Count > 0f)
 			{
 				newDataFile._booksName = new List<string>();
@@ -121,10 +131,6 @@ namespace GuwbaPrimeAdventure
 				newDataFile._booksName.AddRange(Books.Keys);
 				newDataFile._booksValue.AddRange(Books.Values);
 			}
-			newDataFile._generalObjects = GeneralObjects;
-			newDataFile._lastLevelEntered = LastLevelEntered;
-			newDataFile._levelsCompleted = LevelsCompleted;
-			newDataFile._deafetedBosses = DeafetedBosses;
 			DataController.WriteData(newDataFile, actualPath);
 		}
 	};
