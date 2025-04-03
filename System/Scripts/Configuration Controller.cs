@@ -45,7 +45,7 @@ namespace GuwbaPrimeAdventure
 		private void OpenCloseConfigurations()
 		{
 			if (this._configurationHudInstance)
-				this.CloseConfigurations();
+				this.CloseConfigurations.Invoke();
 			else
 			{
 				StateController.SetState(false);
@@ -98,6 +98,7 @@ namespace GuwbaPrimeAdventure
 			StateController.SetState(true);
 			if (this.gameObject.scene.name == this._menuScene)
 				Destroy(this.gameObject);
+			Settings.SaveSettings();
 		};
 		public static void DeathScreen()
 		{
