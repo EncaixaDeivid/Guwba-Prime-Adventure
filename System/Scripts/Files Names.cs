@@ -32,27 +32,19 @@ namespace GuwbaPrimeAdventure
 				_ => null
 			};
 		}
-		internal static void SaveData(ushort actualDataFile, string newName)
+		internal static string SaveData(ushort actualDataFile, string newName)
 		{
 			FilesNames newFilesNames = LoadFilesNames();
-			switch (actualDataFile)
+			string newFileName = actualDataFile switch
 			{
-				case 1:
-					newFilesNames._dataFile1 = newName;
-					break;
-				case 2:
-					newFilesNames._dataFile2 = newName;
-					break;
-				case 3:
-					newFilesNames._dataFile3 = newName;
-					break;
-				case 4:
-					newFilesNames._dataFile4 = newName;
-					break;
-				default:
-					return;
-			}
+				1 => newFilesNames._dataFile1 = newName,
+				2 => newFilesNames._dataFile2 = newName,
+				3 => newFilesNames._dataFile3 = newName,
+				4 => newFilesNames._dataFile4 = newName,
+				_ => null
+			};
 			DataController.WriteData(newFilesNames, SaveFilePath);
+			return newFileName;
 		}
 	};
 };
