@@ -176,7 +176,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				Destroy(this.gameObject);
 			}
 		}
-		public void Paralyze() => this._isParalyzed = true;
-  		public void Unparalyze() => this._isParalyzed = false;
+		public void Paralyze(bool value) => this._isParalyzed = value;
 	};
 };
