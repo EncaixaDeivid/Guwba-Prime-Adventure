@@ -62,8 +62,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this.TryGetComponent<EnemyInstance>(out var enemyInstance))
 				enemyInstance?._toggleEvent?.Invoke(toggleValue);
 		}
-		public void Paralyze() => this._paralyzed = true;
-		public void Unparalyze() => this._paralyzed = false;
+		public void Paralyze(bool value) => this._paralyzed = value;
 		public bool Damage(ushort damage)
 		{
 			if (this._noDamage || this._paralyzed)
