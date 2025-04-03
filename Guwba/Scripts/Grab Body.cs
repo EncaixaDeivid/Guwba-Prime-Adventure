@@ -49,7 +49,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			this._backDrop._layer = this.gameObject.layer;
 			this._backDrop._parent = this.transform.parent;
-			this.GetComponent<IGrabtable>()?.Paralyze();
+			this.GetComponent<IGrabtable>()?.Paralyze(true);
 			if (this._gravityOnThrow || this._rigidbody.gravityScale != 0f)
 				this._gravityScale = this._rigidbody.gravityScale;
 			this.gameObject.layer = objectLayer;
@@ -84,7 +84,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		internal void Drop()
 		{
-			this.GetComponent<IGrabtable>()?.Unparalyze();
+			this.GetComponent<IGrabtable>()?.Paralyze(false);
 			if (this._gravityScale != 0f)
 				this._rigidbody.gravityScale = _gravityScale;
 			this.gameObject.layer = this._backDrop._layer;
