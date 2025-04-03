@@ -31,15 +31,17 @@ namespace GuwbaPrimeAdventure
 		}
 		internal static void SaveSettings()
 		{
-			Settings settings = LoadSettings();
-			settings._fullScreen = FullScreen;
-			settings._generalVolumeToggle = GeneralVolumeToggle;
-			settings._generalVolume = GeneralVolume;
-			settings._effectsVolumeToggle = EffectsVolumeToggle;
-			settings._effectsVolume = EffectsVolume;
-			settings._musicVolumeToggle = MusicVolumeToggle;
-			settings._musicVolume = MusicVolume;
-			settings._dialogSpeed = DialogSpeed;
+			Settings settings = new()
+			{
+				_fullScreen = FullScreen,
+				_generalVolumeToggle = GeneralVolumeToggle,
+				_generalVolume = GeneralVolume,
+				_effectsVolumeToggle = EffectsVolumeToggle,
+				_effectsVolume = EffectsVolume,
+				_musicVolumeToggle = MusicVolumeToggle,
+				_musicVolume = MusicVolume,
+				_dialogSpeed = DialogSpeed
+			};
 			DataController.WriteData(settings, SettingsPath);
 		}
 		public static bool FullScreen = LoadSettings()._fullScreen;
