@@ -10,8 +10,7 @@ namespace GuwbaPrimeAdventure
 	};
 	public interface IGrabtable
 	{
-		public void Paralyze();
-		public void Unparalyze();
+		public void Paralyze(bool value);
 	};
 	public interface ICollectable
 	{
