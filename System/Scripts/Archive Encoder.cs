@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 namespace GuwbaPrimeAdventure
 {
-	internal static class DataController
+	internal static class ArchiveEncoder
 	{
 		private const string ScriptPassword = "BoLo%De%CeNoUrA%cOm%CoBeRtUrA%dE%cHoCoLaTe%AmArGo%!";
 		private static string ScriptData(string data)
