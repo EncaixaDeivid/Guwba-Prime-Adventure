@@ -55,8 +55,8 @@ namespace GuwbaPrimeAdventure
 					this._configurationHudInstance.OutLevel.style.display = DisplayStyle.None;
 					this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
 				}
-				if (DataFile.FileExists())
-					for (ushort i = 0; i < DataFile.LevelsCompleted.Length; i++)
+				if (SaveController.FileExists())
+					for (ushort i = 0; i < SaveController.LevelsCompleted.Length; i++)
 						if (this.gameObject.scene.name.Contains($"{i}"))
 						{
 							this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
@@ -86,7 +86,7 @@ namespace GuwbaPrimeAdventure
 			this._configurationHudInstance.Buttons.style.display = DisplayStyle.Flex;
 			this._configurationHudInstance.Confirmation.style.display = DisplayStyle.None;
 		};
-		private Action SaveGame => () => DataFile.SaveData();
+		private Action SaveGame => () => SaveController.SaveData();
 		private Action CloseConfigurations => () =>
 		{
 			this._configurationHudInstance.OutLevel.clicked -= this.OutLevel;
@@ -98,7 +98,7 @@ namespace GuwbaPrimeAdventure
 			StateController.SetState(true);
 			if (this.gameObject.scene.name == this._menuScene)
 				Destroy(this.gameObject);
-			Settings.SaveSettings();
+			SettingsController.SaveSettings();
 		};
 		public static void DeathScreen()
 		{
