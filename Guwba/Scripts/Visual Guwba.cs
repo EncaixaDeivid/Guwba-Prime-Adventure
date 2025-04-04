@@ -31,8 +31,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
 			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
 			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
-			this._lifeText.text = $"X {DataFile.Lifes}";
-			this._coinsText.text = $"X {DataFile.Coins}";
+			this._lifeText.text = $"X {SaveController.Lifes}";
+			this._coinsText.text = $"X {SaveController.Coins}";
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -86,8 +86,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (other.TryGetComponent<ICollectable>(out var collectable))
 			{
 				collectable.Collect();
-				this._lifeText.text = $"X {DataFile.Lifes}";
-				this._coinsText.text = $"X {DataFile.Coins}";
+				this._lifeText.text = $"X {SaveController.Lifes}";
+				this._coinsText.text = $"X {SaveController.Coins}";
 			}
 		}
 		public bool Damage(ushort damage)
@@ -98,8 +98,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			if ((this._vitality -= (short)damage) <= 0f)
 			{
 				this._vitality = 0;
-				DataFile.Lifes -= 1;
-				this._lifeText.text = $"X {(DataFile.Lifes >= 0f ? DataFile.Lifes : 0f)}";
+				SaveController.Lifes -= 1;
+				this._lifeText.text = $"X {(SaveController.Lifes >= 0f ? SaveController.Lifes : 0f)}";
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
 				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
