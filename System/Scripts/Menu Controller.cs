@@ -23,18 +23,18 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			this._configurationController = this.GetComponentInChildren<ConfigurationController>(true);
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
-			this._menuHud.SaveName[0].value = FilesNames.SelectDataFile(1);
-			this._menuHud.SaveName[1].value = FilesNames.SelectDataFile(2);
-			this._menuHud.SaveName[2].value = FilesNames.SelectDataFile(3);
-			this._menuHud.SaveName[3].value = FilesNames.SelectDataFile(4);
+			this._menuHud.SaveName[0].value = FilesController.Select(1);
+			this._menuHud.SaveName[1].value = FilesController.Select(2);
+			this._menuHud.SaveName[2].value = FilesController.Select(3);
+			this._menuHud.SaveName[3].value = FilesController.Select(4);
 			this._menuHud.Play.clicked += this.Play;
 			this._menuHud.Configurations.clicked += this.OpenConfigurations;
 			this._menuHud.Quit.clicked += this.Quit;
 			this._menuHud.Back.clicked += this.Back;
-			this._menuHud.SaveName[0].RegisterValueChangedCallback(this.ChangeName1);
-			this._menuHud.SaveName[1].RegisterValueChangedCallback(this.ChangeName2);
-			this._menuHud.SaveName[2].RegisterValueChangedCallback(this.ChangeName3);
-			this._menuHud.SaveName[3].RegisterValueChangedCallback(this.ChangeName4);
+			this._menuHud.SaveName[0].RegisterCallback(this.ChangeName1);
+			this._menuHud.SaveName[1].RegisterCallback(this.ChangeName2);
+			this._menuHud.SaveName[2].RegisterCallback(this.ChangeName3);
+			this._menuHud.SaveName[3].RegisterCallback(this.ChangeName4);
 			this._menuHud.Load[0].clicked += this.SelectSaveFile1;
 			this._menuHud.Load[1].clicked += this.SelectSaveFile2;
 			this._menuHud.Load[2].clicked += this.SelectSaveFile3;
@@ -53,10 +53,10 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Configurations.clicked += this.OpenConfigurations;
 			this._menuHud.Quit.clicked -= this.Quit;
 			this._menuHud.Back.clicked -= this.Back;
-			this._menuHud.SaveName[0].UnregisterValueChangedCallback(this.ChangeName1);
-			this._menuHud.SaveName[1].UnregisterValueChangedCallback(this.ChangeName2);
-			this._menuHud.SaveName[2].UnregisterValueChangedCallback(this.ChangeName3);
-			this._menuHud.SaveName[3].UnregisterValueChangedCallback(this.ChangeName4);
+			this._menuHud.SaveName[0].UnregisterCallback(this.ChangeName1);
+			this._menuHud.SaveName[1].UnregisterCallback(this.ChangeName2);
+			this._menuHud.SaveName[2].UnregisterCallback(this.ChangeName3);
+			this._menuHud.SaveName[3].UnregisterCallback(this.ChangeName4);
 			this._menuHud.Load[0].clicked -= this.SelectSaveFile1;
 			this._menuHud.Load[1].clicked -= this.SelectSaveFile2;
 			this._menuHud.Load[2].clicked -= this.SelectSaveFile3;
@@ -90,32 +90,52 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		};
-		private EventCallback<ChangeEvent<string>> ChangeName1 =>
-			(ChangeEvent<string> eventCallback) => DataFile.RenameData(1, eventCallback.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName2 =>
-			(ChangeEvent<string> eventCallback) => DataFile.RenameData(2, eventCallback.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName3 =>
-			(ChangeEvent<string> eventCallback) => DataFile.RenameData(3, eventCallback.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName4 =>
-			(ChangeEvent<string> eventCallback) => DataFile.RenameData(4, eventCallback.newValue);
+		private EventCallback<KeyDownEvent> ChangeName1 => (KeyDownEvent eventCallback) =>
+		{
+			if (eventCallback.keyCode != KeyCode.KeypadEnter)
+				return;
+			SaveController.RenameData(1, this._menuHud.SaveName[0].text);
+			this._menuHud.SaveName[0].value = FilesController.Select(1);
+		};
+		private EventCallback<KeyDownEvent> ChangeName2 => (KeyDownEvent eventCallback) =>
+		{
+			if (eventCallback.keyCode != KeyCode.KeypadEnter)
+				return;
+			SaveController.RenameData(2, this._menuHud.SaveName[1].text);
+			this._menuHud.SaveName[1].value = FilesController.Select(2);
+		};
+		private EventCallback<KeyDownEvent> ChangeName3 => (KeyDownEvent eventCallback) =>
+		{
+			if (eventCallback.keyCode != KeyCode.KeypadEnter)
+				return;
+			SaveController.RenameData(3, this._menuHud.SaveName[2].text);
+			this._menuHud.SaveName[2].value = FilesController.Select(3);
+		};
+		private EventCallback<KeyDownEvent> ChangeName4 => (KeyDownEvent eventCallback) =>
+		{
+			if (eventCallback.keyCode != KeyCode.KeypadEnter)
+				return;
+			SaveController.RenameData(4, this._menuHud.SaveName[3].text);
+			this._menuHud.SaveName[3].value = FilesController.Select(4);
+		};
 		private void SetSaveFile(ushort newSaveFile)
 		{
-			DataFile.SetActualSaveFile(newSaveFile);
-			if (DataFile.FileExists())
+			SaveController.SetActualSaveFile(newSaveFile);
+			if (SaveController.FileExists())
 			{
 				this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
 				return;
 			}
 			this.GetComponent<TransitionController>().Transicion(this._level0Scene);
-			DataFile.SaveData();
+			SaveController.SaveData();
 		}
 		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
 		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
 		private Action SelectSaveFile3 => () => this.SetSaveFile(3);
 		private Action SelectSaveFile4 => () => this.SetSaveFile(4);
-		private Action DeleteSaveFile1 => () => this._menuHud.SaveName[0].value = DataFile.DeleteData(1);
-		private Action DeleteSaveFile2 => () => this._menuHud.SaveName[1].value = DataFile.DeleteData(2);
-		private Action DeleteSaveFile3 => () => this._menuHud.SaveName[2].value = DataFile.DeleteData(3);
-		private Action DeleteSaveFile4 => () => this._menuHud.SaveName[3].value = DataFile.DeleteData(4);
+		private Action DeleteSaveFile1 => () => this._menuHud.SaveName[0].value = SaveController.DeleteData(1);
+		private Action DeleteSaveFile2 => () => this._menuHud.SaveName[1].value = SaveController.DeleteData(2);
+		private Action DeleteSaveFile3 => () => this._menuHud.SaveName[2].value = SaveController.DeleteData(3);
+		private Action DeleteSaveFile4 => () => this._menuHud.SaveName[3].value = SaveController.DeleteData(4);
 	};
 };
