@@ -11,8 +11,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private ushort _selfIndex;
 		private void Start()
 		{
-			if (this.gameObject.scene.name == this._levelSelectorScene && DataFile.LastLevelEntered != "")
-				if (ushort.Parse($"{DataFile.LastLevelEntered[^1]}") == this._selfIndex)
+			if (this.gameObject.scene.name == this._levelSelectorScene && SaveController.LastLevelEntered != "")
+				if (ushort.Parse($"{SaveController.LastLevelEntered[^1]}") == this._selfIndex)
 					GuwbaTransformer<CommandGuwba>.Position = this.transform.position;
 			if (_lastScene == this.gameObject.scene.name && _useCheckpoint)
 			{
