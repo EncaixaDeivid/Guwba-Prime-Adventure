@@ -107,6 +107,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (damageable.Damage(this._damage))
 					EffectsController.SetHitStop(this._hitStopTime, this._hitSlowTime);
 			}
+			else if (other.TryGetComponent<Surface>(out _))
+			{
+				GuwbaTransformer<CommandGuwba>._returnAttack = true;
+				_returnAttack = true;
+			}
 		}
 	};
 };
