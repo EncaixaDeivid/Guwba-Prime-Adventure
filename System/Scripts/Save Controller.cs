@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.IO;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure
@@ -48,26 +47,7 @@ namespace GuwbaPrimeAdventure
 		internal static bool FileExists() => File.Exists($"{Application.persistentDataPath}/{FilesController.Select(ActualSaveFile)}.txt");
 		private static SaveFile LoadFile()
 		{
-			string actualSaveFile = FilesController.Select(ActualSaveFile);
-			if (string.IsNullOrEmpty(actualSaveFile))
-				throw new Exception("ERRO: Arquivo não existente");
-			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
-			if (File.Exists(actualPath))
-			{
-				bool isDataEmpty1 = actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2);
-				bool isDataEmpty2 = actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4);
-				if (isDataEmpty1 && isDataEmpty2)
-				{
-					File.Delete(actualPath);
-					throw new Exception("ERRO: Arquivo não conrrespondente");
-				}
-				SaveFile loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
-				loadedData.Books = new Dictionary<string, bool>();
-				for (ushort i = 0; i < loadedData.BooksName.Count; i++)
-					loadedData.Books.Add(loadedData.BooksName[i], loadedData.BooksValue[i]);
-				return loadedData;
-			}
-			return new SaveFile()
+			SaveFile saveFile = new()
 			{
 				Lifes = 10,
 				LifesAcquired = new List<string>(),
@@ -80,6 +60,26 @@ namespace GuwbaPrimeAdventure
 				LevelsCompleted = new bool[2],
 				DeafetedBosses = new bool[1]
 			};
+			string actualSaveFile = FilesController.Select(ActualSaveFile);
+			if (string.IsNullOrEmpty(actualSaveFile))
+				return saveFile;
+			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
+			if (File.Exists(actualPath))
+			{
+				bool isDataEmpty1 = actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2);
+				bool isDataEmpty2 = actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4);
+				if (isDataEmpty1 && isDataEmpty2)
+				{
+					File.Delete(actualPath);
+					return saveFile;
+				}
+				SaveFile loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
+				loadedData.Books = new Dictionary<string, bool>();
+				for (ushort i = 0; i < loadedData.BooksName.Count; i++)
+					loadedData.Books.Add(loadedData.BooksName[i], loadedData.BooksValue[i]);
+				return loadedData;
+			}
+			return saveFile;
 		}
 		internal static void SetActualSaveFile(ushort actualSaveFile)
 		{
@@ -90,17 +90,16 @@ namespace GuwbaPrimeAdventure
 		{
 			if (string.IsNullOrEmpty(newName))
 				return;
+			FilesController.SaveData((actualSave, newName));
 			string actualSaveFile = FilesController.Select(actualSave);
 			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
 			string newSaveName = Application.persistentDataPath + $"/{newName}.txt";
-			FilesController.SaveData((actualSave, newName));
-			SaveFile loadedData = LoadFile();
 			if (File.Exists(actualPath))
 			{
-				loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
+				SaveFile loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
 				File.Delete(actualPath);
+				ArchiveEncoder.WriteData(loadedData, newSaveName);
 			}
-			ArchiveEncoder.WriteData(loadedData, newSaveName);
 		}
 		internal static string DeleteData(ushort actualSave)
 		{
