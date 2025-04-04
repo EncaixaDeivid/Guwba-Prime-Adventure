@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._receptor = this.GetComponent<IReceptor>();
 			if (this._specificsObjects.Length > 0f)
 				foreach (string specificObject in this._specificsObjects)
-					if (DataFile.GeneralObjects.Contains(specificObject))
+					if (SaveController.GeneralObjects.Contains(specificObject))
 						this.Activate();
 		}
 		private void Activate()
