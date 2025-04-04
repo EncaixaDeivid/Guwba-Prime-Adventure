@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class DeathlessSurface : StateController
+	internal sealed class HarmfulSurface : StateController
 	{
 		[SerializeField] private ushort _damage;
 		[SerializeField] private bool _everyone;
