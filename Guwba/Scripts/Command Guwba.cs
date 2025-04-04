@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 using System;
 namespace GuwbaPrimeAdventure.Guwba
 {
@@ -17,7 +18,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
 		private bool _isOnGround = false, _downStairs = false, _canJump = false, _grabState = false;
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
-		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold;
+		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold, _death;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
 		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _bottomCheckerOffset, _lowHoldOffset;
 		[SerializeField] private bool _turnLeft;
@@ -36,6 +37,14 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
+			_actualState += this.DeathState;
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			if (_instance != this)
+				return;
+			_actualState -= this.DeathState;
 		}
 		private void OnEnable()
 		{
@@ -85,6 +94,20 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
+		private UnityAction<bool> DeathState => (bool isDead) =>
+		{
+			if (isDead)
+			{
+				this.OnDisable();
+				this._animator.SetBool(this._death, isDead);
+				this._rigidbody.gravityScale = this._gravityScale;
+			}
+			else
+			{
+				this.OnEnable();
+				this._animator.SetBool(this._death, isDead);
+			}
+		};
 		private Action<InputAction.CallbackContext> Movement => (InputAction.CallbackContext movementAction) =>
 		{
 			Vector2 movementValue = movementAction.ReadValue<Vector2>();
