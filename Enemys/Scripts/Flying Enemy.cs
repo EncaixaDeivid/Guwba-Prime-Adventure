@@ -61,7 +61,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				this._spriteRenderer.flipX = this._pointOrigin.x < this.transform.position.x;
 				this._rigidybody.linearVelocity = Vector2.zero;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, this._speedReturn * Time.deltaTime);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, this._speedReturn * Time.fixedDeltaTime);
 			}
 			else if (this._trail.Length > 0f && !followTarget)
 			{
