@@ -40,10 +40,10 @@ namespace GuwbaPrimeAdventure.Item
 				return;
 			this._levelGateInstance = Instantiate(this._levelGate, this.transform);
 			this._levelGateInstance.Level.clicked += this.EnterLevel;
-			if (!this._dontUseBoss && DataFile.LevelsCompleted[ushort.Parse($"{this._levelScene[^1]}")])
+			if (!this._dontUseBoss && SaveController.LevelsCompleted[ushort.Parse($"{this._levelScene[^1]}")])
 				this._levelGateInstance.Boss.clicked += this.EnterBoss;
-			this._levelGateInstance.Life.text = $"X {DataFile.Lifes}";
-			this._levelGateInstance.Coin.text = $"X {DataFile.Coins}";
+			this._levelGateInstance.Life.text = $"X {SaveController.Lifes}";
+			this._levelGateInstance.Coin.text = $"X {SaveController.Coins}";
 			this._showCamera.Priority.Value = this._overlayPriority;
 		}
 		private void OnTriggerExit2D(Collider2D other)
@@ -51,7 +51,7 @@ namespace GuwbaPrimeAdventure.Item
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
 			this._levelGateInstance.Level.clicked -= this.EnterLevel;
-			if (!this._dontUseBoss && DataFile.LevelsCompleted[ushort.Parse($"{this._levelScene[^1]}")])
+			if (!this._dontUseBoss && SaveController.LevelsCompleted[ushort.Parse($"{this._levelScene[^1]}")])
 				this._levelGateInstance.Boss.clicked -= this.EnterBoss;
 			this._showCamera.Priority.Value = this._defaultPriority;
 			Destroy(this._levelGateInstance.gameObject);
