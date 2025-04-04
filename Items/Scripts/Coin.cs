@@ -16,17 +16,17 @@ namespace GuwbaPrimeAdventure.Item
 		[SerializeField] private bool _saveOnSpecifics;
 		public void Collect()
 		{
-			if (DataFile.Coins < 100f)
-				DataFile.Coins += 1;
-			if (DataFile.Lifes < 99f && DataFile.Coins >= 100f)
+			if (SaveController.Coins < 100f)
+				SaveController.Coins += 1;
+			if (SaveController.Lifes < 99f && SaveController.Coins >= 100f)
 			{
-				DataFile.Coins = 0;
-				DataFile.Lifes += 1;
+				SaveController.Coins = 0;
+				SaveController.Lifes += 1;
 			}
-			if (DataFile.Lifes >= 99f && DataFile.Coins >= 99f)
-				DataFile.Coins = 99;
+			if (SaveController.Lifes >= 99f && SaveController.Coins >= 99f)
+				SaveController.Coins = 99;
 			if (this._saveOnSpecifics)
-				DataFile.GeneralObjects.Add(this.gameObject.name);
+				SaveController.GeneralObjects.Add(this.gameObject.name);
 			Destroy(this.gameObject);
 		}
 	};
