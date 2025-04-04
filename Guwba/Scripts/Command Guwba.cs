@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private ActionsGuwba _actions;
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
-		private bool _isOnGround = false, _downStairs = false, _canJump = false, _grabState = false;
+		private bool _isOnGround = false, _downStairs = false, _canJump = false;
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
 		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold, _death;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
@@ -147,9 +147,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => (InputAction.CallbackContext attackAction) =>
 		{
-			if (this._grabState)
+			if (_grabObject)
 			{
-				this._animator.SetBool(this._hold, this._grabState = false);
+				this._animator.SetBool(this._hold, false);
 				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
@@ -169,9 +169,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Action<InputAction.CallbackContext> Interaction => (InputAction.CallbackContext interactionAction) =>
 		{
 			Vector2 point = this.transform.position;
-			if (this._grabState && !_grabObject.IsDamageable)
+			if (_grabObject && !_grabObject.IsDamageable)
 			{
-				this._animator.SetBool(this._hold, this._grabState = false);
+				this._animator.SetBool(this._hold, false);
 				_grabObject.Drop();
 				_grabObject = null;
 				GuwbaTransformer<VisualGuwba>._grabObject = null;
@@ -260,7 +260,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
-			if (this._grabState)
+			if (_grabObject)
 			{
 				Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + this._collider.size.y - this._lowHoldOffset);
 				_grabObject.transform.position = newPosition;
@@ -270,10 +270,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (_returnAttack && GuwbaTransformer<AttackGuwba>.EqualObject(collisionObject))
 			{
-				if (_grabObject)
-					this._animator.SetBool(this._hold, this._grabState = true);
-				else
-					this._animator.SetBool(this._hold, false);
+				this._animator.SetBool(this._hold, _grabObject);
 				this._animator.SetBool(this._attack, false);
 				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				_returnAttack = false;
