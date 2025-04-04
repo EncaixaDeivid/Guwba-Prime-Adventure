@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
 		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold, _death;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
-		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _bottomCheckerOffset, _lowHoldOffset;
+		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _bottomCheckerOffset, _lowHoldOffset, _normalSize, _deadSize;
 		[SerializeField] private bool _turnLeft;
 		private new void Awake()
 		{
@@ -101,11 +101,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.OnDisable();
 				this._animator.SetBool(this._death, isDead);
 				this._rigidbody.gravityScale = this._gravityScale;
+				this._collider.size = new Vector2(this._collider.size.x, this._deadSize);
 			}
 			else
 			{
 				this.OnEnable();
 				this._animator.SetBool(this._death, isDead);
+				this._collider.size = new Vector2(this._collider.size.x, this._normalSize);
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => (InputAction.CallbackContext movementAction) =>
