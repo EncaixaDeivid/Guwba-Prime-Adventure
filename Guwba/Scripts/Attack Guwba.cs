@@ -12,8 +12,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Vector2 _guardVelocity = new();
 		private bool _isAttacking = false;
-		[SerializeField] private ushort _movementSpeed, _movementDistance, _damage;
-		[SerializeField] private float _hitStopTime, _hitSlowTime;
+		[SerializeField] private ushort _damage;
+		[SerializeField] private float _movementSpeed, _movementDistance, _hitStopTime, _hitSlowTime;
 		private new void Awake()
 		{
 			base.Awake();
