@@ -90,28 +90,28 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		};
-		private EventCallback<KeyDownEvent> ChangeName1 => (KeyDownEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName1 => (KeyUpEvent eventCallback) =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(1, this._menuHud.SaveName[0].text);
 			this._menuHud.SaveName[0].value = FilesController.Select(1);
 		};
-		private EventCallback<KeyDownEvent> ChangeName2 => (KeyDownEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName2 => (KeyUpEvent eventCallback) =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(2, this._menuHud.SaveName[1].text);
 			this._menuHud.SaveName[1].value = FilesController.Select(2);
 		};
-		private EventCallback<KeyDownEvent> ChangeName3 => (KeyDownEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName3 => (KeyUpEvent eventCallback) =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(3, this._menuHud.SaveName[2].text);
 			this._menuHud.SaveName[2].value = FilesController.Select(3);
 		};
-		private EventCallback<KeyDownEvent> ChangeName4 => (KeyDownEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName4 => (KeyUpEvent eventCallback) =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
