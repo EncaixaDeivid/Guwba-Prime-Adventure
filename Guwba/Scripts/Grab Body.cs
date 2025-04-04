@@ -7,21 +7,23 @@ namespace GuwbaPrimeAdventure.Guwba
 	public sealed class GrabBody : StateController
 	{
 		private Rigidbody2D _rigidbody;
+		private Collider2D[] _colliders;
 		private Vector2 _guardVelocity = new();
-		private (int _layer, Transform _parent, LayerMask[] _include, LayerMask[] _exclude, LayerMask[] _contact, LayerMask[] _callback) _backDrop;
+		private (int _layer, bool[] _isTrigger, LayerMask[,] _layerMask) _backDrop;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
 		[SerializeField] private LayerMask _noHitLayers;
-		[SerializeField] private ushort _throwSpeed, _throwDamage;
-		[SerializeField] private float _throwHitStopTime, _throwHitSlowTime, _fadeTime, _timeToBack;
-		[SerializeField] private bool _isNotGrabtable, _gravityOnThrow, _isDamageable;
+		[SerializeField] private ushort _throwSpeed, _throwDamage, _hitsToDestruct = 1;
+		[SerializeField] private float _throwGravity, _throwHitStopTime, _throwHitSlowTime, _fadeTime;
+		[SerializeField] private bool _isNotGrabtable, _isDamageable, _isIndestructible, _fadeAway;
 		internal bool IsGrabtable => !this._isNotGrabtable;
 		internal bool IsDamageable => this._isDamageable;
 		private new void Awake()
 		{
 			base.Awake();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
+			this._colliders = this.GetComponents<Collider2D>();
 		}
 		private void OnEnable()
 		{
@@ -36,67 +38,79 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.linearVelocity = Vector2.zero;
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other)
+		private void OnCollision(GameObject collisionObject)
 		{
 			if (this._isThrew)
-				if (other.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._throwDamage))
-				{
+			{
+				bool isDamageable = collisionObject.TryGetComponent(out IDamageable damageable);
+				if (isDamageable && damageable.Damage(this._throwDamage))
 					EffectsController.SetHitStop(this._throwHitStopTime, this._throwHitSlowTime);
-					Destroy(this.gameObject);
+				if (isDamageable || collisionObject.TryGetComponent<Surface>(out _))
+				{
+					this._isThrew = false;
+					this.gameObject.layer = this._backDrop._layer;
+					for (ushort i = 0; i < this._colliders.Length; i++)
+					{
+						this._colliders[i].includeLayers = this._backDrop._layerMask[0, i];
+						this._colliders[i].excludeLayers = this._backDrop._layerMask[1, i];
+						this._colliders[i].contactCaptureLayers = this._backDrop._layerMask[2, i];
+						this._colliders[i].callbackLayers = this._backDrop._layerMask[3, i];
+					}
+					if (!this._isIndestructible && this._hitsToDestruct-- <= 0f)
+						Destroy(this.gameObject);
 				}
+			}
 		}
+		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
+		private void OnTriggerEnter2D(Collider2D other) => this.OnCollision(other.gameObject);
 		internal void Stop(ushort objectLayer)
 		{
 			this._backDrop._layer = this.gameObject.layer;
-			this._backDrop._parent = this.transform.parent;
 			this.GetComponent<IGrabtable>()?.Paralyze(true);
-			if (this._gravityOnThrow || this._rigidbody.gravityScale != 0f)
-				this._gravityScale = this._rigidbody.gravityScale;
+			this._gravityScale = this._rigidbody.gravityScale;
 			this.gameObject.layer = objectLayer;
 			this.transform.parent = null;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
-			Collider2D[] colliders = this.GetComponents<Collider2D>();
-			this._backDrop._include = new LayerMask[colliders.Length];
-			this._backDrop._exclude = new LayerMask[colliders.Length];
-			this._backDrop._contact = new LayerMask[colliders.Length];
-			this._backDrop._callback = new LayerMask[colliders.Length];
-			for (ushort i = 0; i < colliders.Length; i++)
+			this._backDrop._isTrigger = new bool[this._colliders.Length];
+			this._backDrop._layerMask = new LayerMask[4, this._colliders.Length];
+			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
-				this._backDrop._include[i] = colliders[i].includeLayers;
-				this._backDrop._exclude[i] = colliders[i].excludeLayers;
-				this._backDrop._contact[i] = colliders[i].contactCaptureLayers;
-				this._backDrop._callback[i] = colliders[i].callbackLayers;
-				colliders[i].isTrigger = true;
-				colliders[i].includeLayers = this._hitLayers;
-				colliders[i].excludeLayers = this._noHitLayers;
-				colliders[i].contactCaptureLayers = this._hitLayers;
-				colliders[i].callbackLayers = this._hitLayers;
+				this._backDrop._isTrigger[i] = this._colliders[i].isTrigger;
+				this._backDrop._layerMask[0, i] = this._colliders[i].includeLayers;
+				this._backDrop._layerMask[1, i] = this._colliders[i].excludeLayers;
+				this._backDrop._layerMask[2, i] = this._colliders[i].contactCaptureLayers;
+				this._backDrop._layerMask[3, i] = this._colliders[i].callbackLayers;
+				this._colliders[i].isTrigger = true;
+				this._colliders[i].includeLayers = this._hitLayers;
+				this._colliders[i].excludeLayers = this._noHitLayers;
+				this._colliders[i].contactCaptureLayers = this._hitLayers;
+				this._colliders[i].callbackLayers = this._hitLayers;
 			}
 		}
 		internal void Throw(Vector2 direction)
 		{
-			if (this._gravityOnThrow)
-				this._rigidbody.gravityScale = this._gravityScale;
+			this._rigidbody.gravityScale = this._throwGravity;
 			this._isThrew = true;
-			this._rigidbody.linearVelocity = direction * this._throwSpeed;
-			Destroy(this.gameObject, this._fadeTime);
+			for (ushort i = 0; i < this._colliders.Length; i++)
+				this._colliders[i].isTrigger = this._backDrop._isTrigger[i];
+			this._rigidbody.AddForce(direction * this._throwSpeed, ForceMode2D.Force);
+			if (this._fadeAway)
+				Destroy(this.gameObject, this._fadeTime);
 		}
 		internal void Drop()
 		{
 			this.GetComponent<IGrabtable>()?.Paralyze(false);
 			if (this._gravityScale != 0f)
-				this._rigidbody.gravityScale = _gravityScale;
+				this._rigidbody.gravityScale = this._gravityScale;
 			this.gameObject.layer = this._backDrop._layer;
-			this.transform.parent = this._backDrop._parent;
-			Collider2D[] colliders = this.GetComponents<Collider2D>();
-			for (ushort i = 0; i < colliders.Length; i ++)
+			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
-				colliders[i].isTrigger = false;
-				colliders[i].includeLayers = this._backDrop._include[i];
-				colliders[i].excludeLayers = this._backDrop._exclude[i];
-				colliders[i].contactCaptureLayers = this._backDrop._contact[i];
-				colliders[i].callbackLayers = this._backDrop._callback[i];
+				this._colliders[i].isTrigger = this._backDrop._isTrigger[i];
+				this._colliders[i].includeLayers = this._backDrop._layerMask[0, i];
+				this._colliders[i].excludeLayers = this._backDrop._layerMask[1, i];
+				this._colliders[i].contactCaptureLayers = this._backDrop._layerMask[2, i];
+				this._colliders[i].callbackLayers = this._backDrop._layerMask[3, i];
 			}
 		}
 	};
