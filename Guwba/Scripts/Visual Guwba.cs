@@ -10,11 +10,10 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static VisualGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
-		private Animator _animator;
 		private GroupBox _baseElement;
 		private Label _lifeText, _coinsText;
 		private bool _invencibility = false;
-		[SerializeField] private string _death, _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
+		[SerializeField] private string _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
 		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
@@ -28,7 +27,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			_instance = this;
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
-			this._animator = this.GetComponentInParent<Animator>();
 			UIDocument hudDocument = this.GetComponent<UIDocument>();
 			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
 			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
@@ -76,9 +74,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._invencibility = false;
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
-		private UnityAction<bool> ManualInvencibility => (bool isGrabbing) =>
+		private UnityAction<bool> ManualInvencibility => (bool isInvencible) =>
 		{
-			if (isGrabbing)
+			if (isInvencible)
 				this.StartCoroutine(this.Invencibility());
 			else
 				this.StopCoroutine(this.Invencibility());
@@ -102,13 +100,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._vitality = 0;
 				DataFile.Lifes -= 1;
 				this._lifeText.text = $"X {(DataFile.Lifes >= 0f ? DataFile.Lifes : 0f)}";
-				this._animator.SetTrigger(this._death);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
-				GuwbaTransformer<CommandGuwba>._actualState.Invoke(false);
+				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
+				this.ManualInvencibility.Invoke(false);
 				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
-				SetState(false);
 				ConfigurationController.DeathScreen();
 				return true;
 			}
