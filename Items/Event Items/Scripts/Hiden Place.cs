@@ -10,59 +10,24 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal sealed class HidenPlace : StateController, Receptor.IReceptor
 	{
 		private Tilemap _tilemap;
-		private SpriteRenderer[] _spriteRenderers;
 		private Collider2D[] _colliders;
 		private Light2DBase _selfLight;
 		private bool _appearCompleted = false, _fadeCompleted = false;
 		[SerializeField] private Light2DBase _followLight;
 		[SerializeField] private GameObject _shadowObject;
-		[SerializeField] private bool _isReceptor, _fadeActivation, _hasColliders, _reverseApparition, _hasShadow, _hasFollowLight;
+		[SerializeField] private bool _isReceptor, _fadeActivation, _hasColliders, _hasShadow, _hasFollowLight;
 		[SerializeField] private float _timeToFadeAgain, _timeToAppearAgain;
 		private new void Awake()
 		{
 			base.Awake();
 			this._tilemap = this.GetComponentInParent<Tilemap>();
-			this._spriteRenderers = this.GetComponentsInParent<SpriteRenderer>(true);
 			this._colliders = this.GetComponentsInParent<Collider2D>(true);
 			this._selfLight = this.GetComponent<Light2DBase>();
-		}
-		private IEnumerator AppearColliders()
-		{
-			for (float i = 0f; i < 1f; i += Time.deltaTime)
-			{
-				yield return new WaitForEndOfFrame();
-				yield return new WaitUntil(() => this.enabled);
-				foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-					spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, i);
-			}
-			foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-				spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
-			foreach (Collider2D collider in this._colliders)
-				collider.enabled = true;
-		}
-		private IEnumerator FadeColliders()
-		{
-			for (float i = 1f; i > 0f; i -= Time.deltaTime)
-			{
-				yield return new WaitForEndOfFrame();
-				yield return new WaitUntil(() => this.enabled);
-				foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-					spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, i);
-			}
-			foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-				spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0f);
-			foreach (Collider2D collider in this._colliders)
-				collider.enabled = false;
 		}
 		private IEnumerator Appear()
 		{
 			if (this._hasShadow)
 				this._shadowObject.SetActive(false);
-			if (this._hasColliders)
-				if (this._reverseApparition)
-					this.StartCoroutine(this.FadeColliders());
-				else
-					this.StartCoroutine(this.AppearColliders());
 			for (float i = 0f; i < 1f; i += Time.deltaTime)
 			{
 				yield return new WaitForEndOfFrame();
@@ -70,17 +35,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, i);
 			}
 			this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, 1f);
+			if (this._hasColliders)
+				foreach (Collider2D collider in this._colliders)
+					collider.enabled = true;
 			this._appearCompleted = true;
 		}
 		private IEnumerator Fade()
 		{
 			if (this._hasShadow)
 				this._shadowObject.SetActive(true);
-			if (this._hasColliders)
-				if (this._reverseApparition)
-					this.StartCoroutine(this.AppearColliders());
-				else
-					this.StartCoroutine(this.FadeColliders());
 			for (float i = 1f; i > 0f; i -= Time.deltaTime)
 			{
 				yield return new WaitForEndOfFrame();
@@ -88,6 +51,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, i);
 			}
 			this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, 0f);
+			if (this._hasColliders)
+				foreach (Collider2D collider in this._colliders)
+					collider.enabled = false;
 			this._fadeCompleted = true;
 		}
 		public void ActivationEvent()
