@@ -12,10 +12,10 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
-			short sceneIndex = short.Parse($"{this.gameObject.scene.name[^1]}");
-			if (!SaveController.LevelsCompleted[sceneIndex])
-				SaveController.LevelsCompleted[sceneIndex] = true;
-			if (this._saveOnSpecifics)
+			ushort sceneIndex = ushort.Parse($"{this.gameObject.scene.name[^1]}");
+			if (!SaveController.LevelsCompleted[sceneIndex - 1])
+				SaveController.LevelsCompleted[sceneIndex - 1] = true;
+			if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
 				SaveController.GeneralObjects.Add(this.gameObject.name);
 			if (sceneIndex - 1 >= 0f && !SaveController.DeafetedBosses[sceneIndex - 1])
 				if (this._enterInDialog)
