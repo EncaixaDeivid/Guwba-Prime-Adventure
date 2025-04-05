@@ -96,7 +96,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 						while (this._followLight.enabled)
 						{
 							this._followLight.transform.position = GuwbaTransformer<CommandGuwba>.Position;
-							yield return new WaitForEndOfFrame();
+							yield return new WaitForFixedUpdate();
 							yield return new WaitUntil(() => this.enabled);
 						}
 					}
