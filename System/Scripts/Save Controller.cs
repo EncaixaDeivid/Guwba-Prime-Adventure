@@ -15,8 +15,7 @@ namespace GuwbaPrimeAdventure
 			public List<bool> BooksValue;
 			public List<string> GeneralObjects;
 			public string LastLevelEntered;
-			public bool[] LevelsCompleted;
-			public bool[] DeafetedBosses;
+			public bool[,] LevelsCompleted;
 		};
 		private static ushort ActualSaveFile = 0;
 		public static ushort Lifes = LoadFile().Lifes;
@@ -25,14 +24,12 @@ namespace GuwbaPrimeAdventure
 		private static List<string> _privateLifesAcquired = LoadFile().LifesAcquired;
 		private static Dictionary<string, bool> _privateBooks = LoadFile().Books;
 		private static List<string> _privateGeneralObjects = LoadFile().GeneralObjects;
-		private static bool[] _privateLevelsCompleted = LoadFile().LevelsCompleted;
-		private static bool[] _privateDeafetedBosses = LoadFile().DeafetedBosses;
+		private static bool[,] _privateLevelsCompleted = LoadFile().LevelsCompleted;
 		public static string LastLevelEntered => InternalLastLevelEntered;
 		public static List<string> LifesAcquired => _privateLifesAcquired;
 		public static Dictionary<string, bool> Books => _privateBooks;
 		public static List<string> GeneralObjects => _privateGeneralObjects;
-		public static bool[] LevelsCompleted => _privateLevelsCompleted;
-		public static bool[] DeafetedBosses => _privateDeafetedBosses;
+		public static bool[,] LevelsCompleted => _privateLevelsCompleted;
 		internal static void RefreshData()
 		{
 			Lifes = LoadFile().Lifes;
@@ -42,7 +39,6 @@ namespace GuwbaPrimeAdventure
 			_privateGeneralObjects = LoadFile().GeneralObjects;
 			InternalLastLevelEntered = LoadFile().LastLevelEntered;
 			_privateLevelsCompleted = LoadFile().LevelsCompleted;
-			_privateDeafetedBosses = LoadFile().DeafetedBosses;
 		}
 		internal static bool FileExists() => File.Exists($"{Application.persistentDataPath}/{FilesController.Select(ActualSaveFile)}.txt");
 		private static SaveFile LoadFile()
@@ -57,8 +53,7 @@ namespace GuwbaPrimeAdventure
 				BooksValue = new List<bool>(),
 				GeneralObjects = new List<string>(),
 				LastLevelEntered = "",
-				LevelsCompleted = new bool[2],
-				DeafetedBosses = new bool[1]
+				LevelsCompleted = new bool[2,2]
 			};
 			string actualSaveFile = FilesController.Select(ActualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
@@ -123,8 +118,7 @@ namespace GuwbaPrimeAdventure
 				BooksValue = new List<bool>(Books?.Count > 0f ? Books.Values : new List<bool>()),
 				GeneralObjects = GeneralObjects,
 				LastLevelEntered = LastLevelEntered,
-				LevelsCompleted = LevelsCompleted,
-				DeafetedBosses = DeafetedBosses
+				LevelsCompleted = LevelsCompleted
 			};
 			ArchiveEncoder.WriteData(newSaveFile, actualPath);
 		}
