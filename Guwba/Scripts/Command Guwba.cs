@@ -169,13 +169,16 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Action<InputAction.CallbackContext> Interaction => (InputAction.CallbackContext interactionAction) =>
 		{
 			Vector2 point = this.transform.position;
-			if (_grabObject && !_grabObject.IsDamageable)
+			if (_grabObject)
 			{
-				this._animator.SetBool(this._hold, false);
-				_grabObject.Drop();
-				_grabObject = null;
-				GuwbaTransformer<VisualGuwba>._grabObject = null;
-				GuwbaTransformer<AttackGuwba>._grabObject = null;
+				if (!_grabObject.IsDamageable)
+				{
+					this._animator.SetBool(this._hold, false);
+					_grabObject.Drop();
+					_grabObject = null;
+					GuwbaTransformer<VisualGuwba>._grabObject = null;
+					GuwbaTransformer<AttackGuwba>._grabObject = null;
+				}
 			}
 			else if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, 0f, this._interactionLayerMask))
