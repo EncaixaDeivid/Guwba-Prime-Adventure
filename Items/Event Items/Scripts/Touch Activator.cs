@@ -4,26 +4,22 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent]
 	internal sealed class TouchActivator : Activator
 	{
-		[SerializeField] private bool _enterCollisionActivation, _exitCollisionActivation, _enterTriggerActivation, _exitTriggerActivation;
-		private void OnCollisionEnter2D(Collision2D other)
+		[SerializeField] private GameObject _objectActivator;
+		[SerializeField] private bool _enterCollision, _exitCollision, _enterTrigger, _exitTrigger;
+		private void Activate(bool activationKey, bool objectKey)
 		{
-			if (this._enterCollisionActivation)
-				this.Activation();
+			if (activationKey)
+				if (this._objectActivator)
+				{
+					if (objectKey)
+						this.Activation();
+				}
+				else
+					this.Activation();
 		}
-		private void OnTriggerEnter2D(Collider2D other)
-		{
-			if (this._enterTriggerActivation)
-				this.Activation();
-		}
-		private void OnCollisionExit2D(Collision2D other)
-		{
-			if (this._exitCollisionActivation)
-				this.Activation();
-		}
-		private void OnTriggerExit2D(Collider2D other)
-		{
-			if (this._exitTriggerActivation)
-				this.Activation();
-		}
+		private void OnCollisionEnter2D(Collision2D other) => this.Activate(this._enterCollision, this._objectActivator == other.gameObject);
+		private void OnTriggerEnter2D(Collider2D other) => this.Activate(this._enterTrigger, this._objectActivator == other.gameObject);
+		private void OnCollisionExit2D(Collision2D other) => this.Activate(this._exitCollision, this._objectActivator == other.gameObject);
+		private void OnTriggerExit2D(Collider2D other) => this.Activate(this._exitTrigger, this._objectActivator == other.gameObject);
 	};
 };
