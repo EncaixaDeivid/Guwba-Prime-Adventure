@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (this._hasShadow)
 				this._shadowObject.SetActive(false);
-			for (float i = 0f; i < 1f; i += Time.deltaTime)
+			for (float i = 0f; i < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => this.enabled);
@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (this._hasShadow)
 				this._shadowObject.SetActive(true);
-			for (float i = 1f; i > 0f; i -= Time.deltaTime)
+			for (float i = 1f; i > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => this.enabled);
