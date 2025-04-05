@@ -5,14 +5,18 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal sealed class TouchActivator : Activator
 	{
 		[SerializeField] private GameObject _objectActivator;
-		[SerializeField] private bool _enterCollision, _exitCollision, _enterTrigger, _exitTrigger;
+		[SerializeField] private bool _enterCollision, _exitCollision, _enterTrigger, _exitTrigger, _destroyObject;
 		private void Activate(bool activationKey, bool objectKey)
 		{
 			if (activationKey)
 				if (this._objectActivator)
 				{
 					if (objectKey)
+					{
 						this.Activation();
+						if (this._destroyObject)
+							Destroy(this._objectActivator);
+					}
 				}
 				else
 					this.Activation();
