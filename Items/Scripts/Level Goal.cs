@@ -17,11 +17,10 @@ namespace GuwbaPrimeAdventure.Item
 				SaveController.LevelsCompleted[sceneIndex - 1] = true;
 			if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
 				SaveController.GeneralObjects.Add(this.gameObject.name);
-			if (sceneIndex - 1 >= 0f && !SaveController.DeafetedBosses[sceneIndex - 1])
-				if (this._enterInDialog)
-					this.GetComponent<IInteractable>().Interaction();
-				else
-					this.GetComponent<TransitionController>().Transicion(this._goToBoss);
+			if (this._enterInDialog && SettingsController.DialogToggle)
+				this.GetComponent<IInteractable>().Interaction();
+			else if (sceneIndex - 1 >= 0f && !SaveController.DeafetedBosses[sceneIndex - 1])
+				this.GetComponent<TransitionController>().Transicion(this._goToBoss);
 			else
 				this.GetComponent<TransitionController>().Transicion();
 		}
