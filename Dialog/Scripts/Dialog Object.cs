@@ -6,7 +6,9 @@ namespace GuwbaPrimeAdventure.Dialog
 	internal class DialogObject : ScriptableObject
     {
 		[SerializeField] private Dialog[] _dialog;
+		[SerializeField] private bool _cannotClose;
 		internal Dialog[] Dialogs => this._dialog;
+		internal bool CannotClose => this._cannotClose;
 	};
 	[Serializable]
 	internal struct Dialog
