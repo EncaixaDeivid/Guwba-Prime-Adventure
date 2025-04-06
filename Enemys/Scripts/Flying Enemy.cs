@@ -79,7 +79,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._normal = this._pointIndex == 0f;
 				}
 				this._spriteRenderer.flipX = target.x < this.transform.position.x;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._speedTrail * Time.deltaTime);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._speedTrail * Time.fixedDeltaTime);
 				this._pointOrigin = this.transform.position;
 			}
 		}
