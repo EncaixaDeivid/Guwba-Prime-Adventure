@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private ushort _speedTrail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
-		[SerializeField] private bool _stopOnTarget, _endlessPursue;
+		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue;
 		private new void Awake()
 		{
 			base.Awake();
@@ -66,7 +66,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (this._trail.Length > 0f && !followTarget)
 			{
 				Vector2 target = this._trail[this._pointIndex];
-				if (this._normal)
+				if (this._repeatWay)
+				{
+					if (Vector2.Distance(this.transform.position, target) <= 0f)
+						this._pointIndex = (ushort)(this._pointIndex < this._trail.Length - 1f ? this._pointIndex + 1f : 0f);
+				}
+				else if (this._normal)
 				{
 					if (Vector2.Distance(this.transform.position, target) <= 0f)
 						this._pointIndex += 1;
