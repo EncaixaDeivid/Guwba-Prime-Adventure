@@ -22,9 +22,12 @@ namespace GuwbaPrimeAdventure.Dialog
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
 				this._dialogTalk = this._dialogObject[this._dialogObjectIndex].Dialogs[this._dialogIndex];
-				this._dialogIndex = (ushort)(this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f ? 1f : 0f);
+				bool indexValidation = this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f;
+				this._dialogIndex = (ushort)(indexValidation ? this._dialogIndex + 1f : 0f);
 				this._dialogObjectIndex = (ushort)(this._dialogObjectIndex < this._dialogObject.Length - 1f ? this._dialogObjectIndex + 1f : 0f);
 				this._dialogTime = SettingsController.DialogSpeed;
+				if (this._dialogObject[this._dialogObjectIndex].CannotClose)
+					this._dialogHud.CloseDialog.style.display = DisplayStyle.None;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this._dialogHud.CloseDialog.clicked += this.CloseDialog;
 				this.StartCoroutine(this.TextDigitation());
@@ -43,6 +46,19 @@ namespace GuwbaPrimeAdventure.Dialog
 				yield return new WaitForSeconds(this._dialogTime);
 			}
 		}
+		private void WorldInteraction()
+		{
+			if (this._dialogTalk.SaveOnEspecific)
+				SaveController.GeneralObjects.Add(this.gameObject.name);
+			if (this._dialogTalk.ActivateTransition)
+				this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
+			else if (this._dialogTalk.ActivateAnimation)
+				this._animator.SetTrigger(this._dialogTalk.Animation);
+			if (this._dialogTalk.DesactiveInteraction)
+				this.enabled = false;
+			if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
+				Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
+		}
 		private void AdvanceSpeach()
 		{
 			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
@@ -55,16 +71,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				}
 				else
 				{
-					if (this._dialogTalk.SaveOnEspecific)
-						SaveController.GeneralObjects.Add(this.gameObject.name);
-					if (this._dialogTalk.ActivateTransition)
-						this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
-					else if (this._dialogTalk.ActivateAnimation)
-						this._animator.SetBool(this._dialogTalk.Animation, true);
-					if (this._dialogTalk.DesactiveInteraction)
-						this.enabled = true;
-					if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
-						Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
+					this.WorldInteraction();
 					this._text = null;
 					this._speachIndex = 0;
 					this._dialogHud.CharacterIcon.style.backgroundImage = null;
@@ -86,19 +93,20 @@ namespace GuwbaPrimeAdventure.Dialog
 			this._dialogHud.CharacterIcon.style.backgroundImage = null;
 			this._dialogHud.CharacterName.text = null;
 			this._dialogHud.CharacterSpeach.text = null;
-			if (this._dialogIndex > 0)
-				this._dialogIndex -= 1;
-			else if (this._dialogIndex <= 0)
-				this._dialogIndex = (ushort)(this._dialogObject.Length - 1);
 			if (this._dialogObjectIndex > 0)
 				this._dialogObjectIndex -= 1;
 			else if (this._dialogObjectIndex <= 0)
-				this._dialogObjectIndex = (ushort)(this._dialogObject.Length - 1);
+				this._dialogObjectIndex = (ushort)(this._dialogObject.Length - 1f);
+			if (this._dialogIndex > 0)
+				this._dialogIndex -= 1;
+			else if (this._dialogIndex <= 0)
+				this._dialogIndex = (ushort)(this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f);
 			this.StopCoroutine(this.TextDigitation());
 			this._dialogHud.AdvanceSpeach.clicked -= this.AdvanceSpeach;
 			this._dialogHud.CloseDialog.clicked -= this.CloseDialog;
 			Destroy(this._dialogHud.gameObject);
 			StateController.SetState(true);
+			this.WorldInteraction();
 		}
 	};
 };
