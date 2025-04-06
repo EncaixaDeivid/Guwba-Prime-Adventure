@@ -15,9 +15,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _isParalyzed = false, _breakInUse = false;
 		[Header("Projectile"), SerializeField] private Projectile _secondProjectile;
 		[SerializeField] private LayerMask _groundLayerMask;
+		[SerializeField] private ForceMode2D _forceMode;
 		[SerializeField] private bool
 			_isInoffensive,
 			_stayInPlace,
+			_useForce,
 			_sideMovement,
 			_invertSide,
 			_rotationMatter,
@@ -145,7 +147,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Start()
 		{
 			if (!this._stayInPlace)
-				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
+				if (this._useForce)
+					this._rigidbody.AddForce((this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed, this._forceMode);
+				else
+					this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
 		}
 		private void FixedUpdate()
 		{
