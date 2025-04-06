@@ -13,6 +13,7 @@ namespace GuwbaPrimeAdventure
 			[Range(0f, 1f)] public float EffectsVolume;
 			public bool MusicVolumeToggle;
 			[Range(0f, 1f)] public float MusicVolume;
+			public bool DialogToggle;
 			[Range(0f, .1f)] public float DialogSpeed;
 		}
 		private static readonly string SettingsPath = Application.persistentDataPath + "/Settings.txt";
@@ -29,6 +30,7 @@ namespace GuwbaPrimeAdventure
 				EffectsVolume = 1f,
 				MusicVolumeToggle = true,
 				MusicVolume = 1f,
+				DialogToggle = true,
 				DialogSpeed = .05f
 			};
 		}
@@ -43,6 +45,7 @@ namespace GuwbaPrimeAdventure
 				EffectsVolume = EffectsVolume,
 				MusicVolumeToggle = MusicVolumeToggle,
 				MusicVolume = MusicVolume,
+				DialogToggle = DialogToggle,
 				DialogSpeed = DialogSpeed
 			};
 			ArchiveEncoder.WriteData(settings, SettingsPath);
@@ -54,6 +57,7 @@ namespace GuwbaPrimeAdventure
 		public static float EffectsVolume = LoadSettings().EffectsVolume;
 		public static bool MusicVolumeToggle = LoadSettings().MusicVolumeToggle;
 		public static float MusicVolume = LoadSettings().MusicVolume;
+		public static bool DialogToggle = LoadSettings().DialogToggle;
 		public static float DialogSpeed = LoadSettings().DialogSpeed;
 	};
 };
