@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Weak Point"), SerializeField] private short _vitality;
 		[SerializeField] private ushort _biggerDamage;
 		[SerializeField] private float _timeToDamage;
+  		public ushort Health => (ushort)this._vitality;
 		public bool Damage(ushort damage)
 		{
 			if (this._blockDamage)
