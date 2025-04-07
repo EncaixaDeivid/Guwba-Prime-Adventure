@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] protected bool _stopMovement;
 		[SerializeField] private bool _invertMovementSide, _noDamage, _noContactDamage, _saveObject;
 		protected bool Paralyzed => this._paralyzed;
-  		public ushort Health => (ushort)this._vitality;
+		public ushort Health => (ushort)this._vitality;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -68,8 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._noDamage || this._paralyzed)
 				return false;
-			this._vitality -= (short)damage;
-			if (this._vitality <= 0)
+			if ((this._vitality -= (short)damage) <= 0)
 				Destroy(this.gameObject);
 			return true;
 		}
