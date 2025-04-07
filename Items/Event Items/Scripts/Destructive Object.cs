@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField] private GameObject _hiddenObject;
 		[SerializeField] private short _vitality, _biggerDamage;
 		[SerializeField] private bool _destroyOnCollision, _saveObject, _saveOnDestruction;
+  		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
