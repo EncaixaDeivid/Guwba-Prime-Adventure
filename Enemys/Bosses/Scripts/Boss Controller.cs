@@ -3,7 +3,7 @@ using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(TransitionController))]
+	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(TransitionController)), RequireComponent(typeof(IInteractable))]
 	internal abstract class BossController : StateController
 	{
 		protected SpriteRenderer _spriteRenderer;
@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField] protected string _idle, _walk, _dash, _jump, _fall;
 		[SerializeField] protected ushort _movementSpeed;
 		[SerializeField] private ushort _damage;
-		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage;
+		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage, _haveDialog;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -111,9 +111,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			if (bossProp)
 			{
-				if (!SaveController.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1])
-					SaveController.DeafetedBosses[ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1] = true;
-				this.GetComponent<TransitionController>().Transicion();
+				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
+				if (!SaveController.DeafetedBosses[sceneIndex])
+					SaveController.DeafetedBosses[sceneIndex] = true;
+				if (SettingsController.DialogToggle && this._haveDialog)
+					this.GetComponent<IInteractable>().Interaction();
+				else
+					this.GetComponent<TransitionController>().Transicion();
 			}
 		}
 		[RequireComponent(typeof(Transform), typeof(Collider2D))]
@@ -143,7 +147,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				base.OnDestroy();
 				if (!this._useDestructuion)
 					return;
-				if (this._saveOnSpecifics)
+				if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
 					SaveController.GeneralObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
 					this._bossesControllers[0].Destroy(this);
