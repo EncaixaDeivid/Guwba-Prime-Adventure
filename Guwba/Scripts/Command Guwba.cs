@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private ActionsGuwba _actions;
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
-		private bool _isOnGround = false, _downStairs = false, _canJump = false;
+		private bool _isOnGround = false, _downStairs = false, _isJumping = false, _canJump = false;
 		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
 		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold, _death;
 		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
@@ -133,7 +133,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._canJump = false;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._downStairs = false;
+				this._isJumping = true;
 				this._rigidbody.AddForceY(this._jumpStrenght);
 			}
 		};
@@ -190,18 +190,16 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void FixedUpdate()
 		{
-			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
-			Vector2 pointGround = new(this.transform.position.x, yPoint);
-			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
-			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, 0f, this._groundLayerMask);
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
-			if (!this._isOnGround && this._downStairs && this._movementAction != 0f)
+			bool downStairs = false;
+			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && !this._isJumping)
 			{
 				float xOrigin = this.transform.position.x - (this._collider.bounds.extents.x / 2f * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
-				if (downRay)
+				downStairs = downRay;
+				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
 			if (this._isOnGround)
@@ -217,25 +215,27 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.linearVelocityY = 0f;
 				this._downStairs = true;
 			}
-			else if (this._rigidbody.linearVelocityY > 0f)
+			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
 			{
 				this._animator.SetBool(this._idle, false);
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
+				this._isJumping = false;
 				this._downStairs = false;
 			}
-			else if (this._rigidbody.linearVelocityY < 0f)
+			else if (this._rigidbody.linearVelocityY < 0f && !downStairs)
 			{
 				this._animator.SetBool(this._idle, false);
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, true);
 				if (this._rigidbody.gravityScale < this._gravityScale * 2f)
-					this._rigidbody.gravityScale += this._gravityScale * 2f * Time.deltaTime;
+					this._rigidbody.gravityScale += this._gravityScale * 2f * Time.fixedDeltaTime;
 				else
 					this._rigidbody.gravityScale = this._gravityScale * 2f;
+				this._isJumping = false;
 				this._downStairs = false;
 			}
 			if (this._movementAction != 0f)
@@ -268,6 +268,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + this._collider.size.y - this._lowHoldOffset);
 				_grabObject.transform.position = newPosition;
 			}
+			this._isOnGround = false;
+		}
+		private void OnCollisionStay2D(Collision2D collision)
+		{
+			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
+			Vector2 pointGround = new(this.transform.position.x, yPoint);
+			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
+			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, 0f, this._groundLayerMask);
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
