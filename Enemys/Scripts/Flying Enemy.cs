@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -12,15 +13,21 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private ushort _speedTrail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
-		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue;
+		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue, _justHorizontal, _justVertical;
 		private new void Awake()
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
-			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
+			this._toggleEvent += this.ToggleEvent;
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
 		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			this._toggleEvent -= this.ToggleEvent;
+		}
+		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
 		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
@@ -53,7 +60,12 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 direction = (targetPoint - (Vector2)this.transform.position).normalized;
 				float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90f;
 				direction = Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up;
-				this._rigidybody.linearVelocity = direction * this._movementSpeed;
+				if (this._justHorizontal)
+					this._rigidybody.linearVelocityX = direction.x * this._movementSpeed;
+				else if (this._justVertical)
+					this._rigidybody.linearVelocityY = direction.y * this._movementSpeed;
+				else
+					this._rigidybody.linearVelocity = direction * this._movementSpeed;
 				if (Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance || this._stopOnTarget)
 					this._rigidybody.linearVelocity = Vector2.zero;
 			}
