@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Vector2 _guardVelocity = new();
 		private bool _isAttacking = false;
-		[SerializeField] private ushort _damage;
+		[SerializeField] private ushort _damage, _valueToGrab;
 		[SerializeField] private float _movementSpeed, _movementDistance, _hitStopTime, _hitSlowTime;
 		private new void Awake()
 		{
@@ -91,7 +91,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (_returnAttack || !this._isAttacking)
 				return;
-			if (other.TryGetComponent<GrabBody>(out var grabBody) && grabBody.IsGrabtable)
+			bool isGrabObject = other.TryGetComponent<GrabBody>(out var grabBody);
+			bool isDamageable = other.TryGetComponent<IDamageable>(out var damageable);
+			if (isGrabObject || (isGrabObject && isDamageable && damageable.Health == this._valueToGrab) && grabBody.IsGrabtable)
 			{
 				GuwbaTransformer<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
@@ -100,7 +102,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				_grabObject = grabBody;
 				_grabObject.Stop((ushort)this.gameObject.layer);
 			}
-			else if (other.TryGetComponent<IDamageable>(out var damageable))
+			else if (isDamageable)
 			{
 				GuwbaTransformer<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
