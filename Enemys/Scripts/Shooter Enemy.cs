@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -14,8 +15,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
+			this._toggleEvent += this.ToggleEvent;
 			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			this._toggleEvent -= this.ToggleEvent;
+		}
+		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
 		private bool AimPerception()
 		{
 			float originDirection = this._collider.bounds.extents.x * this._movementSide;
@@ -37,7 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						return true;
 			return false;
 		}
-		private void FixedUpdate() // Shoot Time
+		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
