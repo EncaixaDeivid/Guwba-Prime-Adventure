@@ -93,7 +93,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			bool isGrabObject = other.TryGetComponent<GrabBody>(out var grabBody);
 			bool isDamageable = other.TryGetComponent<IDamageable>(out var damageable);
-			if (isGrabObject || (isGrabObject && isDamageable && damageable.Health == this._valueToGrab) && grabBody.IsGrabtable)
+			if ((isGrabObject || (isGrabObject && isDamageable && damageable.Health == this._valueToGrab)) && grabBody.IsGrabtable)
 			{
 				GuwbaTransformer<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
