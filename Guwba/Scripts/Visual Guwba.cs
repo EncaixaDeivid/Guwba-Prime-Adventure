@@ -17,6 +17,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
 		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
+  		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
