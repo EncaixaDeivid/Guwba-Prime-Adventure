@@ -27,10 +27,10 @@ namespace GuwbaPrimeAdventure
 			{
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(this._transicionHud);
-				for (float i = 0f; i < 1.1f; i += Time.deltaTime)
+				for (float i = 0f; i < 1.1f; i += Time.fixedDeltaTime)
 				{
 					transicionHud.BaseElement.style.opacity = i;
-					yield return new WaitForEndOfFrame();
+					yield return new WaitForFixedUpdate();
 				}
 				transicionHud.BaseElement.style.opacity = 1f;
 				string newSceneName = sceneName != "" ? sceneName : this._sceneTransicion;
