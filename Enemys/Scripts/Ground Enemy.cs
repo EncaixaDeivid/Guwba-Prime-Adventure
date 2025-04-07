@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -13,9 +14,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
+			this._toggleEvent += this.ToggleEvent;
 		}
-		private void FixedUpdate() // Movement
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			this._toggleEvent -= this.ToggleEvent;
+		}
+		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
+		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
