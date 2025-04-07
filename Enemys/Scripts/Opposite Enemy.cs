@@ -2,5 +2,5 @@ using UnityEngine;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal abstract class OpositeEnemy : EnemyController { };
+	internal abstract class OppositeEnemy : EnemyController { };
 };
