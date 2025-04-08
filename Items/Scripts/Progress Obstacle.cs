@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
@@ -9,11 +10,12 @@ namespace GuwbaPrimeAdventure.Item
 		private new void Awake()
 		{
 			base.Awake();
-			bool levelCompleted = SaveController.LevelsCompleted[this._progressIndex - 1];
-			if (this._isBossProgress ? SaveController.DeafetedBosses[this._progressIndex - 1] : levelCompleted)
+			SaveController.Load(out SaveFile saveFile);
+			bool levelCompleted = saveFile.levelsCompleted[this._progressIndex - 1];
+			if (this._isBossProgress ? saveFile.deafetedBosses[this._progressIndex - 1] : levelCompleted)
 			{
-				if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
-					SaveController.GeneralObjects.Add(this.gameObject.name);
+				if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+					saveFile.generalObjects.Add(this.gameObject.name);
 				Destroy(this.gameObject, 0.001f);
 			}
 		}
