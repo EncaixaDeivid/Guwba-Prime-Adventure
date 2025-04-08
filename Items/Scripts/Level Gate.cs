@@ -12,7 +12,6 @@ namespace GuwbaPrimeAdventure.Item
 	{
 		private LevelGateHud _levelGateInstance;
 		private CinemachineCamera _showCamera;
-		private SaveFile _saveFile;
 		private short _defaultPriority;
 		[SerializeField] private LevelGateHud _levelGate;
 		[SerializeField] private string _levelScene, _bossScene;
@@ -23,7 +22,6 @@ namespace GuwbaPrimeAdventure.Item
 			base.Awake();
 			this._showCamera = this.GetComponentInChildren<CinemachineCamera>();
 			this._defaultPriority = (short)this._showCamera.Priority.Value;
-			SaveController.Load(out this._saveFile);
 		}
 		private void OnEnable()
 		{
@@ -41,20 +39,22 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
+			SaveController.Load(out SaveFile saveFile);
 			this._levelGateInstance = Instantiate(this._levelGate, this.transform);
 			this._levelGateInstance.Level.clicked += this.EnterLevel;
-			if (!this._dontUseBoss && this._saveFile.levelsCompleted[ushort.Parse($"{this._levelScene[^1]}") - 1])
+			if (!this._dontUseBoss && saveFile.levelsCompleted[ushort.Parse($"{this._levelScene[^1]}") - 1])
 				this._levelGateInstance.Boss.clicked += this.EnterBoss;
-			this._levelGateInstance.Life.text = $"X {this._saveFile.lifes}";
-			this._levelGateInstance.Coin.text = $"X {this._saveFile.coins}";
+			this._levelGateInstance.Life.text = $"X {saveFile.lifes}";
+			this._levelGateInstance.Coin.text = $"X {saveFile.coins}";
 			this._showCamera.Priority.Value = this._overlayPriority;
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
+			SaveController.Load(out SaveFile saveFile);
 			this._levelGateInstance.Level.clicked -= this.EnterLevel;
-			if (!this._dontUseBoss && this._saveFile.levelsCompleted[ushort.Parse($"{this._levelScene[^1]}") - 1])
+			if (!this._dontUseBoss && saveFile.levelsCompleted[ushort.Parse($"{this._levelScene[^1]}") - 1])
 				this._levelGateInstance.Boss.clicked -= this.EnterBoss;
 			this._showCamera.Priority.Value = this._defaultPriority;
 			Destroy(this._levelGateInstance.gameObject);
