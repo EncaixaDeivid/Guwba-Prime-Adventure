@@ -54,7 +54,10 @@ namespace GuwbaPrimeAdventure.Dialog
 		private void WorldInteraction()
 		{
 			if (this._dialogTalk.SaveOnEspecific && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+			{
 				this._saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(this._saveFile);
+			}
 			if (this._dialogTalk.ActivateTransition)
 				this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
 			else if (this._dialogTalk.ActivateAnimation)
