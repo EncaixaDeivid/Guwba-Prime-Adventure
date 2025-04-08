@@ -104,7 +104,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._vitality = 0;
 				this._saveFile.lifes -= 1;
 				this._lifeText.text = $"X {(this._saveFile.lifes >= 0f ? this._saveFile.lifes : 0f)}";
-				SaveController.WriteSave(this._saveFile.lifes, true);
+				SaveController.WriteSave(this._saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
 				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
