@@ -16,6 +16,12 @@ namespace GuwbaPrimeAdventure.Data
 		public bool[] levelsCompleted;
 		public bool[] deafetedBosses;
 	};
+	public enum StringTypes
+	{
+		LifesAcquired,
+		GeneralObjects,
+		LastLevelEntered
+	};
 	public static class SaveController
 	{
 		private static SaveFile _saveFile = LoadFile();
@@ -57,15 +63,29 @@ namespace GuwbaPrimeAdventure.Data
 			}
 			return saveFile;
 		}
-		public static void WriteSave(ushort lifes, string lifeAcquired)
+		public static void WriteSave(StringTypes stringTypes, string stringValue)
 		{
-			_saveFile.lifes = lifes;
-			_saveFile.lifesAcquired.Add(lifeAcquired);
+			switch (stringTypes)
+			{
+				case StringTypes.LifesAcquired:
+					_saveFile.lifesAcquired.Add(stringValue);
+					break;
+				case StringTypes.GeneralObjects:
+					_saveFile.generalObjects.Add(stringValue);
+					break;
+				case StringTypes.LastLevelEntered:
+					_saveFile.lastLevelEntered = stringValue;
+					break;
+			}
 		}
-		public static void WriteSave(ushort coins) => _saveFile.coins = coins;
+		public static void WriteSave(ushort numberValue, bool isLife)
+		{
+			if (isLife)
+				_saveFile.lifes = numberValue;
+			else
+				_saveFile.coins = numberValue;
+		}
 		public static void WriteSave(string bookName, bool bookAcquired) => _saveFile.books.Add(bookName, bookAcquired);
-		public static void WriteSave(params string[] generalObject) => _saveFile.generalObjects.AddRange(generalObject);
-		public static void WriteSave(string lastLevelEntered) => _saveFile.lastLevelEntered = lastLevelEntered;
 		public static void WriteSave(ushort levelIndex, bool levelValue, bool isBoss)
 		{
 			if (isBoss)
