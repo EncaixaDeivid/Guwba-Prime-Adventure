@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
@@ -12,14 +13,22 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
 				return;
+			SaveController.Load(out SaveFile saveFile);
+			SettingsController.Load(out Settings settings);
 			ushort sceneIndex = ushort.Parse($"{this.gameObject.scene.name[^1]}");
-			if (!SaveController.LevelsCompleted[sceneIndex - 1])
-				SaveController.LevelsCompleted[sceneIndex - 1] = true;
-			if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
-				SaveController.GeneralObjects.Add(this.gameObject.name);
-			if (this._enterInDialog && SettingsController.DialogToggle)
+			if (!saveFile.levelsCompleted[sceneIndex - 1])
+			{
+				saveFile.levelsCompleted[sceneIndex - 1] = true;
+				SaveController.WriteSave(saveFile);
+			}
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+			{
+				saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(saveFile);
+			}
+			if (this._enterInDialog && settings.dialogToggle)
 				this.GetComponent<IInteractable>().Interaction();
-			else if (sceneIndex - 1 >= 0f && !SaveController.DeafetedBosses[sceneIndex - 1])
+			else if (sceneIndex - 1 >= 0f && !saveFile.deafetedBosses[sceneIndex - 1])
 				this.GetComponent<TransitionController>().Transicion(this._goToBoss);
 			else
 				this.GetComponent<TransitionController>().Transicion();
