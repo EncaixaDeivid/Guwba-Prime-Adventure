@@ -14,21 +14,6 @@ namespace GuwbaPrimeAdventure.Data
 		public bool dialogToggle;
 		[Range(0f, .1f)] public float dialogSpeed;
 	};
-	public enum ToggleSettings
-	{
-		FullScreen,
-		GeneralVolumeToggle,
-		EffectsVolumeToggle,
-		MusicVolumeToggle,
-		DialogToggle,
-	};
-	public enum RangeSettings
-	{
-		GeneralVolume,
-		EffectsVolume,
-		MusicVolume,
-		DialogSpeed
-	};
 	public static class SettingsController
 	{
 		private static Settings _settings = new();
@@ -50,45 +35,7 @@ namespace GuwbaPrimeAdventure.Data
 			if (File.Exists(SettingsPath))
 				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
 		}
-		public static void WriteSave(ToggleSettings toggleSettings, bool settingsValue)
-		{
-			switch (toggleSettings)
-			{
-				case ToggleSettings.FullScreen:
-					_settings.fullScreen = settingsValue;
-					break;
-				case ToggleSettings.GeneralVolumeToggle:
-					_settings.generalVolumeToggle = settingsValue;
-					break;
-				case ToggleSettings.EffectsVolumeToggle:
-					_settings.effectsVolumeToggle = settingsValue;
-					break;
-				case ToggleSettings.MusicVolumeToggle:
-					_settings.musicVolumeToggle = settingsValue;
-					break;
-				case ToggleSettings.DialogToggle:
-					_settings.dialogToggle = settingsValue;
-					break;
-			}
-		}
-		public static void WriteSave(RangeSettings rangeSettings, float settingsValue)
-		{
-			switch (rangeSettings)
-			{
-				case RangeSettings.GeneralVolume:
-					_settings.generalVolume = settingsValue;
-					break;
-				case RangeSettings.EffectsVolume:
-					_settings.effectsVolume = settingsValue;
-					break;
-				case RangeSettings.MusicVolume:
-					_settings.musicVolume = settingsValue;
-					break;
-				case RangeSettings.DialogSpeed:
-					_settings.dialogSpeed = settingsValue;
-					break;
-			}
-		}
+		public static void WriteSave(Settings settings) => _settings = settings;
 		public static void SaveSettings() =>
 			ArchiveEncoder.WriteData(new Settings()
 			{
