@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
@@ -9,6 +10,7 @@ namespace GuwbaPrimeAdventure
 	{
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
+		private SaveFile _saveFile;
 		[SerializeField] private DeathScreenHud _deathScreenHudObject;
 		private void Awake()
 		{
@@ -18,8 +20,9 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
+			SaveController.Load(out this._saveFile);
 			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-			if (SaveController.Lifes < 0f)
+			if (this._saveFile.lifes < 0f)
 			{
 				this._deathScreenHud.Text.text = "Fim de Jogo";
 				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
