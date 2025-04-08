@@ -14,8 +14,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		protected UnityAction<bool> _toggleEvent;
 		protected UnityAction<ushort> _indexEvent;
 		protected UnityAction _reactToDamageEvent;
-		private SaveFile _saveFile;
-		private Settings _settings;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
@@ -35,8 +33,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
-			SaveController.Load(out this._saveFile);
-			SettingsController.Load(out this._settings);
 		}
 		private void OnEnable()
 		{
@@ -116,13 +112,15 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			if (bossProp)
 			{
+				SaveController.Load(out SaveFile saveFile);
+				SettingsController.Load(out Settings settings);
 				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
-				if (!this._saveFile.deafetedBosses[sceneIndex])
+				if (!saveFile.deafetedBosses[sceneIndex])
 				{
-					this._saveFile.deafetedBosses[sceneIndex] = true;
-					SaveController.WriteSave(this._saveFile);
+					saveFile.deafetedBosses[sceneIndex] = true;
+					SaveController.WriteSave(saveFile);
 				}
-				if (this._settings.dialogToggle && this._haveDialog)
+				if (settings.dialogToggle && this._haveDialog)
 					this.GetComponent<IInteractable>().Interaction();
 				else
 					this.GetComponent<TransitionController>().Transicion();
