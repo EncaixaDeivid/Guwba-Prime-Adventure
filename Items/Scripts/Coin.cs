@@ -7,30 +7,29 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class Coin : StateController, ICollectable
 	{
 		private Animator _animator;
-		private SaveFile _saveFile;
 		private new void Awake()
 		{
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
-			SaveController.Load(out this._saveFile);
 		}
 		private void OnEnable() => this._animator.enabled = true;
 		private void OnDisable() => this._animator.enabled = false;
 		[SerializeField] private bool _saveOnSpecifics;
 		public void Collect()
 		{
-			if (this._saveFile.coins < 100f)
-				this._saveFile.coins += 1;
-			if (this._saveFile.lifes < 99f && this._saveFile.coins >= 100f)
+			SaveController.Load(out SaveFile saveFile);
+			if (saveFile.coins < 100f)
+				saveFile.coins += 1;
+			if (saveFile.lifes < 99f && saveFile.coins >= 100f)
 			{
-				this._saveFile.coins = 0;
-				this._saveFile.lifes += 1;
+				saveFile.coins = 0;
+				saveFile.lifes += 1;
 			}
-			if (this._saveFile.lifes >= 99f && this._saveFile.coins >= 99f)
-				this._saveFile.coins = 99;
-			if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
-				this._saveFile.generalObjects.Add(this.gameObject.name);
-			SaveController.WriteSave(this._saveFile);
+			if (saveFile.lifes >= 99f && saveFile.coins >= 99f)
+				saveFile.coins = 99;
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+				saveFile.generalObjects.Add(this.gameObject.name);
+			SaveController.WriteSave(saveFile);
 			Destroy(this.gameObject);
 		}
 	};
