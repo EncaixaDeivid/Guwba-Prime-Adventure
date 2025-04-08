@@ -118,7 +118,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
 				if (!this._saveFile.deafetedBosses[sceneIndex])
+				{
 					this._saveFile.deafetedBosses[sceneIndex] = true;
+					SaveController.WriteSave(this._saveFile);
+				}
 				if (this._settings.dialogToggle && this._haveDialog)
 					this.GetComponent<IInteractable>().Interaction();
 				else
