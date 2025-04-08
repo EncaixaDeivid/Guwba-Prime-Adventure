@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
@@ -13,6 +14,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		protected UnityAction<bool> _toggleEvent;
 		protected UnityAction<ushort> _indexEvent;
 		protected UnityAction _reactToDamageEvent;
+		private SaveFile _saveFile;
+		private Settings _settings;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
@@ -32,6 +35,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
+			SaveController.Load(out this._saveFile);
+			SettingsController.Load(out this._settings);
 		}
 		private void OnEnable()
 		{
@@ -112,9 +117,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (bossProp)
 			{
 				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
-				if (!SaveController.DeafetedBosses[sceneIndex])
-					SaveController.DeafetedBosses[sceneIndex] = true;
-				if (SettingsController.DialogToggle && this._haveDialog)
+				if (!this._saveFile.deafetedBosses[sceneIndex])
+					this._saveFile.deafetedBosses[sceneIndex] = true;
+				if (this._settings.dialogToggle && this._haveDialog)
 					this.GetComponent<IInteractable>().Interaction();
 				else
 					this.GetComponent<TransitionController>().Transicion();
@@ -124,6 +129,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		internal abstract class BossProp : StateController
 		{
 			protected Collider2D _collider;
+			private SaveFile _saveFile;
 			protected bool _useDestructuion = false;
 			[Header("Boss Prop"), SerializeField] protected BossController[] _bossesControllers;
 			[SerializeField] protected LayerMask _groundLayer, _targetLayerMask;
@@ -141,14 +147,15 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				base.Awake();
 				this._collider = this.GetComponent<Collider2D>();
+				SaveController.Load(out this._saveFile);
 			}
 			private new void OnDestroy()
 			{
 				base.OnDestroy();
 				if (!this._useDestructuion)
 					return;
-				if (this._saveOnSpecifics && !SaveController.GeneralObjects.Contains(this.gameObject.name))
-					SaveController.GeneralObjects.Add(this.gameObject.name);
+				if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+					this._saveFile.generalObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
 					this._bossesControllers[0].Destroy(this);
 			}
