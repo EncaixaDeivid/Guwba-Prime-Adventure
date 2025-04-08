@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
@@ -48,6 +49,7 @@ namespace GuwbaPrimeAdventure
 				this.CloseConfigurations.Invoke();
 			else
 			{
+				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				this._configurationHudInstance = Instantiate(this._configurationHud, this.transform);
 				if (this.gameObject.scene.name == this._menuScene)
@@ -56,7 +58,7 @@ namespace GuwbaPrimeAdventure
 					this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
 				}
 				if (SaveController.FileExists())
-					for (ushort i = 0; i < SaveController.LevelsCompleted.Length; i++)
+					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
 						if (this.gameObject.scene.name.Contains($"{i}"))
 						{
 							this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
