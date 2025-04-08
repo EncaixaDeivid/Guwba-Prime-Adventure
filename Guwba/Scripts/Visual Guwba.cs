@@ -13,7 +13,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private SpriteRenderer _spriteRenderer;
 		private GroupBox _baseElement;
 		private Label _lifeText, _coinsText;
-		private SaveFile _saveFile;
 		private bool _invencibility = false;
 		[SerializeField] private string _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
 		[SerializeField] private short _vitality;
@@ -29,14 +28,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			}
 			_instance = this;
-			SaveController.Load(out this._saveFile);
+			SaveController.Load(out SaveFile saveFile);
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
 			UIDocument hudDocument = this.GetComponent<UIDocument>();
 			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
 			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
 			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
-			this._lifeText.text = $"X {this._saveFile.lifes}";
-			this._coinsText.text = $"X {this._saveFile.coins}";
+			this._lifeText.text = $"X {saveFile.lifes}";
+			this._coinsText.text = $"X {saveFile.coins}";
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -90,8 +89,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (other.TryGetComponent<ICollectable>(out var collectable))
 			{
 				collectable.Collect();
-				this._lifeText.text = $"X {this._saveFile.lifes}";
-				this._coinsText.text = $"X {this._saveFile.coins}";
+				SaveController.Load(out SaveFile saveFile);
+				this._lifeText.text = $"X {saveFile.lifes}";
+				this._coinsText.text = $"X {saveFile.coins}";
 			}
 		}
 		public bool Damage(ushort damage)
@@ -102,9 +102,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			if ((this._vitality -= (short)damage) <= 0f)
 			{
 				this._vitality = 0;
-				this._saveFile.lifes -= 1;
-				this._lifeText.text = $"X {(this._saveFile.lifes >= 0f ? this._saveFile.lifes : 0f)}";
-				SaveController.WriteSave(this._saveFile);
+				SaveController.Load(out SaveFile saveFile);
+				saveFile.lifes -= 1;
+				this._lifeText.text = $"X {(saveFile.lifes >= 0f ? saveFile.lifes : 0f)}";
+				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
 				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
