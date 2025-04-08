@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
@@ -11,7 +12,7 @@ namespace GuwbaPrimeAdventure
 		private MenuHud _menuHud;
 		private ConfigurationController _configurationController;
 		[SerializeField] private MenuHud _menuHudObject;
-		[SerializeField] private string _levelSelectorScene, _level0Scene;
+		[SerializeField] private string _levelSelectorScene;
 		private new void Awake()
 		{
 			if (_instance)
@@ -117,13 +118,9 @@ namespace GuwbaPrimeAdventure
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
-			if (SaveController.FileExists())
-			{
-				this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
-				return;
-			}
-			this.GetComponent<TransitionController>().Transicion(this._level0Scene);
-			SaveController.SaveData();
+			this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
+			if (!SaveController.FileExists())
+				SaveController.SaveData();
 		}
 		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
 		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
