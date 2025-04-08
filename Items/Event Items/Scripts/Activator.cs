@@ -6,7 +6,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal abstract class Activator : StateController
 	{
 		private Animator _animator;
-		private SaveFile _saveFile;
 		private bool _useOneActivation = false;
 		[SerializeField] private Receptor[] _receptors;
 		[SerializeField] private string _use, _useOne;
@@ -15,8 +14,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
-			SaveController.Load(out this._saveFile);
-			if (this._saveObject && this._saveFile.generalObjects.Contains(this.gameObject.name))
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
 				this.Activation();
 		}
 		private void OnEnable()
@@ -43,10 +42,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (receptor)
 					receptor.ReceiveSignal(this);
 			this._useOneActivation = true;
-			if (this._saveObject && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
-				this._saveFile.generalObjects.Add(this.gameObject.name);
-				SaveController.WriteSave(this._saveFile);
+				saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(saveFile);
 			}
 		}
 	};
