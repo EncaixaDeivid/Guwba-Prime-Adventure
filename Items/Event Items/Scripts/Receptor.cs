@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptor))]
@@ -18,9 +19,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._receptor = this.GetComponent<IReceptor>();
+			SaveController.Load(out SaveFile saveFile);
 			if (this._specificsObjects.Length > 0f)
 				foreach (string specificObject in this._specificsObjects)
-					if (SaveController.GeneralObjects.Contains(specificObject))
+					if (saveFile.generalObjects.Contains(specificObject))
 						this.Activate();
 		}
 		private void Activate()
