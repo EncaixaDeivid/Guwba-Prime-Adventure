@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
@@ -11,8 +12,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private ushort _selfIndex;
 		private void Start()
 		{
-			if (this.gameObject.scene.name == this._levelSelectorScene && SaveController.LastLevelEntered != "")
-				if (ushort.Parse($"{SaveController.LastLevelEntered[^1]}") == this._selfIndex)
+			SaveController.Load(out SaveFile saveFile);
+			if (this.gameObject.scene.name == this._levelSelectorScene && saveFile.lastLevelEntered != "")
+				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == this._selfIndex)
 					GuwbaTransformer<CommandGuwba>.Position = this.transform.position;
 			if (_lastScene == this.gameObject.scene.name && _useCheckpoint)
 			{
