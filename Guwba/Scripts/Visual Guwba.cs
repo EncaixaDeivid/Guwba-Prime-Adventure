@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.UIElements;
 using System.Collections;
 using GuwbaPrimeAdventure.Effects;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument), typeof(BoxCollider2D))]
@@ -12,12 +13,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		private SpriteRenderer _spriteRenderer;
 		private GroupBox _baseElement;
 		private Label _lifeText, _coinsText;
+		private SaveFile _saveFile;
 		private bool _invencibility = false;
 		[SerializeField] private string _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
 		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
-  		public ushort Health => (ushort)this._vitality;
+		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
@@ -27,13 +29,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			}
 			_instance = this;
+			SaveController.Load(out this._saveFile);
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
 			UIDocument hudDocument = this.GetComponent<UIDocument>();
 			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
 			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
 			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
-			this._lifeText.text = $"X {SaveController.Lifes}";
-			this._coinsText.text = $"X {SaveController.Coins}";
+			this._lifeText.text = $"X {this._saveFile.lifes}";
+			this._coinsText.text = $"X {this._saveFile.coins}";
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -87,8 +90,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (other.TryGetComponent<ICollectable>(out var collectable))
 			{
 				collectable.Collect();
-				this._lifeText.text = $"X {SaveController.Lifes}";
-				this._coinsText.text = $"X {SaveController.Coins}";
+				this._lifeText.text = $"X {this._saveFile.lifes}";
+				this._coinsText.text = $"X {this._saveFile.coins}";
 			}
 		}
 		public bool Damage(ushort damage)
@@ -99,8 +102,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			if ((this._vitality -= (short)damage) <= 0f)
 			{
 				this._vitality = 0;
-				SaveController.Lifes -= 1;
-				this._lifeText.text = $"X {(SaveController.Lifes >= 0f ? SaveController.Lifes : 0f)}";
+				this._saveFile.lifes -= 1;
+				this._lifeText.text = $"X {(this._saveFile.lifes >= 0f ? this._saveFile.lifes : 0f)}";
+				SaveController.WriteSave(this._saveFile.lifes, true);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
 				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
