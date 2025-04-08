@@ -5,7 +5,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
 	{
-		private SaveFile _saveFile;
 		[SerializeField] private GameObject _hiddenObject;
 		[SerializeField] private short _vitality, _biggerDamage;
 		[SerializeField] private bool _destroyOnCollision, _saveObject, _saveOnDestruction;
@@ -13,8 +12,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			SaveController.Load(out this._saveFile);
-			if (this._saveObject && this._saveFile.generalObjects.Contains(this.gameObject.name))
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
 		}
 		public void ActivationEvent()
@@ -27,10 +26,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public void DesactivationEvent() => this.ActivationEvent();
 		private void SaveObject()
 		{
-			if (this._saveObject && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
-				this._saveFile.generalObjects.Add(this.gameObject.name);
-				SaveController.WriteSave(this._saveFile);
+				saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(saveFile);
 			}
 		}
 		private void DestroyOnCollision()
