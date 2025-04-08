@@ -1,10 +1,12 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[RequireComponent(typeof(Transform))]
 	internal abstract class Activator : StateController
 	{
 		private Animator _animator;
+		private SaveFile _saveFile;
 		private bool _useOneActivation = false;
 		[SerializeField] private Receptor[] _receptors;
 		[SerializeField] private string _use, _useOne;
@@ -13,7 +15,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
-			if (this._saveObject && SaveController.GeneralObjects.Contains(this.gameObject.name))
+			SaveController.Load(out this._saveFile);
+			if (this._saveObject && this._saveFile.generalObjects.Contains(this.gameObject.name))
 				this.Activation();
 		}
 		private void OnEnable()
@@ -40,8 +43,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (receptor)
 					receptor.ReceiveSignal(this);
 			this._useOneActivation = true;
-			if (this._saveObject && !SaveController.GeneralObjects.Contains(this.gameObject.name))
-				SaveController.GeneralObjects.Add(this.gameObject.name);
+			if (this._saveObject && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+			{
+				this._saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(this._saveFile);
+			}
 		}
 	};
 };
