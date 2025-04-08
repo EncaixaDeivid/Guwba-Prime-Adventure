@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
@@ -36,8 +37,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (this._saveObject)
-				SaveController.GeneralObjects.Add(this.gameObject.name);
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
+				saveFile.generalObjects.Add(this.gameObject.name);
 		}
 		private void OnEnable()
 		{
