@@ -10,8 +10,6 @@ namespace GuwbaPrimeAdventure.Dialog
 		private DialogHud _dialogHud;
 		private Animator _animator;
 		private Dialog _dialogTalk;
-		private SaveFile _saveFile;
-		private Settings _settings;
 		private string _text = "";
 		private ushort _dialogObjectIndex = 0, _dialogIndex = 0, _speachIndex = 0;
 		private float _dialogTime = 0f;
@@ -21,8 +19,7 @@ namespace GuwbaPrimeAdventure.Dialog
 		{
 			if (this._dialogObject?.Length > 0f && this._dialogHudObject)
 			{
-				SaveController.Load(out this._saveFile);
-				SettingsController.Load(out this._settings);
+				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
@@ -30,7 +27,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				bool indexValidation = this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f;
 				this._dialogIndex = (ushort)(indexValidation ? this._dialogIndex + 1f : 0f);
 				this._dialogObjectIndex = (ushort)(this._dialogObjectIndex < this._dialogObject.Length - 1f ? this._dialogObjectIndex + 1f : 0f);
-				this._dialogTime = this._settings.dialogSpeed;
+				this._dialogTime = settings.dialogSpeed;
 				if (this._dialogObject[this._dialogObjectIndex].CannotClose)
 					this._dialogHud.CloseDialog.style.display = DisplayStyle.None;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
@@ -53,10 +50,11 @@ namespace GuwbaPrimeAdventure.Dialog
 		}
 		private void WorldInteraction()
 		{
-			if (this._dialogTalk.SaveOnEspecific && !this._saveFile.generalObjects.Contains(this.gameObject.name))
+			SaveController.Load(out SaveFile saveFile);
+			if (this._dialogTalk.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
-				this._saveFile.generalObjects.Add(this.gameObject.name);
-				SaveController.WriteSave(this._saveFile);
+				saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(saveFile);
 			}
 			if (this._dialogTalk.ActivateTransition)
 				this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
@@ -71,7 +69,8 @@ namespace GuwbaPrimeAdventure.Dialog
 		{
 			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
 			{
-				this._dialogTime = this._settings.dialogSpeed;
+				SettingsController.Load(out Settings settings);
+				this._dialogTime = settings.dialogSpeed;
 				if (this._speachIndex < this._dialogTalk.Speachs.Length - 1f)
 				{
 					this._speachIndex += 1;
