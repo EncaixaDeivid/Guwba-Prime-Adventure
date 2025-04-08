@@ -39,7 +39,10 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			SaveController.Load(out SaveFile saveFile);
 			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
+			{
 				saveFile.generalObjects.Add(this.gameObject.name);
+				SaveController.WriteSave(saveFile);
+			}
 		}
 		private void OnEnable()
 		{
