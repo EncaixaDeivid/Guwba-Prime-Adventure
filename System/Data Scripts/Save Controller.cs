@@ -40,7 +40,7 @@ namespace GuwbaPrimeAdventure.Data
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
 				return saveFile;
-			string actualPath = Application.persistentDataPath + $@"\{actualSaveFile}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 			{
 				bool isDataEmpty1 = actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2);
@@ -70,8 +70,8 @@ namespace GuwbaPrimeAdventure.Data
 				return;
 			FilesController.SaveData((actualSave, newName));
 			string actualSaveFile = FilesController.Select(actualSave);
-			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
-			string newSaveName = Application.persistentDataPath + $"/{newName}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
+			string newSaveName = $@"{Application.persistentDataPath}\{newName}.txt";
 			if (File.Exists(actualPath))
 			{
 				SaveFile loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
@@ -82,7 +82,7 @@ namespace GuwbaPrimeAdventure.Data
 		public static string DeleteData(ushort actualSave)
 		{
 			string actualSaveFile = FilesController.Select(actualSave);
-			string actualPath = Application.persistentDataPath + $"/{actualSaveFile}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 				File.Delete(actualPath);
 			return FilesController.SaveData((actualSave, $"Data File {actualSave}"));
@@ -91,7 +91,7 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			FilesController.SaveData();
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
-			string actualPath = Application.persistentDataPath + $@"\{actualSaveFile}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			SaveFile newSaveFile = new()
 			{
 				lifes = _saveFile.lifes,
