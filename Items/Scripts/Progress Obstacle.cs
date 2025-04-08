@@ -15,7 +15,10 @@ namespace GuwbaPrimeAdventure.Item
 			if (this._isBossProgress ? saveFile.deafetedBosses[this._progressIndex - 1] : levelCompleted)
 			{
 				if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+				{
 					saveFile.generalObjects.Add(this.gameObject.name);
+					SaveController.WriteSave(saveFile);
+				}
 				Destroy(this.gameObject, 0.001f);
 			}
 		}
