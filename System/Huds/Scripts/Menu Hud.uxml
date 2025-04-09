@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Sistema/C%C3%B3digos/Menu%20Hud.uss?fileID=7433441132597879392&amp;guid=25a12649ca3c9d046a7776e74317c908&amp;type=3#Menu Hud" />
-    <ui:GroupBox name="BaseElement">
+    <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Buttons">
             <ui:Label text="Guwba Prime Adventure" name="LogoBrand" class="Titulo Botoes" />
             <ui:Button text="Jogar" name="Play" class="Button" />
@@ -34,5 +34,5 @@
                 </ui:GroupBox>
             </ui:GroupBox>
         </ui:GroupBox>
-    </ui:GroupBox>
+    </ui:VisualElement>
 </ui:UXML>
