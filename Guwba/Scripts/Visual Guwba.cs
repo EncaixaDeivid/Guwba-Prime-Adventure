@@ -98,14 +98,13 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
-				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(new Color(1f, 1f, 1f, 1f));
+				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(Color.);
 			if (this._vitality <= 0f)
 			{
 				this._vitality = 0;
 				SaveController.Load(out SaveFile saveFile);
 				saveFile.lifes -= 1;
-				ushort lifes = (ushort)(this._vitality >= 0f ? this._vitality : 0f);
-				this._guwbaHud.LifeText.text = $"X {lifes}";
+				this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
