@@ -56,6 +56,5 @@
     height: 100%;
     background-color: rgb(96, 0, 0);
     border-width: 5px;
-    border-radius: 2.5px;
-    border-color: rgb(0, 0, 0);
+    border-color: rgb(32, 0, 0);
 }
