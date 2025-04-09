@@ -6,15 +6,15 @@ using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Guwba
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument), typeof(BoxCollider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	public sealed class VisualGuwba : GuwbaTransformer<VisualGuwba>, IDamageable
 	{
 		private static VisualGuwba _instance;
+		private GuwbaHud _guwbaHud;
 		private SpriteRenderer _spriteRenderer;
-		private GroupBox _baseElement;
-		private Label _lifeText, _coinsText;
 		private bool _invencibility = false;
-		[SerializeField] private string _baseElementObject, _lifeTextObject, _coinsTextObject, _levelSelectorScene;
+		[SerializeField] private GuwbaHud _guwbaHudObject;
+		[SerializeField] private string _levelSelectorScene;
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
 		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
@@ -30,12 +30,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			_instance = this;
 			SaveController.Load(out SaveFile saveFile);
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
-			UIDocument hudDocument = this.GetComponent<UIDocument>();
-			this._baseElement = hudDocument.rootVisualElement.Q<GroupBox>(this._baseElementObject);
-			this._lifeText = hudDocument.rootVisualElement.Q<Label>(this._lifeTextObject);
-			this._coinsText = hudDocument.rootVisualElement.Q<Label>(this._coinsTextObject);
-			this._lifeText.text = $"X {saveFile.lifes}";
-			this._coinsText.text = $"X {saveFile.coins}";
+			this._guwbaHud = Instantiate(this._guwbaHudObject, this.transform);
+			this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
+			this._guwbaHud.CoinsText.text = $"X {saveFile.coins}";
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -52,15 +49,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			if (this.gameObject.scene.name == this._levelSelectorScene)
-				this._baseElement.style.display = DisplayStyle.None;
+				this._guwbaHud.BaseElement.style.display = DisplayStyle.None;
 			else
-				this._baseElement.style.display = DisplayStyle.Flex;
+				this._guwbaHud.BaseElement.style.display = DisplayStyle.Flex;
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._baseElement.style.display = DisplayStyle.None;
+			this._guwbaHud.BaseElement.style.display = DisplayStyle.None;
 		}
 		private IEnumerator Invencibility()
 		{
@@ -90,8 +87,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
-				this._lifeText.text = $"X {saveFile.lifes}";
-				this._coinsText.text = $"X {saveFile.coins}";
+				this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
+				this._guwbaHud.CoinsText.text = $"X {saveFile.coins}";
 			}
 		}
 		public bool Damage(ushort damage)
@@ -104,7 +101,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._vitality = 0;
 				SaveController.Load(out SaveFile saveFile);
 				saveFile.lifes -= 1;
-				this._lifeText.text = $"X {(saveFile.lifes >= 0f ? saveFile.lifes : 0f)}";
+				ushort vitality = (ushort)(saveFile.lifes >= 0f ? saveFile.lifes : 0f);
+				this._guwbaHud.LifeText.text = $"X {vitality}";
+				this._guwbaHud.SetVitality(vitality);
 				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
