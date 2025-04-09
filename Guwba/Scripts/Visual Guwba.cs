@@ -100,7 +100,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
 				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(Color.black);
-				this._guwbaHud.Vitality[i - 1].style.opacity = this._damagedVitality;
+				this._guwbaHud.Vitality[i - 1].style.opacity = this._damagedVitality / 100f;
 			}
 			if (this._vitality <= 0f)
 			{
