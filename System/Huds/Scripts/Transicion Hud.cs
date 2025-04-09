@@ -6,9 +6,14 @@ namespace GuwbaPrimeAdventure.Hud
 	public sealed class TransicionHud : MonoBehaviour
 	{
 		private static TransicionHud _instance;
-		private GroupBox _baseElement;
-		[SerializeField] private string _baseElementGroup;
-		public GroupBox BaseElement => this._baseElement;
+		private VisualElement _rootVisualElement;
+		private ProgressBar _loadingBar;
+		[Header("Elements"), SerializeField] private string _rootElement;
+		[SerializeField] private string _loadingBarProgress;
+		[SerializeField] private float _appearRate;
+		public VisualElement RootVisualElement => this._rootVisualElement;
+		public ProgressBar LoadingBar => this._loadingBar;
+		public float ApearRate => this._appearRate;
 		private void Awake()
 		{
 			if (_instance)
@@ -17,7 +22,9 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._baseElement = this.GetComponent<UIDocument>().rootVisualElement.Q<GroupBox>(this._baseElementGroup);
+			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
+			this._rootVisualElement = root.Q<VisualElement>(this._rootElement);
+			this._loadingBar = root.Q<ProgressBar>(this._loadingBarProgress);
 		}
 	};
 };
