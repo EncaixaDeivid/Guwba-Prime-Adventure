@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private string _levelSelectorScene;
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
-		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
+		[SerializeField] private float _invencibilityValue, _timeStep, _damagedVitality, _hitStopTime, _hitStopSlow;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
@@ -100,7 +100,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
 				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(Color.black);
-				this._guwbaHud.Vitality[i - 1].style.opacity = 0.25f;
+				this._guwbaHud.Vitality[i - 1].style.opacity = this._damagedVitality;
 			}
 			if (this._vitality <= 0f)
 			{
