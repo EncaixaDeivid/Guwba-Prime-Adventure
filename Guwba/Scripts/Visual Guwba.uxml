@@ -2,13 +2,21 @@
     <Style src="project://database/Assets/Guwba/Scripts/Visual%20Hud%20Guwba.uss?fileID=7433441132597879392&amp;guid=09c1d2f441fe8624d8a5be5bba1f7864&amp;type=3#Visual Hud Guwba" />
     <ui:GroupBox name="BaseElement" class="BaseElement">
         <ui:GroupBox name="GroupElements" class="GroupElements">
-            <ui:GroupBox name="Lifes">
-                <ui:VisualElement name="LifeIcon" />
-                <ui:Label text="X 0" name="LifeText" />
+            <ui:GroupBox name="Texts">
+                <ui:GroupBox name="SubText">
+                    <ui:VisualElement name="LifeIcon" />
+                    <ui:Label text="X 0" name="LifeText" />
+                </ui:GroupBox>
+                <ui:GroupBox name="SubText">
+                    <ui:VisualElement name="CoinIcon" />
+                    <ui:Label text="X 0" name="CoinText" />
+                </ui:GroupBox>
             </ui:GroupBox>
-            <ui:GroupBox name="Coins">
-                <ui:VisualElement name="CoinIcon" />
-                <ui:Label text="X 0" name="CoinText" />
+            <ui:GroupBox name="Vitality">
+                <ui:VisualElement name="Vitality1" />
+                <ui:VisualElement name="Vitality2" />
+                <ui:VisualElement name="Vitality3" />
+                <ui:VisualElement name="Vitality4" />
             </ui:GroupBox>
         </ui:GroupBox>
     </ui:GroupBox>
