@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private GroupBox _confirmation, _buttons;
 		private Button _close, _outLevel, _yes, _no, _saveGame;
 		private Slider _generalVolume, _effectsVolume, _musicVolume, _dialogSpeed;
-		private Toggle _fullscreen, _generalVolumeToggle, _effectsVolumeToggle, _musicVolumeToggle, _dialogToggle;
+		private Toggle _fullScreen, _generalVolumeToggle, _effectsVolumeToggle, _musicVolumeToggle, _dialogToggle;
 		[SerializeField] private string[] _volumes, _toggles;
 		[SerializeField] private string _confirmationGroup, _outLevelButton, _yesButton, _noButton, _buttonsGroup, _saveGameButton, _closeButton;
 		public GroupBox Buttons => this._buttons;
@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure.Hud
 		public Button SaveGame => this._saveGame;
 		public (Slider GeneralVolume, Slider EffectsVolume) Volumes1 => (this._generalVolume, this._effectsVolume);
 		public (Slider MusicVolume, Slider DialogSpeed) Volumes2 => (this._musicVolume, this._dialogSpeed);
-		public (Toggle Fullscreen, Toggle GeneralVolumeToggle) Toggles1 => (this._fullscreen, this._generalVolumeToggle);
+		public (Toggle FullScreen, Toggle GeneralVolumeToggle) Toggles1 => (this._fullScreen, this._generalVolumeToggle);
 		public (Toggle EffectsVolumeToggle, Toggle MusicVolumeToggle) Toggles2 => (this._effectsVolumeToggle, this._musicVolumeToggle);
 		public Toggle DialogToggle => this._dialogToggle;
 		public GroupBox Confirmation => this._confirmation;
@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._effectsVolume = root.Q<Slider>(this._volumes[1]);
 			this._musicVolume = root.Q<Slider>(this._volumes[2]);
 			this._dialogSpeed = root.Q<Slider>(this._volumes[3]);
-			this._fullscreen = root.Q<Toggle>(this._toggles[0]);
+			this._fullScreen = root.Q<Toggle>(this._toggles[0]);
 			this._generalVolumeToggle = root.Q<Toggle>(this._toggles[1]);
 			this._effectsVolumeToggle = root.Q<Toggle>(this._toggles[2]);
 			this._musicVolumeToggle = root.Q<Toggle>(this._toggles[3]);
