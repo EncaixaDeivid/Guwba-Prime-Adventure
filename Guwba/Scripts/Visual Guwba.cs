@@ -98,7 +98,13 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
-				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(Color.black);
+			{
+				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.Vitality[i - 1].style.borderBottomColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.Vitality[i - 1].style.borderLeftColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.Vitality[i - 1].style.borderRightColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.Vitality[i - 1].style.borderTopColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+			}
 			if (this._vitality <= 0f)
 			{
 				this._vitality = 0;
