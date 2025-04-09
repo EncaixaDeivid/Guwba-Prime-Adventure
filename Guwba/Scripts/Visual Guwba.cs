@@ -32,7 +32,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
 			this._guwbaHud = Instantiate(this._guwbaHudObject, this.transform);
 			this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
-			this._guwbaHud.CoinsText.text = $"X {saveFile.coins}";
+			this._guwbaHud.CoinText.text = $"X {saveFile.coins}";
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -49,15 +49,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			if (this.gameObject.scene.name == this._levelSelectorScene)
-				this._guwbaHud.BaseElement.style.display = DisplayStyle.None;
+				this._guwbaHud.RootElement.style.display = DisplayStyle.None;
 			else
-				this._guwbaHud.BaseElement.style.display = DisplayStyle.Flex;
+				this._guwbaHud.RootElement.style.display = DisplayStyle.Flex;
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._guwbaHud.BaseElement.style.display = DisplayStyle.None;
+			this._guwbaHud.RootElement.style.display = DisplayStyle.None;
 		}
 		private IEnumerator Invencibility()
 		{
@@ -88,7 +88,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
 				this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
-				this._guwbaHud.CoinsText.text = $"X {saveFile.coins}";
+				this._guwbaHud.CoinText.text = $"X {saveFile.coins}";
 			}
 		}
 		public bool Damage(ushort damage)
@@ -103,7 +103,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				saveFile.lifes -= 1;
 				ushort vitality = (ushort)(saveFile.lifes >= 0f ? saveFile.lifes : 0f);
 				this._guwbaHud.LifeText.text = $"X {vitality}";
-				this._guwbaHud.SetVitality(vitality);
+				for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > vitality; i--)
+					this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(new Color(0f, 0f, 0f, 0f));
 				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
