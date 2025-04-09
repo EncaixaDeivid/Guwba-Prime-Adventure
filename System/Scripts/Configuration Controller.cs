@@ -10,9 +10,9 @@ namespace GuwbaPrimeAdventure
 	public sealed class ConfigurationController : MonoBehaviour
 	{
 		private static ConfigurationController _instance;
-		private ConfigurationHud _configurationHudInstance;
+		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
-		[SerializeField] private ConfigurationHud _configurationHud;
+		[SerializeField] private ConfigurationHud _configurationHudObject;
 		[SerializeField] private DeathScreenController _deathScreenController;
 		[SerializeField] private string _levelSelectorScene, _menuScene;
 		private void Awake()
@@ -45,58 +45,58 @@ namespace GuwbaPrimeAdventure
 		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
-			if (this._configurationHudInstance)
+			if (this._configurationHudObject)
 				this.CloseConfigurations.Invoke();
 			else
 			{
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
-				this._configurationHudInstance = Instantiate(this._configurationHud, this.transform);
+				this._configurationHud = Instantiate(this._configurationHudObject, this.transform);
 				if (this.gameObject.scene.name == this._menuScene)
 				{
-					this._configurationHudInstance.OutLevel.style.display = DisplayStyle.None;
-					this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
+					this._configurationHud.OutLevel.style.display = DisplayStyle.None;
+					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
 				if (SaveController.FileExists())
 					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
 						if (this.gameObject.scene.name.Contains($"{i}"))
 						{
-							this._configurationHudInstance.SaveGame.style.display = DisplayStyle.None;
+							this._configurationHud.SaveGame.style.display = DisplayStyle.None;
 							break;
 						}
-				this._configurationHudInstance.Close.clicked += this.CloseConfigurations;
-				this._configurationHudInstance.OutLevel.clicked += this.OutLevel;
-				this._configurationHudInstance.SaveGame.clicked += this.SaveGame;
-				this._configurationHudInstance.Volumes1.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
-				this._configurationHudInstance.Volumes1.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
-				this._configurationHudInstance.Volumes2.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
-				this._configurationHudInstance.Volumes2.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
-				this._configurationHudInstance.Toggles1.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
-				this._configurationHudInstance.Toggles1.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-				this._configurationHudInstance.Toggles2.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-				this._configurationHudInstance.Toggles2.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-				this._configurationHudInstance.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
-				this._configurationHudInstance.Yes.clicked += this.YesBackLevel;
-				this._configurationHudInstance.No.clicked += this.NoBackLevel;
+				this._configurationHud.Close.clicked += this.CloseConfigurations;
+				this._configurationHud.OutLevel.clicked += this.OutLevel;
+				this._configurationHud.SaveGame.clicked += this.SaveGame;
+				this._configurationHud.Volumes1.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
+				this._configurationHud.Volumes1.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
+				this._configurationHud.Volumes2.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
+				this._configurationHud.Volumes2.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
+				this._configurationHud.Toggles1.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
+				this._configurationHud.Toggles1.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
+				this._configurationHud.Toggles2.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
+				this._configurationHud.Toggles2.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
+				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
+				this._configurationHud.Yes.clicked += this.YesBackLevel;
+				this._configurationHud.No.clicked += this.NoBackLevel;
 			}
 		}
 		private Action CloseConfigurations => () =>
 		{
-			this._configurationHudInstance.Close.clicked -= this.CloseConfigurations;
-			this._configurationHudInstance.OutLevel.clicked -= this.OutLevel;
-			this._configurationHudInstance.SaveGame.clicked -= this.SaveGame;
-			this._configurationHudInstance.Volumes1.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
-			this._configurationHudInstance.Volumes1.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
-			this._configurationHudInstance.Volumes2.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
-			this._configurationHudInstance.Volumes2.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
-			this._configurationHudInstance.Toggles1.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
-			this._configurationHudInstance.Toggles1.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-			this._configurationHudInstance.Toggles2.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-			this._configurationHudInstance.Toggles2.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-			this._configurationHudInstance.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
-			this._configurationHudInstance.Yes.clicked -= this.YesBackLevel;
-			this._configurationHudInstance.No.clicked -= this.NoBackLevel;
-			Destroy(this._configurationHudInstance.gameObject);
+			this._configurationHud.Close.clicked -= this.CloseConfigurations;
+			this._configurationHud.OutLevel.clicked -= this.OutLevel;
+			this._configurationHud.SaveGame.clicked -= this.SaveGame;
+			this._configurationHud.Volumes1.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
+			this._configurationHud.Volumes1.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
+			this._configurationHud.Volumes2.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
+			this._configurationHud.Volumes2.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
+			this._configurationHud.Toggles1.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
+			this._configurationHud.Toggles1.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
+			this._configurationHud.Toggles2.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
+			this._configurationHud.Toggles2.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
+			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
+			this._configurationHud.Yes.clicked -= this.YesBackLevel;
+			this._configurationHud.No.clicked -= this.NoBackLevel;
+			Destroy(this._configurationHud.gameObject);
 			StateController.SetState(true);
 			if (this.gameObject.scene.name == this._menuScene)
 				Destroy(this.gameObject);
@@ -104,8 +104,8 @@ namespace GuwbaPrimeAdventure
 		};
 		private Action OutLevel => () =>
 		{
-			this._configurationHudInstance.Buttons.style.display = DisplayStyle.None;
-			this._configurationHudInstance.Confirmation.style.display = DisplayStyle.Flex;
+			this._configurationHud.Buttons.style.display = DisplayStyle.None;
+			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
 		private EventCallback<ChangeEvent<float>> GeneralVolume => (ChangeEvent<float> value) =>
@@ -171,8 +171,8 @@ namespace GuwbaPrimeAdventure
 		};
 		private Action NoBackLevel => () =>
 		{
-			this._configurationHudInstance.Buttons.style.display = DisplayStyle.Flex;
-			this._configurationHudInstance.Confirmation.style.display = DisplayStyle.None;
+			this._configurationHud.Buttons.style.display = DisplayStyle.Flex;
+			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
 		public static void DeathScreen()
 		{
