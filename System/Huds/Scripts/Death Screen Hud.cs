@@ -21,11 +21,11 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			UIDocument hudDocument = this.GetComponent<UIDocument>();
-			this._text = hudDocument.rootVisualElement.Q<Label>(this._textLabel);
-			this._continue = hudDocument.rootVisualElement.Q<Button>(this._continueButton);
-			this._outLevel = hudDocument.rootVisualElement.Q<Button>(this._outLevelButton);
-			this._gameOver = hudDocument.rootVisualElement.Q<Button>(this._gameOverButton);
+			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
+			this._text = root.Q<Label>(this._textLabel);
+			this._continue = root.Q<Button>(this._continueButton);
+			this._outLevel = root.Q<Button>(this._outLevelButton);
+			this._gameOver = root.Q<Button>(this._gameOverButton);
 		}
 	};
 };
