@@ -37,22 +37,22 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			UIDocument hudDocument = this.GetComponent<UIDocument>();
-			this._buttons = hudDocument.rootVisualElement.Q<GroupBox>(this._buttonsGroup);
-			this._play = hudDocument.rootVisualElement.Q<Button>(this._playButton);
-			this._configurations = hudDocument.rootVisualElement.Q<Button>(this._configurationsButton);
-			this._quit = hudDocument.rootVisualElement.Q<Button>(this._quitButton);
-			this._saves = hudDocument.rootVisualElement.Q<GroupBox>(this._savesGroup);
-			this._back = hudDocument.rootVisualElement.Q<Button>(this._backButton);
+			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
+			this._buttons = root.Q<GroupBox>(this._buttonsGroup);
+			this._play = root.Q<Button>(this._playButton);
+			this._configurations = root.Q<Button>(this._configurationsButton);
+			this._quit = root.Q<Button>(this._quitButton);
+			this._saves = root.Q<GroupBox>(this._savesGroup);
+			this._back = root.Q<Button>(this._backButton);
 			this._saveName = new TextField[4];
 			for (ushort i = 0; i < this._saveName.Length; i++)
-				this._saveName[i] = hudDocument.rootVisualElement.Q<TextField>(this._saveNameTextField + $"{i + 1f}");
+				this._saveName[i] = root.Q<TextField>(this._saveNameTextField + $"{i + 1f}");
 			this._load = new Button[4];
 			for (ushort i = 0; i < this._load.Length; i++)
-				this._load[i] = hudDocument.rootVisualElement.Q<Button>(this._loadButton + $"{i + 1f}");
+				this._load[i] = root.Q<Button>(this._loadButton + $"{i + 1f}");
 			this._delete = new Button[4];
 			for (ushort i = 0; i < this._delete.Length; i++)
-				this._delete[i] = hudDocument.rootVisualElement.Q<Button>(this._deleteButton + $"{i + 1f}");
+				this._delete[i] = root.Q<Button>(this._deleteButton + $"{i + 1f}");
 		}
 	};
 };
