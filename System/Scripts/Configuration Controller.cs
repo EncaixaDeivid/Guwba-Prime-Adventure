@@ -104,7 +104,7 @@ namespace GuwbaPrimeAdventure
 		};
 		private Action OutLevel => () =>
 		{
-			this._configurationHud.Buttons.style.display = DisplayStyle.None;
+			this._configurationHud.Settings.style.display = DisplayStyle.None;
 			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
@@ -171,7 +171,7 @@ namespace GuwbaPrimeAdventure
 		};
 		private Action NoBackLevel => () =>
 		{
-			this._configurationHud.Buttons.style.display = DisplayStyle.Flex;
+			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
 			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
 		public static void DeathScreen()
