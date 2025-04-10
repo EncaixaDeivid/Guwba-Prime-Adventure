@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure
 		private UnityAction<bool> InstanceState => (bool state) => this.enabled = state;
 		protected void Awake() => _state += this.InstanceState;
 		protected void OnDestroy() => _state -= this.InstanceState;
-		public static void SetState(bool newState) => _state.Invoke(newState);
+		public static void SetState(bool newState) => _state?.Invoke(newState);
 		protected sealed class WaitTime : CustomYieldInstruction
 		{
 			private readonly StateController _instance;
