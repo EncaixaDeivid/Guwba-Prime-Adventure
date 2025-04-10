@@ -6,11 +6,11 @@ namespace GuwbaPrimeAdventure.Guwba
 	internal sealed class GuwbaHud : MonoBehaviour
 	{
 		private static GuwbaHud _instance;
-		private GroupBox _rootElement;
+		private VisualElement _rootElement;
 		private VisualElement[] _vitality;
 		private Label _lifeText, _coinText;
 		[SerializeField] private string _rootElementObject, _vitalityVisual, _lifeTextObject, _coinTextObject;
-		internal GroupBox RootElement => this._rootElement;
+		internal VisualElement RootElement => this._rootElement;
 		internal VisualElement[] Vitality => this._vitality;
 		internal Label LifeText => this._lifeText;
 		internal Label CoinText => this._coinText;
@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this._rootElement = root.Q<GroupBox>(this._rootElementObject);
+			this._rootElement = root.Q<VisualElement>(this._rootElementObject);
 			this._vitality = new VisualElement[4];
 			for (ushort i = 1; i <= this._vitality.Length; i++)
 				this._vitality[i - 1] = root.Q<VisualElement>($"{this._vitalityVisual}{i}");
