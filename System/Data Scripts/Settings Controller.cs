@@ -23,6 +23,7 @@ namespace GuwbaPrimeAdventure.Data
 			Load(out Settings settings);
 			return settings;
 		}
+		public static bool FileExists() => File.Exists(SettingsPath);
 		public static void Load(out Settings settings)
 		{
 			settings = new Settings()
