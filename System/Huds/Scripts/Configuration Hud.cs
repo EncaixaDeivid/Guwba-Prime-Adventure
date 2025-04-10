@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
@@ -49,6 +50,18 @@ namespace GuwbaPrimeAdventure.Hud
 			this._confirmation = root.Q<GroupBox>(this._confirmationGroup);
 			this._yes = root.Q<Button>(this._yesButton);
 			this._no = root.Q<Button>(this._noButton);
+			if (SettingsController.FileExists())
+				SettingsController.SaveSettings();
+			SettingsController.Load(out Settings settings);
+			this._generalVolume.value = settings.generalVolume;
+			this._effectsVolume.value = settings.effectsVolume;
+			this._musicVolume.value = settings.musicVolume;
+			this._dialogSpeed.value = settings.dialogSpeed;
+			this._fullScreen.value = settings.fullScreen;
+			this._generalVolumeToggle.value = settings.generalVolumeToggle;
+			this._effectsVolumeToggle.value = settings.effectsVolumeToggle;
+			this._musicVolumeToggle.value = settings.musicVolumeToggle;
+			this._dialogToggle.value = settings.dialogToggle;
 		}
 	};
 };
