@@ -26,12 +26,12 @@ namespace GuwbaPrimeAdventure.Item
 		private void OnEnable()
 		{
 			if (this._levelGateInstance)
-				this._levelGateInstance.BaseElement.style.display = DisplayStyle.Flex;
+				this._levelGateInstance.RootElement.style.display = DisplayStyle.Flex;
 		}
 		private void OnDisable()
 		{
 			if (this._levelGateInstance)
-				this._levelGateInstance.BaseElement.style.display = DisplayStyle.None;
+				this._levelGateInstance.RootElement.style.display = DisplayStyle.None;
 		}
 		private Action EnterLevel => () => this.GetComponent<TransitionController>().Transicion(this._levelScene);
 		private Action EnterBoss => () => this.GetComponent<TransitionController>().Transicion(this._bossScene);
