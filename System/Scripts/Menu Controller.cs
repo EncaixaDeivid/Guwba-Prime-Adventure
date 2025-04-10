@@ -121,6 +121,8 @@ namespace GuwbaPrimeAdventure
 			this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
 			if (!SaveController.FileExists())
 				SaveController.SaveData();
+			if (!SettingsController.FileExists())
+				SettingsController.SaveSettings();
 		}
 		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
 		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
