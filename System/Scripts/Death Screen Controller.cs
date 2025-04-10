@@ -6,11 +6,10 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	public sealed class DeathScreenController : MonoBehaviour
+	internal sealed class DeathScreenController : ControllerConnector
 	{
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
-		private SaveFile _saveFile;
 		[SerializeField] private DeathScreenHud _deathScreenHudObject;
 		private void Awake()
 		{
@@ -20,9 +19,12 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			SaveController.Load(out this._saveFile);
+		}
+		protected override void Event()
+		{
+			SaveController.Load(out SaveFile saveFile);
 			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-			if (this._saveFile.lifes < 0f)
+			if (saveFile.lifes < 0f)
 			{
 				this._deathScreenHud.Text.text = "Fim de Jogo";
 				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
