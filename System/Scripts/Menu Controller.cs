@@ -6,13 +6,13 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	internal sealed class MenuController : StateController
+	internal sealed class MenuController : ControllerConnector
 	{
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		[SerializeField] private MenuHud _menuHudObject;
 		[SerializeField] private string _levelSelectorScene;
-		private new void Awake()
+		private void Awake()
 		{
 			if (_instance)
 			{
@@ -20,7 +20,6 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			base.Awake();
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
 			this._menuHud.SaveName[0].value = FilesController.Select(1);
 			this._menuHud.SaveName[1].value = FilesController.Select(2);
@@ -43,9 +42,8 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
 		}
-		private new void OnDestroy()
+		private void OnDestroy()
 		{
-			base.OnDestroy();
 			if (!_instance || _instance != this)
 				return;
 			this._menuHud.Play.clicked -= this.Play;
@@ -65,24 +63,17 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
 		}
-		private void OnEnable()
-		{
-			if (!_instance || _instance != this)
-				return;
-			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-		}
-		private void OnDisable()
-		{
-			if (!_instance || _instance != this)
-				return;
-			this._menuHud.Buttons.style.display = DisplayStyle.None;
-		}
+		protected override void Event() => this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
 		};
-		private Action OpenConfigurations => () => ConfigurationController.OpenConfigurations();
+		private Action OpenConfigurations => () =>
+		{
+			this._menuHud.Buttons.style.display = DisplayStyle.None;
+			this.Connect<ConfigurationController>();
+		};
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
