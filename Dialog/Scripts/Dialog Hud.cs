@@ -20,12 +20,12 @@ namespace GuwbaPrimeAdventure.Dialog
 				return;
 			}
 			_instance = this;
-			UIDocument hudDocument = this.GetComponent<UIDocument>();
-			this.CharacterIcon = hudDocument.rootVisualElement.Q<VisualElement>(this._characterIcon);
-			this.CharacterName = hudDocument.rootVisualElement.Q<Label>(this._characterName);
-			this.CharacterSpeach = hudDocument.rootVisualElement.Q<Label>(this._characterSpeach);
-			this.CloseDialog = hudDocument.rootVisualElement.Q<Button>(this._closeDialog);
-			this.AdvanceSpeach = hudDocument.rootVisualElement.Q<Button>(this._advanceSpeach);
+			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
+			this.CharacterIcon = root.Q<VisualElement>(this._characterIcon);
+			this.CharacterName = root.Q<Label>(this._characterName);
+			this.CharacterSpeach = root.Q<Label>(this._characterSpeach);
+			this.CloseDialog = root.Q<Button>(this._closeDialog);
+			this.AdvanceSpeach = root.Q<Button>(this._advanceSpeach);
 		}
 	};
 };
