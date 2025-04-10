@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._confirmation = root.Q<GroupBox>(this._confirmationGroup);
 			this._yes = root.Q<Button>(this._yesButton);
 			this._no = root.Q<Button>(this._noButton);
-			if (SettingsController.FileExists())
+			if (!SettingsController.FileExists())
 				SettingsController.SaveSettings();
 			SettingsController.Load(out Settings settings);
 			this._generalVolume.highValue = 100;
