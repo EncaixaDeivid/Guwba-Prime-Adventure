@@ -7,13 +7,13 @@ namespace GuwbaPrimeAdventure.Hud
 	public sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
-		private GroupBox _confirmation, _buttons;
+		private GroupBox _confirmation, _settings;
 		private Button _close, _outLevel, _yes, _no, _saveGame;
 		private Slider _generalVolume, _effectsVolume, _musicVolume, _dialogSpeed;
 		private Toggle _fullScreen, _generalVolumeToggle, _effectsVolumeToggle, _musicVolumeToggle, _dialogToggle;
 		[SerializeField] private string[] _volumes, _toggles;
-		[SerializeField] private string _confirmationGroup, _outLevelButton, _yesButton, _noButton, _buttonsGroup, _saveGameButton, _closeButton;
-		public GroupBox Buttons => this._buttons;
+		[SerializeField] private string _confirmationGroup, _outLevelButton, _yesButton, _noButton, _settingsGroup, _saveGameButton, _closeButton;
+		public GroupBox Settings => this._settings;
 		public Button Close => this._close;
 		public Button OutLevel => this._outLevel;
 		public Button SaveGame => this._saveGame;
@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure.Hud
 			}
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this._buttons = root.Q<GroupBox>(this._buttonsGroup);
+			this._settings = root.Q<GroupBox>(this._settingsGroup);
 			this._close = root.Q<Button>(this._closeButton);
 			this._outLevel = root.Q<Button>(this._outLevelButton);
 			this._saveGame = root.Q<Button>(this._saveGameButton);
