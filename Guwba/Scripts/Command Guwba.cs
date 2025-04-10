@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (_instance != this)
+			if (!_instance || _instance != this)
 				return;
 			_actualState -= this.DeathState;
 		}
@@ -270,7 +270,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			this._isOnGround = false;
 		}
-		private void OnCollisionStay2D(Collision2D collision)
+		private void OnCollision()
 		{
 			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
@@ -289,6 +289,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
 			}
 		}
+		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
+		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
 	};
