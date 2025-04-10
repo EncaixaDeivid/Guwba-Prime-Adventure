@@ -53,6 +53,14 @@ namespace GuwbaPrimeAdventure.Hud
 			if (SettingsController.FileExists())
 				SettingsController.SaveSettings();
 			SettingsController.Load(out Settings settings);
+			this._generalVolume.highValue = 100;
+			this._effectsVolume.highValue = 100;
+			this._musicVolume.highValue = 100;
+			this._dialogSpeed.highValue = .1f;
+			this._generalVolume.lowValue = 0;
+			this._effectsVolume.lowValue = 0;
+			this._musicVolume.lowValue = 0;
+			this._dialogSpeed.lowValue = 0f;
 			this._generalVolume.value = settings.generalVolume;
 			this._effectsVolume.value = settings.effectsVolume;
 			this._musicVolume.value = settings.musicVolume;
