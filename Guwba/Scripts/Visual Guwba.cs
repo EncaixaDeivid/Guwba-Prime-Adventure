@@ -118,6 +118,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.ManualInvencibility.Invoke(false);
 				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
+				this.StopAllCoroutines();
+				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 				DeathScreenController.Death();
 				return true;
 			}
