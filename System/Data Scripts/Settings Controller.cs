@@ -16,8 +16,13 @@ namespace GuwbaPrimeAdventure.Data
 	};
 	public static class SettingsController
 	{
-		private static Settings _settings = new();
+		private static Settings _settings = LoadFile();
 		private static readonly string SettingsPath = $@"{Application.persistentDataPath}\Settings.txt";
+		private static Settings LoadFile()
+		{
+			Load(out Settings settings);
+			return settings;
+		}
 		public static void Load(out Settings settings)
 		{
 			settings = new Settings()
