@@ -10,7 +10,6 @@ namespace GuwbaPrimeAdventure
 	{
 		private static MenuController _instance;
 		private MenuHud _menuHud;
-		private ConfigurationController _configurationController;
 		[SerializeField] private MenuHud _menuHudObject;
 		[SerializeField] private string _levelSelectorScene;
 		private new void Awake()
@@ -22,7 +21,6 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			base.Awake();
-			this._configurationController = this.GetComponentInChildren<ConfigurationController>(true);
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
 			this._menuHud.SaveName[0].value = FilesController.Select(1);
 			this._menuHud.SaveName[1].value = FilesController.Select(2);
@@ -84,7 +82,7 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
 		};
-		private Action OpenConfigurations => () => Instantiate(this._configurationController).gameObject.SetActive(true);
+		private Action OpenConfigurations => () => ConfigurationController.OpenConfigurations();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
