@@ -6,11 +6,11 @@ namespace GuwbaPrimeAdventure.Data
 	{
 		public bool fullScreen;
 		public bool generalVolumeToggle;
-		[Range(0f, 1f)] public float generalVolume;
+		[Range(0, 100)] public ushort generalVolume;
 		public bool effectsVolumeToggle;
-		[Range(0f, 1f)] public float effectsVolume;
+		[Range(0, 100)] public ushort effectsVolume;
 		public bool musicVolumeToggle;
-		[Range(0f, 1f)] public float musicVolume;
+		[Range(0, 100)] public ushort musicVolume;
 		public bool dialogToggle;
 		[Range(0f, .1f)] public float dialogSpeed;
 	};
@@ -30,11 +30,11 @@ namespace GuwbaPrimeAdventure.Data
 			{
 				fullScreen = true,
 				generalVolumeToggle = true,
-				generalVolume = 1f,
+				generalVolume = 100,
 				effectsVolumeToggle = true,
-				effectsVolume = 1f,
+				effectsVolume = 100,
 				musicVolumeToggle = true,
-				musicVolume = 1f,
+				musicVolume = 100,
 				dialogToggle = true,
 				dialogSpeed = .05f
 			};
