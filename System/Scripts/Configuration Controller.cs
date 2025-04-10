@@ -45,7 +45,7 @@ namespace GuwbaPrimeAdventure
 		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
-			if (this._configurationHudObject)
+			if (this._configurationHud)
 				this.CloseConfigurations.Invoke();
 			else
 			{
