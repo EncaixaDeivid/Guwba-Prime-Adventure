@@ -13,7 +13,6 @@ namespace GuwbaPrimeAdventure
 		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
 		[SerializeField] private ConfigurationHud _configurationHudObject;
-		[SerializeField] private DeathScreenController _deathScreenController;
 		[SerializeField] private string _levelSelectorScene, _menuScene;
 		private void Awake()
 		{
