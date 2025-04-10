@@ -21,15 +21,7 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 		}
-		private void OnEnable()
-		{
-			if (!_instance || _instance != this)
-				return;
-			this._deathScreenHud.Continue.clicked += this.Continue;
-			this._deathScreenHud.OutLevel.clicked += this.OutLevel;
-			this._deathScreenHud.GameOver.clicked += this.GameOver;
-		}
-		private void OnDisable()
+		private void OnDestroy()
 		{
 			if (!_instance || _instance != this)
 				return;
@@ -50,6 +42,9 @@ namespace GuwbaPrimeAdventure
 			SaveController.Load(out SaveFile saveFile);
 			_instance.Connect<ConfigurationController>();
 			_instance._deathScreenHud = Instantiate(_instance._deathScreenHudObject, _instance.transform);
+			_instance._deathScreenHud.Continue.clicked += _instance.Continue;
+			_instance._deathScreenHud.OutLevel.clicked += _instance.OutLevel;
+			_instance._deathScreenHud.GameOver.clicked += _instance.GameOver;
 			if (saveFile.lifes < 0f)
 			{
 				_instance._deathScreenHud.Text.text = "Fim de Jogo";
