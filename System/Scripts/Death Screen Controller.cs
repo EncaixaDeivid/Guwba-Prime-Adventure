@@ -21,18 +21,6 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 		}
-		protected override void Event()
-		{
-			SaveController.Load(out SaveFile saveFile);
-			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-			if (saveFile.lifes < 0f)
-			{
-				this._deathScreenHud.Text.text = "Fim de Jogo";
-				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
-				this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
-				this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
-			}
-		}
 		private void OnEnable()
 		{
 			if (!_instance || _instance != this)
@@ -48,6 +36,18 @@ namespace GuwbaPrimeAdventure
 			this._deathScreenHud.Continue.clicked -= this.Continue;
 			this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
 			this._deathScreenHud.GameOver.clicked -= this.GameOver;
+		}
+		protected override void Event()
+		{
+			SaveController.Load(out SaveFile saveFile);
+			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
+			if (saveFile.lifes < 0f)
+			{
+				this._deathScreenHud.Text.text = "Fim de Jogo";
+				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
+				this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+				this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
+			}
 		}
 		private Action Continue => () => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
 		private Action OutLevel => () => this.GetComponent<TransitionController>().Transicion();
