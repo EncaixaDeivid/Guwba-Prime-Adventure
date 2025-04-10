@@ -118,7 +118,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.ManualInvencibility.Invoke(false);
 				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
-				ConfigurationController.DeathScreen();
+				DeathScreenController.Death();
 				return true;
 			}
 			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
