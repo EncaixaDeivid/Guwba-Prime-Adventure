@@ -13,6 +13,7 @@ namespace GuwbaPrimeAdventure
 		[SerializeField] private DeathScreenHud _deathScreenHudObject;
 		private void Awake()
 		{
+			base.Awake<DeathScreenController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
