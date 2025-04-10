@@ -170,7 +170,7 @@ namespace GuwbaPrimeAdventure
 		private Action YesBackLevel => () =>
 		{
 			if (this.gameObject.scene.name != this._levelSelectorScene)
-				this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
+				this.GetComponent<TransitionController>().Transicion();
 			else
 				this.GetComponent<TransitionController>().Transicion(this._menuScene);
 		};
