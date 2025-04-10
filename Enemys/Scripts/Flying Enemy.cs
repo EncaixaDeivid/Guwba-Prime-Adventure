@@ -11,7 +11,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointIndex = 0;
 		[Header("Flying Enemy"), SerializeField] private GameObject _target;
 		[SerializeField] private Vector2[] _trail;
-		[SerializeField] private ushort _speedTrail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
 		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue, _justHorizontal, _justVertical;
 		private new void Awake()
@@ -96,7 +95,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._normal = this._pointIndex == 0f;
 				}
 				this._spriteRenderer.flipX = target.x < this.transform.position.x;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._speedTrail * Time.fixedDeltaTime);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._movementSpeed * Time.fixedDeltaTime);
 				this._pointOrigin = this.transform.position;
 			}
 		}
