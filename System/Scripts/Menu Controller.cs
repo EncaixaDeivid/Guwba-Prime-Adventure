@@ -11,7 +11,6 @@ namespace GuwbaPrimeAdventure
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		[SerializeField] private MenuHud _menuHudObject;
-		[SerializeField] private string _levelSelectorScene;
 		private void Awake()
 		{
 			base.Awake<MenuController>();
@@ -108,7 +107,7 @@ namespace GuwbaPrimeAdventure
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
-			this.GetComponent<TransitionController>().Transicion(this._levelSelectorScene);
+			this.GetComponent<TransitionController>().Transicion();
 			if (!SaveController.FileExists())
 				SaveController.SaveData();
 			if (!SettingsController.FileExists())
