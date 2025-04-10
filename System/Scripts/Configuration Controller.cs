@@ -7,7 +7,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	public sealed class ConfigurationController : ControllerConnector
+	internal sealed class ConfigurationController : ControllerConnector
 	{
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
@@ -41,7 +41,13 @@ namespace GuwbaPrimeAdventure
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
 		}
-		protected override void Event() => this.OpenCloseConfigurations();
+		protected override void Event()
+		{
+			if (this.gameObject.scene.name == this._menuScene)
+				this.OpenCloseConfigurations();
+			else
+				this.enabled = false;
+		}
 		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
@@ -173,10 +179,5 @@ namespace GuwbaPrimeAdventure
 			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
 			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
-		public static void DeathScreen()
-		{
-			_instance.enabled = false;
-			_instance.Connect<DeathScreenController>();
-		}
 	};
 };
