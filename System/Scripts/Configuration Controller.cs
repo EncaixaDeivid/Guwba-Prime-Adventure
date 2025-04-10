@@ -7,7 +7,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	public sealed class ConfigurationController : MonoBehaviour
+	public sealed class ConfigurationController : ControllerConnector
 	{
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
@@ -17,14 +17,13 @@ namespace GuwbaPrimeAdventure
 		[SerializeField] private string _levelSelectorScene, _menuScene;
 		private void Awake()
 		{
+			base.Awake<ConfigurationController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
-			if (this.gameObject.scene.name == this._menuScene)
-				this.OpenCloseConfigurations();
 		}
 		private void OnEnable()
 		{
@@ -42,6 +41,7 @@ namespace GuwbaPrimeAdventure
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
 		}
+		protected override void Event() => this.OpenCloseConfigurations();
 		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
@@ -98,8 +98,7 @@ namespace GuwbaPrimeAdventure
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
 			StateController.SetState(true);
-			if (this.gameObject.scene.name == this._menuScene)
-				Destroy(this.gameObject);
+			this.Connect<MenuController>();
 			SettingsController.SaveSettings();
 		};
 		private Action OutLevel => () =>
@@ -176,8 +175,8 @@ namespace GuwbaPrimeAdventure
 		};
 		public static void DeathScreen()
 		{
-			Instantiate(_instance._deathScreenController);
-			Destroy(_instance.gameObject);
+			_instance.enabled = false;
+			_instance.Connect<DeathScreenController>();
 		}
 	};
 };
