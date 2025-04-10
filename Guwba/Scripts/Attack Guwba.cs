@@ -87,12 +87,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 		};
-		private void OnTriggerEnter2D(Collider2D other)
+		private void OnTrigger(GameObject collisionObject)
 		{
 			if (_returnAttack || !this._isAttacking)
 				return;
-			bool isGrabtable = other.TryGetComponent<GrabBody>(out var grabBody);
-			bool isDamageable = other.TryGetComponent<IDamageable>(out var damageable);
+			bool isGrabtable = collisionObject.TryGetComponent<GrabBody>(out var grabBody);
+			bool isDamageable = collisionObject.TryGetComponent<IDamageable>(out var damageable);
 			if ((isGrabtable && !isDamageable || (isGrabtable && isDamageable && damageable.Health == this._valueToGrab)) && grabBody.IsGrabtable)
 			{
 				GuwbaTransformer<CommandGuwba>._returnAttack = true;
@@ -109,11 +109,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (damageable.Damage(this._damage))
 					EffectsController.SetHitStop(this._hitStopTime, this._hitSlowTime);
 			}
-			else if (other.TryGetComponent<Surface>(out _))
+			else if (collisionObject.TryGetComponent<Surface>(out _))
 			{
 				GuwbaTransformer<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
 			}
 		}
+		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
+		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
 	};
 };
