@@ -25,9 +25,12 @@ namespace GuwbaPrimeAdventure
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._deathScreenHud.Continue.clicked -= this.Continue;
-			this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
-			this._deathScreenHud.GameOver.clicked -= this.GameOver;
+			if (this._deathScreenHud)
+			{
+				this._deathScreenHud.Continue.clicked -= this.Continue;
+				this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
+				this._deathScreenHud.GameOver.clicked -= this.GameOver;
+			}
 		}
 		protected override void Event() { }
 		private Action Continue => () => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
