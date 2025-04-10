@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure
 		[SerializeField] private string _levelSelectorScene;
 		private void Awake()
 		{
+			base.Awake<MenuController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
