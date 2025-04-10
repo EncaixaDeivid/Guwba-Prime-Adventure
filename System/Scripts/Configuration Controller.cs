@@ -111,19 +111,19 @@ namespace GuwbaPrimeAdventure
 		private EventCallback<ChangeEvent<float>> GeneralVolume => (ChangeEvent<float> value) =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.generalVolume = value.newValue;
+			settings.generalVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> EffectsVolume => (ChangeEvent<float> value) =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.effectsVolume = value.newValue;
+			settings.effectsVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> MusicVolume => (ChangeEvent<float> value) =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.musicVolume = value.newValue;
+			settings.musicVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> DialogSpeed => (ChangeEvent<float> value) =>
