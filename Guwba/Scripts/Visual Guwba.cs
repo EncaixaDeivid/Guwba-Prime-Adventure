@@ -38,7 +38,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (_instance != this)
+			if (!_instance || _instance != this)
 				return;
 			_actualState -= this.ManualInvencibility;
 			this.StopAllCoroutines();
