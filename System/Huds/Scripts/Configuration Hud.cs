@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	public sealed class ConfigurationHud : MonoBehaviour
+	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
 		private GroupBox _confirmation, _settings;
