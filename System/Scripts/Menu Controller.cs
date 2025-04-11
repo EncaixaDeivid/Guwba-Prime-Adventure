@@ -65,11 +65,7 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
 		}
-		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) =>
-		{
-			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
-			this.Back.Invoke();
-		};
+		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.Back.Invoke();
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
@@ -89,6 +85,7 @@ namespace GuwbaPrimeAdventure
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
+			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => (KeyUpEvent eventCallback) =>
 		{
