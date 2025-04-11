@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(TransitionController)), RequireComponent(typeof(IInteractable))]
+	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Transitioner)), RequireComponent(typeof(IInteractable))]
 	internal abstract class BossController : StateController
 	{
 		protected SpriteRenderer _spriteRenderer;
@@ -123,7 +123,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (settings.dialogToggle && this._haveDialog)
 					this.GetComponent<IInteractable>().Interaction();
 				else
-					this.GetComponent<TransitionController>().Transicion();
+					this.GetComponent<Transitioner>().Transicion();
 			}
 		}
 		[RequireComponent(typeof(Transform), typeof(Collider2D))]
