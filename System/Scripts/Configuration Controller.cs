@@ -185,7 +185,11 @@ namespace GuwbaPrimeAdventure
 			if (this.gameObject.scene.name == this._menuScene && data.ConnectionState == ConnectionState.Enable && hasToggle)
 				this.OpenCloseConfigurations();
 			else if (data.ConnectionState == ConnectionState.Disable && hasToggle)
-				this.enabled = false;
+				this.OnDisable();
+			if ((data.ConnectionState == ConnectionState.Action || data.ConnectionState == ConnectionState.Enable) && hasToggle)
+				this.OnEnable();
+			else if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+				this.OnDisable();
 		}
 	};
 };
