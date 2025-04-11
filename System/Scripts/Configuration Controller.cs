@@ -2,12 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
-using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure
+namespace GuwbaPrimeAdventure.Hud
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class ConfigurationController : MonoBehaviour, IConnector
 	{
 		private static ConfigurationController _instance;
@@ -170,9 +169,9 @@ namespace GuwbaPrimeAdventure
 		{
 			SettingsController.SaveSettings();
 			if (this.gameObject.scene.name != this._levelSelectorScene)
-				this.GetComponent<TransitionController>().Transicion();
+				this.GetComponent<Transitioner>().Transicion();
 			else
-				this.GetComponent<TransitionController>().Transicion(this._menuScene);
+				this.GetComponent<Transitioner>().Transicion(this._menuScene);
 		};
 		private Action NoBackLevel => () =>
 		{
