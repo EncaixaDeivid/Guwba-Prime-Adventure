@@ -57,7 +57,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				SaveController.WriteSave(saveFile);
 			}
 			if (this._dialogTalk.ActivateTransition)
-				this.GetComponent<TransitionController>().Transicion(this._dialogTalk.SceneToTransition);
+				this.GetComponent<Transitioner>().Transicion(this._dialogTalk.SceneToTransition);
 			else if (this._dialogTalk.ActivateAnimation)
 				this._animator.SetTrigger(this._dialogTalk.Animation);
 			if (this._dialogTalk.DesactiveInteraction)
