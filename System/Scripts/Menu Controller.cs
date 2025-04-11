@@ -1,13 +1,12 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
-using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-using UnityEngine.InputSystem;
-namespace GuwbaPrimeAdventure
+namespace GuwbaPrimeAdventure.Hud
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class MenuController : MonoBehaviour
 	{
 		private static MenuController _instance;
@@ -114,7 +113,7 @@ namespace GuwbaPrimeAdventure
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
-			this.GetComponent<TransitionController>().Transicion();
+			this.GetComponent<Transitioner>().Transicion();
 			if (!SaveController.FileExists())
 				SaveController.SaveData();
 			if (!SettingsController.FileExists())
