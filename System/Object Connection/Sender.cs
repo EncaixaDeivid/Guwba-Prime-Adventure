@@ -49,7 +49,8 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public Sender SetIndex(int value)
 		{
-			this._indexValue = (uint)(value < 0f ? -value : value);
+			uint indexValue = (uint)(value < 0f ? -value : value);
+			this._indexValue = indexValue;
 			return this;
 		}
 		public void Send()
