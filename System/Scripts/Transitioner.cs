@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
-	public sealed class TransitionController : MonoBehaviour
+	public sealed class Transitioner : MonoBehaviour
 	{
 		private bool _touchActivate = true;
 		[SerializeField] private TransicionHud _transicionHud;
@@ -29,12 +28,12 @@ namespace GuwbaPrimeAdventure
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(this._transicionHud);
-				for (float i = 0f; i < 1.1f; i += Time.fixedDeltaTime)
+				for (float i = 0f; i < 1.1f; i += Time.deltaTime * transicionHud.ApearRate)
 				{
-					transicionHud.BaseElement.style.opacity = i;
-					yield return new WaitForFixedUpdate();
+					transicionHud.RootVisualElement.style.opacity = i;
+					yield return new WaitForEndOfFrame();
 				}
-				transicionHud.BaseElement.style.opacity = 1f;
+				transicionHud.RootVisualElement.style.opacity = 1f;
 				string newSceneName = sceneName != "" ? sceneName : this._sceneTransicion;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newSceneName, LoadSceneMode.Single);
 				if (newSceneName != this.gameObject.scene.name)
@@ -42,6 +41,11 @@ namespace GuwbaPrimeAdventure
 						if (newSceneName.Contains($"{i}"))
 							saveFile.lastLevelEntered = newSceneName;
 				asyncOperation.allowSceneActivation = true;
+				while (!asyncOperation.isDone)
+				{
+					transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
+					yield return new WaitForEndOfFrame();
+				}
 			}
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
