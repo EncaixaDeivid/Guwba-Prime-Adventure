@@ -104,8 +104,6 @@ namespace GuwbaPrimeAdventure
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
 			StateController.SetState(true);
-			Sender.Create().SetObjectToIgnore(this)
-			.SetConnectionObject(this.ConnectionObject).SetConnectionState(ConnectionState.Enable).Send();
 			SettingsController.SaveSettings();
 		};
 		private Action OutLevel => () =>
@@ -170,6 +168,7 @@ namespace GuwbaPrimeAdventure
 		};
 		private Action YesBackLevel => () =>
 		{
+			SettingsController.SaveSettings();
 			if (this.gameObject.scene.name != this._levelSelectorScene)
 				this.GetComponent<TransitionController>().Transicion();
 			else
