@@ -18,15 +18,13 @@ namespace GuwbaPrimeAdventure.Connection
 		private static readonly List<IConnector> _connectors = new();
 		public static void Implement(IConnector connector)
 		{
-			if (_connectors.Contains(connector))
-				return;
-			_connectors.Add(connector);
+			if (!_connectors.Contains(connector))
+				_connectors.Add(connector);
 		}
 		public static void Exclude(IConnector connector)
 		{
-			if (!_connectors.Contains(connector))
-				return;
-			_connectors.Remove(connector);
+			if (_connectors.Contains(connector))
+				_connectors.Remove(connector);
 		}
 		public static Sender Create() => new();
 		public Sender SetObjectToIgnore(IConnector instanceToIgnore)
