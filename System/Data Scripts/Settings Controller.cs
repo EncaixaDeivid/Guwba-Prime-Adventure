@@ -6,13 +6,13 @@ namespace GuwbaPrimeAdventure.Data
 	{
 		public bool fullScreen;
 		public bool generalVolumeToggle;
-		[Range(0, 100)] public ushort generalVolume;
+		public ushort generalVolume;
 		public bool effectsVolumeToggle;
-		[Range(0, 100)] public ushort effectsVolume;
+		public ushort effectsVolume;
 		public bool musicVolumeToggle;
-		[Range(0, 100)] public ushort musicVolume;
+		public ushort musicVolume;
 		public bool dialogToggle;
-		[Range(0f, .1f)] public float dialogSpeed;
+		public float dialogSpeed;
 	};
 	public static class SettingsController
 	{
