@@ -3,23 +3,25 @@ using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	public sealed class DeathScreenController : ControllerConnector
+	internal sealed class DeathScreenController : MonoBehaviour, IConnector
 	{
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
 		[SerializeField] private DeathScreenHud _deathScreenHudObject;
+		public ConnectionObject ConnectionObject => ConnectionObject.Controller;
 		private void Awake()
 		{
-			base.Awake<DeathScreenController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
+			Sender.Implement(this);
 		}
 		private void OnDestroy()
 		{
@@ -31,22 +33,7 @@ namespace GuwbaPrimeAdventure
 				this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
 				this._deathScreenHud.GameOver.clicked -= this.GameOver;
 			}
-		}
-		protected override void Event()
-		{
-			SaveController.Load(out SaveFile saveFile);
-			this.Connect<ConfigurationController>();
-			this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-			this._deathScreenHud.Continue.clicked += this.Continue;
-			this._deathScreenHud.OutLevel.clicked += this.OutLevel;
-			this._deathScreenHud.GameOver.clicked += this.GameOver;
-			if (saveFile.lifes < 0f)
-			{
-				this._deathScreenHud.Text.text = "Fim de Jogo";
-				this._deathScreenHud.Continue.style.display = DisplayStyle.None;
-				this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
-				this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
-			}
+			Sender.Exclude(this);
 		}
 		private Action Continue => () => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
 		private Action OutLevel => () => this.GetComponent<TransitionController>().Transicion();
@@ -55,6 +42,31 @@ namespace GuwbaPrimeAdventure
 			SaveController.RefreshData();
 			this.GetComponent<TransitionController>().Transicion();
 		};
-		public static void Death() => _instance.Event();
+		public void Receive(DataConnection data)
+		{
+			if (data.ConnectionState == ConnectionState.Disable)
+			{
+				SaveController.Load(out SaveFile saveFile);
+				this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
+				this._deathScreenHud.Continue.clicked += this.Continue;
+				this._deathScreenHud.OutLevel.clicked += this.OutLevel;
+				this._deathScreenHud.GameOver.clicked += this.GameOver;
+				if (saveFile.lifes < 0f)
+				{
+					this._deathScreenHud.Text.text = "Fim de Jogo";
+					this._deathScreenHud.Continue.style.display = DisplayStyle.None;
+					this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+					this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
+				}
+			}
+			else if (data.ConnectionState == ConnectionState.Enable)
+				if (this._deathScreenHud)
+				{
+					this._deathScreenHud.Continue.clicked -= this.Continue;
+					this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
+					this._deathScreenHud.GameOver.clicked -= this.GameOver;
+					Destroy(this._deathScreenHud.gameObject);
+				}
+		}
 	};
 };
