@@ -57,11 +57,9 @@ namespace GuwbaPrimeAdventure.Connection
 			DataConnection dataConnection = new(this._connectionState, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
-				if (connector == this._connectionToIgnore)
+				bool isValid = this._connectionObject == ConnectionObject.All && connector.ConnectionObject == this._connectionObject;
+				if (connector == this._connectionToIgnore || isValid)
 					return;
-				if (this._connectionObject != ConnectionObject.All)
-					if (connector.ConnectionObject != this._connectionObject)
-						return;
 				connector.Receive(dataConnection);
 			};
 		}
