@@ -120,7 +120,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
 				this.StopAllCoroutines();
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-				DeathScreenController.Death();
 				return true;
 			}
 			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
