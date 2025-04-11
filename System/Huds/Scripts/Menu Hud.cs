@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	public sealed class MenuHud : MonoBehaviour
+	internal sealed class MenuHud : MonoBehaviour
 	{
 		private static MenuHud _instance;
 		private GroupBox _buttons, _saves;
