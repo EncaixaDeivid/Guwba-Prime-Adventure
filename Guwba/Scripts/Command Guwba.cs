@@ -102,14 +102,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._death, isDead);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = new Vector2(this._collider.size.x, this._deadSize);
-				Sender.Create().SetObjectType(ObjectType.Controller).SetWaitState(WaitState.Disable).SetToggle(true).Send();
+				Sender.Create().SetObjectType(ConnectionObject.Controller).SetWaitState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 			else
 			{
 				this.OnEnable();
 				this._animator.SetBool(this._death, isDead);
 				this._collider.size = new Vector2(this._collider.size.x, this._normalSize);
-				Sender.Create().SetObjectType(ObjectType.Controller).SetWaitState(WaitState.Enable).SetToggle(true).Send();
+				Sender.Create().SetObjectType(ConnectionObject.Controller).SetWaitState(ConnectionState.Enable).SetToggle(false).Send();
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => (InputAction.CallbackContext movementAction) =>
