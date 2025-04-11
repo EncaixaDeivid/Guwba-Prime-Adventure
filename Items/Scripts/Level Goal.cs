@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(CircleCollider2D), typeof(TransitionController), typeof(IInteractable))]
+	[RequireComponent(typeof(CircleCollider2D), typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGoal : StateController
 	{
 		[SerializeField] private string _goToBoss;
@@ -29,9 +29,9 @@ namespace GuwbaPrimeAdventure.Item
 			if (this._enterInDialog && settings.dialogToggle)
 				this.GetComponent<IInteractable>().Interaction();
 			else if (sceneIndex - 1 >= 0f && !saveFile.deafetedBosses[sceneIndex - 1])
-				this.GetComponent<TransitionController>().Transicion(this._goToBoss);
+				this.GetComponent<Transitioner>().Transicion(this._goToBoss);
 			else
-				this.GetComponent<TransitionController>().Transicion();
+				this.GetComponent<Transitioner>().Transicion();
 		}
 	};
 };
