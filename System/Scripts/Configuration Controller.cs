@@ -4,25 +4,33 @@ using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	internal sealed class ConfigurationController : ControllerConnector
+	internal sealed class ConfigurationController : MonoBehaviour, IConnector
 	{
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
 		[SerializeField] private ConfigurationHud _configurationHudObject;
 		[SerializeField] private string _levelSelectorScene, _menuScene;
+		public ConnectionObject ConnectionObject => ConnectionObject.Controller;
 		private void Awake()
 		{
-			base.Awake<ConfigurationController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
+			Sender.Implement(this);
+		}
+		private void OnDestroy()
+		{
+			if (!_instance || _instance != this)
+				return;
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
@@ -39,13 +47,6 @@ namespace GuwbaPrimeAdventure
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
-		}
-		protected override void Event()
-		{
-			if (this.gameObject.scene.name == this._menuScene)
-				this.OpenCloseConfigurations();
-			else
-				this.enabled = false;
 		}
 		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
@@ -103,7 +104,8 @@ namespace GuwbaPrimeAdventure
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
 			StateController.SetState(true);
-			this.Connect<MenuController>();
+			Sender.Create().SetObjectToIgnore(this)
+			.SetConnectionObject(this.ConnectionObject).SetConnectionState(ConnectionState.Enable).Send();
 			SettingsController.SaveSettings();
 		};
 		private Action OutLevel => () =>
@@ -178,5 +180,13 @@ namespace GuwbaPrimeAdventure
 			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
 			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
+		public void Receive(DataConnection data)
+		{
+			bool hasToggle = data.ToggleValue.HasValue && data.ToggleValue.Value;
+			if (this.gameObject.scene.name == this._menuScene && data.ConnectionState == ConnectionState.Enable && hasToggle)
+				this.OpenCloseConfigurations();
+			else if (data.ConnectionState == ConnectionState.Disable && hasToggle)
+				this.enabled = false;
+		}
 	};
 };
