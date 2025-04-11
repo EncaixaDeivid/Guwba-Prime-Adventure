@@ -3,17 +3,18 @@ using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
-	internal sealed class MenuController : ControllerConnector
+	internal sealed class MenuController : MonoBehaviour, IConnector
 	{
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		[SerializeField] private MenuHud _menuHudObject;
+		public ConnectionObject ConnectionObject => ConnectionObject.Controller;
 		private void Awake()
 		{
-			base.Awake<MenuController>();
 			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
@@ -41,6 +42,7 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[1].clicked += this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
+			Sender.Implement(this);
 		}
 		private void OnDestroy()
 		{
@@ -62,8 +64,8 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[1].clicked -= this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
+			Sender.Exclude(this);
 		}
-		protected override void Event() => this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
@@ -72,7 +74,8 @@ namespace GuwbaPrimeAdventure
 		private Action OpenConfigurations => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
-			this.Connect<ConfigurationController>();
+			Sender.Create().SetObjectToIgnore(this)
+			.SetConnectionObject(this.ConnectionObject).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 		};
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
@@ -121,5 +124,10 @@ namespace GuwbaPrimeAdventure
 		private Action DeleteSaveFile2 => () => this._menuHud.SaveName[1].value = SaveController.DeleteData(2);
 		private Action DeleteSaveFile3 => () => this._menuHud.SaveName[2].value = SaveController.DeleteData(3);
 		private Action DeleteSaveFile4 => () => this._menuHud.SaveName[3].value = SaveController.DeleteData(4);
+		public void Receive(DataConnection data)
+		{
+			if (data.ConnectionState == ConnectionState.Enable)
+				this._menuHud.Buttons.style.display = DisplayStyle.Flex;
+		}
 	};
 };
