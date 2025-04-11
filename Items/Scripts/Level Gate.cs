@@ -7,7 +7,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
-	[RequireComponent(typeof(TransitionController))]
+	[RequireComponent(typeof(Transitioner))]
 	internal sealed class LevelGate : StateController
 	{
 		private LevelGateHud _levelGateInstance;
@@ -33,8 +33,8 @@ namespace GuwbaPrimeAdventure.Item
 			if (this._levelGateInstance)
 				this._levelGateInstance.RootElement.style.display = DisplayStyle.None;
 		}
-		private Action EnterLevel => () => this.GetComponent<TransitionController>().Transicion(this._levelScene);
-		private Action EnterBoss => () => this.GetComponent<TransitionController>().Transicion(this._bossScene);
+		private Action EnterLevel => () => this.GetComponent<Transitioner>().Transicion(this._levelScene);
+		private Action EnterBoss => () => this.GetComponent<Transitioner>().Transicion(this._bossScene);
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
