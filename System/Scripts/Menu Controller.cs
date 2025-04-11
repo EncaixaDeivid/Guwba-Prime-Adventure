@@ -4,6 +4,7 @@ using System;
 using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
+using UnityEngine.InputSystem;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
@@ -11,8 +12,8 @@ namespace GuwbaPrimeAdventure
 	{
 		private static MenuController _instance;
 		private MenuHud _menuHud;
+		private ActionsGuwba _actions;
 		[SerializeField] private MenuHud _menuHudObject;
-		public ConnectionObject ConnectionObject => ConnectionObject.Controller;
 		private void Awake()
 		{
 			if (_instance)
@@ -64,18 +65,30 @@ namespace GuwbaPrimeAdventure
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
 		}
+		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) =>
+		{
+			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
+			this.Back.Invoke();
+		};
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
+			this._actions = new ActionsGuwba();
+			this._actions.commands.hideHud.canceled += this.HideHudAction;
+			this._actions.commands.hideHud.Enable();
+			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
 		};
 		private Action OpenConfigurations => () => Sender.Create()
-			.SetConnectionObject(this.ConnectionObject).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+			.SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
+			this._actions.commands.hideHud.canceled -= this.HideHudAction;
+			this._actions.commands.hideHud.Disable();
+			this._actions.Dispose();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => (KeyUpEvent eventCallback) =>
 		{
