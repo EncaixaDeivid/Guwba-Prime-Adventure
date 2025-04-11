@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
-using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure
+namespace GuwbaPrimeAdventure.Hud
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(TransitionController))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class DeathScreenController : MonoBehaviour, IConnector
 	{
 		private static DeathScreenController _instance;
@@ -35,12 +34,12 @@ namespace GuwbaPrimeAdventure
 			}
 			Sender.Exclude(this);
 		}
-		private Action Continue => () => this.GetComponent<TransitionController>().Transicion(this.gameObject.scene.name);
-		private Action OutLevel => () => this.GetComponent<TransitionController>().Transicion();
+		private Action Continue => () => this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
+		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
 		private Action GameOver => () =>
 		{
 			SaveController.RefreshData();
-			this.GetComponent<TransitionController>().Transicion();
+			this.GetComponent<Transitioner>().Transicion();
 		};
 		public void Receive(DataConnection data)
 		{
