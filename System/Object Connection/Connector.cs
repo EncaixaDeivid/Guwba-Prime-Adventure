@@ -14,7 +14,8 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		None,
 		Enable,
-		Disable
+		Disable,
+		Action
 	};
 	public interface IConnector
 	{
