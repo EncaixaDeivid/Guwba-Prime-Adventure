@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	public sealed class DeathScreenHud : MonoBehaviour
+	internal sealed class DeathScreenHud : MonoBehaviour
 	{
 		private static DeathScreenHud _instance;
 		private Label _text;
