@@ -14,8 +14,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Light2DBase _selfLight;
 		private bool _appearCompleted = false, _fadeCompleted = false;
 		[SerializeField] private Light2DBase _followLight;
-		[SerializeField] private GameObject _shadowObject;
-		[SerializeField] private bool _isReceptor, _fadeActivation, _hasColliders, _hasShadow, _hasFollowLight;
+		[SerializeField] private bool _isReceptor, _fadeActivation, _hasColliders, _hasFollowLight;
 		[SerializeField] private float _timeToFadeAgain, _timeToAppearAgain;
 		private new void Awake()
 		{
@@ -26,8 +25,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Appear()
 		{
-			if (this._hasShadow)
-				this._shadowObject.SetActive(false);
 			for (float i = 0f; i < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -42,8 +39,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Fade()
 		{
-			if (this._hasShadow)
-				this._shadowObject.SetActive(true);
 			for (float i = 1f; i > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
