@@ -18,8 +18,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
+			Sender.Implement(this);
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void FixedUpdate()
 		{
