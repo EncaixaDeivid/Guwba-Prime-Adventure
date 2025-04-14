@@ -50,6 +50,11 @@ namespace GuwbaPrimeAdventure.Connection
 			{
 				if (type == BossType.None)
 					continue;
+				if (type == BossType.All)
+				{
+					this._bossType = type;
+					break;
+				}
 				this._bossType |= type;
 			}
 			return this;
