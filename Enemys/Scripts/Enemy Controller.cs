@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -10,7 +9,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
-		protected UnityAction<bool> _toggleEvent;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
@@ -63,11 +61,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
-		internal void Toggle<EnemyInstance>(bool toggleValue) where EnemyInstance : EnemyController
-		{
-			if (this.TryGetComponent<EnemyInstance>(out var enemyInstance))
-				enemyInstance?._toggleEvent?.Invoke(toggleValue);
-		}
 		public void Paralyze(bool value) => this._paralyzed = value;
 		public bool Damage(ushort damage)
 		{
