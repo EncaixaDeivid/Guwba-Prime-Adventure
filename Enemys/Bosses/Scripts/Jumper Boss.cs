@@ -5,7 +5,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent]
-	internal sealed class JumperBoss : BossController
+	internal sealed class JumperBoss : BossController, IConnector
 	{
 		private bool _stopJump = false, _jumped = false, _usedHigh = false;
 		private ushort _jumpIndex = 0, _fallIndex = 0;
@@ -147,7 +147,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (!data.BossType.HasFlag(BossType.Jumper))
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopJump = data.ToggleValue.Value;
+				this._stopJump = !data.ToggleValue.Value;
 			else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
 			{
 				if (this._stopMoveReact)
