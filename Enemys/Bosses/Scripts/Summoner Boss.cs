@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent]
-	internal sealed class SummonerBoss : BossController
+	internal sealed class SummonerBoss : BossController, IConnector
 	{
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
@@ -78,7 +78,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return;
 			bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopSummon = data.ToggleValue.Value;
+				this._stopSummon = !data.ToggleValue.Value;
 			else if (data.ConnectionState == ConnectionState.Action && has)
 				this.Summon(this._eventSummons[data.IndexValue.Value]);
 		}
