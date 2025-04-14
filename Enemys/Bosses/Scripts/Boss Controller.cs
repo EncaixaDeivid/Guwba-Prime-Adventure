@@ -1,19 +1,16 @@
 using UnityEngine;
-using UnityEngine.Events;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Transitioner)), RequireComponent(typeof(IInteractable))]
-	internal abstract class BossController : StateController
+	internal abstract class BossController : StateController, IConnector
 	{
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
-		protected UnityAction<bool> _toggleEvent;
-		protected UnityAction<ushort> _indexEvent;
-		protected UnityAction _reactToDamageEvent;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
@@ -24,6 +21,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField] protected ushort _movementSpeed;
 		[SerializeField] private ushort _damage;
 		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage, _haveDialog;
+		public ConnectionObject ConnectionObject => ConnectionObject.Boss;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -33,6 +31,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
@@ -59,7 +63,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				this.Toggle<RunnerBoss>(true);
+				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					.SetBossType(BossType.Runner).SetToggle(true).Send();
 			}
 			else if (this._rigidybody.linearVelocityY > 0f)
 			{
@@ -80,37 +85,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (collision.TryGetComponent<IDamageable>(out var damageable))
 				damageable.Damage(this._damage);
 		}
-		internal void Toggle<BossInstance>(bool toggleValue) where BossInstance : BossController
+		public void Receive(DataConnection data)
 		{
-			BossInstance bossInstance = this.GetComponent<BossInstance>();
-			if ((bool)bossInstance?._hasToggle)
-				bossInstance?._toggleEvent?.Invoke(toggleValue);
-		}
-		internal void Index<BossInstance>(ushort indexValue) where BossInstance : BossController
-		{
-			BossInstance bossInstance = this.GetComponent<BossInstance>();
-			if ((bool)bossInstance?._hasIndex)
-				bossInstance?._indexEvent?.Invoke(indexValue);
-		}
-		internal void Index(ushort indexValue)
-		{
-			if (this._hasIndex)
-				this._indexEvent?.Invoke(indexValue);
-		}
-		internal void ReactToDamage<BossInstance>() where BossInstance : BossController
-		{
-			BossInstance bossInstance = this.GetComponent<BossInstance>();
-			if ((bool)bossInstance?._reactToDamage)
-				bossInstance?._reactToDamageEvent?.Invoke();
-		}
-		internal void ReactToDamage()
-		{
-			if (this._reactToDamage)
-				this._reactToDamageEvent?.Invoke();
-		}
-		internal void Destroy(BossProp bossProp)
-		{
-			if (bossProp)
+			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
+			if (data.BossType.HasFlag(BossType.None) && data.ConnectionState == ConnectionState.Disable && isValid)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				SettingsController.Load(out Settings settings);
@@ -132,18 +110,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			protected Collider2D _collider;
 			private SaveFile _saveFile;
 			protected bool _useDestructuion = false;
-			[Header("Boss Prop"), SerializeField] protected BossController[] _bossesControllers;
-			[SerializeField] protected LayerMask _groundLayer, _targetLayerMask;
+			[Header("Boss Prop"), SerializeField] protected LayerMask _groundLayer;
+			[SerializeField] protected LayerMask _targetLayerMask;
 			[SerializeField] private bool _destructBoss, _saveOnSpecifics;
-			[SerializeField] protected bool _multipleReact, _multipleIndex, _indexReact;
-			[SerializeField] protected ushort _bossIndex, _indexEvent;
-			protected BossInstance SpecificBoss<BossInstance>() where BossInstance : BossController
-			{
-				foreach (var bossController in this._bossesControllers)
-					if (bossController is BossInstance)
-						return bossController as BossInstance;
-				return null;
-			}
+			[SerializeField] protected bool _indexReact;
+			[SerializeField] protected ushort _indexEvent;
 			private new void Awake()
 			{
 				base.Awake();
@@ -158,7 +129,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
 					this._saveFile.generalObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
-					this._bossesControllers[0].Destroy(this);
+					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Disable)
+						.SetBossType(BossType.None).SetToggle(true).Send();
 			}
 		};
 	};
