@@ -44,11 +44,6 @@ namespace GuwbaPrimeAdventure.Connection
 			this._connectionState = connectionState;
 			return this;
 		}
-		public Sender SetBossType(BossType bossType)
-		{
-			this._bossType = bossType;
-			return this;
-		}
 		public Sender SetToggle(bool value)
 		{
 			this._toggleValue = value;
