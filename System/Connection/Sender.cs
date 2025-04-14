@@ -9,12 +9,14 @@ namespace GuwbaPrimeAdventure.Connection
 			this._indexValue = null;
 			this._connectionObject = ConnectionObject.All;
 			this._connectionState = ConnectionState.None;
+			this._bossType = BossType.None;
 		}
 		private IConnector _connectionToIgnore;
 		private bool? _toggleValue;
 		private uint? _indexValue;
 		private ConnectionObject _connectionObject;
 		private ConnectionState _connectionState;
+		private BossType _bossType;
 		private static readonly List<IConnector> _connectors = new();
 		public static void Include(IConnector connector)
 		{
@@ -42,6 +44,11 @@ namespace GuwbaPrimeAdventure.Connection
 			this._connectionState = connectionState;
 			return this;
 		}
+		public Sender SetBossType(BossType bossType)
+		{
+			this._bossType = bossType;
+			return this;
+		}
 		public Sender SetToggle(bool value)
 		{
 			this._toggleValue = value;
@@ -55,7 +62,7 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public void Send()
 		{
-			DataConnection dataConnection = new(this._connectionState, this._toggleValue, this._indexValue);
+			DataConnection dataConnection = new(this._connectionState, this._bossType, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
 				bool isValid = this._connectionObject == ConnectionObject.All && connector.ConnectionObject == this._connectionObject;
