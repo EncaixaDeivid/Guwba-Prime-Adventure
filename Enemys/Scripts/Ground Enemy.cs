@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			Sender.Implement(this);
+			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
