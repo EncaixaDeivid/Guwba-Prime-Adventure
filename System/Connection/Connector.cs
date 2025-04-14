@@ -1,3 +1,4 @@
+using System;
 namespace GuwbaPrimeAdventure.Connection
 {
 	public enum ConnectionObject
@@ -17,6 +18,7 @@ namespace GuwbaPrimeAdventure.Connection
 		Disable,
 		Action
 	};
+	[Flags]
 	public enum BossType
 	{
 		None,
