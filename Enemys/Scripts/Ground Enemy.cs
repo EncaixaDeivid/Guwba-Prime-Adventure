@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.Events;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : OppositeEnemy
+	internal sealed class GroundEnemy : OppositeEnemy, IConnector
 	{
 		private bool _rotate = true;
 		[Header("Ground Enemy"), SerializeField] private Vector2 _sensorOriginPoint;
@@ -11,17 +11,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private bool _useGroundPursue, _useCrawlMovement, _useFaceLookVerifier, _targetEveryone;
 		[SerializeField] private ushort _increasedSpeed, _faceLookDistance;
 		[SerializeField] private float _crawlRayDistance;
-		private new void Awake()
-		{
-			base.Awake();
-			this._toggleEvent += this.ToggleEvent;
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			this._toggleEvent -= this.ToggleEvent;
-		}
-		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
+		public ConnectionObject ConnectionObject => ConnectionObject.Enemy;
 		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
@@ -73,6 +63,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._movementSide *= -1;
 			bool goStraight = faceLook || groundWalk;
 			this._rigidybody.linearVelocityX = goStraight ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
+		}
+		public void Receive(DataConnection data)
+		{
+			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this._stopMovement = false;
+			else if (data.ConnectionState == ConnectionState.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this._stopMovement = true;
 		}
 	};
 };
