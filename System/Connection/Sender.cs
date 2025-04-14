@@ -46,6 +46,7 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public Sender SetBossType(params BossType[] bossType)
 		{
+			this._bossType &= ~BossType.None;
 			foreach (BossType type in bossType)
 			{
 				if (type == BossType.None)
