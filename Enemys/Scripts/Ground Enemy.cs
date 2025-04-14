@@ -12,6 +12,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private ushort _increasedSpeed, _faceLookDistance;
 		[SerializeField] private float _crawlRayDistance;
 		public ConnectionObject ConnectionObject => ConnectionObject.Enemy;
+		private new void Awake()
+		{
+			base.Awake();
+			Sender.Implement(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
 		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
