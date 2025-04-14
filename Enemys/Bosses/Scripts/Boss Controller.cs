@@ -88,7 +88,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public void Receive(DataConnection data)
 		{
 			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
-			if (data.BossType.HasFlag(BossType.None) && data.ConnectionState == ConnectionState.Disable && isValid)
+			if (data.ConnectionState == ConnectionState.Disable && isValid)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				SettingsController.Load(out Settings settings);
