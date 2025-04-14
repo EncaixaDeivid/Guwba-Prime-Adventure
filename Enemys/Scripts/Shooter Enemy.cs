@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Events;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -15,15 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
-			this._toggleEvent += this.ToggleEvent;
-			this._toggleEvent = (bool toggleValue) => this._stopMovement = !toggleValue;
 		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			this._toggleEvent -= this.ToggleEvent;
-		}
-		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
 		private bool AimPerception()
 		{
 			float originDirection = this._collider.bounds.extents.x * this._movementSide;
@@ -56,8 +48,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
-				this.Toggle<GroundEnemy>(true);
-				this.Toggle<FlyingEnemy>(true);
+				Sender.Create().SetConnectionObject(ConnectionObject.Enemy).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
@@ -69,8 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					this.Toggle<GroundEnemy>(false);
-					this.Toggle<FlyingEnemy>(false);
+					Sender.Create().SetConnectionObject(ConnectionObject.Enemy).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
