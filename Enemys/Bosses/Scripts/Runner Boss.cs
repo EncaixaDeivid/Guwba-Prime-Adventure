@@ -192,9 +192,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Receive(data);
 			if (!data.BossType.HasFlag(BossType.Runner) || data.BossType.HasFlag(BossType.None))
 				return;
-			if (data.ConnectionState.HasFlag(ConnectionState.Action) && data.ToggleValue.HasValue && this._hasToggle)
+			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 				this._stopVelocity = this._stopMovement = data.ToggleValue.Value;
-			else if (data.ConnectionState.HasFlag(ConnectionState.Action) && this._reactToDamage)
+			else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
 			{
 				Vector2 targetPosition;
 				if (this._useOtherTarget)
