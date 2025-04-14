@@ -74,7 +74,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public new void Receive(DataConnection data)
 		{
 			base.Receive(data);
-			if (!data.BossType.HasFlag(BossType.Summoner) || data.BossType.HasFlag(BossType.None))
+			if (!data.BossType.HasFlag(BossType.Summoner))
 				return;
 			bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
