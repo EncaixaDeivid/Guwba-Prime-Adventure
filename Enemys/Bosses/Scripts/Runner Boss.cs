@@ -5,7 +5,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent]
-	internal sealed class RunnerBoss : BossController
+	internal sealed class RunnerBoss : BossController, IConnector
 	{
 		private float _gravityScale = 0f;
 		private bool _stopMovement = false, _dashIsOn = false, _stopVelocity = false;
@@ -193,7 +193,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (!data.BossType.HasFlag(BossType.Runner))
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopVelocity = this._stopMovement = data.ToggleValue.Value;
+				this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
 			else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
 			{
 				Vector2 targetPosition;
