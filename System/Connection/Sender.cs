@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Connection
 		private ConnectionObject _connectionObject;
 		private ConnectionState _connectionState;
 		private static readonly List<IConnector> _connectors = new();
-		public static void Implement(IConnector connector)
+		public static void Include(IConnector connector)
 		{
 			if (!_connectors.Contains(connector))
 				_connectors.Add(connector);
