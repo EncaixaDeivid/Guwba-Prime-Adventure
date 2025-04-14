@@ -17,6 +17,12 @@ namespace GuwbaPrimeAdventure.Connection
 		Disable,
 		Action
 	};
+	public enum BossType
+	{
+		Runner,
+		Jumper,
+		Summoner
+	};
 	public interface IConnector
 	{
 		public ConnectionObject ConnectionObject { get; }
