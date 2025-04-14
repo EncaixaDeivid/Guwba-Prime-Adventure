@@ -144,7 +144,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public new void Receive(DataConnection data)
 		{
 			base.Receive(data);
-			if (!data.BossType.HasFlag(BossType.Jumper) || data.BossType.HasFlag(BossType.None))
+			if (!data.BossType.HasFlag(BossType.Jumper))
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 				this._stopJump = data.ToggleValue.Value;
