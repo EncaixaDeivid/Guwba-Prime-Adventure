@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent]
@@ -9,21 +10,52 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _stopSummon = false;
 		[Header("Summoner Boss"), SerializeField] private SummonPlaces[] _summonPlaces;
 		[SerializeField] private SummonObject[] _eventSummons, _timedSummons;
-		private new void Awake() // Set Summon Points
+		private void Summon(SummonObject summon)
+		{
+			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
+			if (summon.StopToSummon)
+				this.StartCoroutine(StopToSummon());
+			IEnumerator StopToSummon()
+			{
+				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					.SetBossType(BossType.Runner, BossType.Jumper).SetToggle(false).Send();
+				this._rigidybody.linearVelocityX = 0f;
+				if (summon.ParalyzeToSummon)
+					this._rigidybody.gravityScale = 0f;
+				yield return new WaitTime(this, summon.TimeToStop);
+				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					.SetBossType(BossType.Runner, BossType.Jumper).SetToggle(true).Send();
+				this._rigidybody.gravityScale = this._gravityScale;
+			}
+			for (ushort i = 0; i < summon.QuantityToSummon; i++)
+				if (summon.Self)
+					Instantiate(summon.Summon, this.transform.position, summon.Summon.transform.rotation, this.transform);
+				else if (summon.Combine && summon.Sequential)
+				{
+					Vector2 combineSequentialPoint = (Vector2)this.transform.position + summon.SummonPoints[i];
+					Instantiate(summon.Summon, combineSequentialPoint, summon.Summon.transform.rotation, this.transform);
+				}
+				else if (summon.Combine)
+					Instantiate(summon.Summon, combinePoint, summon.Summon.transform.rotation, this.transform);
+				else if (summon.Sequential)
+					Instantiate(summon.Summon, summon.SummonPoints[i], summon.Summon.transform.rotation, this.transform);
+				else if (summon.Random)
+				{
+					ushort pointIndex = (ushort)Random.Range(0f, summon.SummonPoints.Length - 1f);
+					Instantiate(summon.Summon, summon.SummonPoints[pointIndex], summon.Summon.transform.rotation, this.transform);
+				}
+				else
+					Instantiate(summon.Summon, summon.SummonPoints[0], summon.Summon.transform.rotation, this.transform);
+		}
+		private new void Awake()
 		{
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
-			this._toggleEvent = (bool toggleValue) => this._stopSummon = !toggleValue;
-			this._indexEvent = (ushort indexValue) =>
-			{
-				if (this._eventSummons.Length > 0f)
-					Summon(this._eventSummons[indexValue]);
-			};
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
 			{
 				SummonPoint summonPoint = summonPlaces.SummonPointObject;
-				SummonPoint summonPointInstance = Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity);
-				summonPointInstance.GetTouch(() => this.Index(summonPlaces.IndexValue));
+				Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity)
+					.GetTouch(() => this.Summon(this._eventSummons[summonPlaces.IndexValue]));
 			}
 			foreach (SummonObject summon in this._timedSummons)
 			{
@@ -33,48 +65,22 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					yield return new WaitTime(this, summon.SummonTime);
 					if (!summon.StopTimedSummon && !this._stopSummon)
 					{
-						Summon(summon);
+						this.Summon(summon);
 						this.StartCoroutine(TimedSummon(summon));
 					}
 				}
 			}
-			void Summon(SummonObject summon)
-			{
-				Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
-				if (summon.StopToSummon)
-					this.StartCoroutine(StopToSummon());
-				IEnumerator StopToSummon()
-				{
-					this.Toggle<RunnerBoss>(false);
-					this.Toggle<JumperBoss>(false);
-					this._rigidybody.linearVelocityX = 0f;
-					if (summon.ParalyzeToSummon)
-						this._rigidybody.gravityScale = 0f;
-					yield return new WaitTime(this, summon.TimeToStop);
-					this.Toggle<RunnerBoss>(true);
-					this.Toggle<JumperBoss>(true);
-					this._rigidybody.gravityScale = this._gravityScale;
-				}
-				for (ushort i = 0; i < summon.QuantityToSummon; i++)
-					if (summon.Self)
-						Instantiate(summon.Summon, this.transform.position, summon.Summon.transform.rotation, this.transform);
-					else if (summon.Combine && summon.Sequential)
-					{
-						Vector2 combineSequentialPoint = (Vector2)this.transform.position + summon.SummonPoints[i];
-						Instantiate(summon.Summon, combinePoint, summon.Summon.transform.rotation, this.transform);
-					}
-					else if (summon.Combine)
-						Instantiate(summon.Summon, combinePoint, summon.Summon.transform.rotation, this.transform);
-					else if (summon.Sequential)
-						Instantiate(summon.Summon, summon.SummonPoints[i], summon.Summon.transform.rotation, this.transform);
-					else if (summon.Random)
-					{
-						ushort pointIndex = (ushort)Random.Range(0f, summon.SummonPoints.Length - 1f);
-						Instantiate(summon.Summon, summon.SummonPoints[pointIndex], summon.Summon.transform.rotation, this.transform);
-					}
-					else
-						Instantiate(summon.Summon, summon.SummonPoints[0], summon.Summon.transform.rotation, this.transform);
-			}
+		}
+		public new void Receive(DataConnection data)
+		{
+			base.Receive(data);
+			if (!data.BossType.HasFlag(BossType.Summoner) || data.BossType.HasFlag(BossType.None))
+				return;
+			bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
+			if (data.ConnectionState.HasFlag(ConnectionState.Action) && data.ToggleValue.HasValue && this._hasToggle)
+				this._stopSummon = data.ToggleValue.Value;
+			else if (data.ConnectionState.HasFlag(ConnectionState.Action) && has)
+				this.Summon(this._eventSummons[data.IndexValue.Value]);
 		}
 		[System.Serializable]
 		private struct SummonPlaces
