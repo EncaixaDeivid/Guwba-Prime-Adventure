@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
+		private static bool _isDeafeted = false;
 		[Header("Boss Controller"), SerializeField] protected LayerMask _groundLayer;
 		[SerializeField] protected LayerMask _targetLayerMask;
 		[SerializeField] private float _groundSize;
@@ -88,8 +89,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public void Receive(DataConnection data)
 		{
 			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
-			if (data.ConnectionState == ConnectionState.Disable && isValid)
+			if (data.ConnectionState == ConnectionState.Disable && isValid && !_isDeafeted)
 			{
+				_isDeafeted = true;
 				SaveController.Load(out SaveFile saveFile);
 				SettingsController.Load(out Settings settings);
 				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
@@ -129,8 +131,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
 					this._saveFile.generalObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Disable)
-						.SetBossType(BossType.None).SetToggle(true).Send();
+					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 		};
 	};
