@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.Events;
+using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class FlyingEnemy : OppositeEnemy
+	internal sealed class FlyingEnemy : OppositeEnemy, IConnector
 	{
 		private Vector2 _pointOrigin = new();
 		private bool _normal = true;
@@ -13,20 +13,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
 		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue, _justHorizontal, _justVertical;
+		public ConnectionObject ConnectionObject => ConnectionObject.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
-			this._toggleEvent += this.ToggleEvent;
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
 		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			this._toggleEvent -= this.ToggleEvent;
-		}
-		private UnityAction<bool> ToggleEvent => (bool toggleValue) => this._stopMovement = !toggleValue;
 		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.Paralyzed)
@@ -98,6 +92,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._movementSpeed * Time.fixedDeltaTime);
 				this._pointOrigin = this.transform.position;
 			}
+		}
+		public void Receive(DataConnection data)
+		{
+			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this._stopMovement = false;
+			else if (data.ConnectionState == ConnectionState.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this._stopMovement = true;
 		}
 	};
 };
