@@ -22,6 +22,7 @@ namespace GuwbaPrimeAdventure.Connection
 	public enum BossType
 	{
 		None,
+		All,
 		Runner,
 		Jumper,
 		Summoner
