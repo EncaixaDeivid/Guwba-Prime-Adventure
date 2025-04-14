@@ -44,20 +44,9 @@ namespace GuwbaPrimeAdventure.Connection
 			this._connectionState = connectionState;
 			return this;
 		}
-		public Sender SetBossType(params BossType[] bossType)
+		public Sender SetBossType(BossType bossType)
 		{
-			this._bossType &= ~BossType.None;
-			foreach (BossType type in bossType)
-			{
-				if (type == BossType.None)
-					continue;
-				if (type == BossType.All)
-				{
-					this._bossType = type;
-					break;
-				}
-				this._bossType |= type;
-			}
+			this._bossType = bossType;
 			return this;
 		}
 		public Sender SetToggle(bool value)
