@@ -18,13 +18,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator StopToSummon()
 			{
 				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner, BossType.Jumper).SetToggle(false).Send();
+					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
 				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner, BossType.Jumper).SetToggle(true).Send();
+					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(true).Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
@@ -77,9 +77,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (!data.BossType.HasFlag(BossType.Summoner) || data.BossType.HasFlag(BossType.None))
 				return;
 			bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
-			if (data.ConnectionState.HasFlag(ConnectionState.Action) && data.ToggleValue.HasValue && this._hasToggle)
+			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 				this._stopSummon = data.ToggleValue.Value;
-			else if (data.ConnectionState.HasFlag(ConnectionState.Action) && has)
+			else if (data.ConnectionState == ConnectionState.Action && has)
 				this.Summon(this._eventSummons[data.IndexValue.Value]);
 		}
 		[System.Serializable]
