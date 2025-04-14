@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			Sender.Implement(this);
+			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
