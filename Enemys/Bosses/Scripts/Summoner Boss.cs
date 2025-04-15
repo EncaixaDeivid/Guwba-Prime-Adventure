@@ -17,13 +17,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(StopToSummon());
 			IEnumerator StopToSummon()
 			{
-				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
-				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(true).Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
