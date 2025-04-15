@@ -72,9 +72,8 @@ namespace GuwbaPrimeAdventure.Connection
 			DataConnection dataConnection = new(this._fromConnection, this._connectionState, this._bossType, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
-				bool isValid = this._toWhereConnection != PathConnection.None && connector.PathConnection == this._toWhereConnection;
-				if (connector == this._connectionToIgnore || isValid)
-					return;
+				if (connector == this._connectionToIgnore || connector.PathConnection != this._toWhereConnection)
+					continue;
 				connector.Receive(dataConnection);
 			};
 		}
