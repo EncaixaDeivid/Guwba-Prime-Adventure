@@ -66,7 +66,7 @@ namespace GuwbaPrimeAdventure.Dialog
 				this.enabled = false;
 			if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
 				Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
-			if (this.gameObject.scene.name == this._bossSceneName)
+			if (this.gameObject.scene.name.Contains(this._bossSceneName))
 				Sender.Create().SetFromConnection(PathConnection.Dialog).SetToWhereConnection(PathConnection.Controller)
 					.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 		}
