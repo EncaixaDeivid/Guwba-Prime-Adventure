@@ -1,15 +1,16 @@
 using System;
 namespace GuwbaPrimeAdventure.Connection
 {
-	public enum ConnectionObject
+	public enum PathConnection
 	{
-		All,
+		None,
 		Enemy,
 		Boss,
 		Item,
 		EventItem,
 		Hud,
-		Controller
+		Controller,
+		Dialog
 	};
 	public enum ConnectionState
 	{
@@ -29,7 +30,7 @@ namespace GuwbaPrimeAdventure.Connection
 	};
 	public interface IConnector
 	{
-		public ConnectionObject ConnectionObject { get; }
+		public PathConnection PathConnection { get; }
 		public void Receive(DataConnection data);
 	};
 };
