@@ -39,11 +39,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._randomJumpIndex && !this._sequentialJumpIndex)
 					this._jumpIndex = (ushort)Random.Range(0, this._summonIndexJump.Length - 1);
 				if (this._summonOnJump && (this._bothJump || this._justHighJump))
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexJump[this._jumpIndex]).Send();
 				if (this._sequentialJumpIndex && !this._randomJumpIndex)
 					this._jumpIndex = (ushort)(this._jumpIndex < this._summonIndexJump.Length - 1f ? this._jumpIndex + 1f : 0f);
-				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				float randomDirection = 0f;
@@ -93,13 +93,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 								if (this._randomJumpIndex && !this._sequentialJumpIndex)
 									this._jumpIndex = (ushort)Random.Range(0, this._summonIndexJump.Length - 1);
 								if (this._summonOnJump && !this._justHighJump)
-									Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+									Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 									.SetBossType(BossType.Summoner).SetIndex(this._summonIndexJump[this._jumpIndex]).Send();
 								if (this._sequentialJumpIndex && !this._randomJumpIndex)
 									this._jumpIndex = (ushort)(this._jumpIndex < this._summonIndexJump.Length - 1f ? this._jumpIndex + 1f : 0f);
 								if (this._jumpPointStructures[index].StopMove)
 								{
-									Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+									Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 									.SetBossType(BossType.Runner).SetToggle(false).Send();
 									this._rigidybody.linearVelocityX = 0f;
 								}
@@ -121,7 +121,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				{
 					if (this._randomFallIndex && !this._sequentialFallIndex)
 						this._fallIndex = (ushort)Random.Range(0, this._summonIndexFall.Length - 1);
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexFall[this._fallIndex]).Send();
 					if (this._sequentialFallIndex && !this._randomFallIndex)
 						this._fallIndex = (ushort)(this._fallIndex < this._summonIndexFall.Length - 1f ? this._fallIndex + 1f : 0f);
@@ -134,7 +134,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				{
 					if (this._randomFallIndex && !this._sequentialFallIndex)
 						this._fallIndex = (ushort)Random.Range(0, this._summonIndexFall.Length - 1);
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexFall[this._fallIndex]).Send();
 					if (this._sequentialFallIndex && !this._randomFallIndex)
 						this._fallIndex = (ushort)(this._fallIndex < this._summonIndexFall.Length - 1f ? this._fallIndex + 1f : 0f);
@@ -152,7 +152,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				if (this._stopMoveReact)
 				{
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner).SetToggle(false).Send();
 					this._rigidybody.linearVelocityX = 0f;
 				}
