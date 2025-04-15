@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private bool _useGroundPursue, _useCrawlMovement, _useFaceLookVerifier, _targetEveryone;
 		[SerializeField] private ushort _increasedSpeed, _faceLookDistance;
 		[SerializeField] private float _crawlRayDistance;
-		public ConnectionObject ConnectionObject => ConnectionObject.Enemy;
+		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
