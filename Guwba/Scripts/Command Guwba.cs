@@ -103,7 +103,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._death, isDead);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = new Vector2(this._collider.size.x, this._deadSize);
-				Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Disable)
+				Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Disable)
 				.SetToggle(true).Send();
 			}
 			else
@@ -111,7 +111,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.OnEnable();
 				this._animator.SetBool(this._death, isDead);
 				this._collider.size = new Vector2(this._collider.size.x, this._normalSize);
-				Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Enable)
+				Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Enable)
 				.SetToggle(false).Send();
 			}
 		};
