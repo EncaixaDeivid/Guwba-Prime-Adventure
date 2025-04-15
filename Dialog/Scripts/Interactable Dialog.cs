@@ -16,7 +16,6 @@ namespace GuwbaPrimeAdventure.Dialog
 		private float _dialogTime = 0f;
 		[SerializeField] private DialogHud _dialogHudObject;
 		[SerializeField] private DialogObject[] _dialogObject;
-		[SerializeField] private string _bossSceneName;
 		public void Interaction()
 		{
 			if (this._dialogObject?.Length > 0f && this._dialogHudObject)
@@ -66,9 +65,6 @@ namespace GuwbaPrimeAdventure.Dialog
 				this.enabled = false;
 			if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
 				Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
-			if (this.gameObject.scene.name.Contains(this._bossSceneName))
-				Sender.Create().SetFromConnection(PathConnection.Dialog).SetToWhereConnection(PathConnection.Controller)
-					.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 		}
 		private void AdvanceSpeach()
 		{
