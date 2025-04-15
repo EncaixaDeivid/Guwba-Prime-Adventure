@@ -7,14 +7,16 @@ namespace GuwbaPrimeAdventure.Connection
 		{
 			this._toggleValue = null;
 			this._indexValue = null;
-			this._connectionObject = ConnectionObject.All;
+			this._fromConnection = PathConnection.None;
+			this._toWhereConnection = PathConnection.None;
 			this._connectionState = ConnectionState.None;
 			this._bossType = BossType.None;
 		}
 		private IConnector _connectionToIgnore;
 		private bool? _toggleValue;
 		private uint? _indexValue;
-		private ConnectionObject _connectionObject;
+		private PathConnection _fromConnection;
+		private PathConnection _toWhereConnection;
 		private ConnectionState _connectionState;
 		private BossType _bossType;
 		private static readonly List<IConnector> _connectors = new();
@@ -34,9 +36,14 @@ namespace GuwbaPrimeAdventure.Connection
 			this._connectionToIgnore = instanceToIgnore;
 			return this;
 		}
-		public Sender SetConnectionObject(ConnectionObject connectionObject)
+		public Sender SetFromConnection(PathConnection fromConnection)
 		{
-			this._connectionObject = connectionObject;
+			this._fromConnection = fromConnection;
+			return this;
+		}
+		public Sender SetToWhereConnection(PathConnection toWhereConnection)
+		{
+			this._toWhereConnection = toWhereConnection;
 			return this;
 		}
 		public Sender SetConnectionState(ConnectionState connectionState)
@@ -62,10 +69,10 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public void Send()
 		{
-			DataConnection dataConnection = new(this._connectionState, this._bossType, this._toggleValue, this._indexValue);
+			DataConnection dataConnection = new(this._fromConnection, this._connectionState, this._bossType, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
-				bool isValid = this._connectionObject == ConnectionObject.All && connector.ConnectionObject == this._connectionObject;
+				bool isValid = this._toWhereConnection != PathConnection.None && connector.PathConnection == this._toWhereConnection;
 				if (connector == this._connectionToIgnore || isValid)
 					return;
 				connector.Receive(dataConnection);
