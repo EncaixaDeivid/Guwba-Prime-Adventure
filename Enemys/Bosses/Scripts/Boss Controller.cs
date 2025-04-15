@@ -132,7 +132,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
 					this._saveFile.generalObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+					Sender.Create().SetFromConnection(PathConnection.Boss).SetToWhereConnection(PathConnection.Boss)
+						.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 		};
 	};
