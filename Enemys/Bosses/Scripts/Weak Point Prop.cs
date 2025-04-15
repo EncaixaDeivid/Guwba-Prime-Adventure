@@ -26,10 +26,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 				this._vitality -= (short)damage;
 				if (this._indexReact)
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.All).SetIndex(this._indexEvent).Send();
 				else
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.All).Send();
 				if (this._vitality <= 0)
 				{
