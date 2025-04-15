@@ -21,8 +21,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField] protected string _idle, _walk, _dash, _jump, _fall;
 		[SerializeField] protected ushort _movementSpeed;
 		[SerializeField] private ushort _damage;
-		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage, _haveDialog;
-		public ConnectionObject ConnectionObject => ConnectionObject.Boss;
+		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage;
+		[SerializeField] private bool _haveDialog, _isTransitioner;
+		public PathConnection PathConnection => PathConnection.Boss;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -64,7 +65,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner).SetToggle(true).Send();
 			}
 			else if (this._rigidybody.linearVelocityY > 0f)
@@ -102,7 +103,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 				if (settings.dialogToggle && this._haveDialog)
 					this.GetComponent<IInteractable>().Interaction();
-				else
+				else if (this._isTransitioner)
 					this.GetComponent<Transitioner>().Transicion();
 			}
 		}
@@ -131,7 +132,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
 					this._saveFile.generalObjects.Add(this.gameObject.name);
 				if (this._destructBoss)
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 		};
 	};
