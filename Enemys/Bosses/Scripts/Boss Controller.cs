@@ -90,7 +90,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public void Receive(DataConnection data)
 		{
 			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
-			if (data.ConnectionState == ConnectionState.Disable && isValid && !_isDeafeted)
+			if (data.FromConnection == PathConnection.Boss && data.ConnectionState == ConnectionState.Disable && isValid && !_isDeafeted)
 			{
 				_isDeafeted = true;
 				SaveController.Load(out SaveFile saveFile);
