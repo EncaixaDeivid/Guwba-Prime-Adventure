@@ -11,7 +11,6 @@ namespace GuwbaPrimeAdventure.Hud
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
 		[SerializeField] private DeathScreenHud _deathScreenHudObject;
-		[SerializeField] private string _bossSceneName;
 		public PathConnection PathConnection => PathConnection.Controller;
 		private void Awake()
 		{
@@ -44,8 +43,6 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data)
 		{
-			if (this.gameObject.scene.name.Contains(this._bossSceneName) && data.FromConnection != PathConnection.Dialog)
-				return;
 			if (data.ConnectionState == ConnectionState.Disable)
 			{
 				SaveController.Load(out SaveFile saveFile);
