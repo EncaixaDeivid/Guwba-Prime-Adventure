@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
-				Sender.Create().SetConnectionObject(ConnectionObject.Enemy).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+				Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
@@ -60,7 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					Sender.Create().SetConnectionObject(ConnectionObject.Enemy).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+					Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
