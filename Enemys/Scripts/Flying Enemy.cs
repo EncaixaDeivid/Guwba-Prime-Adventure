@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private Vector2[] _trail;
 		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
 		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue, _justHorizontal, _justVertical;
-		public ConnectionObject ConnectionObject => ConnectionObject.Enemy;
+		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
