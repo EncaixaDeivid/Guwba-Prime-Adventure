@@ -72,10 +72,10 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions = new ActionsGuwba();
 			this._actions.commands.hideHud.canceled += this.HideHudAction;
 			this._actions.commands.hideHud.Enable();
-			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
+			Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
 		};
 		private Action OpenConfigurations => () => Sender.Create()
-			.SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+			.SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -84,7 +84,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
-			Sender.Create().SetConnectionObject(ConnectionObject.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
+			Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => (KeyUpEvent eventCallback) =>
 		{
