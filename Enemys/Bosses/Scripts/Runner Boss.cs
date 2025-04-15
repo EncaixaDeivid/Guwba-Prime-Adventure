@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
-			Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+			Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 				.SetBossType(BossType.Jumper).SetToggle(this._jumpDash).Send();
 			this._animator.SetBool(this._walk, false);
 			Vector2 actualPosition = this.transform.position;
@@ -40,10 +40,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.deltaTime + dashValue);
 			if (this._eventOnDash)
 				if (this._indexSummon)
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Summoner).SetIndex(this._summonIndex).Send();
 				else
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Jumper).SetToggle(true).Send();
 			Vector2 runnedDistance = actualPosition;
 			Vector2Int cellPosition = new((int)actualPosition.x, (int)actualPosition.y);
@@ -69,7 +69,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return Vector2.Distance(actualPosition, runnedDistance) >= this._dashDistance && this.enabled;
 			});
 			this._dashIsOn = false;
-			Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+			Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 				.SetBossType(BossType.Jumper).SetToggle(true).Send();
 		}
 		private new void Awake()
@@ -109,7 +109,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return;
 			}
 			if ((this._eventOnDash || this._eventOnBlock) && !this._indexSummon)
-				Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Jumper).SetToggle(false).Send();
 			Vector2 dashDirection = this.transform.right * this._movementSide;
 			bool frontDashValue = false;
@@ -168,10 +168,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._movementSide *= -1;
 			if (this._eventOnBlock && blockPerception && !this._climbWall)
 				if (this._indexSummon)
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Summoner).SetIndex(this._summonIndex).Send();
 				else
-					Sender.Create().SetConnectionObject(ConnectionObject.Boss).SetConnectionState(ConnectionState.Action)
+					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 						.SetBossType(BossType.Jumper).SetToggle(true).Send();
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (!this._dashIsOn)
