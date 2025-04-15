@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data)
 		{
-			if (this.gameObject.scene.name == this._bossSceneName && data.FromConnection != PathConnection.Dialog)
+			if (this.gameObject.scene.name.Contains(this._bossSceneName) && data.FromConnection != PathConnection.Dialog)
 				return;
 			if (data.ConnectionState == ConnectionState.Disable)
 			{
