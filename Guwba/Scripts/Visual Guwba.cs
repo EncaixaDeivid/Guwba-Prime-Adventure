@@ -17,7 +17,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private string _levelSelectorScene;
 		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
-		[SerializeField] private float _invencibilityValue, _timeStep, _hitStopTime, _hitStopSlow;
+		[SerializeField, Tooltip("The value applied to visual when hit is taken.")] private float _invencibilityValue;
+		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
+		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
+		[SerializeField, Tooltip("The amount of time to slow the game when hit is taken.")] private float _hitStopSlow;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
