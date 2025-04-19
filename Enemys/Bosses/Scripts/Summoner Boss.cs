@@ -9,7 +9,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
 		[Header("Summoner Boss"), SerializeField] private SummonPlaces[] _summonPlaces;
-		[SerializeField] private SummonObject[] _eventSummons, _timedSummons;
+		[SerializeField] private SummonObject[] _eventSummons;
+		[SerializeField] private SummonObject[] _timedSummons;
 		private void Summon(SummonObject summon)
 		{
 			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
