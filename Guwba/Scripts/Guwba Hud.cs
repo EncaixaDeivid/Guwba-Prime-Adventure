@@ -9,7 +9,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private VisualElement _rootElement;
 		private VisualElement[] _vitality;
 		private Label _lifeText, _coinText;
-		[SerializeField] private string _rootElementObject, _vitalityVisual, _lifeTextObject, _coinTextObject;
+		[SerializeField] private string _rootElementObject;
+		[SerializeField] private string _vitalityVisual;
+		[SerializeField] private string _lifeTextObject;
+		[SerializeField] private string _coinTextObject;
 		internal VisualElement RootElement => this._rootElement;
 		internal VisualElement[] Vitality => this._vitality;
 		internal Label LifeText => this._lifeText;
