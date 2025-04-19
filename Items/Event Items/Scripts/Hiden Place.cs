@@ -12,10 +12,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Tilemap _tilemap;
 		private Collider2D[] _colliders;
 		private Light2DBase _selfLight;
-		private bool _appearCompleted = false, _fadeCompleted = false;
+		private bool _appearCompleted = false;
+		private bool _fadeCompleted = false;
 		[SerializeField] private Light2DBase _followLight;
-		[SerializeField] private bool _isReceptor, _fadeActivation, _hasColliders, _hasFollowLight;
-		[SerializeField] private float _timeToFadeAgain, _timeToAppearAgain;
+		[SerializeField] private bool _isReceptor;
+		[SerializeField] private bool _fadeActivation;
+		[SerializeField] private bool _hasColliders;
+		[SerializeField] private bool _hasFollowLight;
+		[SerializeField] private float _timeToFadeAgain;
+		[SerializeField] private float _timeToAppearAgain;
 		private new void Awake()
 		{
 			base.Awake();
