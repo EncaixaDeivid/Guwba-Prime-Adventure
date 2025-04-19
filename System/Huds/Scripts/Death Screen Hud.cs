@@ -8,7 +8,10 @@ namespace GuwbaPrimeAdventure.Hud
 		private static DeathScreenHud _instance;
 		private Label _text;
 		private Button _continue, _outLevel, _gameOver;
-		[SerializeField] private string _textLabel, _continueButton, _outLevelButton, _gameOverButton;
+		[SerializeField] private string _textLabel;
+		[SerializeField] private string _continueButton;
+		[SerializeField] private string _outLevelButton;
+		[SerializeField] private string _gameOverButton;
 		public Label Text => this._text;
 		public Button Continue => this._continue;
 		public Button OutLevel => this._outLevel;
