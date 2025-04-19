@@ -7,10 +7,13 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class GeneratorEnemy : EnemyController
 	{
 		private readonly List<GameObject> _enemysGenerated = new();
-		private float _timeGeneration = 0f, _gravityScale = 0f;
-		private bool _continueGeneration = true, _stopGenerate = false;
+		private float _timeGeneration = 0f;
+		private float _gravityScale = 0f;
+		private bool _continueGeneration = true;
+		private bool _stopGenerate = false;
 		[Header("Generator Enemy"), SerializeField] private SummonObject _summonObject;
-		[SerializeField] private bool _especifiedGeneration, _existentEnemys;
+		[SerializeField] private bool _especifiedGeneration;
+		[SerializeField] private bool _existentEnemys;
 		private new void Awake()
 		{
 			base.Awake();
