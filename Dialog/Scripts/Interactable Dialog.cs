@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Dialog
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
