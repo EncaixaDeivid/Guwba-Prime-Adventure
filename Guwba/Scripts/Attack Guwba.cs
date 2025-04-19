@@ -12,8 +12,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Vector2 _guardVelocity = new();
 		private bool _isAttacking = false;
-		[SerializeField] private ushort _damage, _valueToGrab;
-		[SerializeField] private float _movementSpeed, _movementDistance, _hitStopTime, _hitSlowTime;
+		[SerializeField] private ushort _damage;
+		[SerializeField, Tooltip("The value of vitality to grab.")] private ushort _valueToGrab;
+		[SerializeField] private float _movementSpeed;
+		[SerializeField, Tooltip("The maximum distance to move forward.")] private float _movementDistance;
+		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
+		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		private new void Awake()
 		{
 			base.Awake();
