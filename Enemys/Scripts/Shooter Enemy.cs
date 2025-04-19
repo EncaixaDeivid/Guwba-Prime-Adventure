@@ -6,11 +6,22 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class ShooterEnemy : EnemyController
 	{
 		private Vector2 _targetDirection;
-		private float _shootInterval = 0f, _timeStop = 0f, _gravityScale = 0f;
+		private float _shootInterval = 0f;
+		private float _timeStop = 0f;
+		private float _gravityScale = 0f;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy"), SerializeField] private Projectile[] _projectiles;
-		[SerializeField] private float _perceptionDistance, _rayAngleDirection, _intervalToShoot, _stopTime;
-		[SerializeField] private bool _stop, _paralyze, _returnGravity, _circulateDetection, _shootInfinity, _pureInstance, _instanceOnSelf;
+		[SerializeField] private float _perceptionDistance;
+		[SerializeField] private float _rayAngleDirection;
+		[SerializeField] private float _intervalToShoot;
+		[SerializeField] private float _stopTime;
+		[SerializeField] private bool _stop;
+		[SerializeField] private bool _paralyze;
+		[SerializeField] private bool _returnGravity;
+		[SerializeField] private bool _circulateDetection;
+		[SerializeField] private bool _shootInfinity;
+		[SerializeField] private bool _pureInstance;
+		[SerializeField] private bool _instanceOnSelf;
 		private new void Awake()
 		{
 			base.Awake();
