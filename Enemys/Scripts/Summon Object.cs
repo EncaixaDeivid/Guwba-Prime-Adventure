@@ -7,9 +7,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private EnemyController _enemySummon;
 		[SerializeField] private Projectile _projectileSummon;
 		[SerializeField] private Vector2[] _summonPoints;
-		[SerializeField] private ushort _summonTime, _quantityToSummon;
+		[SerializeField] private ushort _summonTime;
+		[SerializeField] private ushort _quantityToSummon;
 		[SerializeField] private float _timeToStop;
-		[SerializeField] private bool _stopToSummon, _paralyzeToSummon, _stopTimedSummon, _self, _combine, _sequential, _random;
+		[SerializeField] private bool _stopToSummon;
+		[SerializeField] private bool _paralyzeToSummon;
+		[SerializeField] private bool _stopTimedSummon;
+		[SerializeField] private bool _self;
+		[SerializeField] private bool _combine;
+		[SerializeField] private bool _sequential;
+		[SerializeField] private bool _random;
 		public GameObject Summon
 		{
 			get
