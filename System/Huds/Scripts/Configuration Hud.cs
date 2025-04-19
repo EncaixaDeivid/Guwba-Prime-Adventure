@@ -7,12 +7,30 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
-		private GroupBox _confirmation, _settings;
-		private Button _close, _outLevel, _yes, _no, _saveGame;
-		private Slider _generalVolume, _effectsVolume, _musicVolume, _dialogSpeed;
-		private Toggle _fullScreen, _generalVolumeToggle, _effectsVolumeToggle, _musicVolumeToggle, _dialogToggle;
+		private GroupBox _settings;
+		private GroupBox _confirmation;
+		private Button _close;
+		private Button _outLevel;
+		private Button _yes;
+		private Button _no;
+		private Button _saveGame;
+		private Slider _generalVolume;
+		private Slider _effectsVolume;
+		private Slider _musicVolume;
+		private Slider _dialogSpeed;
+		private Toggle _fullScreen;
+		private Toggle _generalVolumeToggle;
+		private Toggle _effectsVolumeToggle;
+		private Toggle _musicVolumeToggle;
+		private Toggle _dialogToggle;
 		[SerializeField] private string[] _volumes, _toggles;
-		[SerializeField] private string _confirmationGroup, _outLevelButton, _yesButton, _noButton, _settingsGroup, _saveGameButton, _closeButton;
+		[SerializeField] private string _confirmationGroup;
+		[SerializeField] private string _outLevelButton;
+		[SerializeField] private string _yesButton;
+		[SerializeField] private string _noButton;
+		[SerializeField] private string _settingsGroup;
+		[SerializeField] private string _saveGameButton;
+		[SerializeField] private string _closeButton;
 		public GroupBox Settings => this._settings;
 		public Button Close => this._close;
 		public Button OutLevel => this._outLevel;
