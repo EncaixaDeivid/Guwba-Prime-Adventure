@@ -6,10 +6,15 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class MenuHud : MonoBehaviour
 	{
 		private static MenuHud _instance;
-		private GroupBox _buttons, _saves;
-		private Button _play, _configurations, _quit, _back;
+		private GroupBox _buttons;
+		private GroupBox _saves;
+		private Button _play;
+		private Button _configurations;
+		private Button _quit;
+		private Button _back;
 		private TextField[] _saveName;
-		private Button[] _load, _delete;
+		private Button[] _load;
+		private Button[] _delete;
 		[SerializeField] private string _buttonsGroup;
 		[SerializeField] private string _savesGroup;
 		[SerializeField] private string _playButton;
