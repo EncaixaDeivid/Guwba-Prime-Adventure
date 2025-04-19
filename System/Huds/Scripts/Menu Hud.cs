@@ -10,16 +10,15 @@ namespace GuwbaPrimeAdventure.Hud
 		private Button _play, _configurations, _quit, _back;
 		private TextField[] _saveName;
 		private Button[] _load, _delete;
-		[SerializeField] private string
-			_buttonsGroup,
-			_savesGroup,
-			_playButton,
-			_configurationsButton,
-			_quitButton,
-			_backButton,
-			_saveNameTextField,
-			_loadButton,
-			_deleteButton;
+		[SerializeField] private string _buttonsGroup;
+		[SerializeField] private string _savesGroup;
+		[SerializeField] private string _playButton;
+		[SerializeField] private string _configurationsButton;
+		[SerializeField] private string _quitButton;
+		[SerializeField] private string _backButton;
+		[SerializeField] private string _saveNameTextField;
+		[SerializeField] private string _loadButton;
+		[SerializeField] private string _deleteButton;
 		public GroupBox Buttons => this._buttons;
 		public GroupBox Saves => this._saves;
 		public Button Play => this._play;
