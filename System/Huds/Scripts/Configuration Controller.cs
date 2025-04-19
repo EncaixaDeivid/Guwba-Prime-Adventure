@@ -13,7 +13,8 @@ namespace GuwbaPrimeAdventure.Hud
 		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
 		[SerializeField] private ConfigurationHud _configurationHudObject;
-		[SerializeField] private string _levelSelectorScene, _menuScene;
+		[SerializeField] private string _levelSelectorScene;
+		[SerializeField] private string _menuScene;
 		public PathConnection PathConnection => PathConnection.Controller;
 		private void Awake()
 		{
