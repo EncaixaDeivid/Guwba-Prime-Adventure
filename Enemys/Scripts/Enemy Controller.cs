@@ -19,7 +19,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] protected ushort _movementSpeed;
 		[SerializeField] private ushort _damage;
 		[SerializeField] protected bool _stopMovement;
-		[SerializeField] private bool _invertMovementSide, _noDamage, _noContactDamage, _saveObject;
+		[SerializeField] private bool _invertMovementSide;
+		[SerializeField] private bool _noDamage;
+		[SerializeField] private bool _noContactDamage;
+		[SerializeField] private bool _saveObject;
 		protected bool Paralyzed => this._paralyzed;
 		public ushort Health => (ushort)this._vitality;
 		protected new void Awake()
