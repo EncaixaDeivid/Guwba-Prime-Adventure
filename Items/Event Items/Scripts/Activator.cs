@@ -8,8 +8,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Animator _animator;
 		private bool _useOneActivation = false;
 		[SerializeField] private Receptor[] _receptors;
-		[SerializeField] private string _use, _useOne;
-		[SerializeField] private bool _oneActivation, _saveObject;
+		[SerializeField] private string _use;
+		[SerializeField] private string _useOne;
+		[SerializeField] private bool _oneActivation;
+		[SerializeField] private bool _saveObject;
 		private new void Awake()
 		{
 			base.Awake();
