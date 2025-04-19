@@ -1,107 +1,102 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
-	[RequireComponent(typeof(TilemapCollider2D), typeof(Rigidbody2D), typeof(CompositeCollider2D))]
-	[RequireComponent(typeof(BoxCollider2D), typeof(Receptor))]
-	internal sealed class MobilePlace : StateController, Receptor.IReceptor
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptor))]
+	internal sealed class Receptor : StateController
 	{
-		private bool _touchActivate = false;
-		private ushort _actualPoint = 0;
-		[Header("Mobile Place"), SerializeField] private Vector2[] _trail;
-		[SerializeField] private ushort _movementSpeed;
-		[SerializeField] private ushort _speedReturn;
-		[SerializeField] private ushort _slowReturn;
-		[SerializeField] private ushort _waitEndTime;
-		[SerializeField] private ushort _waitWayTime;
-		[SerializeField] private ushort _waitStartTime;
-		[SerializeField] private bool _returnWay;
-		[SerializeField] private bool _execution1X1;
-		[SerializeField] private bool _touchActivation;
-		[SerializeField] private bool _executeAlways;
-		[SerializeField] private bool _stopOutTouch;
-		[SerializeField] private bool _isReceptor;
+		private readonly List<Activator> _usedActivators = new();
+		private IReceptor _receptor;
+		private ushort _signals = 0;
+		private bool _intercalate = true;
+		private bool _onlyOneActivation = false;
+		[SerializeField] private Activator[] _activators;
+		[SerializeField] private string[] _specificsObjects;
+		[SerializeField] private bool _1X1;
+		[SerializeField] private bool _intercalateEvents;
+		[SerializeField] private bool _oneNeeded;
+		[SerializeField] private bool _oneActivation;
+		[SerializeField] private float _timeToActivate;
 		private new void Awake()
 		{
 			base.Awake();
-			this._touchActivate = this._touchActivation;
-			if (!this._isReceptor && !this._touchActivation)
-				this.StartCoroutine(this.Movement());
+			this._receptor = this.GetComponent<IReceptor>();
+			SaveController.Load(out SaveFile saveFile);
+			if (this._specificsObjects.Length > 0f)
+				foreach (string specificObject in this._specificsObjects)
+					if (saveFile.generalObjects.Contains(specificObject))
+						this.Activate();
 		}
-		private IEnumerator Movement()
+		private void Activate()
 		{
-			do
+			if (this._intercalate)
 			{
-				yield return new WaitTime(this, this._waitStartTime);
-				foreach (Vector2 point in this._trail)
-				{
-					yield return new WaitUntil(() =>
+				this._intercalate = !this._intercalateEvents;
+				this._receptor.ActivationEvent();
+			}
+			else if (this._intercalateEvents && !this._intercalate)
+			{
+				this._intercalate = true;
+				this._receptor.DesactivationEvent();
+			}
+		}
+		private void NormalSignal(Activator signalActivator)
+		{
+			if (this._onlyOneActivation)
+				return;
+			if (this._usedActivators.ToArray() == this._activators)
+				this._usedActivators.Clear();
+			if (this._1X1)
+			{
+				foreach (Activator activator1X1 in this._activators)
+					if (signalActivator == activator1X1 && !this._usedActivators.Contains(activator1X1))
 					{
-						this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.deltaTime);
-						return (Vector2)this.transform.position == point && this.enabled;
-					});
-					yield return new WaitTime(this, this._waitWayTime);
-				}
-				yield return new WaitTime(this, this._waitEndTime);
-				if (this._returnWay)
-				{
-					foreach (Vector2 point in this._trail.Reverse())
-					{
-						yield return new WaitUntil(() =>
-						{
-							float maxDistanceDelta = (this._movementSpeed + this._speedReturn - this._slowReturn) * Time.deltaTime;
-							this.transform.position = Vector2.MoveTowards(this.transform.position, point, maxDistanceDelta);
-							return (Vector2)this.transform.position == point && this.enabled;
-						});
-						yield return new WaitTime(this, this._waitWayTime);
+						this._usedActivators.Add(activator1X1);
+						this.Activate();
+						return;
 					}
-					yield return new WaitTime(this, this._waitEndTime);
+			}
+			else if (this._oneNeeded)
+			{
+				foreach (Activator activator in this._activators)
+					if (activator == signalActivator)
+					{
+						this.Activate();
+						if (this._oneActivation)
+							this._onlyOneActivation = true;
+						return;
+					}
+			}
+			else
+			{
+				foreach (Activator activator in this._activators)
+					if (activator == signalActivator)
+						this._signals += 1;
+				if (this._signals >= this._activators.Length)
+				{
+					this._signals = 0;
+					this.Activate();
 				}
 			}
-			while (this._executeAlways);
 		}
-		private IEnumerator Movement1X1()
+		internal void ReceiveSignal(Activator signalActivator)
 		{
-			Vector2 point = this._trail[this._actualPoint];
-			this._actualPoint = (ushort)(this._actualPoint < this._trail.Length - 1f ? this._actualPoint + 1f : 0f);
-			yield return new WaitTime(this, this._waitStartTime);
-			yield return new WaitUntil(() =>
-			{
-				this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.deltaTime);
-				return (Vector2)this.transform.position == point && this.enabled;
-			});
-		}
-		public void ActivationEvent()
-		{
-			if (this._execution1X1)
-				this.StartCoroutine(this.Movement1X1());
+			if (this._timeToActivate > 0f)
+				this.StartCoroutine(TimerSignal());
 			else
-				this.StartCoroutine(this.Movement());
-		}
-		public void DesactivationEvent()
-		{
-			if (!this._execution1X1)
-				this.StopCoroutine(this.Movement());
-		}
-		private void EnterOnTrigger()
-		{
-			if (this._touchActivation && this._touchActivate)
+				this.NormalSignal(signalActivator);
+			IEnumerator TimerSignal()
 			{
-				this._touchActivate = false;
-				if (this._execution1X1)
-					this.StartCoroutine(this.Movement1X1());
-				this.StartCoroutine(this.Movement());
+				yield return new WaitTime(this, this._timeToActivate);
+				this.NormalSignal(signalActivator);
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other) => this.EnterOnTrigger();
-		private void OnTriggerStay2D(Collider2D other) => this.EnterOnTrigger();
-		private void OnTriggerExit2D(Collider2D other)
+		internal interface IReceptor
 		{
-			if (this._stopOutTouch && !this._execution1X1)
-				this.StopCoroutine(this.Movement());
-		}
+			public void ActivationEvent();
+			public void DesactivationEvent();
+		};
 	};
 };
