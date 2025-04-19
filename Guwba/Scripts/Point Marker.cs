@@ -7,7 +7,8 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static Vector2 _checkpointIndex = new();
 		private static string _lastScene = "";
-		private static bool _useCheckpoint = true, _checkScene = true;
+		private static bool _useCheckpoint = true;
+		private static bool _checkScene = true;
 		[SerializeField] private string _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
 		private void Start()
