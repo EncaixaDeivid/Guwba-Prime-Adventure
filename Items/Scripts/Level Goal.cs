@@ -8,7 +8,8 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class LevelGoal : StateController
 	{
 		[SerializeField] private string _goToBoss;
-		[SerializeField] private bool _enterInDialog, _saveOnSpecifics;
+		[SerializeField] private bool _enterInDialog;
+		[SerializeField] private bool _saveOnSpecifics;
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
