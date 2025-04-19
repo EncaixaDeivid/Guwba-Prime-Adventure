@@ -8,8 +8,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _rotate = true;
 		[Header("Ground Enemy"), SerializeField] private Vector2 _sensorOriginPoint;
 		[SerializeField] private Vector2 _sensorDestinyPoint;
-		[SerializeField] private bool _useGroundPursue, _useCrawlMovement, _useFaceLookVerifier, _targetEveryone;
-		[SerializeField] private ushort _increasedSpeed, _faceLookDistance;
+		[SerializeField] private bool _useGroundPursue;
+		[SerializeField] private bool _useCrawlMovement;
+		[SerializeField] private bool _useFaceLookVerifier;
+		[SerializeField] private bool _targetEveryone;
+		[SerializeField] private ushort _increasedSpeed;
+		[SerializeField] private ushort _faceLookDistance;
 		[SerializeField] private float _crawlRayDistance;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
