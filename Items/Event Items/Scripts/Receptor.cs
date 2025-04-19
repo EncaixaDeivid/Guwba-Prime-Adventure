@@ -10,10 +10,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private readonly List<Activator> _usedActivators = new();
 		private IReceptor _receptor;
 		private ushort _signals = 0;
-		private bool _intercalate = true, _onlyOneActivation = false;
+		private bool _intercalate = true;
+		private bool _onlyOneActivation = false;
 		[SerializeField] private Activator[] _activators;
 		[SerializeField] private string[] _specificsObjects;
-		[SerializeField] private bool _1X1, _intercalateEvents, _oneNeeded, _oneActivation;
+		[SerializeField] private bool _1X1;
+		[SerializeField] private bool _intercalateEvents;
+		[SerializeField] private bool _oneNeeded;
+		[SerializeField] private bool _oneActivation;
 		[SerializeField] private float _timeToActivate;
 		private new void Awake()
 		{
