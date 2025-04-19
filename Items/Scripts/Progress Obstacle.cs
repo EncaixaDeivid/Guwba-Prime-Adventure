@@ -6,7 +6,8 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class ProgressObstacle : StateController
 	{
 		[SerializeField] private ushort _progressIndex;
-		[SerializeField] private bool _isBossProgress, _saveOnSpecifics;
+		[SerializeField] private bool _isBossProgress;
+		[SerializeField] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
 			base.Awake();
