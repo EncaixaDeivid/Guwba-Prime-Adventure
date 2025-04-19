@@ -18,11 +18,27 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
 		private bool _isOnGround = false, _downStairs = false, _isJumping = false;
-		[SerializeField] private LayerMask _groundLayerMask, _interactionLayerMask;
-		[SerializeField] private string _isOn, _idle, _walk, _slowWalk, _jump, _fall, _attack, _hold, _death;
-		[SerializeField] private ushort _movementSpeed, _jumpStrenght;
-		[SerializeField] private float _groundChecker, _wallChecker, _topWallChecker, _bottomCheckerOffset, _lowHoldOffset, _normalSize, _deadSize;
-		[SerializeField] private bool _turnLeft;
+		[SerializeField] private LayerMask _groundLayerMask;
+		[SerializeField] private LayerMask _interactionLayerMask;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _idle;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _walk;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _slowWalk;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _jump;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _fall;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _attack;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _hold;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _death;
+		[SerializeField] private ushort _movementSpeed;
+		[SerializeField] private ushort _jumpStrenght;
+		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
+		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
+		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
+		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
+		[SerializeField, Tooltip("Size of the collider in live.")] private float _normalSize;
+		[SerializeField, Tooltip("Size of the collider in death.")] private float _deadSize;
+		[SerializeField, Tooltip("Where to look.")] private bool _turnLeft;
 		private new void Awake()
 		{
 			base.Awake();
