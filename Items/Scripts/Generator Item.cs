@@ -7,12 +7,14 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private readonly List<GameObject> _itemsGenerated = new();
 		private float _timeGeneration = 0f;
-		private bool _continueGeneration = true, _stopGenerate = false;
+		private bool _continueGeneration = true;
+		private bool _stopGenerate = false;
 		[SerializeField] private GameObject _generatedItem;
 		[SerializeField] private ushort _quantityToGenerate;
 		[SerializeField] private float _generationTime;
-		[SerializeField] private bool _especifiedGeneration, _existentItems;
-		private void FixedUpdate() // Generation
+		[SerializeField] private bool _especifiedGeneration;
+		[SerializeField] private bool _existentItems;
+		private void FixedUpdate()
 		{
 			if (this._stopGenerate)
 				return;
