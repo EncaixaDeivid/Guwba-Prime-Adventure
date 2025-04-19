@@ -11,7 +11,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private ushort _index = 0;
 		private bool _active = true;
 		[SerializeField] private Vector2[] _locations;
-		[SerializeField] private bool _everyone, _isInteractive, _onCollision, _useTimer, _isReceptor;
+		[SerializeField] private bool _everyone;
+		[SerializeField] private bool _isInteractive;
+		[SerializeField] private bool _onCollision;
+		[SerializeField] private bool _useTimer;
+		[SerializeField] private bool _isReceptor;
 		[SerializeField] private float _timeToUse;
 		private new void Awake()
 		{
