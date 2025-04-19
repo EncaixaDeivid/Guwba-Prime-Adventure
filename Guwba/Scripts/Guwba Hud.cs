@@ -8,7 +8,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static GuwbaHud _instance;
 		private VisualElement _rootElement;
 		private VisualElement[] _vitality;
-		private Label _lifeText, _coinText;
+		private Label _lifeText;
+		private Label _coinText;
 		[SerializeField] private string _rootElementObject;
 		[SerializeField] private string _vitalityVisual;
 		[SerializeField] private string _lifeTextObject;
