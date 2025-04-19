@@ -18,11 +18,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Boss Controller"), SerializeField] protected LayerMask _groundLayer;
 		[SerializeField] protected LayerMask _targetLayerMask;
 		[SerializeField] private float _groundSize;
-		[SerializeField] protected string _idle, _walk, _dash, _jump, _fall;
+		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
+		[SerializeField, Tooltip("Animation parameter.")] protected string _walk;
+		[SerializeField, Tooltip("Animation parameter.")] protected string _dash;
+		[SerializeField, Tooltip("Animation parameter.")] protected string _jump;
+		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
 		[SerializeField] protected ushort _movementSpeed;
 		[SerializeField] private ushort _damage;
-		[SerializeField] protected bool _invertMovementSide, _hasToggle, _hasIndex, _reactToDamage;
-		[SerializeField] private bool _haveDialog, _isTransitioner;
+		[SerializeField] protected bool _invertMovementSide;
+		[SerializeField] protected bool _hasToggle;
+		[SerializeField] protected bool _hasIndex;
+		[SerializeField] protected bool _reactToDamage;
+		[SerializeField] private bool _haveDialog;
+		[SerializeField] private bool _isTransitioner;
 		public PathConnection PathConnection => PathConnection.Boss;
 		protected new void Awake()
 		{
@@ -115,7 +123,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			protected bool _useDestructuion = false;
 			[Header("Boss Prop"), SerializeField] protected LayerMask _groundLayer;
 			[SerializeField] protected LayerMask _targetLayerMask;
-			[SerializeField] private bool _destructBoss, _saveOnSpecifics;
+			[SerializeField] private bool _destructBoss;
+			[SerializeField] private bool _saveOnSpecifics;
 			[SerializeField] protected bool _indexReact;
 			[SerializeField] protected ushort _indexEvent;
 			private new void Awake()
