@@ -6,7 +6,11 @@ namespace GuwbaPrimeAdventure.Dialog
 	internal sealed class DialogHud : MonoBehaviour
 	{
 		static private DialogHud _instance;
-		[SerializeField] private string _characterIcon, _characterName, _characterSpeach, _closeDialog, _advanceSpeach;
+		[SerializeField] private string _characterIcon;
+		[SerializeField] private string _characterName;
+		[SerializeField] private string _characterSpeach;
+		[SerializeField] private string _closeDialog;
+		[SerializeField] private string _advanceSpeach;
 		internal VisualElement CharacterIcon { get; private set; }
 		internal Label CharacterName { get; private set; }
 		internal Label CharacterSpeach { get; private set; }
