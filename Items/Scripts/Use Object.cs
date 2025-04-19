@@ -5,7 +5,8 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class UseObject : StateController
     {
 		private Animator _animator;
-		[SerializeField] private string _isOn, _use;
+		[SerializeField] private string _isOn;
+		[SerializeField] private string _use;
 		private new void Awake()
 		{
 			base.Awake();
