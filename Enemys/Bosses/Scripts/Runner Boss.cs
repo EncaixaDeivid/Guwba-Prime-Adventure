@@ -8,25 +8,32 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class RunnerBoss : BossController, IConnector
 	{
 		private float _gravityScale = 0f;
-		private bool _stopMovement = false, _dashIsOn = false, _stopVelocity = false;
+		private bool _stopMovement = false;
+		private bool _dashIsOn = false;
+		private bool _stopVelocity = false;
 		[Header("Runner Boss"), SerializeField] private Vector2 _otherTarget;
-		[SerializeField] private bool
-			_rayDetection,
-			_frontUpDetection,
-			_backUpDetection,
-			_turnOnBack,
-			_turnOnDash,
-			_timedDash,
-			_climbWall,
-			_speedUpOnClimb,
-			_dashOnClimb,
-			_jumpDash,
-			_eventOnBlock,
-			_eventOnDash,
-			_indexSummon,
-			_useOtherTarget;
-		[SerializeField] private ushort _dashSpeed, _summonIndex;
-		[SerializeField] private float _groundDistance, _rayDistance, _climbSpeedUp, _stopDashTime, _dashDistance, _timeToDash;
+		[SerializeField] private bool _rayDetection;
+		[SerializeField] private bool _frontUpDetection;
+		[SerializeField] private bool _backUpDetection;
+		[SerializeField] private bool _turnOnBack;
+		[SerializeField] private bool _turnOnDash;
+		[SerializeField] private bool _timedDash;
+		[SerializeField] private bool _climbWall;
+		[SerializeField] private bool _speedUpOnClimb;
+		[SerializeField] private bool _dashOnClimb;
+		[SerializeField] private bool _jumpDash;
+		[SerializeField] private bool _eventOnBlock;
+		[SerializeField] private bool _eventOnDash;
+		[SerializeField] private bool _indexSummon;
+		[SerializeField] private bool _useOtherTarget;
+		[SerializeField] private ushort _dashSpeed;
+		[SerializeField] private ushort _summonIndex;
+		[SerializeField] private float _groundDistance;
+		[SerializeField] private float _rayDistance;
+		[SerializeField] private float _climbSpeedUp;
+		[SerializeField] private float _stopDashTime;
+		[SerializeField] private float _dashDistance;
+		[SerializeField] private float _timeToDash;
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
