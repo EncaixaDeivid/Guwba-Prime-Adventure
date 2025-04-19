@@ -12,8 +12,18 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private bool _touchActivate = false;
 		private ushort _actualPoint = 0;
 		[Header("Mobile Place"), SerializeField] private Vector2[] _trail;
-		[SerializeField] private ushort _movementSpeed, _speedReturn, _slowReturn, _waitEndTime, _waitWayTime, _waitStartTime;
-		[SerializeField] private bool _returnWay, _execution1X1, _touchActivation, _executeAlways, _stopOutTouch, _isReceptor;
+		[SerializeField] private ushort _movementSpeed;
+		[SerializeField] private ushort _speedReturn;
+		[SerializeField] private ushort _slowReturn;
+		[SerializeField] private ushort _waitEndTime;
+		[SerializeField] private ushort _waitWayTime;
+		[SerializeField] private ushort _waitStartTime;
+		[SerializeField] private bool _returnWay;
+		[SerializeField] private bool _execution1X1;
+		[SerializeField] private bool _touchActivation;
+		[SerializeField] private bool _executeAlways;
+		[SerializeField] private bool _stopOutTouch;
+		[SerializeField] private bool _isReceptor;
 		private new void Awake()
 		{
 			base.Awake();
