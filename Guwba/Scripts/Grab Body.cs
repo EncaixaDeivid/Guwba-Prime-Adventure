@@ -9,14 +9,22 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Collider2D[] _colliders;
 		private Vector2 _guardVelocity = new();
-		private (int _layer, bool[] _isTrigger, LayerMask[,] _layerMask) _backDrop;
+		private (int _layer, bool[] _isTrigger, LayerMask[,] _layerMasks) _backDrop;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
 		[SerializeField] private LayerMask _noHitLayers;
-		[SerializeField] private ushort _throwSpeed, _throwDamage, _hitsToDestruct = 1;
-		[SerializeField] private float _throwGravity, _throwHitStopTime, _throwHitSlowTime, _fadeTime;
-		[SerializeField] private bool _isNotGrabtable, _isDamageable, _isIndestructible, _fadeAway;
+		[SerializeField] private ushort _throwSpeed;
+		[SerializeField] private ushort _throwDamage;
+		[SerializeField] private ushort _hitsToDestruct;
+		[SerializeField] private float _throwGravity;
+		[SerializeField, Tooltip("The amount of time to stop the game when hit is given at throw.")] private float _throwHitStopTime;
+		[SerializeField, Tooltip("The amount of time to slow the game when hit is given at throw.")] private float _throwHitSlowTime;
+		[SerializeField] private float _fadeTime;
+		[SerializeField] private bool _isNotGrabtable;
+		[SerializeField] private bool _isDamageable;
+		[SerializeField] private bool _isIndestructible;
+		[SerializeField] private bool _fadeAway;
 		internal bool IsGrabtable => !this._isNotGrabtable;
 		internal bool IsDamageable => this._isDamageable;
 		private new void Awake()
@@ -51,11 +59,11 @@ namespace GuwbaPrimeAdventure.Guwba
 					this.gameObject.layer = this._backDrop._layer;
 					for (ushort i = 0; i < this._colliders.Length; i++)
 					{
-						this._colliders[i].includeLayers = this._backDrop._layerMask[0, i];
-						this._colliders[i].excludeLayers = this._backDrop._layerMask[1, i];
-						this._colliders[i].contactCaptureLayers = this._backDrop._layerMask[2, i];
-						this._colliders[i].callbackLayers = this._backDrop._layerMask[3, i];
-					}
+						this._colliders[i].includeLayers = this._backDrop._layerMasks[0, i];
+						this._colliders[i].excludeLayers = this._backDrop._layerMasks[1, i];
+						this._colliders[i].contactCaptureLayers = this._backDrop._layerMasks[2, i];
+						this._colliders[i].callbackLayers = this._backDrop._layerMasks[3, i];
+					};
 					if (!this._isIndestructible && this._hitsToDestruct-- <= 0f)
 						Destroy(this.gameObject);
 				}
@@ -73,14 +81,14 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 			this._backDrop._isTrigger = new bool[this._colliders.Length];
-			this._backDrop._layerMask = new LayerMask[4, this._colliders.Length];
+			this._backDrop._layerMasks = new LayerMask[4, this._colliders.Length];
 			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
 				this._backDrop._isTrigger[i] = this._colliders[i].isTrigger;
-				this._backDrop._layerMask[0, i] = this._colliders[i].includeLayers;
-				this._backDrop._layerMask[1, i] = this._colliders[i].excludeLayers;
-				this._backDrop._layerMask[2, i] = this._colliders[i].contactCaptureLayers;
-				this._backDrop._layerMask[3, i] = this._colliders[i].callbackLayers;
+				this._backDrop._layerMasks[0, i] = this._colliders[i].includeLayers;
+				this._backDrop._layerMasks[1, i] = this._colliders[i].excludeLayers;
+				this._backDrop._layerMasks[2, i] = this._colliders[i].contactCaptureLayers;
+				this._backDrop._layerMasks[3, i] = this._colliders[i].callbackLayers;
 				this._colliders[i].isTrigger = true;
 				this._colliders[i].includeLayers = this._hitLayers;
 				this._colliders[i].excludeLayers = this._noHitLayers;
@@ -107,10 +115,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
 				this._colliders[i].isTrigger = this._backDrop._isTrigger[i];
-				this._colliders[i].includeLayers = this._backDrop._layerMask[0, i];
-				this._colliders[i].excludeLayers = this._backDrop._layerMask[1, i];
-				this._colliders[i].contactCaptureLayers = this._backDrop._layerMask[2, i];
-				this._colliders[i].callbackLayers = this._backDrop._layerMask[3, i];
+				this._colliders[i].includeLayers = this._backDrop._layerMasks[0, i];
+				this._colliders[i].excludeLayers = this._backDrop._layerMasks[1, i];
+				this._colliders[i].contactCaptureLayers = this._backDrop._layerMasks[2, i];
+				this._colliders[i].callbackLayers = this._backDrop._layerMasks[3, i];
 			}
 		}
 	};
