@@ -15,7 +15,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Vector2 _startPosition = Vector2.zero;
 		[SerializeField] private Transform _backgroundTransform;
 		[SerializeField] private Sprite[] _backgroundImages;
-		[SerializeField] private float _horizontalBackgroundSpeed, _verticalBackgroundSpeed, _slowHorizontal, _slowVertical;
+		[SerializeField] private float _horizontalBackgroundSpeed;
+		[SerializeField] private float _verticalBackgroundSpeed;
+		[SerializeField] private float _slowHorizontal;
+		[SerializeField] private float _slowVertical;
 		private new void Awake()
 		{
 			if (_instance)
@@ -24,7 +27,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._cameraGuwba = this.GetComponent<Camera>();
 			this._cameraCollider = this.GetComponent<BoxCollider2D>();
-			this._childrenTransforms = new Transform[this._backgroundImages.Length]; // Background Movement : Start
+			this._childrenTransforms = new Transform[this._backgroundImages.Length];
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
 			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
 			{
@@ -50,7 +53,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
-			} // Background Movement : End
+			}
 			float sizeY = this._cameraGuwba.orthographicSize * 2f;
 			float sizeX = sizeY * this._cameraGuwba.aspect;
 			this._cameraCollider.size = new Vector2(sizeX, sizeY);
@@ -63,7 +66,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				for (ushort i = 0; i < hiddenCamera.transform.childCount; i++)
 					hiddenCamera.transform.GetChild(i).gameObject.SetActive(activeValue);
 		}
-		private void FixedUpdate() // Background Movement
+		private void FixedUpdate()
 		{
 			for (ushort i = 0; i < this._backgroundImages.Length; i++)
 			{
