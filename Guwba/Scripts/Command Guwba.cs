@@ -16,8 +16,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
 		private Vector2 _attackValue = new();
-		private float _gravityScale = 0f, _movementAction = 0f, _yMovement = 0f;
-		private bool _isOnGround = false, _downStairs = false, _isJumping = false;
+		private float _gravityScale = 0f;
+		private float _movementAction = 0f;
+		private float _yMovement = 0f;
+		private bool _isOnGround = false;
+		private bool _downStairs = false;
+		private bool _isJumping = false;
 		[SerializeField] private LayerMask _groundLayerMask;
 		[SerializeField] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
