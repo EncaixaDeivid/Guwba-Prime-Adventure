@@ -11,24 +11,25 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private ushort _jumpIndex = 0, _fallIndex = 0;
 		[Header("Jumper Boss"), SerializeField] private JumpPointStructure[] _jumpPointStructures;
 		[SerializeField] private Vector2 _otherTarget;
-		[SerializeField] private ushort[] _summonIndexJump, _summonIndexFall;
-		[SerializeField] private ushort _followSpeed, _strenghtReact;
-		[SerializeField] private bool
-			_waitEvent,
-			_highReact,
-			_stopMoveReact,
-			_summonOnJump,
-			_bothJump,
-			_justHighJump,
-			_summonOnFall,
-			_bothFall,
-			_justHighFall,
-			_randomJumpIndex,
-			_sequentialJumpIndex,
-			_randomFallIndex,
-			_sequentialFallIndex,
-			_useTarget,
-			_randomFollow;
+		[SerializeField] private ushort[] _summonIndexJump;
+		[SerializeField] private ushort[] _summonIndexFall;
+		[SerializeField] private ushort _followSpeed;
+		[SerializeField] private ushort _strenghtReact;
+		[SerializeField] private bool _waitEvent;
+		[SerializeField] private bool _highReact;
+		[SerializeField] private bool _stopMoveReact;
+		[SerializeField] private bool _summonOnJump;
+		[SerializeField] private bool _bothJump;
+		[SerializeField] private bool _justHighJump;
+		[SerializeField] private bool _summonOnFall;
+		[SerializeField] private bool _bothFall;
+		[SerializeField] private bool _justHighFall;
+		[SerializeField] private bool _randomJumpIndex;
+		[SerializeField] private bool _sequentialJumpIndex;
+		[SerializeField] private bool _randomFallIndex;
+		[SerializeField] private bool _sequentialFallIndex;
+		[SerializeField] private bool _useTarget;
+		[SerializeField] private bool _randomFollow;
 		private void HighJump(Vector2 otherTarget, bool useTarget)
 		{
 			this.StartCoroutine(FollowTarget());
@@ -166,10 +167,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private struct JumpPointStructure
 		{
 			[SerializeField] private JumpPoint _jumpPointObject;
-			[SerializeField] private Vector2 _point, _otherTarget;
+			[SerializeField] private Vector2 _point;
+			[SerializeField] private Vector2 _otherTarget;
 			[SerializeField] private Vector2Int _jumpCountMaxMin;
 			[SerializeField] private ushort _strength;
-			[SerializeField] private bool _stopMove, _high, _useTarget;
+			[SerializeField] private bool _stopMove;
+			[SerializeField] private bool _high;
+			[SerializeField] private bool _useTarget;
 			internal readonly JumpPoint JumpPointObject => this._jumpPointObject;
 			internal readonly Vector2 Point => this._point;
 			internal readonly Vector2 OtherTarget => this._otherTarget;
