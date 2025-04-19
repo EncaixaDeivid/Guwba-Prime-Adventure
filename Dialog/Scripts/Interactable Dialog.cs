@@ -11,7 +11,9 @@ namespace GuwbaPrimeAdventure.Dialog
 		private Animator _animator;
 		private Dialog _dialogTalk;
 		private string _text = "";
-		private ushort _dialogObjectIndex = 0, _dialogIndex = 0, _speachIndex = 0;
+		private ushort _dialogObjectIndex = 0;
+		private ushort _dialogIndex = 0;
+		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
 		[SerializeField] private DialogHud _dialogHudObject;
 		[SerializeField] private DialogObject[] _dialogObject;
