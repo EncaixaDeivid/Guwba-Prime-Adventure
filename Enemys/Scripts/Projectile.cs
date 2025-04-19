@@ -10,29 +10,44 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Rigidbody2D _rigidbody;
 		private readonly List<Projectile> _projectiles = new();
 		private Vector2 _guardVelocity = new();
-		private Vector2Int _oldCellPosition = new(), _cellPosition = new();
-		private ushort _angleMulti = 0, _pointToJump = 0, _pointToBreak = 0, _internalBreakPoint = 0, _pointToReturn = 0, _internalReturnPoint = 0;
+		private Vector2Int _oldCellPosition = new();
+		private Vector2Int _cellPosition = new();
+		private ushort _angleMulti = 0;
+		private ushort _pointToJump = 0;
+		private ushort _pointToBreak = 0;
+		private ushort _internalBreakPoint = 0;
+		private ushort _pointToReturn = 0;
+		private ushort _internalReturnPoint = 0;
 		private bool _isParalyzed = false, _breakInUse = false;
 		[Header("Projectile"), SerializeField] private Projectile _secondProjectile;
 		[SerializeField] private LayerMask _groundLayerMask;
 		[SerializeField] private ForceMode2D _forceMode;
-		[SerializeField] private bool
-			_isInoffensive,
-			_stayInPlace,
-			_useForce,
-			_sideMovement,
-			_invertSide,
-			_rotationMatter,
-			_useQuantity,
-			_inCell,
-			_continuosSummon,
-			_inDeath,
-			_useBreak,
-			_alwaysBreak,
-			_randomBreak,
-			_extrictRandom;
-		[SerializeField] private ushort _movementSpeed, _damage, _quantityToSummon, _jumpPoints, _breakPoint, _returnPoint, _minimumRandomValue;
-		[SerializeField] private float _rotationSpeed, _baseAngle, _spreadAngle, _timeToFade, _distanceRay;
+		[SerializeField] private bool _isInoffensive;
+		[SerializeField] private bool _stayInPlace;
+		[SerializeField] private bool _useForce;
+		[SerializeField] private bool _sideMovement;
+		[SerializeField] private bool _invertSide;
+		[SerializeField] private bool _rotationMatter;
+		[SerializeField] private bool _useQuantity;
+		[SerializeField] private bool _inCell;
+		[SerializeField] private bool _continuosSummon;
+		[SerializeField] private bool _inDeath;
+		[SerializeField] private bool _useBreak;
+		[SerializeField] private bool _alwaysBreak;
+		[SerializeField] private bool _randomBreak;
+		[SerializeField] private bool _extrictRandom;
+		[SerializeField] private ushort _movementSpeed;
+		[SerializeField] private ushort _damage;
+		[SerializeField] private ushort _quantityToSummon;
+		[SerializeField] private ushort _jumpPoints;
+		[SerializeField] private ushort _breakPoint;
+		[SerializeField] private ushort _returnPoint;
+		[SerializeField] private ushort _minimumRandomValue;
+		[SerializeField] private float _rotationSpeed;
+		[SerializeField] private float _baseAngle;
+		[SerializeField] private float _spreadAngle;
+		[SerializeField] private float _timeToFade;
+		[SerializeField] private float _distanceRay;
 		private void CommonInstance()
 		{
 			for (ushort i = 0; i < this._quantityToSummon; i++)
