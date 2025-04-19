@@ -11,8 +11,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointIndex = 0;
 		[Header("Flying Enemy"), SerializeField] private GameObject _target;
 		[SerializeField] private Vector2[] _trail;
-		[SerializeField] private float _radiusDetection, _speedReturn, _targetDistance, _fadeTime;
-		[SerializeField] private bool _repeatWay, _stopOnTarget, _endlessPursue, _justHorizontal, _justVertical;
+		[SerializeField] private float _radiusDetection;
+		[SerializeField] private float _speedReturn;
+		[SerializeField] private float _targetDistance;
+		[SerializeField] private float _fadeTime;
+		[SerializeField] private bool _repeatWay;
+		[SerializeField] private bool _stopOnTarget;
+		[SerializeField] private bool _endlessPursue;
+		[SerializeField] private bool _justHorizontal;
+		[SerializeField] private bool _justVertical;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
