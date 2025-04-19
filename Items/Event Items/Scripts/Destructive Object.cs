@@ -6,8 +6,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
 	{
 		[SerializeField] private GameObject _hiddenObject;
-		[SerializeField] private short _vitality, _biggerDamage;
-		[SerializeField] private bool _destroyOnCollision, _saveObject, _saveOnDestruction;
+		[SerializeField] private short _vitality;
+		[SerializeField] private short _biggerDamage;
+		[SerializeField] private bool _destroyOnCollision;
+		[SerializeField] private bool _saveObject;
+		[SerializeField] private bool _saveOnDestruction;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
