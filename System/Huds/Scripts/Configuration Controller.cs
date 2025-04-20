@@ -179,7 +179,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
 			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
-		public void Receive(DataConnection data)
+		public void Receive(DataConnection data, object additionalData)
 		{
 			bool hasToggle = data.ToggleValue.HasValue && data.ToggleValue.Value;
 			if (this.gameObject.scene.name == this._menuScene && data.ConnectionState == ConnectionState.Enable && hasToggle)
