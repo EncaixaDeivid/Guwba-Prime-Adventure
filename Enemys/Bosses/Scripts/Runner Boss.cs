@@ -194,10 +194,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this._rigidybody.linearVelocity = this._movementSide * this._movementSpeed * this.transform.right;
 			}
 		}
-		public new void Receive(DataConnection data)
+		public new void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data);
-			if (!data.BossType.HasFlag(BossType.Runner))
+			base.Receive(data, additionalData);
+			BossType bossType = (BossType)additionalData;
+			if (!bossType.HasFlag(BossType.Runner))
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 				this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
