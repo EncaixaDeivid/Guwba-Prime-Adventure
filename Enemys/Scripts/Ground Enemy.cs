@@ -78,7 +78,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			bool goStraight = faceLook || groundWalk;
 			this._rigidybody.linearVelocityX = goStraight ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 				this._stopMovement = false;
