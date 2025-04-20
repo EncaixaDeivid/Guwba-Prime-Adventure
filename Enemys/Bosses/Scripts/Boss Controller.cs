@@ -95,7 +95,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (collision.TryGetComponent<IDamageable>(out var damageable))
 				damageable.Damage(this._damage);
 		}
-		public void Receive(DataConnection data)
+		public void Receive(DataConnection data, object additionalData)
 		{
 			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
 			if (data.FromConnection == PathConnection.Boss && data.ConnectionState == ConnectionState.Disable && isValid && !_isDeafeted)
