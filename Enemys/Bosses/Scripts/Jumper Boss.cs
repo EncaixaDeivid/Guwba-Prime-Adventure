@@ -142,10 +142,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 			}
 		}
-		public new void Receive(DataConnection data)
+		public new void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data);
-			if (!data.BossType.HasFlag(BossType.Jumper))
+			base.Receive(data, additionalData);
+			BossType bossType = (BossType)additionalData;
+			if (!bossType.HasFlag(BossType.Jumper))
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 				this._stopJump = !data.ToggleValue.Value;
