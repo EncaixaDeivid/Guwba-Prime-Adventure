@@ -5,20 +5,20 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		private Sender()
 		{
-			this._toggleValue = null;
-			this._indexValue = null;
 			this._fromConnection = PathConnection.None;
 			this._toWhereConnection = PathConnection.None;
 			this._connectionState = ConnectionState.None;
-			this._bossType = BossType.None;
+			this.additionalData = null;
+			this._toggleValue = null;
+			this._indexValue = null;
 		}
 		private IConnector _connectionToIgnore;
-		private bool? _toggleValue;
-		private uint? _indexValue;
 		private PathConnection _fromConnection;
 		private PathConnection _toWhereConnection;
 		private ConnectionState _connectionState;
-		private BossType _bossType;
+		public object additionalData;
+		private bool? _toggleValue;
+		private uint? _indexValue;
 		private static readonly List<IConnector> _connectors = new();
 		public static void Include(IConnector connector)
 		{
@@ -51,11 +51,6 @@ namespace GuwbaPrimeAdventure.Connection
 			this._connectionState = connectionState;
 			return this;
 		}
-		public Sender SetBossType(BossType bossType)
-		{
-			this._bossType = bossType;
-			return this;
-		}
 		public Sender SetToggle(bool value)
 		{
 			this._toggleValue = value;
@@ -69,12 +64,12 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public void Send()
 		{
-			DataConnection dataConnection = new(this._fromConnection, this._connectionState, this._bossType, this._toggleValue, this._indexValue);
+			DataConnection dataConnection = new(this._fromConnection, this._connectionState, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
 				if (connector == this._connectionToIgnore || connector.PathConnection != this._toWhereConnection)
 					continue;
-				connector.Receive(dataConnection);
+				connector.Receive(dataConnection, this.additionalData);
 			};
 		}
 	};
