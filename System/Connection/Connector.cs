@@ -1,4 +1,3 @@
-using System;
 namespace GuwbaPrimeAdventure.Connection
 {
 	public enum PathConnection
@@ -19,18 +18,9 @@ namespace GuwbaPrimeAdventure.Connection
 		Disable,
 		Action
 	};
-	[Flags]
-	public enum BossType
-	{
-		None,
-		All,
-		Runner,
-		Jumper,
-		Summoner
-	};
 	public interface IConnector
 	{
 		public PathConnection PathConnection { get; }
-		public void Receive(DataConnection data);
+		public void Receive(DataConnection data, object additionalData);
 	};
 };
