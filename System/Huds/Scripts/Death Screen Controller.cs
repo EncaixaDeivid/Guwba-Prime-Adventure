@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Hud
 			SaveController.RefreshData();
 			this.GetComponent<Transitioner>().Transicion();
 		};
-		public void Receive(DataConnection data)
+		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.ConnectionState == ConnectionState.Disable)
 			{
