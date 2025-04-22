@@ -1,24 +1,21 @@
 using UnityEngine;
-using UnityEngine.U2D;
 using System.Collections;
 namespace GuwbaPrimeAdventure.Effects
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
-		private Light2DBase _selfLight;
 		private bool _canHitStop = true;
 		private new void Awake()
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.0001f);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
 			_instance = this;
 			base.Awake();
-			this._selfLight = this.GetComponent<Light2DBase>();
 		}
 		public static void SetHitStop(float stopTime, float slowTime)
 		{
@@ -33,6 +30,5 @@ namespace GuwbaPrimeAdventure.Effects
 				Time.timeScale = 1f;
 			}
 		}
-		public static void SetGlobalLight(bool lightState) => _instance._selfLight.enabled = lightState;
 	};
 };
