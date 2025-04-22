@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Collections;
-using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
@@ -95,7 +94,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.StartCoroutine(this.Fade());
 				if (this._hasFollowLight)
 				{
-					EffectsController.SetGlobalLight(false);
 					this._selfLight.enabled = true;
 					this._followLight.enabled = true;
 					this.StartCoroutine(Light());
@@ -120,7 +118,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				{
 					this._selfLight.enabled = false;
 					this._followLight.enabled = false;
-					EffectsController.SetGlobalLight(true);
 				}
 			}
 		}
