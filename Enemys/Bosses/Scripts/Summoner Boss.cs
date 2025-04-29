@@ -76,13 +76,14 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossType bossType = (BossType)additionalData;
-			if (!bossType.HasFlag(BossType.Summoner))
-				return;
-			bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
-			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopSummon = !data.ToggleValue.Value;
-			else if (data.ConnectionState == ConnectionState.Action && has)
-				this.Summon(this._eventSummons[data.IndexValue.Value]);
+			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
+			{
+				bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
+				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
+					this._stopSummon = !data.ToggleValue.Value;
+				else if (data.ConnectionState == ConnectionState.Action && has)
+					this.Summon(this._eventSummons[data.IndexValue.Value]);
+			}
 		}
 		[System.Serializable]
 		private struct SummonPlaces
