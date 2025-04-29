@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent]
-	internal sealed class WeakPointProp : BossController.BossProp, IDamageable
+	internal sealed class WeakPointProp : BossProp, IDamageable
 	{
 		private bool _blockDamage = false;
 		[Header("Weak Point"), SerializeField] private short _vitality;
