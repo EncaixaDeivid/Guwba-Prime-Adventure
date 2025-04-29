@@ -198,20 +198,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossType bossType = (BossType)additionalData;
-			if (!bossType.HasFlag(BossType.Runner))
-				return;
-			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
-			else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
-			{
-				Vector2 targetPosition;
-				if (this._useOtherTarget)
-					targetPosition = this._otherTarget;
-				else
-					targetPosition = GuwbaTransformer<CommandGuwba>.Position;
-				this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
-				this.StartCoroutine(this.Dash());
-			}
+			if (bossType.HasFlag(BossType.Runner) || bossType.HasFlag(BossType.All))
+				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
+					this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
+				else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
+				{
+					Vector2 targetPosition;
+					if (this._useOtherTarget)
+						targetPosition = this._otherTarget;
+					else
+						targetPosition = GuwbaTransformer<CommandGuwba>.Position;
+					this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
+					this.StartCoroutine(this.Dash());
+				}
 		}
 	};
 };
