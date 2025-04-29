@@ -146,23 +146,22 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossType bossType = (BossType)additionalData;
-			if (!bossType.HasFlag(BossType.Jumper))
-				return;
-			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
-				this._stopJump = !data.ToggleValue.Value;
-			else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
-			{
-				if (this._stopMoveReact)
+			if (bossType.HasFlag(BossType.Jumper) || bossType.HasFlag(BossType.All))
+				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
+					this._stopJump = !data.ToggleValue.Value;
+				else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
 				{
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner).SetToggle(false).Send();
-					this._rigidybody.linearVelocityX = 0f;
+					if (this._stopMoveReact)
+					{
+						Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
+						.SetBossType(BossType.Runner).SetToggle(false).Send();
+						this._rigidybody.linearVelocityX = 0f;
+					}
+					this._collider.isTrigger = true;
+					this._rigidybody.AddForceY(this._strenghtReact);
+					if (this._highReact)
+						this.HighJump(this._otherTarget, this._useTarget);
 				}
-				this._collider.isTrigger = true;
-				this._rigidybody.AddForceY(this._strenghtReact);
-				if (this._highReact)
-					this.HighJump(this._otherTarget, this._useTarget);
-			}
 		}
 		[System.Serializable]
 		private struct JumpPointStructure
