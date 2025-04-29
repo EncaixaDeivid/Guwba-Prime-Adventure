@@ -22,6 +22,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
+		[SerializeField] private Camera _mainCamera;
 		[SerializeField] private LayerMask _groundLayerMask;
 		[SerializeField] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
@@ -175,7 +176,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Action<InputAction.CallbackContext> AttackRotationKeyboard => (InputAction.CallbackContext attackAction) =>
 		{
 			Vector2 attackTarget = attackAction.ReadValue<Vector2>();
-			Vector2 attackValue = Camera.main.ScreenToWorldPoint(new Vector3(attackTarget.x, attackTarget.y, 0f));
+			Vector2 attackValue = this._mainCamera.ScreenToWorldPoint(new Vector3(attackTarget.x, attackTarget.y, 0f));
 			this._attackValue = (attackValue - (Vector2)this.transform.position).normalized;
 		};
 		private Action<InputAction.CallbackContext> AttackUse => (InputAction.CallbackContext attackAction) =>
