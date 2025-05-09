@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.U2D;
 using System.Collections;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
@@ -10,14 +9,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private Tilemap _tilemap;
 		private Collider2D[] _colliders;
-		private Light2DBase _selfLight;
 		private bool _appearCompleted = false;
 		private bool _fadeCompleted = false;
-		[SerializeField] private Light2DBase _followLight;
 		[SerializeField] private bool _isReceptor;
 		[SerializeField] private bool _fadeActivation;
 		[SerializeField] private bool _hasColliders;
-		[SerializeField] private bool _hasFollowLight;
 		[SerializeField] private float _timeToFadeAgain;
 		[SerializeField] private float _timeToAppearAgain;
 		private new void Awake()
@@ -25,7 +21,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			base.Awake();
 			this._tilemap = this.GetComponentInParent<Tilemap>();
 			this._colliders = this.GetComponentsInParent<Collider2D>(true);
-			this._selfLight = this.GetComponent<Light2DBase>();
 		}
 		private IEnumerator Appear()
 		{
@@ -90,36 +85,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (!this._isReceptor && GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
-			{
 				this.StartCoroutine(this.Fade());
-				if (this._hasFollowLight)
-				{
-					this._selfLight.enabled = true;
-					this._followLight.enabled = true;
-					this.StartCoroutine(Light());
-					IEnumerator Light()
-					{
-						while (this._followLight.enabled)
-						{
-							this._followLight.transform.position = GuwbaTransformer<CommandGuwba>.Position;
-							yield return new WaitForFixedUpdate();
-							yield return new WaitUntil(() => this.enabled);
-						}
-					}
-				}
-			}
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (!this._isReceptor && GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
-			{
 				this.StartCoroutine(this.Appear());
-				if (this._hasFollowLight)
-				{
-					this._selfLight.enabled = false;
-					this._followLight.enabled = false;
-				}
-			}
 		}
 	};
 };
