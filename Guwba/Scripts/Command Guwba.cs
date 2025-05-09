@@ -220,7 +220,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					{
 						interactable.Interaction();
 						return;
-					};
+					}
 		};
 		private void FixedUpdate()
 		{
@@ -235,7 +235,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				downStairs = downRay;
 				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
-			};
+			}
 			if (this._isOnGround)
 			{
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
@@ -292,15 +292,10 @@ namespace GuwbaPrimeAdventure.Guwba
 						float xDistance = this.transform.position.x + this._wallChecker * movementValue;
 						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
 						this.transform.position = new Vector2(xDistance, yDistance);
-					};
-				};
-			};
+					}
+				}
+			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
-			if (_grabObject)
-			{
-				Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + this._collider.size.y - this._lowHoldOffset);
-				_grabObject.transform.position = newPosition;
-			};
 			this._isOnGround = false;
 		}
 		private void OnCollision()
@@ -320,6 +315,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				_returnAttack = false;
 				GuwbaTransformer<AttackGuwba>._returnAttack = false;
 				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
+				if (_grabObject)
+				{
+					_grabObject.transform.parent = this.transform;
+					Vector2 newPosition = new(this.transform.position.x, this.transform.position.y + this._collider.size.y - this._lowHoldOffset);
+					_grabObject.transform.position = newPosition;
+				}
 			}
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
