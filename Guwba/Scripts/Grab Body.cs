@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Collider2D[] _colliders;
 		private Vector2 _guardVelocity = new();
-		private (int _layer, bool[] _isTrigger, LayerMask[,] _layerMasks) _backDrop;
+		private (Transform _parent, int _layer, bool[] _isTrigger, LayerMask[,] _layerMasks) _backDrop;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
@@ -73,8 +73,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerEnter2D(Collider2D other) => this.OnCollision(other.gameObject);
 		internal void Stop(ushort objectLayer)
 		{
+			this._backDrop._parent = this.transform.parent;
 			this._backDrop._layer = this.gameObject.layer;
 			this.GetComponent<IGrabtable>()?.Paralyze(true);
+			this._rigidbody.bodyType = RigidbodyType2D.Kinematic;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this.gameObject.layer = objectLayer;
 			this.transform.parent = null;
@@ -98,6 +100,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		internal void Throw(Vector2 direction)
 		{
+			this.transform.parent = null;
+			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 			this._rigidbody.gravityScale = this._throwGravity;
 			this._isThrew = true;
 			for (ushort i = 0; i < this._colliders.Length; i++)
@@ -109,6 +113,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		internal void Drop()
 		{
 			this.GetComponent<IGrabtable>()?.Paralyze(false);
+			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
+			this.transform.parent = this._backDrop._parent;
 			if (this._gravityScale != 0f)
 				this._rigidbody.gravityScale = this._gravityScale;
 			this.gameObject.layer = this._backDrop._layer;
