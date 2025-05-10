@@ -63,7 +63,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._colliders[i].excludeLayers = this._backDrop._layerMasks[1, i];
 						this._colliders[i].contactCaptureLayers = this._backDrop._layerMasks[2, i];
 						this._colliders[i].callbackLayers = this._backDrop._layerMasks[3, i];
-					};
+					}
 					if (!this._isIndestructible && this._hitsToDestruct-- <= 0f)
 						Destroy(this.gameObject);
 				}
