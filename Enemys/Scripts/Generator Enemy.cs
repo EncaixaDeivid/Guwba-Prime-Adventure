@@ -60,7 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					else if (this._summonObject.Random)
 					{
 						ushort pointIndex = (ushort)Random.Range(0f, this._summonObject.SummonPoints.Length - 1f);
-						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[0], this.transform.rotation);
+						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[pointIndex], this.transform.rotation);
 					}
 					else
 						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[0], this.transform.rotation);
