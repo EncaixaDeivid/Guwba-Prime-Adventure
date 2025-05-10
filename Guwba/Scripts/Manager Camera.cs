@@ -22,7 +22,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void Awake()
 		{
 			if (_instance)
-				Destroy(_instance.gameObject);
+			{
+				Destroy(this.gameObject);
+				return;
+			}
 			_instance = this;
 			base.Awake();
 			this._cameraGuwba = this.GetComponent<Camera>();
@@ -38,7 +41,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = this._childrenRenderers[ia].sortingOrder;
 				float centerX = this._childrenTransforms[ia].position.x;
 				float centerY = this._childrenTransforms[ia].position.y;
-				Vector2 imageSize = this._childrenRenderers[ia].bounds.size;
+				Vector2 imageSize = this._childrenRenderers[ia].sprite.bounds.size;
 				float right = centerX + imageSize.x;
 				float left = centerX - imageSize.x;
 				float top = centerY + imageSize.y;
@@ -75,7 +78,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				float movementAxisX = this.transform.position.x * axisX;
 				float movementAxisY = this.transform.position.y * axisY;
 				this._childrenTransforms[i].position = new Vector2(this._startPosition.x + movementAxisX, this._startPosition.y + movementAxisY);
-				Vector2 imageSize = this._childrenRenderers[i].bounds.size;
+				Vector2 imageSize = this._childrenRenderers[i].sprite.bounds.size;
 				float distanceAxisX = this.transform.position.x * (1f - axisX);
 				float distanceAxisY = this.transform.position.y * (1f - axisY);
 				if (distanceAxisX > this._startPosition.x + imageSize.x)
