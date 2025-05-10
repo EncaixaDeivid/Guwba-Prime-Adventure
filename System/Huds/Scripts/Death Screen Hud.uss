@@ -16,13 +16,13 @@
 	align-self: center;
 }
 #Continue, #OutLevel, #GameOver{
-	font-size: 60px;
+	font-size: 40px;
 	width: 800px;
-	height: 150px;
+	height: 75px;
 	margin-top: 60px;
 	background-color: rgb(255, 160, 0);
 	border-width : 0px;
-	border-radius : 75px;
+	border-radius : 50px;
 	border-color : rgb(255, 160, 0);
 }
 #GameOver{
