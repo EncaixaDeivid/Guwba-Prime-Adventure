@@ -229,7 +229,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			bool downStairs = false;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && !this._isJumping)
 			{
-				float xOrigin = this.transform.position.x - (this._collider.bounds.extents.x / 2f * movementValue);
+				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
 				downStairs = downRay;
