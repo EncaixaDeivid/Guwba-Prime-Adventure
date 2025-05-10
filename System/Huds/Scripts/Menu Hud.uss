@@ -2,7 +2,6 @@
 	margin: 0px;
 	padding: 0px;
 	border-width : 0px;
-	border-radius : 75px;
 }
 #RootElement{
 	width : 100%;
@@ -17,19 +16,20 @@
 	height : 100%;
 	border-radius : 0px;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: space-evenly;
 }
 #LogoBrand
 {
 	font-size : 60px;
 	-unity-text-align : middle-center;
 	background-image: none;
-	width: 1200px;
-	height: 300px;
+	width: 1000px;
+	height: 200px;
 	-unity-background-image-tint-color: rgb(255, 160, 0);
 	background-color: rgb(255, 160, 0);
 	justify-content: center;
 	align-self: center;
+	border-radius: 50px;
 }
 #Saves{
 	display: none;
@@ -42,10 +42,10 @@
 	width : 150px;
 	background-color : rgb(255, 160, 0);
 	height : 75px;
-	font-size : 40px;
+	font-size : 25px;
 	align-self: flex-start;
 	margin-left: 50px;
-	border-radius : 20px;
+	border-radius : 10px;
 }
 #Back:hover{
 	border-color : rgb(255, 160, 0);
@@ -62,17 +62,17 @@
 }
 #Save1, #Save2, #Save3, #Save4{
 	flex-direction: column;
-	width : 37.5%;
-	height : 100%;
-	border-radius : 50px;
+	width : 25%;
+	height : 80%;
+	border-radius : 25px;
 	background-color: rgb(224, 192, 0);
 	align-items: center;
-	justify-content: space-around;
+	justify-content: space-evenly;
 }
 #SaveName1, #SaveName2, #SaveName3, #SaveName4{
-	width : 500px;
-	height : 75px;
-	border-radius : 25px;
+	width : 300px;
+	height : 40px;
+	border-radius : 15px;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
@@ -80,7 +80,7 @@
 	-unity-text-align : middle-center;
 }
 #SaveName1 TextElement, #SaveName2 TextElement, #SaveName3 TextElement, #SaveName4 TextElement{
-	font-size : 40px;
+	font-size : 25px;
 }
 #SaveName1 #unity-text-input, #SaveName2 #unity-text-input, #SaveName3 #unity-text-input, #SaveName4 #unity-text-input{
 	width : 500px;
@@ -93,12 +93,12 @@
 	-unity-text-align : middle-center;
 }
 #Load1, #Load2, #Load3, #Load4, #Delete1, #Delete2, #Delete3, #Delete4{
-	width : 500px;
+	width : 300px;
 	background-color : rgb(255, 160, 0);
-	height : 75px;
-	font-size : 40px;
+	height : 40px;
+	font-size : 25px;
 	-unity-text-align : middle-center;
-	border-radius : 25px;
+	border-radius : 15px;
 }
 #Load1:hover, #Load2:hover, #Load3:hover, #Load4:hover, #Delete1:hover, #Delete2:hover, #Delete3:hover, #Delete4:hover{
 	border-color : rgb(255, 160, 0);
@@ -108,14 +108,15 @@
 .Button
 {
 	background-color : rgb(255, 160, 0);
-	width : 1000px;
-	height : 150px;
-	font-size : 60px;
+	width : 600px;
+	height : 125px;
+	font-size : 40px;
+	border-radius: 50px;
 	-unity-text-align : middle-center;
 }
 .Button:hover
 {
 	border-color : rgb(255, 160, 0);
 	background-color : rgb(255, 255, 32);
-	border-width : 20px;
+	border-width : 10px;
 }
