@@ -23,6 +23,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		[SerializeField] private Camera _mainCamera;
+		[SerializeField, Tooltip("When it's on ground will lock.")] private PhysicsMaterial2D _groundMaterial;
+		[SerializeField, Tooltip("When it's off ground will free.")] private PhysicsMaterial2D _offGroundMaterial;
 		[SerializeField] private LayerMask _groundLayerMask;
 		[SerializeField] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
@@ -246,6 +248,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
+				this._rigidbody.sharedMaterial = this._groundMaterial;
 				this._downStairs = true;
 			}
 			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
@@ -297,6 +300,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			this._isOnGround = false;
+			this._rigidbody.sharedMaterial = this._offGroundMaterial;
 		}
 		private void OnCollision()
 		{
