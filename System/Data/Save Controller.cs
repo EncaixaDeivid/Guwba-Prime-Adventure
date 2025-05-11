@@ -34,8 +34,8 @@ namespace GuwbaPrimeAdventure.Data
 				booksValue = new List<bool>(),
 				generalObjects = new List<string>(),
 				lastLevelEntered = "",
-				levelsCompleted = new bool[2],
-				deafetedBosses = new bool[1]
+				levelsCompleted = new bool[4],
+				deafetedBosses = new bool[4]
 			};
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
