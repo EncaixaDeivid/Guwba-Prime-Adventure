@@ -38,6 +38,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation Parameter.")] private string _death;
 		[SerializeField] private ushort _movementSpeed;
 		[SerializeField] private ushort _jumpStrenght;
+		[SerializeField, Tooltip("Amount to increase the fall gravity.")] private ushort _amountToFall;
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
@@ -236,7 +237,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
 				downStairs = downRay;
 				if (downStairs)
+				{
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
+					this._rigidbody.sharedMaterial = this._offGroundMaterial;
+				}
 			}
 			if (this._isOnGround)
 			{
@@ -258,6 +262,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
+				this._rigidbody.sharedMaterial = this._offGroundMaterial;
 				this._isJumping = false;
 				this._downStairs = false;
 			}
@@ -267,10 +272,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, true);
-				if (this._rigidbody.gravityScale < this._gravityScale * 2f)
-					this._rigidbody.gravityScale += this._gravityScale * 2f * Time.fixedDeltaTime;
+				if (this._rigidbody.gravityScale < this._gravityScale * this._amountToFall)
+					this._rigidbody.gravityScale += this._gravityScale * _amountToFall * Time.fixedDeltaTime;
 				else
-					this._rigidbody.gravityScale = this._gravityScale * 2f;
+					this._rigidbody.gravityScale = this._gravityScale * _amountToFall;
+				this._rigidbody.sharedMaterial = this._offGroundMaterial;
 				this._isJumping = false;
 				this._downStairs = false;
 			};
@@ -300,7 +306,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			this._isOnGround = false;
-			this._rigidbody.sharedMaterial = this._offGroundMaterial;
 		}
 		private void OnCollision()
 		{
