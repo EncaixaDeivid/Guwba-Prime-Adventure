@@ -237,22 +237,22 @@ namespace GuwbaPrimeAdventure.Guwba
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
 				downStairs = downRay;
 				if (downStairs)
-				{
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
-					this._rigidbody.sharedMaterial = this._offGroundMaterial;
-				}
 			}
+			this._rigidbody.sharedMaterial = this._offGroundMaterial;
 			if (this._isOnGround)
 			{
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
 				this._animator.SetBool(this._walk, this._movementAction != 0f);
 				if (this._animator.GetBool(this._walk))
+				{
 					this._animator.SetFloat(this._slowWalk, this._movementAction < 0f ? this._movementAction * -1f : this._movementAction);
+					this._rigidbody.sharedMaterial = this._groundMaterial;
+				}
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._rigidbody.sharedMaterial = this._groundMaterial;
 				this._downStairs = true;
 			}
 			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
@@ -262,7 +262,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
-				this._rigidbody.sharedMaterial = this._offGroundMaterial;
 				this._isJumping = false;
 				this._downStairs = false;
 			}
@@ -276,7 +275,6 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._rigidbody.gravityScale += this._gravityScale * _amountToFall * Time.fixedDeltaTime;
 				else
 					this._rigidbody.gravityScale = this._gravityScale * _amountToFall;
-				this._rigidbody.sharedMaterial = this._offGroundMaterial;
 				this._isJumping = false;
 				this._downStairs = false;
 			};
