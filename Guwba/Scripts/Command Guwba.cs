@@ -245,10 +245,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
 				this._animator.SetBool(this._walk, this._movementAction != 0f);
 				if (this._animator.GetBool(this._walk))
-				{
 					this._animator.SetFloat(this._slowWalk, this._movementAction < 0f ? this._movementAction * -1f : this._movementAction);
+				else
 					this._rigidbody.sharedMaterial = this._groundMaterial;
-				}
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
