@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.U2D;
 using System.Collections;
 namespace GuwbaPrimeAdventure.Effects
 {
@@ -6,6 +7,7 @@ namespace GuwbaPrimeAdventure.Effects
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
+		private Light2DBase _globalLight;
 		private bool _canHitStop = true;
 		private new void Awake()
 		{
@@ -16,6 +18,7 @@ namespace GuwbaPrimeAdventure.Effects
 			}
 			_instance = this;
 			base.Awake();
+			this._globalLight = this.GetComponent<Light2DBase>();
 		}
 		public static void SetHitStop(float stopTime, float slowTime)
 		{
@@ -30,5 +33,6 @@ namespace GuwbaPrimeAdventure.Effects
 				Time.timeScale = 1f;
 			}
 		}
+		public static void OnOffGlobalLight(bool active) => _instance._globalLight.enabled = active;
 	};
 };
