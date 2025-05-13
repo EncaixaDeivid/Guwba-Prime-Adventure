@@ -14,9 +14,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Light2DBase _selfLight; 
 		private bool _appearCompleted = false;
 		private bool _fadeCompleted = false;
+		[SerializeField] private Light2DBase _followLight;
 		[SerializeField] private bool _isReceptor;
 		[SerializeField] private bool _fadeActivation;
 		[SerializeField] private bool _hasColliders;
+		[SerializeField] private bool _hasFollowLight;
 		[SerializeField] private float _timeToFadeAgain;
 		[SerializeField] private float _timeToAppearAgain;
 		private new void Awake()
@@ -30,6 +32,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			this._selfLight.enabled = false;
 			EffectsController.OnOffGlobalLight(true);
+			if (this._hasFollowLight)
+				this.StopCoroutine(this.FollowLight());
 			for (float i = 0f; i < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -46,6 +50,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			this._selfLight.enabled = true;
 			EffectsController.OnOffGlobalLight(false);
+			if (this._hasFollowLight)
+				this.StartCoroutine(this.FollowLight());
 			for (float i = 1f; i > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -57,6 +63,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				foreach (Collider2D collider in this._colliders)
 					collider.enabled = false;
 			this._fadeCompleted = true;
+		}
+		private IEnumerator FollowLight()
+		{
+			while (this._selfLight.enabled)
+			{
+				this._followLight.transform.position = GuwbaTransformer<CommandGuwba>.Position;
+				yield return new WaitForFixedUpdate();
+				yield return new WaitUntil(() => this.enabled);
+			}
 		}
 		public void ActivationEvent()
 		{
