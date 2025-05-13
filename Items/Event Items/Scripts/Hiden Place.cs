@@ -33,7 +33,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._selfLight.enabled = false;
 			EffectsController.OnOffGlobalLight(true);
 			if (this._hasFollowLight)
+			{
+				this._followLight.enabled = false;
 				this.StopCoroutine(this.FollowLight());
+			}
 			for (float i = 0f; i < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -51,7 +54,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._selfLight.enabled = true;
 			EffectsController.OnOffGlobalLight(false);
 			if (this._hasFollowLight)
+			{
+				this._followLight.enabled = true;
 				this.StartCoroutine(this.FollowLight());
+			}
 			for (float i = 1f; i > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -66,7 +72,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator FollowLight()
 		{
-			while (this._selfLight.enabled)
+			while (true)
 			{
 				this._followLight.transform.position = GuwbaTransformer<CommandGuwba>.Position;
 				yield return new WaitForFixedUpdate();
