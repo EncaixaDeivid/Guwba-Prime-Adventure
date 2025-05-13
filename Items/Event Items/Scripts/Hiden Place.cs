@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.U2D;
 using System.Collections;
+using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
@@ -9,6 +11,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private Tilemap _tilemap;
 		private Collider2D[] _colliders;
+		private Light2DBase _selfLight; 
 		private bool _appearCompleted = false;
 		private bool _fadeCompleted = false;
 		[SerializeField] private bool _isReceptor;
@@ -21,9 +24,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			base.Awake();
 			this._tilemap = this.GetComponentInParent<Tilemap>();
 			this._colliders = this.GetComponentsInParent<Collider2D>(true);
+			this._selfLight = this.GetComponent<Light2DBase>();
 		}
 		private IEnumerator Appear()
 		{
+			this._selfLight.enabled = false;
+			EffectsController.OnOffGlobalLight(true);
 			for (float i = 0f; i < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
@@ -38,6 +44,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Fade()
 		{
+			this._selfLight.enabled = true;
+			EffectsController.OnOffGlobalLight(false);
 			for (float i = 1f; i > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
