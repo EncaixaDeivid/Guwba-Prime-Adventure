@@ -77,7 +77,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._invencibility = false;
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
-		private UnityAction<bool> ManualInvencibility => (bool isInvencible) =>
+		private UnityAction<bool> ManualInvencibility => isInvencible =>
 		{
 			if (isInvencible)
 				this.StartCoroutine(this.Invencibility());
