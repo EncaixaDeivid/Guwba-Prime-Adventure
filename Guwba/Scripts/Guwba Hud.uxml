@@ -12,12 +12,9 @@
                     <ui:Label text="X 0" name="CoinText" />
                 </ui:GroupBox>
             </ui:GroupBox>
-            <ui:GroupBox name="Vitality">
-                <ui:VisualElement name="Vitality1" />
-                <ui:VisualElement name="Vitality2" />
-                <ui:VisualElement name="Vitality3" />
-                <ui:VisualElement name="Vitality4" />
-            </ui:GroupBox>
+            <ui:GroupBox name="Vitality" >
+                <ui:VisualElement name="VitalityPiece" />
+            </ui:GroupBox >
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
