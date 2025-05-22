@@ -30,10 +30,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				while (_instance.transform.rotation != rotation)
 				{
-					_instance.transform.rotation = Quaternion.RotateTowards(_instance.transform.rotation, rotation, speed * Time.fixedDeltaTime);
+					float speedRotation = speed * Time.fixedDeltaTime;
+					_instance.transform.rotation = Quaternion.RotateTowards(_instance.transform.rotation, rotation, speedRotation);
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => _instance.enabled);
-				};
+				}
 			}
 		}
 		public static bool EqualObject(params GameObject[] unknowGameObjects)
