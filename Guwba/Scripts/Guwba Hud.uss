@@ -48,11 +48,10 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 90%;
+    width: 692px;
     height: 25%;
 }
-#Vitality VisualElement {
-    width: 25%;
+#VitalityPiece {
     height: 100%;
     background-color: rgb(96, 0, 0);
     border-width: 7.5px;
