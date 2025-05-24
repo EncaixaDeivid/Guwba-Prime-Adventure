@@ -4,7 +4,7 @@ using System.Collections;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
-	public abstract class GuwbaTransformer<GuwbaInstance> : StateController where GuwbaInstance : StateController
+	public abstract class GuwbaAstral<GuwbaInstance> : StateController where GuwbaInstance : StateController
 	{
 		private static GuwbaInstance _instance;
 		protected static GrabBody _grabObject;
