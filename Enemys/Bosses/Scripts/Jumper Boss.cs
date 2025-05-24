@@ -52,13 +52,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					randomDirection = Random.Range(-1f, 1f);
 				while (!this.SurfacePerception())
 				{
-					float targetPosition = GuwbaTransformer<CommandGuwba>.Position.x;
+					float targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
 					if (useTarget)
 						targetPosition = otherTarget.x;
 					if (this._randomFollow)
 					{
 						if (randomDirection >= 0f)
-							targetPosition = GuwbaTransformer<CommandGuwba>.Position.x;
+							targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
 						else if (randomDirection < 0f)
 							targetPosition = otherTarget.x;
 					}
@@ -81,7 +81,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				JumpPoint jumpPoint = this._jumpPointStructures[i].JumpPointObject;
 				JumpPoint jumpPointInstance = Instantiate(jumpPoint, this._jumpPointStructures[i].Point, Quaternion.identity);
 				this._jumpPointStructures[i].RemovalJumpCount = (short)this._jumpPointStructures[i].JumpCount;
-				jumpPointInstance.GetTouch(i, (ushort index) =>
+				jumpPointInstance.GetTouch(i, index =>
 				{
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
