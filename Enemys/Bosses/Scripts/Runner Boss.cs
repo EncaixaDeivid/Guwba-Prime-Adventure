@@ -127,7 +127,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._frontUpDetection)
 					dashOrigin = new Vector2(dashOrigin.x, dashOrigin.y + this._collider.bounds.extents.y);
 				RaycastHit2D[] raycastHits = Physics2D.RaycastAll(dashOrigin, dashDirection, this._rayDistance, this._targetLayerMask);
-				frontDashValue = GuwbaTransformer<CommandGuwba>.EqualObject(raycastHits);
+				frontDashValue = GuwbaAstral<CommandGuwba>.EqualObject(raycastHits);
 			}
 			if (this._rayDetection || this._turnOnBack)
 			{
@@ -135,7 +135,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._backUpDetection)
 					dashOrigin = new Vector2(dashOrigin.x, dashOrigin.y + this._collider.bounds.extents.y);
 				RaycastHit2D[] raycastHits = Physics2D.RaycastAll(dashOrigin, -dashDirection, this._rayDistance, this._targetLayerMask);
-				backDashValue = GuwbaTransformer<CommandGuwba>.EqualObject(raycastHits);
+				backDashValue = GuwbaAstral<CommandGuwba>.EqualObject(raycastHits);
 			}
 			if (!this._dashIsOn && this.transform.rotation.z == 0f)
 			{
@@ -207,7 +207,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					if (this._useOtherTarget)
 						targetPosition = this._otherTarget;
 					else
-						targetPosition = GuwbaTransformer<CommandGuwba>.Position;
+						targetPosition = GuwbaAstral<CommandGuwba>.Position;
 					this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
 					this.StartCoroutine(this.Dash());
 				}
