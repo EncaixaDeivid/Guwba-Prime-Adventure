@@ -7,7 +7,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
-	public sealed class VisualGuwba : GuwbaTransformer<VisualGuwba>, IDamageable
+	public sealed class VisualGuwba : GuwbaAstral<VisualGuwba>, IDamageable
 	{
 		private static VisualGuwba _instance;
 		private GuwbaHud _guwbaHud;
@@ -117,10 +117,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
-				GuwbaTransformer<CommandGuwba>._actualState.Invoke(true);
+				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
 				this.ManualInvencibility.Invoke(false);
-				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
-				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
+				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
+				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
 				this.StopAllCoroutines();
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 				return true;
