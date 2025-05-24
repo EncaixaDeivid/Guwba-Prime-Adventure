@@ -74,7 +74,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			while (true)
 			{
-				this._followLight.transform.position = GuwbaTransformer<CommandGuwba>.Position;
+				this._followLight.transform.position = GuwbaAstral<CommandGuwba>.Position;
 				yield return new WaitForFixedUpdate();
 				yield return new WaitUntil(() => this.enabled);
 			}
@@ -113,12 +113,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!this._isReceptor && GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
+			if (!this._isReceptor && GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 				this.StartCoroutine(this.Fade());
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!this._isReceptor && GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
+			if (!this._isReceptor && GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 				this.StartCoroutine(this.Appear());
 		}
 	};
