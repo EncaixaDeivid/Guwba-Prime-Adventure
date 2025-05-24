@@ -7,7 +7,7 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	public sealed class CommandGuwba : GuwbaTransformer<CommandGuwba>
+	public sealed class CommandGuwba : GuwbaAstral<CommandGuwba>
 	{
 		private static CommandGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
@@ -158,12 +158,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (_grabObject && !this._isOnGround)
 				{
 					this._animator.SetBool(this._hold, false);
-					GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
+					GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
 					_grabObject.transform.position = (Vector2)this.transform.position + Vector2.down;
 					_grabObject.Throw(Vector2.down);
 					_grabObject = null;
-					GuwbaTransformer<VisualGuwba>._grabObject = null;
-					GuwbaTransformer<AttackGuwba>._grabObject = null;
+					GuwbaAstral<VisualGuwba>._grabObject = null;
+					GuwbaAstral<AttackGuwba>._grabObject = null;
 				}
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
@@ -184,20 +184,20 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (_grabObject)
 			{
 				this._animator.SetBool(this._hold, false);
-				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
+				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
 				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
 				_grabObject = null;
-				GuwbaTransformer<VisualGuwba>._grabObject = null;
-				GuwbaTransformer<AttackGuwba>._grabObject = null;
+				GuwbaAstral<VisualGuwba>._grabObject = null;
+				GuwbaAstral<AttackGuwba>._grabObject = null;
 			}
 			else if (this._attackValue != Vector2.zero)
 			{
 				this._animator.SetBool(this._attack, true);
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
-				GuwbaTransformer<AttackGuwba>.SetRotation(angle);
-				GuwbaTransformer<AttackGuwba>._actualState.Invoke(true);
+				GuwbaAstral<AttackGuwba>.SetRotation(angle);
+				GuwbaAstral<AttackGuwba>._actualState.Invoke(true);
 			}
 		};
 		private Action<InputAction.CallbackContext> Interaction => interactionAction =>
@@ -208,8 +208,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._hold, false);
 				_grabObject.Drop();
 				_grabObject = null;
-				GuwbaTransformer<VisualGuwba>._grabObject = null;
-				GuwbaTransformer<AttackGuwba>._grabObject = null;
+				GuwbaAstral<VisualGuwba>._grabObject = null;
+				GuwbaAstral<AttackGuwba>._grabObject = null;
 			}
 			else if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, 0f, this._interactionLayerMask))
@@ -301,14 +301,14 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (_returnAttack && GuwbaTransformer<AttackGuwba>.EqualObject(collisionObject))
+			if (_returnAttack && GuwbaAstral<AttackGuwba>.EqualObject(collisionObject))
 			{
 				this._animator.SetBool(this._hold, _grabObject);
 				this._animator.SetBool(this._attack, false);
-				GuwbaTransformer<AttackGuwba>._actualState.Invoke(false);
+				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
 				_returnAttack = false;
-				GuwbaTransformer<AttackGuwba>._returnAttack = false;
-				GuwbaTransformer<AttackGuwba>.Position = this.transform.position;
+				GuwbaAstral<AttackGuwba>._returnAttack = false;
+				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
 				if (_grabObject)
 				{
 					_grabObject.transform.parent = this.transform;
