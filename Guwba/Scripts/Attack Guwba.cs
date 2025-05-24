@@ -5,7 +5,7 @@ using GuwbaPrimeAdventure.Effects;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
-	public sealed class AttackGuwba : GuwbaTransformer<AttackGuwba>
+	public sealed class AttackGuwba : GuwbaAstral<AttackGuwba>
 	{
 		private static AttackGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
@@ -53,7 +53,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
-		private UnityAction<bool> Movement => (bool isAttacking) =>
+		private UnityAction<bool> Movement => isAttacking =>
 		{
 			this._isAttacking = isAttacking;
 			if (this._isAttacking)
@@ -69,10 +69,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 				while (this._isAttacking)
 				{
-					Vector2 targetPosition = GuwbaTransformer<CommandGuwba>.Position;
+					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
 					if (Vector2.Distance(this.transform.position, targetPosition) >= this._movementDistance)
 					{
-						GuwbaTransformer<CommandGuwba>._returnAttack = true;
+						GuwbaAstral<CommandGuwba>._returnAttack = true;
 						_returnAttack = true;
 					}
 					if (_returnAttack)
@@ -99,23 +99,23 @@ namespace GuwbaPrimeAdventure.Guwba
 			bool isDamageable = collisionObject.TryGetComponent<IDamageable>(out var damageable);
 			if ((isGrabtable && !isDamageable || (isGrabtable && isDamageable && damageable.Health == this._valueToGrab)) && grabBody.IsGrabtable)
 			{
-				GuwbaTransformer<CommandGuwba>._returnAttack = true;
+				GuwbaAstral<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
-				GuwbaTransformer<CommandGuwba>._grabObject = grabBody;
-				GuwbaTransformer<VisualGuwba>._grabObject = grabBody;
+				GuwbaAstral<CommandGuwba>._grabObject = grabBody;
+				GuwbaAstral<VisualGuwba>._grabObject = grabBody;
 				_grabObject = grabBody;
 				_grabObject.Stop((ushort)this.gameObject.layer);
 			}
 			else if (isDamageable)
 			{
-				GuwbaTransformer<CommandGuwba>._returnAttack = true;
+				GuwbaAstral<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
 				if (damageable.Damage(this._damage))
 					EffectsController.SetHitStop(this._hitStopTime, this._hitSlowTime);
 			}
 			else if (collisionObject.TryGetComponent<Surface>(out _))
 			{
-				GuwbaTransformer<CommandGuwba>._returnAttack = true;
+				GuwbaAstral<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
 			}
 		}
