@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Item
 			if (collisionObject.TryGetComponent<IDamageable>(out var damageable))
 				if (this._everyone)
 					damageable.Damage(this._damage);
-				else if (GuwbaTransformer<VisualGuwba>.EqualObject(collisionObject))
+				else if (GuwbaAstral<VisualGuwba>.EqualObject(collisionObject))
 					damageable.Damage(this._damage);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
