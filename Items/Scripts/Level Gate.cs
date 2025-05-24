@@ -37,7 +37,7 @@ namespace GuwbaPrimeAdventure.Item
 		private Action EnterBoss => () => this.GetComponent<Transitioner>().Transicion(this._bossScene);
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
+			if (!GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			this._levelGateInstance = Instantiate(this._levelGate, this.transform);
@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Item
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
+			if (!GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			this._levelGateInstance.Level.clicked -= this.EnterLevel;
