@@ -39,7 +39,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				}
 				else
 				{
-					GuwbaTransformer<CommandGuwba>.Position = this._locations[this._index];
+					GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
 					break;
 				}
 		}
@@ -62,7 +62,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._active && this._isInteractive && this._useTimer)
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._isInteractive)
-				GuwbaTransformer<CommandGuwba>.Position = this._locations[this._index];
+				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
@@ -71,8 +71,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._onCollision && this._everyone)
 				other.transform.position = this._locations[this._index];
-			else if (this._active && this._onCollision && GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
-				GuwbaTransformer<CommandGuwba>.Position = this._locations[this._index];
+			else if (this._active && this._onCollision && GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
+				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
 		}
 	};
