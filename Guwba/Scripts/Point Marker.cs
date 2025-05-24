@@ -16,11 +16,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			SaveController.Load(out SaveFile saveFile);
 			if (this.gameObject.scene.name == this._levelSelectorScene && saveFile.lastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == this._selfIndex)
-					GuwbaTransformer<CommandGuwba>.Position = this.transform.position;
+					GuwbaAstral<CommandGuwba>.Position = this.transform.position;
 			if (_lastScene == this.gameObject.scene.name && _useCheckpoint)
 			{
 				_useCheckpoint = false;
-				GuwbaTransformer<CommandGuwba>.Position = _checkpointIndex;
+				GuwbaAstral<CommandGuwba>.Position = _checkpointIndex;
 			}
 			_checkScene = true;
 		}
@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (GuwbaTransformer<CommandGuwba>.EqualObject(other.gameObject))
+			if (GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 				_checkpointIndex = this.transform.position;
 		}
 	};
