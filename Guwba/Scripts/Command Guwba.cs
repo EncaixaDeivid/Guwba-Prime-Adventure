@@ -40,6 +40,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("Size of the collider in live.")] private float _normalSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private float _deadSize;
@@ -242,7 +243,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._animator.SetFloat(this._slowWalk, this._movementAction < 0f ? this._movementAction * -1f : this._movementAction);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				this._rigidbody.gravityScale = 0f;
+				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
 				this._downStairs = true;
 			}
@@ -252,6 +253,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
+				this._rigidbody.gravityScale = this._gravityScale;
 				this._isJumping = false;
 				this._downStairs = false;
 			}
@@ -261,6 +263,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, true);
+				if (this._rigidbody.gravityScale < this._gravityScale * this._amountToFall)
+					this._rigidbody.gravityScale += this._gravityScale * this._amountToFall * Time.fixedDeltaTime;
+				else
+					this._rigidbody.gravityScale = this._gravityScale * this._amountToFall;
 				this._isJumping = false;
 				this._downStairs = false;
 			}
