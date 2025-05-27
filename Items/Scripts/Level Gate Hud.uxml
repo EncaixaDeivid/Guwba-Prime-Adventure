@@ -14,6 +14,7 @@
         <engine:GroupBox name="ButtonsGroup">
             <engine:Button name="Level"/>
             <engine:Button name="Boss"/>
+            <engine:Button name="Scenes"/>
         </engine:GroupBox>
     </engine:VisualElement>
 </engine:UXML>
