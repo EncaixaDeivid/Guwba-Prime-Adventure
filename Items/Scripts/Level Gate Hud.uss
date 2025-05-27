@@ -46,17 +46,11 @@
 	justify-content: space-evenly;
 	align-content: center;
 }
-#Level, #Boss{
+#Level, #Boss, #Scenes{
 	width: 20%;
-	height: 30%;
+	height: 40%;
 	background-color : rgb(255, 160, 0);
 }
-#Level{
-	margin-left: 200px;
-}
-#Boss{
-	margin-right: 200px;
-}
-#Level:hover, #Boss:hover{
+#Level:hover, #Boss:hover, #Scenes:hover{
 	background-color : rgb(255, 255, 0);
 }
