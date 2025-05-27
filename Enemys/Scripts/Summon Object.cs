@@ -19,14 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField] private bool _random;
 		public GameObject Summon
 		{
-			get
-			{
-				if (this._enemySummon)
-					return this._enemySummon.gameObject;
-				if (this._projectileSummon)
-					return this._projectileSummon.gameObject;
-				return null;
-			}
+			get => this._enemySummon ? this._enemySummon.gameObject : this._projectileSummon ? this._projectileSummon.gameObject : null;
 		}
 		public Vector2[] SummonPoints => this._summonPoints;
 		public ushort SummonTime => this._summonTime;
