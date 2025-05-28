@@ -83,7 +83,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 				this._dialogTime = settings.dialogSpeed;
 				if (this._speachIndex < this._dialogTalk.Speachs.Length - 1f)
 				{
-					if (this._storyScene && this._dialogTalk.Speachs[this._speachIndex].NextScene)
+					if (this._storyScene && this._dialogTalk.Speachs[this._speachIndex].NextSlide)
 					{
 						this._nextSlide = true;
 						this._dialogHud.RootElement.style.display = DisplayStyle.None;
