@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		internal void ShowScene()
 		{
 			this._storySceneHud = Instantiate(this._storySceneHudObject, this.transform);
-			Texture2D texture = this._sceneObject.BackgroundImages[this._imageIndex].image;
+			Texture2D texture = this._sceneObject.BackgroundImages[this._imageIndex].Image;
 			this._storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(texture);
 			this.StartCoroutine(this.FadeImage(true));
 		}
@@ -30,12 +30,16 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		{
 			yield return this.FadeImage(false);
 			this._imageIndex = (ushort)(this._imageIndex < this._sceneObject.BackgroundImages.Length - 1 ? this._imageIndex + 1 : 0);
+			Texture2D texture = this._sceneObject.BackgroundImages[this._imageIndex].Image;
+			this._storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(texture);
 			yield return this.FadeImage(true);
-			if (this._sceneObject.TimeToDesapear > 0f)
+			while (this._sceneObject.BackgroundImages[this._imageIndex].OffDialog)
 			{
-				yield return new WaitForSeconds(this._sceneObject.TimeToDesapear);
+				yield return new WaitForSeconds(this._sceneObject.BackgroundImages[this._imageIndex].TimeToDesapear);
 				yield return this.FadeImage(false);
 				this._imageIndex = (ushort)(this._imageIndex < this._sceneObject.BackgroundImages.Length - 1 ? this._imageIndex + 1 : 0);
+				Texture2D textureOffDialog = this._sceneObject.BackgroundImages[this._imageIndex].Image;
+				this._storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(textureOffDialog);
 				yield return this.FadeImage(true);
 			}
 		}
