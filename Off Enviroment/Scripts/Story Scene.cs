@@ -39,6 +39,6 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 				yield return this.FadeImage(true);
 			}
 		}
-		internal void CloseScene() => this.StartCoroutine(this.FadeImage(0));
+		internal void CloseScene() => this.StartCoroutine(this.FadeImage(false));
 	};
 };
