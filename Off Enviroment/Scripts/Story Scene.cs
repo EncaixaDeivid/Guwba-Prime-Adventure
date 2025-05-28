@@ -14,8 +14,8 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		private IEnumerator FadeImage(short wayToGo)
 		{
 			wayToGo = (short)(wayToGo > 0 ? 1 : -1);
-			for (uint i = 0; i < 1; i++)
-				yield return this._storySceneHud.SceneImage.style.opacity = i * wayToGo * this._fadeSpeed * Time.fixedDeltaTime;
+			for (float i = 0f; i <= 1f; i += this._fadeSpeed * Time.fixedDeltaTime)
+				yield return this._storySceneHud.SceneImage.style.opacity = i * wayToGo;
 		}
 		internal void ShowScene()
 		{
