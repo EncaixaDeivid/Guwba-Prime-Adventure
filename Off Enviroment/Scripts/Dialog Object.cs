@@ -35,11 +35,11 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 			[SerializeField] private Sprite _model;
 			[SerializeField] private string _characterName;
 			[SerializeField, TextArea(1, 12)] private string _speachText;
-			[SerializeField] private bool _nextScene;
+			[SerializeField] private bool _nextSlide;
 			internal readonly Sprite Model => this._model;
 			internal readonly string CharacterName => this._characterName;
 			internal readonly string SpeachText => this._speachText;
-			internal readonly bool NextScene => this._nextScene;
+			internal readonly bool NextSlide => this._nextSlide;
 		};
 	};
 };
