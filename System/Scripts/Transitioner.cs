@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(this._transicionHud);
-				for (float i = 0f; i < 1.1f; i += Time.deltaTime * transicionHud.ApearRate)
+				for (float i = 0f; i <= 1f; i += Time.deltaTime * transicionHud.ApearRate)
 				{
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
