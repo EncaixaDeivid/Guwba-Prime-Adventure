@@ -12,10 +12,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static VisualGuwba _instance;
 		private GuwbaHud _guwbaHud;
 		private SpriteRenderer _spriteRenderer;
+		private short _vitality;
 		private bool _invencibility = false;
 		[SerializeField] private GuwbaHud _guwbaHudObject;
 		[SerializeField] private string _levelSelectorScene;
-		[SerializeField] private short _vitality;
 		[SerializeField] private ushort _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
@@ -36,6 +36,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guwbaHud = Instantiate(this._guwbaHudObject, this.transform);
 			this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
 			this._guwbaHud.CoinText.text = $"X {saveFile.coins}";
+			this._vitality = (short)this._guwbaHud.Vitality;
 			_actualState += this.ManualInvencibility;
 		}
 		private new void OnDestroy()
@@ -100,13 +101,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				return false;
 			this._invencibility = true;
 			this._vitality -= (short)damage;
-			for (ushort i = (ushort)this._guwbaHud.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
+			for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
-				this._guwbaHud.Vitality[i - 1].style.backgroundColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.Vitality[i - 1].style.borderBottomColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.Vitality[i - 1].style.borderLeftColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.Vitality[i - 1].style.borderRightColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.Vitality[i - 1].style.borderTopColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
 			}
 			if (this._vitality <= 0f)
 			{
