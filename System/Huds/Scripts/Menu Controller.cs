@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
 		}
-		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.Back.Invoke();
+		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.Back.Invoke();
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
@@ -86,25 +86,25 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions.Dispose();
 			Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
 		};
-		private EventCallback<KeyUpEvent> ChangeName1 => (KeyUpEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(1, this._menuHud.SaveName[0].text);
 		};
-		private EventCallback<KeyUpEvent> ChangeName2 => (KeyUpEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName2 => eventCallback =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(2, this._menuHud.SaveName[1].text);
 		};
-		private EventCallback<KeyUpEvent> ChangeName3 => (KeyUpEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName3 => eventCallback =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
 			SaveController.RenameData(3, this._menuHud.SaveName[2].text);
 		};
-		private EventCallback<KeyUpEvent> ChangeName4 => (KeyUpEvent eventCallback) =>
+		private EventCallback<KeyUpEvent> ChangeName4 => eventCallback =>
 		{
 			if (eventCallback.keyCode != KeyCode.KeypadEnter)
 				return;
