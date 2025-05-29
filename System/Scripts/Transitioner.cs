@@ -28,12 +28,12 @@ namespace GuwbaPrimeAdventure
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(this._transicionHud);
-				for (float i = 0f; i <= 1f; i += Time.deltaTime * transicionHud.ApearRate)
+				for (float i = 0f; transicionHud.RootVisualElement.style.opacity.value < 1f; i += 0.1f)
 				{
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
 				}
-				transicionHud.RootVisualElement.style.opacity = 1f;
+				yield return new WaitForSeconds(1);
 				string newSceneName = sceneName != "" ? sceneName : this._sceneTransicion;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newSceneName, LoadSceneMode.Single);
 				if (newSceneName != this.gameObject.scene.name)
