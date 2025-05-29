@@ -14,9 +14,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField] private ushort _totalWidth;
 		[SerializeField] private ushort _vitality;
 		internal VisualElement RootElement { get; private set; }
-		internal VisualElement[] Vitality { get; private set; }
+		internal VisualElement[] VitalityVisual { get; private set; }
 		internal Label LifeText { get; private set; }
 		internal Label CoinText { get; private set; }
+		internal ushort Vitality => (ushort)this._vitality;
 		private void Awake()
 		{
 			if (_instance)
@@ -32,13 +33,13 @@ namespace GuwbaPrimeAdventure.Guwba
 			VisualElement vitality = root.Q<VisualElement>($"{this._vitalityVisual}");
 			vitality.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			VisualElement vitalityPiece = root.Q<VisualElement>($"{this._vitalityPieceVisual}");
-			this.Vitality = new VisualElement[this._vitality];
+			this.VitalityVisual = new VisualElement[this._vitality];
 			for (ushort i = 0; i < this._vitality; i++)
 			{
 				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
+				vitalityPieceClone.style.width = new StyleLength(new Length(this._totalWidth / this._vitality, LengthUnit.Pixel));
 				vitality.Add(vitalityPieceClone);
-				vitality[i + 1].style.width = new StyleLength(new Length(this._totalWidth / this._vitality, LengthUnit.Pixel));
-				this.Vitality[i] = vitality[i + 1];
+				this.VitalityVisual[i] = vitality[i + 1];
 			}
 			vitality.Remove(vitalityPiece);
 		}
