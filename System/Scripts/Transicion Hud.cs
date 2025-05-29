@@ -6,14 +6,12 @@ namespace GuwbaPrimeAdventure
 	internal sealed class TransicionHud : MonoBehaviour
 	{
 		private static TransicionHud _instance;
-		private VisualElement _rootVisualElement;
-		private ProgressBar _loadingBar;
 		[Header("Elements"), SerializeField] private string _rootElement;
 		[SerializeField] private string _loadingBarProgress;
 		[SerializeField] private float _appearRate;
-		public VisualElement RootVisualElement => this._rootVisualElement;
-		public ProgressBar LoadingBar => this._loadingBar;
-		public float ApearRate => this._appearRate;
+		internal VisualElement RootVisualElement { get; private set; }
+		internal ProgressBar LoadingBar { get; private set; }
+		internal float ApearRate { get; private set; }
 		private void Awake()
 		{
 			if (_instance)
@@ -23,8 +21,8 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this._rootVisualElement = root.Q<VisualElement>(this._rootElement);
-			this._loadingBar = root.Q<ProgressBar>(this._loadingBarProgress);
+			this.RootVisualElement = root.Q<VisualElement>(this._rootElement);
+			this.LoadingBar = root.Q<ProgressBar>(this._loadingBarProgress);
 		}
 	};
 };
