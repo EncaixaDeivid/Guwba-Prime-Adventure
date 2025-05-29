@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
 		}
-		private Action<InputAction.CallbackContext> HideHudAction => (InputAction.CallbackContext hideHudAction) => this.OpenCloseConfigurations();
+		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
 		{
 			if (this._configurationHud)
@@ -73,14 +73,14 @@ namespace GuwbaPrimeAdventure.Hud
 				this._configurationHud.Close.clicked += this.CloseConfigurations;
 				this._configurationHud.OutLevel.clicked += this.OutLevel;
 				this._configurationHud.SaveGame.clicked += this.SaveGame;
-				this._configurationHud.Volumes1.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
-				this._configurationHud.Volumes1.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
-				this._configurationHud.Volumes2.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
-				this._configurationHud.Volumes2.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
-				this._configurationHud.Toggles1.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
-				this._configurationHud.Toggles1.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-				this._configurationHud.Toggles2.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-				this._configurationHud.Toggles2.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
+				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
+				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
+				this._configurationHud.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
+				this._configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
+				this._configurationHud.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
+				this._configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
+				this._configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
+				this._configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
 				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
 				this._configurationHud.Yes.clicked += this.YesBackLevel;
 				this._configurationHud.No.clicked += this.NoBackLevel;
@@ -91,14 +91,14 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Close.clicked -= this.CloseConfigurations;
 			this._configurationHud.OutLevel.clicked -= this.OutLevel;
 			this._configurationHud.SaveGame.clicked -= this.SaveGame;
-			this._configurationHud.Volumes1.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
-			this._configurationHud.Volumes1.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
-			this._configurationHud.Volumes2.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
-			this._configurationHud.Volumes2.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
-			this._configurationHud.Toggles1.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
-			this._configurationHud.Toggles1.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-			this._configurationHud.Toggles2.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-			this._configurationHud.Toggles2.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
+			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
+			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
+			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
+			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
+			this._configurationHud.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
+			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
+			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
+			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
 			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
 			this._configurationHud.Yes.clicked -= this.YesBackLevel;
 			this._configurationHud.No.clicked -= this.NoBackLevel;
@@ -112,55 +112,55 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
-		private EventCallback<ChangeEvent<float>> GeneralVolume => (ChangeEvent<float> value) =>
+		private EventCallback<ChangeEvent<float>> GeneralVolume => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.generalVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> EffectsVolume => (ChangeEvent<float> value) =>
+		private EventCallback<ChangeEvent<float>> EffectsVolume => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.effectsVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> MusicVolume => (ChangeEvent<float> value) =>
+		private EventCallback<ChangeEvent<float>> MusicVolume => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.musicVolume = (ushort)value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> DialogSpeed => (ChangeEvent<float> value) =>
+		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.dialogSpeed = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> FullScreen => (ChangeEvent<bool> value) =>
+		private EventCallback<ChangeEvent<bool>> FullScreen => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.fullScreen = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => (ChangeEvent<bool> value) =>
+		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.generalVolumeToggle = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => (ChangeEvent<bool> value) =>
+		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.effectsVolumeToggle = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => (ChangeEvent<bool> value) =>
+		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.musicVolumeToggle = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> DialogToggle => (ChangeEvent<bool> value) =>
+		private EventCallback<ChangeEvent<bool>> DialogToggle => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			settings.dialogToggle = value.newValue;
