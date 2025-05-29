@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure
 		[SerializeField] private float _appearRate;
 		internal VisualElement RootVisualElement { get; private set; }
 		internal ProgressBar LoadingBar { get; private set; }
-		internal float ApearRate { get; private set; }
+		internal float ApearRate => this._appearRate;
 		private void Awake()
 		{
 			if (_instance)
