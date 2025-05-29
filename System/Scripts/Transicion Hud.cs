@@ -8,10 +8,8 @@ namespace GuwbaPrimeAdventure
 		private static TransicionHud _instance;
 		[Header("Elements"), SerializeField] private string _rootElement;
 		[SerializeField] private string _loadingBarProgress;
-		[SerializeField] private float _appearRate;
 		internal VisualElement RootVisualElement { get; private set; }
 		internal ProgressBar LoadingBar { get; private set; }
-		internal float ApearRate => this._appearRate;
 		private void Awake()
 		{
 			if (_instance)
