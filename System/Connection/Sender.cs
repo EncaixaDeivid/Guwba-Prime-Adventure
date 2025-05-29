@@ -70,7 +70,7 @@ namespace GuwbaPrimeAdventure.Connection
 				if (connector == this._connectionToIgnore || connector.PathConnection != this._toWhereConnection)
 					continue;
 				connector.Receive(dataConnection, this.additionalData);
-			};
+			}
 		}
 	};
 };
