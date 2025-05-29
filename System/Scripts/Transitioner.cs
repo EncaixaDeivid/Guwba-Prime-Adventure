@@ -40,12 +40,12 @@ namespace GuwbaPrimeAdventure
 					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
 						if (newSceneName.Contains($"{i}"))
 							saveFile.lastLevelEntered = newSceneName;
-				asyncOperation.allowSceneActivation = true;
 				while (!asyncOperation.isDone)
 				{
 					transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
 					yield return new WaitForEndOfFrame();
 				}
+				asyncOperation.allowSceneActivation = true;
 			}
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
