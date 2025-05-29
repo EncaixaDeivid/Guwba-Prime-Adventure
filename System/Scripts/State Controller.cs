@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure
 	public abstract class StateController : MonoBehaviour
 	{
 		private static UnityAction<bool> _state;
-		private UnityAction<bool> InstanceState => (bool state) => this.enabled = state;
+		private UnityAction<bool> InstanceState => state => this.enabled = state;
 		protected void Awake() => _state += this.InstanceState;
 		protected void OnDestroy() => _state -= this.InstanceState;
 		public static void SetState(bool newState) => _state?.Invoke(newState);
