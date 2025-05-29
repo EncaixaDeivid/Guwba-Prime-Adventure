@@ -37,7 +37,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._followLight.enabled = false;
 				this.StopCoroutine(this.FollowLight());
 			}
-			for (float i = 0f; i <= 1f; i += 0.1f)
+			for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => this.enabled);
@@ -58,7 +58,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._followLight.enabled = true;
 				this.StartCoroutine(this.FollowLight());
 			}
-			for (float i = 1f; i >= 0f; i -= 0.1f)
+			for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => this.enabled);
