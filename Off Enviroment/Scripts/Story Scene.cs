@@ -19,10 +19,10 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		private IEnumerator FadeImage(bool appear)
 		{
 			if (appear)
-				for (float i = 0f; i <= 1f; i += 0.1f)
+				for (float i = 0f; this._storySceneHud.SceneImage.style.opacity.value < 1f; i += 0.1f)
 					yield return this._storySceneHud.SceneImage.style.opacity = i;
 			else
-				for (float i = 1f; i >= 0f; i -= 0.1f)
+				for (float i = 1f; this._storySceneHud.SceneImage.style.opacity.value > 0f; i -= 0.1f)
 					yield return this._storySceneHud.SceneImage.style.opacity = i;
 		}
 		internal void ShowScene()
