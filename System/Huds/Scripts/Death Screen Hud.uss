@@ -22,7 +22,7 @@
 	margin-top: 60px;
 	background-color: rgb(255, 160, 0);
 	border-width : 0px;
-	border-radius : 50px;
+	border-radius : 25px;
 	border-color : rgb(255, 160, 0);
 }
 #GameOver{
@@ -30,5 +30,5 @@
 }
 #Continue:hover, #OutLevel:hover, #GameOver:hover{
 	background-color : rgb(255, 255, 0);
-	border-width : 20px;
+	border-width : 5px;
 }
