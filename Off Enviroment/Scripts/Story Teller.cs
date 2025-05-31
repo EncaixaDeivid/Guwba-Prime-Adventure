@@ -4,7 +4,7 @@ using System.Collections;
 namespace GuwbaPrimeAdventure.OffEnviroment
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
-	internal sealed class StoryScene : MonoBehaviour
+	internal sealed class StoryTeller : MonoBehaviour
 	{
 		private StorySceneHud _storySceneHud;
 		private ushort _imageIndex = 0;
