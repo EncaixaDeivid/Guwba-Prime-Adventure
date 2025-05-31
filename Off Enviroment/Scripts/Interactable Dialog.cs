@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 	internal sealed class InteractableDialog : MonoBehaviour, IInteractable
     {
 		private DialogHud _dialogHud;
-		private StoryScene _storyScene;
+		private StoryTeller _storyTeller;
 		private Animator _animator;
 		private Dialog _dialogTalk;
 		private string _text = "";
@@ -25,7 +25,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 			{
 				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
-				this._storyScene = this.GetComponent<StoryScene>();
+				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
 				this._dialogTalk = this._dialogObject[this._dialogObjectIndex].Dialogs[this._dialogIndex];
@@ -35,8 +35,8 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 				this._dialogTime = settings.dialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this.StartCoroutine(this.TextDigitation());
-				if (this._storyScene)
-					this._storyScene.ShowScene();
+				if (this._storyTeller)
+					this._storyTeller.ShowScene();
 			}
 		}
 		private IEnumerator TextDigitation()
@@ -49,7 +49,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 			if (this._nextSlide)
 			{
 				this._nextSlide = false;
-				yield return this._storyScene.NextSlide();
+				yield return this._storyTeller.NextSlide();
 				this._dialogHud.RootElement.style.display = DisplayStyle.Flex;
 			}
 			foreach (char letter in this._text.ToCharArray())
@@ -83,7 +83,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 				this._dialogTime = settings.dialogSpeed;
 				if (this._speachIndex < this._dialogTalk.Speachs.Length - 1f)
 				{
-					if (this._storyScene && this._dialogTalk.Speachs[this._speachIndex].NextSlide)
+					if (this._storyTeller && this._dialogTalk.Speachs[this._speachIndex].NextSlide)
 					{
 						this._nextSlide = true;
 						this._dialogHud.RootElement.style.display = DisplayStyle.None;
@@ -101,8 +101,8 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 					this._dialogHud.AdvanceSpeach.clicked -= this.AdvanceSpeach;
 					Destroy(this._dialogHud.gameObject);
 					StateController.SetState(true);
-					if (this._storyScene)
-						this._storyScene.CloseScene();
+					if (this._storyTeller)
+						this._storyTeller.CloseScene();
 					this.WorldInteraction();
 				}
 			}
