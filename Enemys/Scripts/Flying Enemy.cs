@@ -56,7 +56,20 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (GuwbaAstral<VisualGuwba>.EqualObject(collider.gameObject))
 					{
 						targetPoint = collider.transform.position;
-						followTarget = !Physics2D.Linecast(this.transform.position, targetPoint, this._groundLayer);
+						Vector2 topRight = new(this._collider.bounds.extents.x, this._collider.bounds.extents.y);
+						Vector2 topLeft = new(-this._collider.bounds.extents.x, this._collider.bounds.extents.y);
+						Vector2 bottomRight = new(this._collider.bounds.extents.x, -this._collider.bounds.extents.y);
+						Vector2 bottomLeft = new(-this._collider.bounds.extents.x, -this._collider.bounds.extents.y);
+						Vector2 topRighPosition = (Vector2)this.transform.position + topRight;
+						Vector2 topLeftPosition = (Vector2)this.transform.position + topLeft;
+						Vector2 bottomRightPosition = (Vector2)this.transform.position + bottomRight;
+						Vector2 bottomLeftPosition = (Vector2)this.transform.position + bottomLeft;
+						bool topRightCorner = Physics2D.Linecast(topRighPosition, targetPoint + topRight, this._groundLayer);
+						bool topLeftCorner = Physics2D.Linecast(topLeftPosition, targetPoint + topLeft, this._groundLayer);
+						bool bottomRightCorner = Physics2D.Linecast(bottomRightPosition, targetPoint + bottomRight, this._groundLayer);
+						bool bottomLeftCorner = Physics2D.Linecast(bottomLeftPosition, targetPoint + bottomLeft, this._groundLayer);
+						bool center = Physics2D.Linecast(this.transform.position, targetPoint, this._groundLayer);
+						followTarget = !center && !topRightCorner && !topLeftCorner && !bottomRightCorner && !bottomLeftCorner;
 						if (followTarget)
 							this._spriteRenderer.flipX = collider.transform.position.x < this.transform.position.x;
 						break;
