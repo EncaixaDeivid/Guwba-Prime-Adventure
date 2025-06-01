@@ -12,12 +12,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Tilemap _tilemap;
 		private Collider2D[] _colliders;
 		private Light2DBase _selfLight;
-		[SerializeField] private Light2DBase _followLight;
-		[SerializeField] private bool _isReceptor;
-		[SerializeField] private bool _fadeActivation;
-		[SerializeField] private bool _hasColliders;
-		[SerializeField] private bool _hasFollowLight;
-		[SerializeField] private float _timeToFadeAppearAgain;
+		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
+		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
+		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
+		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _hasColliders;
+		[SerializeField, Tooltip("If theres a follow light.")] private bool _hasFollowLight;
+		[SerializeField, Tooltip("The amount o time to fade/appear again after the activation.")] private float _timeToFadeAppearAgain;
 		private new void Awake()
 		{
 			base.Awake();
