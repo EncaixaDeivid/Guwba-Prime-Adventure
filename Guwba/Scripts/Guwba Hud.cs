@@ -6,13 +6,13 @@ namespace GuwbaPrimeAdventure.Guwba
 	internal sealed class GuwbaHud : MonoBehaviour
 	{
 		private static GuwbaHud _instance;
-		[SerializeField] private string _rootElementObject;
-		[SerializeField] private string _vitalityVisual;
-		[SerializeField] private string _vitalityPieceVisual;
-		[SerializeField] private string _lifeTextObject;
-		[SerializeField] private string _coinTextObject;
-		[SerializeField] private ushort _totalWidth;
-		[SerializeField] private ushort _vitality;
+		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
+		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
+		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
+		[SerializeField, Tooltip("The total widht of Guwba's vitality bar.")] private ushort _totalWidth;
+		[SerializeField, Tooltip("The total of vitality that Guwba have.")] private ushort _vitality;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement[] VitalityVisual { get; private set; }
 		internal Label LifeText { get; private set; }
