@@ -5,12 +5,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
 	{
-		[SerializeField] private GameObject _hiddenObject;
-		[SerializeField] private short _vitality;
-		[SerializeField] private short _biggerDamage;
-		[SerializeField] private bool _destroyOnCollision;
-		[SerializeField] private bool _saveObject;
-		[SerializeField] private bool _saveOnDestruction;
+		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
+		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
+		[SerializeField, Tooltip("The amount of damage that this have to receive real damage.")] private short _biggerDamage;
+		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
+		[SerializeField, Tooltip("If this object have been destructed before it will always be destructed")] private bool _saveObject;
+		[SerializeField, Tooltip("If this object will saved on destruction or not.")] private bool _saveOnDestruction;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
