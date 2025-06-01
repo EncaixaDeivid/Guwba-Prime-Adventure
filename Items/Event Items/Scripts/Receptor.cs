@@ -16,8 +16,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField] private string[] _specificsObjects;
 		[SerializeField] private bool _1X1;
 		[SerializeField] private bool _intercalateEvents;
+		[SerializeField] private bool _multiplesNeeded;
 		[SerializeField] private bool _oneNeeded;
 		[SerializeField] private bool _oneActivation;
+		[SerializeField] private ushort _quantityNeeded;
 		[SerializeField] private float _timeToActivate;
 		private new void Awake()
 		{
@@ -57,6 +59,17 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 						this.Activate();
 						return;
 					}
+			}
+			else if (this._multiplesNeeded)
+			{
+				foreach (Activator activator in this._activators)
+					if (activator == signalActivator)
+						this._signals += 1;
+				if (this._signals >= this._quantityNeeded)
+				{
+					this._signals = 0;
+					this.Activate();
+				}
 			}
 			else if (this._oneNeeded)
 			{
