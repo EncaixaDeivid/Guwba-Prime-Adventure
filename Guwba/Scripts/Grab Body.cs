@@ -8,8 +8,11 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private Rigidbody2D _rigidbody;
 		private Collider2D[] _colliders;
+		private Transform _parent;
+		private LayerMask[,] _layerMasks;
 		private Vector2 _guardVelocity = new();
-		private (Transform _parent, int _layer, bool[] _isTrigger, LayerMask[,] _layerMasks) _backDrop;
+		private bool[] _isTrigger;
+		private int _layer;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
 		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
@@ -56,13 +59,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (isDamageable || collisionObject.TryGetComponent<Surface>(out _))
 				{
 					this._isThrew = false;
-					this.gameObject.layer = this._backDrop._layer;
+					this.gameObject.layer = this._layer;
 					for (ushort i = 0; i < this._colliders.Length; i++)
 					{
-						this._colliders[i].includeLayers = this._backDrop._layerMasks[0, i];
-						this._colliders[i].excludeLayers = this._backDrop._layerMasks[1, i];
-						this._colliders[i].contactCaptureLayers = this._backDrop._layerMasks[2, i];
-						this._colliders[i].callbackLayers = this._backDrop._layerMasks[3, i];
+						this._colliders[i].includeLayers = this._layerMasks[0, i];
+						this._colliders[i].excludeLayers = this._layerMasks[1, i];
+						this._colliders[i].contactCaptureLayers = this._layerMasks[2, i];
+						this._colliders[i].callbackLayers = this._layerMasks[3, i];
 					}
 					if (!this._isIndestructible && this._hitsToDestruct-- <= 0f)
 						Destroy(this.gameObject);
@@ -73,8 +76,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerEnter2D(Collider2D other) => this.OnCollision(other.gameObject);
 		internal void Stop(ushort objectLayer)
 		{
-			this._backDrop._parent = this.transform.parent;
-			this._backDrop._layer = this.gameObject.layer;
+			this._parent = this.transform.parent;
+			this._layer = this.gameObject.layer;
 			this.GetComponent<IGrabtable>()?.Paralyze(true);
 			this._rigidbody.bodyType = RigidbodyType2D.Kinematic;
 			this._gravityScale = this._rigidbody.gravityScale;
@@ -82,15 +85,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.transform.parent = null;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
-			this._backDrop._isTrigger = new bool[this._colliders.Length];
-			this._backDrop._layerMasks = new LayerMask[4, this._colliders.Length];
+			this._isTrigger = new bool[this._colliders.Length];
+			this._layerMasks = new LayerMask[4, this._colliders.Length];
 			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
-				this._backDrop._isTrigger[i] = this._colliders[i].isTrigger;
-				this._backDrop._layerMasks[0, i] = this._colliders[i].includeLayers;
-				this._backDrop._layerMasks[1, i] = this._colliders[i].excludeLayers;
-				this._backDrop._layerMasks[2, i] = this._colliders[i].contactCaptureLayers;
-				this._backDrop._layerMasks[3, i] = this._colliders[i].callbackLayers;
+				this._isTrigger[i] = this._colliders[i].isTrigger;
+				this._layerMasks[0, i] = this._colliders[i].includeLayers;
+				this._layerMasks[1, i] = this._colliders[i].excludeLayers;
+				this._layerMasks[2, i] = this._colliders[i].contactCaptureLayers;
+				this._layerMasks[3, i] = this._colliders[i].callbackLayers;
 				this._colliders[i].isTrigger = true;
 				this._colliders[i].includeLayers = this._hitLayers;
 				this._colliders[i].excludeLayers = this._noHitLayers;
@@ -105,7 +108,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.gravityScale = this._throwGravity;
 			this._isThrew = true;
 			for (ushort i = 0; i < this._colliders.Length; i++)
-				this._colliders[i].isTrigger = this._backDrop._isTrigger[i];
+				this._colliders[i].isTrigger = this._isTrigger[i];
 			this._rigidbody.AddForce(direction * this._throwSpeed, ForceMode2D.Force);
 			if (this._fadeAway)
 				Destroy(this.gameObject, this._fadeTime);
@@ -114,17 +117,17 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			this.GetComponent<IGrabtable>()?.Paralyze(false);
 			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
-			this.transform.parent = this._backDrop._parent;
+			this.transform.parent = this._parent;
 			if (this._gravityScale != 0f)
 				this._rigidbody.gravityScale = this._gravityScale;
-			this.gameObject.layer = this._backDrop._layer;
+			this.gameObject.layer = this._layer;
 			for (ushort i = 0; i < this._colliders.Length; i++)
 			{
-				this._colliders[i].isTrigger = this._backDrop._isTrigger[i];
-				this._colliders[i].includeLayers = this._backDrop._layerMasks[0, i];
-				this._colliders[i].excludeLayers = this._backDrop._layerMasks[1, i];
-				this._colliders[i].contactCaptureLayers = this._backDrop._layerMasks[2, i];
-				this._colliders[i].callbackLayers = this._backDrop._layerMasks[3, i];
+				this._colliders[i].isTrigger = this._isTrigger[i];
+				this._colliders[i].includeLayers = this._layerMasks[0, i];
+				this._colliders[i].excludeLayers = this._layerMasks[1, i];
+				this._colliders[i].contactCaptureLayers = this._layerMasks[2, i];
+				this._colliders[i].callbackLayers = this._layerMasks[3, i];
 			}
 		}
 	};
