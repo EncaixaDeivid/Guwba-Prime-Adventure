@@ -10,13 +10,13 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Collider2D _collider;
 		private ushort _index = 0;
 		private bool _active = true;
-		[SerializeField] private Vector2[] _locations;
-		[SerializeField] private bool _everyone;
-		[SerializeField] private bool _isInteractive;
-		[SerializeField] private bool _onCollision;
-		[SerializeField] private bool _useTimer;
-		[SerializeField] private bool _isReceptor;
-		[SerializeField] private float _timeToUse;
+		[SerializeField, Tooltip("The locations that Guwba can teleport to.")] private Vector2[] _locations;
+		[SerializeField, Tooltip("Everyone can use the teleporter.")] private bool _everyone;
+		[SerializeField, Tooltip("If it have to interact to teleport.")] private bool _isInteractive;
+		[SerializeField, Tooltip("If it teleports at the touch.")] private bool _onCollision;
+		[SerializeField, Tooltip("If it have to waits to teleport.")] private bool _useTimer;
+		[SerializeField, Tooltip("If it have to receive a signal to work.")] private bool _isReceptor;
+		[SerializeField, Tooltip("The amount of time it have to waits to teleport.")] private float _timeToUse;
 		private new void Awake()
 		{
 			base.Awake();
