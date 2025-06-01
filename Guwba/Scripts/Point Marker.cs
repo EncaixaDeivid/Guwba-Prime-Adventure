@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static string _lastScene = "";
 		private static bool _useCheckpoint = true;
 		private static bool _checkScene = true;
-		[SerializeField] private string _levelSelectorScene;
+		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
 		private void Start()
 		{
