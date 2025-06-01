@@ -22,9 +22,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
-		[SerializeField] private Camera _mainCamera;
-		[SerializeField] private LayerMask _groundLayerMask;
-		[SerializeField] private LayerMask _interactionLayerMask;
+		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
+		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
+		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
@@ -34,8 +34,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _hold;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
-		[SerializeField] private ushort _movementSpeed;
-		[SerializeField] private ushort _jumpStrenght;
+		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private ushort _movementSpeed;
+		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private ushort _jumpStrenght;
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
