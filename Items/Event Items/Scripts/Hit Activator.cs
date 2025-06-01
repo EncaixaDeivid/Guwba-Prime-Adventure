@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent]
 	internal sealed class HitActivator : Activator, IDamageable
 	{
-		[SerializeField] private ushort _biggerDamage;
+		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
 		public ushort Health => 0;
 		public bool Damage(ushort damage)
 		{
