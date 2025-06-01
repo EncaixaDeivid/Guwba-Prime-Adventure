@@ -7,11 +7,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private Animator _animator;
 		private bool _useOneActivation = false;
-		[SerializeField] private Receptor[] _receptors;
-		[SerializeField] private string _use;
-		[SerializeField] private string _useOne;
-		[SerializeField] private bool _oneActivation;
-		[SerializeField] private bool _saveObject;
+		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
+		[SerializeField, Tooltip("Animation parameter.")] private string _use;
+		[SerializeField, Tooltip("Animation parameter.")] private string _useOne;
+		[SerializeField, Tooltip("The activator only can be activeted one time.")] private bool _oneActivation;
+		[SerializeField, Tooltip("If this object have been activeted before it will always be activeted.")] private bool _saveObject;
 		private new void Awake()
 		{
 			base.Awake();
