@@ -12,9 +12,9 @@ namespace GuwbaPrimeAdventure.Hud
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
-		[SerializeField] private ConfigurationHud _configurationHudObject;
-		[SerializeField] private string _levelSelectorScene;
-		[SerializeField] private string _menuScene;
+		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
+		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
+		[SerializeField, Tooltip("The name of the menu scene.")] private string _menuScene;
 		public PathConnection PathConnection => PathConnection.Controller;
 		private void Awake()
 		{
