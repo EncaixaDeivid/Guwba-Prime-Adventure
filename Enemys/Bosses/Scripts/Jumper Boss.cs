@@ -7,28 +7,15 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent]
 	internal sealed class JumperBoss : BossController, IConnector
 	{
-		private bool _stopJump = false, _jumped = false, _usedHigh = false;
-		private ushort _jumpIndex = 0, _fallIndex = 0;
+		private bool _stopJump = false;
 		[Header("Jumper Boss")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
-		[SerializeField, Tooltip("The indexes of summon on jump.")] private ushort[] _summonIndexJump;
-		[SerializeField, Tooltip("The indexes of summon on fall.")] private ushort[] _summonIndexFall;
 		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
 		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
 		[SerializeField, Tooltip("Will stops the execution of a event jump.")] private bool _waitEvent;
 		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
 		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
-		[SerializeField, Tooltip("If it will execute a summon on a jump.")] private bool _summonOnJump;
-		[SerializeField, Tooltip("If it will execute a summon on a jump and a high jump.")] private bool _bothJump;
-		[SerializeField, Tooltip("If it will execute a summon on a high jump only.")] private bool _justHighJump;
-		[SerializeField, Tooltip("If it will execute a summon on a fall.")] private bool _summonOnFall;
-		[SerializeField, Tooltip("If it will execute a summon on a fall and a high fall.")] private bool _bothFall;
-		[SerializeField, Tooltip("If it will execute a summon on a high fall only.")] private bool _justHighFall;
-		[SerializeField, Tooltip("It it will randomize the index of a jump.")] private bool _randomJumpIndex;
-		[SerializeField, Tooltip("If the jumps will be executed in the sequential order.")] private bool _sequentialJumpIndex;
-		[SerializeField, Tooltip("It it will randomize the index of a fall.")] private bool _randomFallIndex;
-		[SerializeField, Tooltip("If the falls will be executed in the sequential order.")] private bool _sequentialFallIndex;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		private void HighJump(Vector2 otherTarget, bool useTarget)
@@ -37,14 +24,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.enabled);
-				this._usedHigh = true;
-				if (this._randomJumpIndex && !this._sequentialJumpIndex)
-					this._jumpIndex = (ushort)Random.Range(0, this._summonIndexJump.Length - 1);
-				if (this._summonOnJump && (this._bothJump || this._justHighJump))
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexJump[this._jumpIndex]).Send();
-				if (this._sequentialJumpIndex && !this._randomJumpIndex)
-					this._jumpIndex = (ushort)(this._jumpIndex < this._summonIndexJump.Length - 1f ? this._jumpIndex + 1f : 0f);
 				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
 					.SetBossType(BossType.Runner).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
@@ -91,14 +70,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						if (!this._stopJump)
 							if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
 							{
-								this._jumped = true;
-								if (this._randomJumpIndex && !this._sequentialJumpIndex)
-									this._jumpIndex = (ushort)Random.Range(0, this._summonIndexJump.Length - 1);
-								if (this._summonOnJump && !this._justHighJump)
-									Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-									.SetBossType(BossType.Summoner).SetIndex(this._summonIndexJump[this._jumpIndex]).Send();
-								if (this._sequentialJumpIndex && !this._randomJumpIndex)
-									this._jumpIndex = (ushort)(this._jumpIndex < this._summonIndexJump.Length - 1f ? this._jumpIndex + 1f : 0f);
 								if (this._jumpPointStructures[index].StopMove)
 								{
 									Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
@@ -112,35 +83,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 							}
 					}
 				});
-			}
-		}
-		private new void FixedUpdate()
-		{
-			if (this._jumped && this.SurfacePerception())
-			{
-				this._jumped = false;
-				if (this._summonOnFall && !this._justHighFall)
-				{
-					if (this._randomFallIndex && !this._sequentialFallIndex)
-						this._fallIndex = (ushort)Random.Range(0, this._summonIndexFall.Length - 1);
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexFall[this._fallIndex]).Send();
-					if (this._sequentialFallIndex && !this._randomFallIndex)
-						this._fallIndex = (ushort)(this._fallIndex < this._summonIndexFall.Length - 1f ? this._fallIndex + 1f : 0f);
-				}
-			}
-			if (this._usedHigh && this.SurfacePerception())
-			{
-				this._usedHigh = false;
-				if (this._summonOnFall && (this._bothFall || this._justHighFall))
-				{
-					if (this._randomFallIndex && !this._sequentialFallIndex)
-						this._fallIndex = (ushort)Random.Range(0, this._summonIndexFall.Length - 1);
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Summoner).SetIndex(this._summonIndexFall[this._fallIndex]).Send();
-					if (this._sequentialFallIndex && !this._randomFallIndex)
-						this._fallIndex = (ushort)(this._fallIndex < this._summonIndexFall.Length - 1f ? this._fallIndex + 1f : 0f);
-				}
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
