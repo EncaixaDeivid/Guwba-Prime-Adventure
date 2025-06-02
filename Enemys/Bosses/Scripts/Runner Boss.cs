@@ -14,21 +14,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Runner Boss")]
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("If it have a ray to detect the target.")] private bool _rayDetection;
-		[SerializeField, Tooltip("If the detection go to a front up direction.")] private bool _frontUpDetection;
-		[SerializeField, Tooltip("If the detection go to a back up direction.")] private bool _backUpDetection;
-		[SerializeField, Tooltip("If the dash go to turn back.")] private bool _turnOnBack;
-		[SerializeField, Tooltip("If the boss will turn back on a dash.")] private bool _turnOnDash;
 		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
 		[SerializeField, Tooltip("If the boss can climb walls.")] private bool _climbWall;
 		[SerializeField, Tooltip("If the boss will increase the speed while climbing.")] private bool _speedUpOnClimb;
-		[SerializeField, Tooltip("If the boss can dash while climbing.")] private bool _dashOnClimb;
 		[SerializeField, Tooltip("If the boss can jump while dashing.")] private bool _jumpDash;
-		[SerializeField, Tooltip("If the boss will execute a summon when blocked on a wall.")] private bool _eventOnBlock;
-		[SerializeField, Tooltip("If the boss will execute a summon when dash.")] private bool _eventOnDash;
-		[SerializeField, Tooltip("If the boss have a index on a summon.")] private bool _indexSummon;
 		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
 		[SerializeField, Tooltip("The speed of the boss while dashing.")] private ushort _dashSpeed;
-		[SerializeField, Tooltip("The index of the summon.")] private ushort _summonIndex;
 		[SerializeField, Tooltip("The distance of the rays to hit the ground.")] private float _groundDistance;
 		[SerializeField, Tooltip("The distance of the dash ray.")] private float _rayDistance;
 		[SerializeField, Tooltip("The speed of movement while climbing.")] private float _climbSpeedUp;
@@ -38,21 +29,18 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
-			Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-				.SetBossType(BossType.Jumper).SetToggle(this._jumpDash).Send();
+			Sender jumpSender = Sender.Create();
+			jumpSender.SetToWhereConnection(PathConnection.Boss);
+			jumpSender.SetConnectionState(ConnectionState.Action);
+			jumpSender.SetBossType(BossType.Jumper);
+			jumpSender.SetToggle(this._jumpDash);
+			jumpSender.Send();
 			this._animator.SetBool(this._walk, false);
 			Vector2 actualPosition = this.transform.position;
 			yield return new WaitTime(this, this._stopDashTime);
 			float dashValue = this._movementSide < 0f ? -this._movementSide : this._movementSide;
 			this._animator.SetBool(this._walk, true);
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.deltaTime + dashValue);
-			if (this._eventOnDash)
-				if (this._indexSummon)
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Summoner).SetIndex(this._summonIndex).Send();
-				else
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Jumper).SetToggle(true).Send();
 			Vector2 runnedDistance = actualPosition;
 			Vector2Int cellPosition = new((int)actualPosition.x, (int)actualPosition.y);
 			Vector2Int oldCellPosition = cellPosition;
@@ -77,8 +65,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return Vector2.Distance(actualPosition, runnedDistance) >= this._dashDistance && this.enabled;
 			});
 			this._dashIsOn = false;
-			Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-				.SetBossType(BossType.Jumper).SetToggle(true).Send();
+			jumpSender.SetToggle(true).Send();
 		}
 		private new void Awake()
 		{
@@ -116,33 +103,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 				return;
 			}
-			if ((this._eventOnDash || this._eventOnBlock) && !this._indexSummon)
-				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Jumper).SetToggle(false).Send();
-			Vector2 dashDirection = this.transform.right * this._movementSide;
-			bool frontDashValue = false;
-			bool backDashValue = false;
-			if (this._rayDetection)
+			if (this._rayDetection && !this._dashIsOn && this.transform.rotation.z == 0f)
 			{
 				Vector2 dashOrigin = this.transform.position;
-				if (this._frontUpDetection)
-					dashOrigin = new Vector2(dashOrigin.x, dashOrigin.y + this._collider.bounds.extents.y);
+				Vector2 dashDirection = this.transform.right * this._movementSide;
 				RaycastHit2D[] raycastHits = Physics2D.RaycastAll(dashOrigin, dashDirection, this._rayDistance, this._targetLayerMask);
-				frontDashValue = GuwbaAstral<CommandGuwba>.EqualObject(raycastHits);
-			}
-			if (this._rayDetection || this._turnOnBack)
-			{
-				Vector2 dashOrigin = this.transform.position;
-				if (this._backUpDetection)
-					dashOrigin = new Vector2(dashOrigin.x, dashOrigin.y + this._collider.bounds.extents.y);
-				RaycastHit2D[] raycastHits = Physics2D.RaycastAll(dashOrigin, -dashDirection, this._rayDistance, this._targetLayerMask);
-				backDashValue = GuwbaAstral<CommandGuwba>.EqualObject(raycastHits);
-			}
-			if (!this._dashIsOn && this.transform.rotation.z == 0f)
-			{
-				if (backDashValue && (this._turnOnBack || this._turnOnDash))
-					this._movementSide *= -1;
-				if (frontDashValue || backDashValue && this._turnOnDash)
+				if (GuwbaAstral<CommandGuwba>.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
 			if (this._climbWall && this.transform.rotation.z != 0f)
@@ -175,13 +141,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._rigidybody.rotation += this._movementSide * 90f;
 			else if (blockPerception)
 				this._movementSide *= -1;
-			if (this._eventOnBlock && blockPerception && !this._climbWall)
-				if (this._indexSummon)
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Summoner).SetIndex(this._summonIndex).Send();
-				else
-					Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Jumper).SetToggle(true).Send();
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (!this._dashIsOn)
 			{
