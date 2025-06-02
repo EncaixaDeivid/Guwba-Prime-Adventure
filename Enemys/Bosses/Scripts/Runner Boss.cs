@@ -11,29 +11,30 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
 		private bool _stopVelocity = false;
-		[Header("Runner Boss"), SerializeField] private Vector2 _otherTarget;
-		[SerializeField] private bool _rayDetection;
-		[SerializeField] private bool _frontUpDetection;
-		[SerializeField] private bool _backUpDetection;
-		[SerializeField] private bool _turnOnBack;
-		[SerializeField] private bool _turnOnDash;
-		[SerializeField] private bool _timedDash;
-		[SerializeField] private bool _climbWall;
-		[SerializeField] private bool _speedUpOnClimb;
-		[SerializeField] private bool _dashOnClimb;
-		[SerializeField] private bool _jumpDash;
-		[SerializeField] private bool _eventOnBlock;
-		[SerializeField] private bool _eventOnDash;
-		[SerializeField] private bool _indexSummon;
-		[SerializeField] private bool _useOtherTarget;
-		[SerializeField] private ushort _dashSpeed;
-		[SerializeField] private ushort _summonIndex;
-		[SerializeField] private float _groundDistance;
-		[SerializeField] private float _rayDistance;
-		[SerializeField] private float _climbSpeedUp;
-		[SerializeField] private float _stopDashTime;
-		[SerializeField] private float _dashDistance;
-		[SerializeField] private float _timeToDash;
+		[Header("Runner Boss")]
+		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("If it have a ray to detect the target.")] private bool _rayDetection;
+		[SerializeField, Tooltip("If the detection go to a front up direction.")] private bool _frontUpDetection;
+		[SerializeField, Tooltip("If the detection go to a back up direction.")] private bool _backUpDetection;
+		[SerializeField, Tooltip("If the dash go to turn back.")] private bool _turnOnBack;
+		[SerializeField, Tooltip("If the boss will turn back on a dash.")] private bool _turnOnDash;
+		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
+		[SerializeField, Tooltip("If the boss can climb walls.")] private bool _climbWall;
+		[SerializeField, Tooltip("If the boss will increase the speed while climbing.")] private bool _speedUpOnClimb;
+		[SerializeField, Tooltip("If the boss can dash while climbing.")] private bool _dashOnClimb;
+		[SerializeField, Tooltip("If the boss can jump while dashing.")] private bool _jumpDash;
+		[SerializeField, Tooltip("If the boss will execute a summon when blocked on a wall.")] private bool _eventOnBlock;
+		[SerializeField, Tooltip("If the boss will execute a summon when dash.")] private bool _eventOnDash;
+		[SerializeField, Tooltip("If the boss have a index on a summon.")] private bool _indexSummon;
+		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
+		[SerializeField, Tooltip("The speed of the boss while dashing.")] private ushort _dashSpeed;
+		[SerializeField, Tooltip("The index of the summon.")] private ushort _summonIndex;
+		[SerializeField, Tooltip("The distance of the rays to hit the ground.")] private float _groundDistance;
+		[SerializeField, Tooltip("The distance of the dash ray.")] private float _rayDistance;
+		[SerializeField, Tooltip("The speed of movement while climbing.")] private float _climbSpeedUp;
+		[SerializeField, Tooltip("The maount of time that before the dash start.")] private float _stopDashTime;
+		[SerializeField, Tooltip("The distance of dash will run.")] private float _dashDistance;
+		[SerializeField, Tooltip("The amount of time to wait the timed dash to go.")] private float _timeToDash;
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
@@ -158,7 +159,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					xAxis = this.transform.position.x - this._collider.bounds.extents.x;
 					yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this._movementSide;
 				}
-				bool endClimbSurface = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, this._groundDistance, this._groundLayer);
+				Vector2 origin = new(xAxis, yAxis);
+				bool endClimbSurface = !Physics2D.Raycast(origin, -this.transform.up, this._groundDistance, this._groundLayer);
 				if (endClimbSurface)
 					this._movementSide *= -1;
 			}
