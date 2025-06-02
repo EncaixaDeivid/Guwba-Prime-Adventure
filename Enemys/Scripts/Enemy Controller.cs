@@ -13,16 +13,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
 		private bool _paralyzed = false;
-		[Header("Enemy Controller"), SerializeField] protected LayerMask _groundLayer;
-		[SerializeField] protected LayerMask _targetLayerMask;
-		[SerializeField] private short _vitality;
-		[SerializeField] protected ushort _movementSpeed;
-		[SerializeField] private ushort _damage;
-		[SerializeField] protected bool _stopMovement;
-		[SerializeField] private bool _invertMovementSide;
-		[SerializeField] private bool _noDamage;
-		[SerializeField] private bool _noContactDamage;
-		[SerializeField] private bool _saveObject;
+		[Header("Enemy Controller"), SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
+		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
+		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
+		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
+		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
+		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopMovement;
+		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
+		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
+		[SerializeField, Tooltip("If this enemy do not deal damage at the contact.")] private bool _noContactDamage;
+		[SerializeField, Tooltip("If this object will be saved as already existent.")] private bool _saveObject;
 		protected bool Paralyzed => this._paralyzed;
 		public ushort Health => (ushort)this._vitality;
 		protected new void Awake()
