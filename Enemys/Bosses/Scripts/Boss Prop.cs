@@ -9,12 +9,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		protected Collider2D _collider;
 		private SaveFile _saveFile;
 		protected bool _useDestructuion = false;
-		[Header("Boss Prop"), SerializeField] protected LayerMask _groundLayer;
-		[SerializeField] protected LayerMask _targetLayerMask;
-		[SerializeField] private bool _destructBoss;
-		[SerializeField] private bool _saveOnSpecifics;
-		[SerializeField] protected bool _indexReact;
-		[SerializeField] protected ushort _indexEvent;
+		[Header("Boss Prop"), SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
+		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
+		[SerializeField, Tooltip("If this prop will destroy the mais boss after use.")] private bool _destructBoss;
+		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
+		[SerializeField, Tooltip("If this prop will make a reaction at an index.")] protected bool _indexReact;
+		[SerializeField, Tooltip("The index to a event to a boss make.")] protected ushort _indexEvent;
 		private new void Awake()
 		{
 			base.Awake();
