@@ -10,18 +10,19 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _timeStop = 0f;
 		private float _gravityScale = 0f;
 		private bool _isStopped = false;
-		[Header("Shooter Enemy"), SerializeField] private Projectile[] _projectiles;
-		[SerializeField] private float _perceptionDistance;
-		[SerializeField] private float _rayAngleDirection;
-		[SerializeField] private float _intervalToShoot;
-		[SerializeField] private float _stopTime;
-		[SerializeField] private bool _stop;
-		[SerializeField] private bool _paralyze;
-		[SerializeField] private bool _returnGravity;
-		[SerializeField] private bool _circulateDetection;
-		[SerializeField] private bool _shootInfinity;
-		[SerializeField] private bool _pureInstance;
-		[SerializeField] private bool _instanceOnSelf;
+		[Header("Shooter Enemy")]
+		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private Projectile[] _projectiles;
+		[SerializeField, Tooltip("The distance this enemy can detect the target.")] private float _perceptionDistance;
+		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
+		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
+		[SerializeField, Tooltip("The amount of time to do the time stop.")] private float _stopTime;
+		[SerializeField, Tooltip("If this enemy will stop moving.")] private bool _stop;
+		[SerializeField, Tooltip("If this enemy will paralyze moving.")] private bool _paralyze;
+		[SerializeField, Tooltip("If this enemy will return the gravity after the paralyze.")] private bool _returnGravity;
+		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circulateDetection;
+		[SerializeField, Tooltip("Will shoot to infinity without any detection.")] private bool _shootInfinity;
+		[SerializeField, Tooltip("If this enemy won't interfere in the projectile.")] private bool _pureInstance;
+		[SerializeField, Tooltip("If the projectile will be instantiate on the same point as this enemy.")] private bool _instanceOnSelf;
 		private new void Awake()
 		{
 			base.Awake();
@@ -53,13 +54,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._stopMovement || this.Paralyzed)
 				return;
 			if (this._shootInterval > 0f)
-				this._shootInterval -= Time.deltaTime;
+				this._shootInterval -= Time.fixedDeltaTime;
 			if (this._timeStop > 0f)
-				this._timeStop -= Time.deltaTime;
+				this._timeStop -= Time.fixedDeltaTime;
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
-				Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+				Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Enable)
+					.SetToggle(true).Send();
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
@@ -71,7 +73,8 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+					Sender.Create().SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Disable)
+						.SetToggle(true).Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
