@@ -9,27 +9,28 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private bool _stopJump = false, _jumped = false, _usedHigh = false;
 		private ushort _jumpIndex = 0, _fallIndex = 0;
-		[Header("Jumper Boss"), SerializeField] private JumpPointStructure[] _jumpPointStructures;
-		[SerializeField] private Vector2 _otherTarget;
-		[SerializeField] private ushort[] _summonIndexJump;
-		[SerializeField] private ushort[] _summonIndexFall;
-		[SerializeField] private ushort _followSpeed;
-		[SerializeField] private ushort _strenghtReact;
-		[SerializeField] private bool _waitEvent;
-		[SerializeField] private bool _highReact;
-		[SerializeField] private bool _stopMoveReact;
-		[SerializeField] private bool _summonOnJump;
-		[SerializeField] private bool _bothJump;
-		[SerializeField] private bool _justHighJump;
-		[SerializeField] private bool _summonOnFall;
-		[SerializeField] private bool _bothFall;
-		[SerializeField] private bool _justHighFall;
-		[SerializeField] private bool _randomJumpIndex;
-		[SerializeField] private bool _sequentialJumpIndex;
-		[SerializeField] private bool _randomFallIndex;
-		[SerializeField] private bool _sequentialFallIndex;
-		[SerializeField] private bool _useTarget;
-		[SerializeField] private bool _randomFollow;
+		[Header("Jumper Boss")]
+		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
+		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("The indexes of summon on jump.")] private ushort[] _summonIndexJump;
+		[SerializeField, Tooltip("The indexes of summon on fall.")] private ushort[] _summonIndexFall;
+		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
+		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
+		[SerializeField, Tooltip("Will stops the execution of a event jump.")] private bool _waitEvent;
+		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
+		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
+		[SerializeField, Tooltip("If it will execute a summon on a jump.")] private bool _summonOnJump;
+		[SerializeField, Tooltip("If it will execute a summon on a jump and a high jump.")] private bool _bothJump;
+		[SerializeField, Tooltip("If it will execute a summon on a high jump only.")] private bool _justHighJump;
+		[SerializeField, Tooltip("If it will execute a summon on a fall.")] private bool _summonOnFall;
+		[SerializeField, Tooltip("If it will execute a summon on a fall and a high fall.")] private bool _bothFall;
+		[SerializeField, Tooltip("If it will execute a summon on a high fall only.")] private bool _justHighFall;
+		[SerializeField, Tooltip("It it will randomize the index of a jump.")] private bool _randomJumpIndex;
+		[SerializeField, Tooltip("If the jumps will be executed in the sequential order.")] private bool _sequentialJumpIndex;
+		[SerializeField, Tooltip("It it will randomize the index of a fall.")] private bool _randomFallIndex;
+		[SerializeField, Tooltip("If the falls will be executed in the sequential order.")] private bool _sequentialFallIndex;
+		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
+		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		private void HighJump(Vector2 otherTarget, bool useTarget)
 		{
 			this.StartCoroutine(FollowTarget());
@@ -166,14 +167,14 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[System.Serializable]
 		private struct JumpPointStructure
 		{
-			[SerializeField] private JumpPoint _jumpPointObject;
-			[SerializeField] private Vector2 _point;
-			[SerializeField] private Vector2 _otherTarget;
-			[SerializeField] private Vector2Int _jumpCountMaxMin;
-			[SerializeField] private ushort _strength;
-			[SerializeField] private bool _stopMove;
-			[SerializeField] private bool _high;
-			[SerializeField] private bool _useTarget;
+			[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
+			[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
+			[SerializeField, Tooltip("To where this have to go if theres no target.")] private Vector2 _otherTarget;
+			[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
+			[SerializeField, Tooltip("The strenght of the jump.")] private ushort _strength;
+			[SerializeField, Tooltip("If in the high jumo it will stop moving.")] private bool _stopMove;
+			[SerializeField, Tooltip("If this is a high jump.")] private bool _high;
+			[SerializeField, Tooltip("If for this jump it will use the other target.")] private bool _useTarget;
 			internal readonly JumpPoint JumpPointObject => this._jumpPointObject;
 			internal readonly Vector2 Point => this._point;
 			internal readonly Vector2 OtherTarget => this._otherTarget;
