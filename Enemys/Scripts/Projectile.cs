@@ -19,7 +19,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointToReturn = 0;
 		private ushort _internalReturnPoint = 0;
 		private bool _isParalyzed = false, _breakInUse = false;
-		[Header("Projectile"), SerializeField] private Projectile _secondProjectile;
+		[Header("Projectile")]
+		[SerializeField] private Projectile _secondProjectile;
 		[SerializeField] private LayerMask _groundLayerMask;
 		[SerializeField] private ForceMode2D _forceMode;
 		[SerializeField] private bool _isInoffensive;
@@ -102,7 +103,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				xAxis += (short)this.transform.up.x;
 				yAxis += (short)this.transform.up.y;
-				this._cellPosition = new(xAxis, yAxis);
+				this._cellPosition = new Vector2Int(xAxis, yAxis);
 				this.CellInstance();
 			}
 		}
@@ -110,7 +111,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._useQuantity && this._quantityToSummon == this._projectiles.Count || this._stayInPlace || this._isParalyzed)
 				return;
-			this._cellPosition = new((int)this.transform.position.x, (int)this.transform.position.y);
+			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 			this.CellInstance();
 		}
 		private new void Awake()
