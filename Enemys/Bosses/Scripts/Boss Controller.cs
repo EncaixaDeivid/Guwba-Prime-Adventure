@@ -15,7 +15,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
 		private static bool _isDeafeted = false;
-		[Header("Boss Controller"), SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
+		[Header("Boss Controller")]
+		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
@@ -73,8 +74,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner).SetToggle(true).Send();
+				Sender sender = Sender.Create();
+				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+				sender.SetBossType(BossType.Runner).SetToggle(true).Send();
 			}
 			else if (this._rigidybody.linearVelocityY > 0f)
 			{
