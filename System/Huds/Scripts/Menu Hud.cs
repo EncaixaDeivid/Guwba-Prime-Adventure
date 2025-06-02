@@ -6,15 +6,15 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class MenuHud : MonoBehaviour
 	{
 		private static MenuHud _instance;
-		[SerializeField] private string _buttonsGroup;
-		[SerializeField] private string _savesGroup;
-		[SerializeField] private string _playButton;
-		[SerializeField] private string _configurationsButton;
-		[SerializeField] private string _quitButton;
-		[SerializeField] private string _backButton;
-		[SerializeField] private string _saveNameTextField;
-		[SerializeField] private string _loadButton;
-		[SerializeField] private string _deleteButton;
+		[SerializeField, Tooltip("User interface element.")] private string _buttonsGroup;
+		[SerializeField, Tooltip("User interface element.")] private string _savesGroup;
+		[SerializeField, Tooltip("User interface element.")] private string _playButton;
+		[SerializeField, Tooltip("User interface element.")] private string _configurationsButton;
+		[SerializeField, Tooltip("User interface element.")] private string _quitButton;
+		[SerializeField, Tooltip("User interface element.")] private string _backButton;
+		[SerializeField, Tooltip("User interface element.")] private string _saveNameTextField;
+		[SerializeField, Tooltip("User interface element.")] private string _loadButton;
+		[SerializeField, Tooltip("User interface element.")] private string _deleteButton;
 		internal GroupBox Buttons { get; private set; }
 		internal GroupBox Saves { get; private set; }
 		internal Button Play { get; private set; }
