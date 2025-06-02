@@ -7,14 +7,15 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
-		[SerializeField] private string[] _volumes, _toggles;
-		[SerializeField] private string _confirmationGroup;
-		[SerializeField] private string _outLevelButton;
-		[SerializeField] private string _yesButton;
-		[SerializeField] private string _noButton;
-		[SerializeField] private string _settingsGroup;
-		[SerializeField] private string _saveGameButton;
-		[SerializeField] private string _closeButton;
+		[SerializeField, Tooltip("User interface element.")] private string[] _volumes;
+		[SerializeField, Tooltip("User interface element.")] private string[] _toggles;
+		[SerializeField, Tooltip("User interface element.")] private string _confirmationGroup;
+		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
+		[SerializeField, Tooltip("User interface element.")] private string _yesButton;
+		[SerializeField, Tooltip("User interface element.")] private string _noButton;
+		[SerializeField, Tooltip("User interface element.")] private string _settingsGroup;
+		[SerializeField, Tooltip("User interface element.")] private string _saveGameButton;
+		[SerializeField, Tooltip("User interface element.")] private string _closeButton;
 		internal GroupBox Settings { get; private set; }
 		internal Button Close { get; private set; }
 		internal Button OutLevel { get; private set; }
