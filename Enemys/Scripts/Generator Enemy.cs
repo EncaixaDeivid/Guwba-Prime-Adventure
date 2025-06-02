@@ -11,7 +11,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _gravityScale = 0f;
 		private bool _continueGeneration = true;
 		private bool _stopGenerate = false;
-		[Header("Generator Enemy"), SerializeField, Tooltip("The object that will be summoned.")] private SummonObject _summonObject;
+		[Header("Generator Enemy")]
+		[SerializeField, Tooltip("The object that will be summoned.")] private SummonObject _summonObject;
 		[SerializeField, Tooltip("If this enemy has a limited generation.")] private bool _especifiedGeneration;
 		[SerializeField, Tooltip("If it always generate to a existence of enemies.")] private bool _existentEnemys;
 		private new void Awake()
@@ -35,7 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (this._continueGeneration)
 				if (this._timeGeneration > 0f)
-					this._timeGeneration -= Time.deltaTime;
+					this._timeGeneration -= Time.fixedDeltaTime;
 				else if (this._timeGeneration <= 0f)
 				{
 					this._timeGeneration = this._summonObject.SummonTime;
