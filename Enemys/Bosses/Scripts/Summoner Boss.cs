@@ -8,9 +8,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
-		[Header("Summoner Boss"), SerializeField] private SummonPlaces[] _summonPlaces;
-		[SerializeField] private SummonObject[] _eventSummons;
-		[SerializeField] private SummonObject[] _timedSummons;
+		[Header("Summoner Boss"), SerializeField, Tooltip("The collection of the summon places.")] private SummonPlaces[] _summonPlaces;
+		[SerializeField, Tooltip("The summons that will be activate on an event.")] private SummonObject[] _eventSummons;
+		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
 		private void Summon(SummonObject summon)
 		{
 			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
@@ -88,9 +88,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[System.Serializable]
 		private struct SummonPlaces
 		{
-			[SerializeField] private SummonPoint _summonPointObject;
-			[SerializeField] private Vector2 _point;
-			[SerializeField] private ushort _indexValue;
+			[SerializeField, Tooltip("The object to activate the summon.")] private SummonPoint _summonPointObject;
+			[SerializeField, Tooltip("The point where the summon point will be.")] private Vector2 _point;
+			[SerializeField, Tooltip("Which summon event the summon point will activate.")] private ushort _indexValue;
 			internal readonly SummonPoint SummonPointObject => this._summonPointObject;
 			internal readonly Vector2 Point => this._point;
 			internal readonly ushort IndexValue => this._indexValue;
