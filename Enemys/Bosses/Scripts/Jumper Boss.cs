@@ -24,8 +24,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.enabled);
-				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner).SetToggle(false).Send();
+				Sender sender = Sender.Create();
+				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+				sender.SetBossType(BossType.Runner).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				float randomDirection = 0f;
 				if (this._randomFollow)
@@ -72,8 +73,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 							{
 								if (this._jumpPointStructures[index].StopMove)
 								{
-									Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-									.SetBossType(BossType.Runner).SetToggle(false).Send();
+									Sender sender = Sender.Create();
+									sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+									sender.SetBossType(BossType.Runner).SetToggle(false).Send();
 									this._rigidybody.linearVelocityX = 0f;
 								}
 								this._rigidybody.AddForceY(this._jumpPointStructures[index].Strength);
@@ -96,8 +98,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				{
 					if (this._stopMoveReact)
 					{
-						Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-						.SetBossType(BossType.Runner).SetToggle(false).Send();
+						Sender sender = Sender.Create();
+						sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+						sender.SetBossType(BossType.Runner).SetToggle(false).Send();
 						this._rigidybody.linearVelocityX = 0f;
 					}
 					this._collider.isTrigger = true;
