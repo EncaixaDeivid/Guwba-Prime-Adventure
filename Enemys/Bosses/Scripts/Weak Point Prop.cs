@@ -7,7 +7,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class WeakPointProp : BossProp, IDamageable
 	{
 		private bool _blockDamage = false;
-		[Header("Weak Point"), SerializeField, Tooltip("The vitality of this prop.")] private short _vitality;
+		[Header("Weak Point")]
+		[SerializeField, Tooltip("The vitality of this prop.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
 		[SerializeField, Tooltip("The amount of time to wait after damaging the prop again.")] private float _timeToDamage;
 		public ushort Health => (ushort)this._vitality;
