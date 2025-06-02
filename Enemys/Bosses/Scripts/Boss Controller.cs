@@ -15,22 +15,22 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
 		private static bool _isDeafeted = false;
-		[Header("Boss Controller"), SerializeField] protected LayerMask _groundLayer;
-		[SerializeField] protected LayerMask _targetLayerMask;
-		[SerializeField] private float _groundSize;
+		[Header("Boss Controller"), SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
+		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
+		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _walk;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _dash;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
-		[SerializeField] protected ushort _movementSpeed;
-		[SerializeField] private ushort _damage;
-		[SerializeField] protected bool _invertMovementSide;
-		[SerializeField] protected bool _hasToggle;
-		[SerializeField] protected bool _hasIndex;
-		[SerializeField] protected bool _reactToDamage;
-		[SerializeField] private bool _haveDialog;
-		[SerializeField] private bool _isTransitioner;
+		[SerializeField, Tooltip("The amount of speed to move the boss")] protected ushort _movementSpeed;
+		[SerializeField, Tooltip("The maount of damage to hit the target.")] private ushort _damage;
+		[SerializeField, Tooltip("If the boss will move firstly to the left.")] protected bool _invertMovementSide;
+		[SerializeField, Tooltip("If this boss has a toggle atribute to switch.")] protected bool _hasToggle;
+		[SerializeField, Tooltip("If this boss has a index atribute to use.")] protected bool _hasIndex;
+		[SerializeField, Tooltip("If this boss will react to any damage taken.")] protected bool _reactToDamage;
+		[SerializeField, Tooltip("If this boss have any dialog to start after his death.")] private bool _haveDialog;
+		[SerializeField, Tooltip("If this boss will start a trancision.")] private bool _isTransitioner;
 		public PathConnection PathConnection => PathConnection.Boss;
 		protected new void Awake()
 		{
