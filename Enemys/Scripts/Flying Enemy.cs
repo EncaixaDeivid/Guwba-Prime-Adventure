@@ -9,17 +9,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Vector2 _pointOrigin = new();
 		private bool _normal = true;
 		private ushort _pointIndex = 0;
-		[Header("Flying Enemy"), SerializeField] private GameObject _target;
-		[SerializeField] private Vector2[] _trail;
-		[SerializeField] private float _radiusDetection;
-		[SerializeField] private float _speedReturn;
-		[SerializeField] private float _targetDistance;
-		[SerializeField] private float _fadeTime;
-		[SerializeField] private bool _repeatWay;
-		[SerializeField] private bool _stopOnTarget;
-		[SerializeField] private bool _endlessPursue;
-		[SerializeField] private bool _justHorizontal;
-		[SerializeField] private bool _justVertical;
+		[Header("Flying Enemy"), SerializeField, Tooltip("The target this enemy have to pursue.")] private GameObject _target;
+		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
+		[SerializeField, Tooltip("How far this enemy detect any target.")] private float _radiusDetection;
+		[SerializeField, Tooltip("The speed that this enemy moves to go back to the original point.")] private float _speedReturn;
+		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
+		[SerializeField, Tooltip("The time this enemy stay alive during the endless pursue.")] private float _fadeTime;
+		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
+		[SerializeField, Tooltip("If this enemy will stop when hit a distance from the target.")] private bool _stopOnTarget;
+		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
+		[SerializeField, Tooltip("If this enemy pursue only in the horizontal.")] private bool _justHorizontal;
+		[SerializeField, Tooltip("If this enemy pursue only in the vertical.")] private bool _justVertical;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
