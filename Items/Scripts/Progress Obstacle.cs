@@ -5,9 +5,9 @@ namespace GuwbaPrimeAdventure.Item
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class ProgressObstacle : StateController
 	{
-		[SerializeField] private ushort _progressIndex;
-		[SerializeField] private bool _isBossProgress;
-		[SerializeField] private bool _saveOnSpecifics;
+		[SerializeField, Tooltip("The index that this object will check if theres anything completed.")] private ushort _progressIndex;
+		[SerializeField, Tooltip("If the index is about the boss.")] private bool _isBossProgress;
+		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
 			base.Awake();
