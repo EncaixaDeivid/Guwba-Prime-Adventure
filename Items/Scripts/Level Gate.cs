@@ -13,10 +13,10 @@ namespace GuwbaPrimeAdventure.Item
 		private LevelGateHud _levelGateInstance;
 		private CinemachineCamera _showCamera;
 		private short _defaultPriority;
-		[SerializeField] private LevelGateHud _levelGate;
-		[SerializeField] private string _levelScene;
-		[SerializeField] private string _bossScene;
-		[SerializeField] private short _overlayPriority;
+		[SerializeField, Tooltip("The object that handles the hud of the level gate.")] private LevelGateHud _levelGate;
+		[SerializeField, Tooltip("The name of the level scene.")] private string _levelScene;
+		[SerializeField, Tooltip("The name of the boss scene.")] private string _bossScene;
+		[SerializeField, Tooltip("Where the this camera have to be in the hierarchy.")] private short _overlayPriority;
 		private new void Awake()
 		{
 			base.Awake();
