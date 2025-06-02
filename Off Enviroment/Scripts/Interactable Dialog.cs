@@ -17,8 +17,8 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
 		private bool _nextSlide = false;
-		[SerializeField] private DialogHud _dialogHudObject;
-		[SerializeField] private DialogObject[] _dialogObject;
+		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
+		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject[] _dialogObject;
 		public void Interaction()
 		{
 			if (this._dialogObject?.Length > 0f && this._dialogHudObject)
