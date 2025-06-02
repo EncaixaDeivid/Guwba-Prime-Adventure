@@ -9,7 +9,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		protected Collider2D _collider;
 		private SaveFile _saveFile;
 		protected bool _useDestructuion = false;
-		[Header("Boss Prop"), SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
+		[Header("Boss Prop")]
+		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("If this prop will destroy the mais boss after use.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
@@ -29,8 +30,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
 				this._saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
-				Sender.Create().SetFromConnection(PathConnection.Boss).SetToWhereConnection(PathConnection.Boss).SetBossType(BossType.All)
-					.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+			{
+				Sender sender = Sender.Create();
+				sender.SetFromConnection(PathConnection.Boss).SetToWhereConnection(PathConnection.Boss).SetBossType(BossType.All);
+				sender.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+			}
 		}
 	};
 };
