@@ -20,11 +20,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator StopToSummon()
 			{
 				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Boss);
-				sender.SetConnectionState(ConnectionState.Action);
-				sender.SetBossType(BossType.Runner | BossType.Jumper);
-				sender.SetToggle(false);
-				sender.Send();
+				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+				sender.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
@@ -60,8 +57,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
 			{
 				SummonPoint summonPoint = summonPlaces.SummonPointObject;
-				Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity)
-					.GetTouch(() => this.Summon(this._eventSummons[summonPlaces.IndexValue]));
+				summonPoint = Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity);
+				summonPoint.GetTouch(() => this.Summon(this._eventSummons[summonPlaces.IndexValue]));
 			}
 			foreach (SummonObject summon in this._timedSummons)
 			{
