@@ -8,7 +8,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
-		[Header("Summoner Boss"), SerializeField, Tooltip("The collection of the summon places.")] private SummonPlaces[] _summonPlaces;
+		[Header("Summoner Boss")]
+		[SerializeField, Tooltip("The collection of the summon places.")] private SummonPlaces[] _summonPlaces;
 		[SerializeField, Tooltip("The summons that will be activate on an event.")] private SummonObject[] _eventSummons;
 		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
 		private void Summon(SummonObject summon)
@@ -18,14 +19,18 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(StopToSummon());
 			IEnumerator StopToSummon()
 			{
-				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(false).Send();
+				Sender sender = Sender.Create();
+				sender.SetToWhereConnection(PathConnection.Boss);
+				sender.SetConnectionState(ConnectionState.Action);
+				sender.SetBossType(BossType.Runner | BossType.Jumper);
+				sender.SetToggle(false);
+				sender.Send();
 				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
-				Sender.Create().SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action)
-					.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(true).Send();
+				sender.SetToggle(true);
+				sender.Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
