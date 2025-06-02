@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		private ActionsGuwba _actions;
-		[SerializeField] private MenuHud _menuHudObject;
+		[SerializeField, Tooltip("The object that handles the hud of the menu.")] private MenuHud _menuHudObject;
 		private void Awake()
 		{
 			if (_instance)
