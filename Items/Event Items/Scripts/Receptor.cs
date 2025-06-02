@@ -13,12 +13,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private bool _intercalate = true;
 		private bool _onlyOneActivation = false;
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
-		[SerializeField, Tooltip("If this will receive a signal from a specific or existent object.")] private string[] _specificsObjects;
-		[SerializeField, Tooltip("If this will activate for every activator activated.")] private bool _1X1;
+		[SerializeField, Tooltip("If this will receive a signal from specifics or existent objects.")] private string[] _specificsObjects;
 		[SerializeField, Tooltip("If this will intercalate between active and desactive.")] private bool _intercalateEvents;
+		[SerializeField, Tooltip("If this will activate for every activator activated.")] private bool _1X1;
+		[SerializeField, Tooltip("If it will be inactive after one activation")] private bool _oneActivation;
 		[SerializeField, Tooltip("If are multiples activators needed to activate.")] private bool _multiplesNeeded;
 		[SerializeField, Tooltip("If is needed only one activator to activate.")] private bool _oneNeeded;
-		[SerializeField, Tooltip("If it will be inactive after one activation")] private bool _oneActivation;
 		[SerializeField, Tooltip("The quantity of multiples activators needed to activate.")] private ushort _quantityNeeded;
 		[SerializeField, Tooltip("The amount of time to wait for active after receive the signal.")] private float _timeToActivate;
 		private new void Awake()
