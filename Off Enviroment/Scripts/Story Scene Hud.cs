@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 	internal sealed class StorySceneHud : MonoBehaviour
 	{
 		private static StorySceneHud _instance;
-		[SerializeField] private string _sceneImageVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _sceneImageVisual;
 		internal VisualElement SceneImage { get; private set; }
 		private void Awake()
 		{
