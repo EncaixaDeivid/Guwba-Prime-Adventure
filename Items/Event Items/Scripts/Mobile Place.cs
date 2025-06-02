@@ -11,18 +11,19 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private bool _touchActivate = false;
 		private ushort _actualPoint = 0;
-		[Header("Mobile Place"), SerializeField, Tooltip("The points that this object have to make the trail.")] private Vector2[] _trail;
+		[Header("Mobile Place")]
+		[SerializeField, Tooltip("The points that this object have to make the trail.")] private Vector2[] _trail;
 		[SerializeField, Tooltip("The speed that this object moves.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The speed that this object moves to make the same way back.")] private ushort _speedReturn;
-		[SerializeField, Tooltip("The amount of time to wait in the end of the trail.")] private ushort _waitEndTime;
-		[SerializeField, Tooltip("The amount of time to wait after every point of the trail.")] private ushort _waitWayTime;
 		[SerializeField, Tooltip("The amount of time to wait after the activation.")] private ushort _waitStartTime;
+		[SerializeField, Tooltip("The amount of time to wait after every point of the trail.")] private ushort _waitWayTime;
+		[SerializeField, Tooltip("The amount of time to wait in the end of the trail.")] private ushort _waitEndTime;
 		[SerializeField, Tooltip("If the object will return the way it makes.")] private bool _returnWay;
+		[SerializeField, Tooltip("If it will make the trail one time or always.")] private bool _executeAlways;
+		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If it will go to one point on each activation.")] private bool _execution1X1;
 		[SerializeField, Tooltip("If it activates at the touch with other object.")] private bool _touchActivation;
-		[SerializeField, Tooltip("If it will make the trail one time or always.")] private bool _executeAlways;
 		[SerializeField, Tooltip("If it will stop when other object step out of it.")] private bool _stopOutTouch;
-		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		private new void Awake()
 		{
 			base.Awake();
