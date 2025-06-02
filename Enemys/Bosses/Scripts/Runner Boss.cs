@@ -30,11 +30,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			this._dashIsOn = true;
 			Sender jumpSender = Sender.Create();
-			jumpSender.SetToWhereConnection(PathConnection.Boss);
-			jumpSender.SetConnectionState(ConnectionState.Action);
-			jumpSender.SetBossType(BossType.Jumper);
-			jumpSender.SetToggle(this._jumpDash);
-			jumpSender.Send();
+			jumpSender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			jumpSender.SetBossType(BossType.Jumper).SetToggle(this._jumpDash).Send();
 			this._animator.SetBool(this._walk, false);
 			Vector2 actualPosition = this.transform.position;
 			yield return new WaitTime(this, this._stopDashTime);
