@@ -20,35 +20,36 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalReturnPoint = 0;
 		private bool _isParalyzed = false, _breakInUse = false;
 		[Header("Projectile")]
-		[SerializeField] private Projectile _secondProjectile;
-		[SerializeField] private LayerMask _groundLayerMask;
-		[SerializeField] private ForceMode2D _forceMode;
-		[SerializeField] private bool _isInoffensive;
-		[SerializeField] private bool _stayInPlace;
-		[SerializeField] private bool _useForce;
-		[SerializeField] private bool _sideMovement;
-		[SerializeField] private bool _invertSide;
-		[SerializeField] private bool _rotationMatter;
-		[SerializeField] private bool _useQuantity;
-		[SerializeField] private bool _inCell;
-		[SerializeField] private bool _continuosSummon;
-		[SerializeField] private bool _inDeath;
-		[SerializeField] private bool _useBreak;
-		[SerializeField] private bool _alwaysBreak;
-		[SerializeField] private bool _randomBreak;
-		[SerializeField] private bool _extrictRandom;
-		[SerializeField] private ushort _movementSpeed;
-		[SerializeField] private ushort _damage;
-		[SerializeField] private ushort _quantityToSummon;
-		[SerializeField] private ushort _jumpPoints;
-		[SerializeField] private ushort _breakPoint;
-		[SerializeField] private ushort _returnPoint;
-		[SerializeField] private ushort _minimumRandomValue;
-		[SerializeField] private float _rotationSpeed;
-		[SerializeField] private float _baseAngle;
-		[SerializeField] private float _spreadAngle;
-		[SerializeField] private float _timeToFade;
-		[SerializeField] private float _distanceRay;
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
+		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayerMask;
+		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
+		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
+		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
+		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
+		[SerializeField, Tooltip("If this projectile will move to the left side.")] private bool _invertSide;
+		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
+		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
+		[SerializeField, Tooltip("If this projectile will instantiate after its death.")] private bool _inDeath;
+		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
+		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
+		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
+		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
+		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
+		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
+		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
+		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
+		[Header("Cell Projectile")]
+		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
+		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
+		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
+		[SerializeField, Tooltip("If the instantiation of the second projectile will always break after the first.")] private bool _alwaysBreak;
+		[SerializeField, Tooltip("If the points of break are randomized between the maximum and minimum.")] private bool _randomBreak;
+		[SerializeField, Tooltip("If the break point is restricted at a specific break point.")] private bool _extrictRandom;
+		[SerializeField, Tooltip("The amount of cell points to jump the instantiation.")] private ushort _jumpPoints;
+		[SerializeField, Tooltip("The exact point where the break of the instantiantion start.")] private ushort _breakPoint;
+		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
+		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
+		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
 		private void CommonInstance()
 		{
 			for (ushort i = 0; i < this._quantityToSummon; i++)
@@ -139,7 +140,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						else
 							this._internalReturnPoint--;
 			}
-			this._cellPosition = new((int)this.transform.position.x, (int)this.transform.position.y);
+			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 			this._oldCellPosition = this._cellPosition;
 			if (this._sideMovement)
 				this.transform.rotation = Quaternion.AngleAxis(this._invertSide ? 90f : -90f, Vector3.forward);
@@ -174,7 +175,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (this._secondProjectile && this._inCell && this._continuosSummon)
 				this.CellInstanceOnce();
-			this._rigidbody.rotation += this._rotationSpeed * this._movementSpeed * Time.deltaTime;
+			this._rigidbody.rotation += this._rotationSpeed * this._movementSpeed * Time.fixedDeltaTime;
 			if (!this._stayInPlace && this._rotationMatter)
 				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
 		}
