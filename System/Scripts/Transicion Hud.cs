@@ -6,8 +6,8 @@ namespace GuwbaPrimeAdventure
 	internal sealed class TransicionHud : MonoBehaviour
 	{
 		private static TransicionHud _instance;
-		[Header("Elements"), SerializeField] private string _rootElement;
-		[SerializeField] private string _loadingBarProgress;
+		[SerializeField, Tooltip("User interface element.")] private string _rootElement;
+		[SerializeField, Tooltip("User interface element.")] private string _loadingBarProgress;
 		internal VisualElement RootVisualElement { get; private set; }
 		internal ProgressBar LoadingBar { get; private set; }
 		private void Awake()
