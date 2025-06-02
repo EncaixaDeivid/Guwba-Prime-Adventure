@@ -15,19 +15,20 @@ namespace GuwbaPrimeAdventure.Guwba
 		private int _layer;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
-		[Header("Grab Body"), SerializeField] private LayerMask _hitLayers;
-		[SerializeField] private LayerMask _noHitLayers;
-		[SerializeField] private ushort _throwSpeed;
-		[SerializeField] private ushort _throwDamage;
-		[SerializeField] private ushort _hitsToDestruct;
-		[SerializeField] private float _throwGravity;
+		[Header("Grab Body")]
+		[SerializeField, Tooltip("The layers that the object will can collide.")] private LayerMask _hitLayers;
+		[SerializeField, Tooltip("The layers that the object will cannot collide.")] private LayerMask _noHitLayers;
+		[SerializeField, Tooltip("The amount of speed that the object will be throw.")] private ushort _throwSpeed;
+		[SerializeField, Tooltip("The amount of damage that the object will give.")] private ushort _throwDamage;
+		[SerializeField, Tooltip("The quantity of hits that this object need to break.")] private ushort _hitsToDestruct;
+		[SerializeField, Tooltip("The gravity of the object at the throw.")] private float _throwGravity;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given at throw.")] private float _throwHitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given at throw.")] private float _throwHitSlowTime;
-		[SerializeField] private float _fadeTime;
-		[SerializeField] private bool _isNotGrabtable;
-		[SerializeField] private bool _isDamageable;
-		[SerializeField] private bool _isIndestructible;
-		[SerializeField] private bool _fadeAway;
+		[SerializeField, Tooltip("The amount of time that is given to the object to fade away.")] private float _fadeTime;
+		[SerializeField, Tooltip("Indicates if the object is grabtable.")] private bool _isNotGrabtable;
+		[SerializeField, Tooltip("Indicates if the object is damageable.")] private bool _isDamageable;
+		[SerializeField, Tooltip("Indicates if the object is indestructible.")] private bool _isIndestructible;
+		[SerializeField, Tooltip("Indicates if the object will fade away after the throw.")] private bool _fadeAway;
 		internal bool IsGrabtable => !this._isNotGrabtable;
 		internal bool IsDamageable => this._isDamageable;
 		private new void Awake()
