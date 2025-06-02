@@ -6,11 +6,12 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class GroundEnemy : OppositeEnemy, IConnector
 	{
 		private bool _rotate = true;
-		[Header("Ground Enemy"), SerializeField, Tooltip("The origin point to start the sensor.")] private Vector2 _sensorOriginPoint;
+		[Header("Ground Enemy")]
+		[SerializeField, Tooltip("The origin point to start the sensor.")] private Vector2 _sensorOriginPoint;
 		[SerializeField, Tooltip("The destiny point to end the sensor.")] private Vector2 _sensorDestinyPoint;
 		[SerializeField, Tooltip("If this enemy will pursue a target who steps on the ground.")] private bool _useGroundPursue;
-		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("If this enemy will increase its speed when look to a target.")] private bool _useFaceLookVerifier;
+		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
