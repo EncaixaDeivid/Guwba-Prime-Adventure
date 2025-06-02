@@ -8,9 +8,9 @@ namespace GuwbaPrimeAdventure
 	public sealed class Transitioner : MonoBehaviour
 	{
 		private bool _touchActivate = true;
-		[SerializeField] private TransicionHud _transicionHud;
-		[SerializeField] private string _sceneTransicion;
-		[SerializeField] private bool _touchTransicion;
+		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
+		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private string _sceneTransicion;
+		[SerializeField, Tooltip("If the trancision will be activated on a collision with another object.")] private bool _touchTransicion;
 		private void OnCollision(GameObject collisionObject)
 		{
 			if (collisionObject.CompareTag(this.gameObject.tag))
