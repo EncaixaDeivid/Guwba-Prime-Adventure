@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Item
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
 	internal sealed class ExtraLife : StateController, ICollectable
 	{
-		[SerializeField] private bool _saveOnSpecifics;
+		[SerializeField, Tooltip("If this object will be saved in the specifics objects.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
 			base.Awake();
