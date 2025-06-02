@@ -6,10 +6,10 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class DeathScreenHud : MonoBehaviour
 	{
 		private static DeathScreenHud _instance;
-		[SerializeField] private string _textLabel;
-		[SerializeField] private string _continueButton;
-		[SerializeField] private string _outLevelButton;
-		[SerializeField] private string _gameOverButton;
+		[SerializeField, Tooltip("User interface element.")] private string _textLabel;
+		[SerializeField, Tooltip("User interface element.")] private string _continueButton;
+		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
+		[SerializeField, Tooltip("User interface element.")] private string _gameOverButton;
 		internal Label Text { get; private set; }
 		internal Button Continue { get; private set; }
 		internal Button OutLevel { get; private set; }
