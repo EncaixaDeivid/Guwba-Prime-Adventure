@@ -6,11 +6,11 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 	internal sealed class DialogHud : MonoBehaviour
 	{
 		static private DialogHud _instance;
-		[SerializeField] private string _rootElementVisual;
-		[SerializeField] private string _characterIcon;
-		[SerializeField] private string _characterName;
-		[SerializeField] private string _characterSpeach;
-		[SerializeField] private string _advanceSpeach;
+		[SerializeField, Tooltip("User interface element.")] private string _rootElementVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _characterIcon;
+		[SerializeField, Tooltip("User interface element.")] private string _characterName;
+		[SerializeField, Tooltip("User interface element.")] private string _characterSpeach;
+		[SerializeField, Tooltip("User interface element.")] private string _advanceSpeach;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement CharacterIcon { get; private set; }
 		internal Label CharacterName { get; private set; }
