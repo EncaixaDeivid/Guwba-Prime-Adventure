@@ -11,9 +11,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _gravityScale = 0f;
 		private bool _continueGeneration = true;
 		private bool _stopGenerate = false;
-		[Header("Generator Enemy"), SerializeField] private SummonObject _summonObject;
-		[SerializeField] private bool _especifiedGeneration;
-		[SerializeField] private bool _existentEnemys;
+		[Header("Generator Enemy"), SerializeField, Tooltip("The object that will be summoned.")] private SummonObject _summonObject;
+		[SerializeField, Tooltip("If this enemy has a limited generation.")] private bool _especifiedGeneration;
+		[SerializeField, Tooltip("If it always generate to a existence of enemies.")] private bool _existentEnemys;
 		private new void Awake()
 		{
 			base.Awake();
