@@ -16,10 +16,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The distance this enemy can detect the target.")] private float _perceptionDistance;
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
-		[SerializeField, Tooltip("The amount of time to do the time stop.")] private float _stopTime;
+		[SerializeField, Tooltip("The amount of time to stop this enemy to move.")] private float _stopTime;
 		[SerializeField, Tooltip("If this enemy will become invencible while shooting.")] private bool _invencibleShoot;
 		[SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] private bool _shootDamaged;
-		[SerializeField, Tooltip("If this enemy will stop moving.")] private bool _stop;
+		[SerializeField, Tooltip("If this enemy will stop moving when shoot.")] private bool _stop;
 		[SerializeField, Tooltip("If this enemy will paralyze moving.")] private bool _paralyze;
 		[SerializeField, Tooltip("If this enemy will return the gravity after the paralyze.")] private bool _returnGravity;
 		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circulateDetection;
