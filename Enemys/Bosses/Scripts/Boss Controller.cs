@@ -100,8 +100,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			bool isValid = data.ToggleValue.HasValue && data.ToggleValue.Value;
-			if (data.FromConnection == PathConnection.Boss && data.ConnectionState == ConnectionState.Disable && isValid && !_isDeafeted)
+			BossType bossType = (BossType)additionalData;
+			if (bossType.HasFlag(BossType.Controller) && data.ConnectionState == ConnectionState.Disable && !_isDeafeted)
 			{
 				_isDeafeted = true;
 				SaveController.Load(out SaveFile saveFile);
@@ -123,6 +123,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		None,
 		All,
+		Controller,
 		Runner,
 		Jumper,
 		Summoner
