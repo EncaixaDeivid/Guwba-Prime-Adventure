@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.U2D;
 using System.Collections;
+using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Effects
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
-		private Light2DBase _globalLight;
+		private List<Light2DBase> _lightsStack;
 		private bool _canHitStop = true;
 		private new void Awake()
 		{
@@ -18,7 +19,7 @@ namespace GuwbaPrimeAdventure.Effects
 			}
 			_instance = this;
 			base.Awake();
-			this._globalLight = this.GetComponent<Light2DBase>();
+			this._lightsStack = new List<Light2DBase>() { this.GetComponent<Light2DBase>() };
 		}
 		public static void SetHitStop(float stopTime, float slowTime)
 		{
@@ -33,6 +34,23 @@ namespace GuwbaPrimeAdventure.Effects
 				Time.timeScale = 1f;
 			}
 		}
-		public static void OnOffGlobalLight(bool active) => _instance._globalLight.enabled = active;
+		public static void OnGlobalLight(ref Light2DBase globalLight)
+		{
+			if (_instance._lightsStack.Contains(globalLight))
+				return;
+			foreach (Light2DBase light in _instance._lightsStack)
+				light.enabled = false;
+			globalLight.enabled = true;
+			_instance._lightsStack.Add(globalLight);
+		}
+		public static void OffGlobalLight(ref Light2DBase globalLight)
+		{
+			if (!_instance._lightsStack.Contains(globalLight))
+				return;
+			foreach (Light2DBase light in _instance._lightsStack)
+				light.enabled = false;
+			_instance._lightsStack.Remove(globalLight);
+			_instance._lightsStack[^1].enabled = true;
+		}
 	};
 };
