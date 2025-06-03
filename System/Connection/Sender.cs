@@ -5,7 +5,6 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		private Sender()
 		{
-			this._fromConnection = PathConnection.None;
 			this._toWhereConnection = PathConnection.None;
 			this._connectionState = ConnectionState.None;
 			this.additionalData = null;
@@ -13,7 +12,6 @@ namespace GuwbaPrimeAdventure.Connection
 			this._indexValue = null;
 		}
 		private IConnector _connectionToIgnore;
-		private PathConnection _fromConnection;
 		private PathConnection _toWhereConnection;
 		private ConnectionState _connectionState;
 		private object additionalData;
@@ -41,11 +39,6 @@ namespace GuwbaPrimeAdventure.Connection
 			this.additionalData = additionalData;
 			return this;
 		}
-		public Sender SetFromConnection(PathConnection fromConnection)
-		{
-			this._fromConnection = fromConnection;
-			return this;
-		}
 		public Sender SetToWhereConnection(PathConnection toWhereConnection)
 		{
 			this._toWhereConnection = toWhereConnection;
@@ -69,7 +62,7 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public void Send()
 		{
-			DataConnection dataConnection = new(this._fromConnection, this._connectionState, this._toggleValue, this._indexValue);
+			DataConnection dataConnection = new(this._connectionState, this._toggleValue, this._indexValue);
 			foreach (IConnector connector in _connectors)
 			{
 				if (connector == this._connectionToIgnore || connector.PathConnection != this._toWhereConnection)
