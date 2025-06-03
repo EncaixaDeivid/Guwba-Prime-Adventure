@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		public static Sender SetBossType(this Sender sender, BossType bossType)
 		{
-			sender.additionalData = bossType;
+			sender.SetAdditionalData(bossType);
 			return sender;
 		}
 	};
