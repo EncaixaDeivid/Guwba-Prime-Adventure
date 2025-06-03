@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal abstract class BossProp : StateController
 	{
 		protected Collider2D _collider;
-		private SaveFile _saveFile;
 		protected bool _useDestructuion = false;
 		[Header("Boss Prop")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
@@ -16,19 +15,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		[SerializeField, Tooltip("If this prop will make a reaction at an index.")] protected bool _indexReact;
 		[SerializeField, Tooltip("The index to a event to a boss make.")] protected ushort _indexEvent;
-		private new void Awake()
+		protected new void Awake()
 		{
 			base.Awake();
 			this._collider = this.GetComponent<Collider2D>();
-			SaveController.Load(out this._saveFile);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			if (!this._useDestructuion)
 				return;
-			if (this._saveOnSpecifics && !this._saveFile.generalObjects.Contains(this.gameObject.name))
-				this._saveFile.generalObjects.Add(this.gameObject.name);
+			SaveController.Load(out SaveFile saveFile);
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
 			{
 				Sender sender = Sender.Create();
