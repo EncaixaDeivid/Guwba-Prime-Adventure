@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Hud
 					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
 				if (SaveController.FileExists())
-					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
+					for (ushort i = 1; i <= saveFile.levelsCompleted.Length; i++)
 						if (this.gameObject.scene.name.Contains($"{i}"))
 						{
 							this._configurationHud.SaveGame.style.display = DisplayStyle.None;
