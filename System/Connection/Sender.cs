@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Connection
 		private PathConnection _fromConnection;
 		private PathConnection _toWhereConnection;
 		private ConnectionState _connectionState;
-		public object additionalData;
+		private object additionalData;
 		private bool? _toggleValue;
 		private uint? _indexValue;
 		private static readonly List<IConnector> _connectors = new();
@@ -34,6 +34,11 @@ namespace GuwbaPrimeAdventure.Connection
 		public Sender SetObjectToIgnore(IConnector instanceToIgnore)
 		{
 			this._connectionToIgnore = instanceToIgnore;
+			return this;
+		}
+		public Sender SetAdditionalData(object additionalData)
+		{
+			this.additionalData = additionalData;
 			return this;
 		}
 		public Sender SetFromConnection(PathConnection fromConnection)
