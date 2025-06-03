@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Connection
 	public enum ConnectionState
 	{
 		None,
+		State,
 		Enable,
 		Disable,
 		Action
