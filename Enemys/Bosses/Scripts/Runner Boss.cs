@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent]
 	internal sealed class RunnerBoss : BossController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		private float _gravityScale = 0f;
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
@@ -29,9 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
-			Sender jumpSender = Sender.Create();
-			jumpSender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-			jumpSender.SetBossType(BossType.Jumper).SetToggle(this._jumpDash).Send();
+			this._sender.SetToggle(this._jumpDash).Send();
 			this._animator.SetBool(this._walk, false);
 			Vector2 actualPosition = this.transform.position;
 			yield return new WaitTime(this, this._stopDashTime);
@@ -62,11 +61,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return Vector2.Distance(actualPosition, runnedDistance) >= this._dashDistance && this.enabled;
 			});
 			this._dashIsOn = false;
-			jumpSender.SetToggle(true).Send();
+			this._sender.SetToggle(true).Send();
 		}
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetAdditionalData(BossType.Jumper);
 			this._gravityScale = this._rigidybody.gravityScale;
 			if (this._timedDash)
 				this.StartCoroutine(TimedDash());
