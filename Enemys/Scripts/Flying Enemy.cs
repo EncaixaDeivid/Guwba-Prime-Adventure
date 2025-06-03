@@ -126,7 +126,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (additionalData as GameObject != this.gameObject)
 				return;
 			if (data.ConnectionState == ConnectionState.State && data.ToggleValue.HasValue)
-				this._stopMovement = data.ToggleValue.Value;
+				this._stopMovement = !data.ToggleValue.Value;
 		}
 	};
 };
