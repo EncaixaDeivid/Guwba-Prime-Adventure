@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent]
 	internal sealed class SummonerBoss : BossController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
 		[Header("Summoner Boss")]
@@ -19,15 +20,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(StopToSummon());
 			IEnumerator StopToSummon()
 			{
-				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-				sender.SetBossType(BossType.Runner | BossType.Jumper).SetToggle(false).Send();
+				this._sender.SetToggle(false).Send();
 				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
-				sender.SetToggle(true);
-				sender.Send();
+				this._sender.SetToggle(true).Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
@@ -53,6 +51,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetAdditionalData(BossType.Runner | BossType.Jumper);
 			this._gravityScale = this._rigidybody.gravityScale;
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
 			{
