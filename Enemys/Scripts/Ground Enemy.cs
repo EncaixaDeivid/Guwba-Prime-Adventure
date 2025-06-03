@@ -15,6 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
+		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
 		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
@@ -64,8 +65,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				if (rayValue)
 					this._rotate = true;
-				Vector2 normalSpeed = this._movementSpeed * this.transform.right;
-				Vector2 upedSpeed = speedIncreased * this.transform.right;
+				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.fixedDeltaTime * this.transform.up;
+				Vector2 normalSpeed = this._movementSpeed * (Vector2)this.transform.right + gravity;
+				Vector2 upedSpeed = speedIncreased * (Vector2)this.transform.right + gravity;
 				this._rigidybody.linearVelocity = faceLook || groundWalk ? upedSpeed : normalSpeed;
 				return;
 			}
