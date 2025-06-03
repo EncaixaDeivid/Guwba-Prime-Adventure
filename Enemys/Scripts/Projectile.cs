@@ -38,7 +38,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
 		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
 		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
-		[Header("Cell Projectile")]
 		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
 		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
 		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
