@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class GroundEnemy : EnemyController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		private bool _rotate = true;
 		[Header("Ground Enemy")]
 		[SerializeField, Tooltip("The origin point to start the sensor.")] private Vector2 _sensorOriginPoint;
@@ -21,6 +22,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Action);
+			this._sender.SetAdditionalData(this.gameObject);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -51,6 +54,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						faceLook = true;
 						break;
 					}
+				this._sender.SetToggle(faceLook).Send();
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
@@ -85,10 +89,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
-			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this._stopMovement = false;
-			else if (data.ConnectionState == ConnectionState.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this._stopMovement = true;
+			if (data.ConnectionState == ConnectionState.State && data.ToggleValue.HasValue)
+				this._stopMovement = data.ToggleValue.Value;
 		}
 	};
 };
