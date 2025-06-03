@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class FlyingEnemy : OppositeEnemy, IConnector
+	internal sealed class FlyingEnemy : EnemyController, IConnector
 	{
 		private Vector2 _pointOrigin = new();
 		private bool _normal = true;
