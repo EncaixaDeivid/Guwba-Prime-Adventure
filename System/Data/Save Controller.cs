@@ -34,8 +34,8 @@ namespace GuwbaPrimeAdventure.Data
 				booksValue = new List<bool>(),
 				generalObjects = new List<string>(),
 				lastLevelEntered = "",
-				levelsCompleted = new bool[4],
-				deafetedBosses = new bool[4]
+				levelsCompleted = new bool[12],
+				deafetedBosses = new bool[12]
 			};
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
@@ -91,6 +91,8 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			FilesController.SaveData();
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
+			if (string.IsNullOrEmpty(actualSaveFile))
+				return;
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			SaveFile newSaveFile = new()
 			{
