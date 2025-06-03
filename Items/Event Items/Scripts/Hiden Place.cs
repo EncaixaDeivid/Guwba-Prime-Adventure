@@ -10,7 +10,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal sealed class HidenPlace : StateController, Receptor.IReceptor
 	{
 		private Tilemap _tilemap;
-		private Collider2D[] _colliders;
+		private TilemapCollider2D _collider;
 		private Light2DBase _selfLight;
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._tilemap = this.GetComponentInParent<Tilemap>();
-			this._colliders = this.GetComponentsInParent<Collider2D>(true);
+			this._collider = this.transform.parent.GetComponent<TilemapCollider2D>();
 			this._selfLight = this.GetComponent<Light2DBase>();
 		}
 		private IEnumerator Fade(bool appear)
@@ -55,8 +55,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, alpha);
 			}
 			if (this._hasColliders)
-				foreach (Collider2D collider in this._colliders)
-					collider.enabled = appear;
+				this._collider.enabled = appear;
 		}
 		public void ActivationEvent()
 		{
