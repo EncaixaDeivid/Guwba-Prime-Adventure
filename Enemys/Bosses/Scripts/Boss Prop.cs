@@ -31,8 +31,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (this._destructBoss)
 			{
 				Sender sender = Sender.Create();
-				sender.SetFromConnection(PathConnection.Boss).SetToWhereConnection(PathConnection.Boss).SetBossType(BossType.All);
-				sender.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+				sender.SetToWhereConnection(PathConnection.Boss).SetAdditionalData(BossType.Controller);
+				sender.SetConnectionState(ConnectionState.Disable).Send();
 			}
 		}
 	};
