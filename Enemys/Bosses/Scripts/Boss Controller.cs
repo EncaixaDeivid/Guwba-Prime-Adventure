@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Transitioner)), RequireComponent(typeof(IInteractable))]
 	internal abstract class BossController : StateController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
@@ -18,12 +19,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Boss Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
-		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _walk;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _dash;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
+		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("The amount of speed to move the boss.")] protected ushort _movementSpeed;
 		[SerializeField, Tooltip("The maount of damage to hit the target.")] private ushort _damage;
 		[SerializeField, Tooltip("If the boss will move firstly to the left.")] protected bool _invertMovementSide;
@@ -42,6 +43,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetAdditionalData(BossType.Runner).SetToggle(true);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -74,9 +77,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-				sender.SetBossType(BossType.Runner).SetToggle(true).Send();
+				this._sender.Send();
 			}
 			else if (this._rigidybody.linearVelocityY > 0f)
 			{
@@ -117,5 +118,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.GetComponent<Transitioner>().Transicion();
 			}
 		}
+	};
+	internal enum BossType
+	{
+		None,
+		All,
+		Runner,
+		Jumper,
+		Summoner
 	};
 };
