@@ -125,10 +125,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
-			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this._stopMovement = false;
-			else if (data.ConnectionState == ConnectionState.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this._stopMovement = true;
+			if (data.ConnectionState == ConnectionState.State && data.ToggleValue.HasValue)
+				this._stopMovement = data.ToggleValue.Value;
 		}
 	};
 };
