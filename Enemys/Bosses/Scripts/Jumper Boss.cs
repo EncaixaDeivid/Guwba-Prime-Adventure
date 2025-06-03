@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent]
 	internal sealed class JumperBoss : BossController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		private bool _stopJump = false;
 		[Header("Jumper Boss")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
@@ -24,9 +25,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.enabled);
-				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-				sender.SetBossType(BossType.Runner).SetToggle(false).Send();
+				this._sender.Send();
 				this._rigidybody.linearVelocityX = 0f;
 				float randomDirection = 0f;
 				if (this._randomFollow)
@@ -57,6 +56,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
 			{
 				JumpPoint jumpPoint = this._jumpPointStructures[i].JumpPointObject;
@@ -73,9 +74,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 							{
 								if (this._jumpPointStructures[index].StopMove)
 								{
-									Sender sender = Sender.Create();
-									sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-									sender.SetBossType(BossType.Runner).SetToggle(false).Send();
+									this._sender.Send();
 									this._rigidybody.linearVelocityX = 0f;
 								}
 								this._rigidybody.AddForceY(this._jumpPointStructures[index].Strength);
@@ -98,9 +97,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				{
 					if (this._stopMoveReact)
 					{
-						Sender sender = Sender.Create();
-						sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
-						sender.SetBossType(BossType.Runner).SetToggle(false).Send();
+						this._sender.Send();
 						this._rigidybody.linearVelocityX = 0f;
 					}
 					this._collider.isTrigger = true;
