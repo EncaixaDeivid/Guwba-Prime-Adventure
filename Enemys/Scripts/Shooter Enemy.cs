@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class ShooterEnemy : EnemyController
 	{
+		private readonly Sender _sender = Sender.Create();
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
@@ -16,6 +17,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
 		[SerializeField, Tooltip("The amount of time to do the time stop.")] private float _stopTime;
+		[SerializeField, Tooltip("If this enemy will become invencible while shooting.")] private bool _invencibleShoot;
+		[SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] private bool _shootDamaged;
 		[SerializeField, Tooltip("If this enemy will stop moving.")] private bool _stop;
 		[SerializeField, Tooltip("If this enemy will paralyze moving.")] private bool _paralyze;
 		[SerializeField, Tooltip("If this enemy will return the gravity after the paralyze.")] private bool _returnGravity;
@@ -26,10 +29,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Enemy).SetAdditionalData(this.gameObject);
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
-		private bool AimPerception()
+		private void Shoot()
 		{
+			bool hasTarget = false;
 			float originDirection = this._collider.bounds.extents.x * this._movementSide;
 			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
 			Vector2 direction = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward) * Vector2.up;
@@ -40,43 +45,24 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (collider.TryGetComponent<IDamageable>(out _))
 					{
 						this._targetDirection = collider.transform.position - this.transform.position;
-						return true;
+						hasTarget = true;
 					}
 			}
 			else
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, this._perceptionDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDamageable>(out _))
-						return true;
-			return false;
-		}
-		private void FixedUpdate()
-		{
-			if (this._stopMovement || this.Paralyzed)
-				return;
-			if (this._shootInterval > 0f)
-				this._shootInterval -= Time.fixedDeltaTime;
-			if (this._timeStop > 0f)
-				this._timeStop -= Time.fixedDeltaTime;
-			else if (this._timeStop <= 0f && this._isStopped)
-			{
-				this._isStopped = false;
-				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Enable);
-				sender.SetToggle(true).SetAdditionalData(this.gameObject).Send();
-				if (this._returnGravity)
-					this._rigidybody.gravityScale = this._gravityScale;
-			}
-			if ((this.AimPerception() || this._shootInfinity) && this._shootInterval <= 0f)
+						hasTarget = true;
+			if ((hasTarget || this._shootInfinity) && this._shootInterval <= 0f)
 			{
 				this._shootInterval = this._intervalToShoot;
+				if (this._invencibleShoot)
+					this._sender.SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
 				if (this._stop)
 				{
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					Sender sender = Sender.Create();
-					sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Disable);
-					sender.SetToggle(true).SetAdditionalData(this.gameObject).Send();
+					this._sender.SetConnectionState(ConnectionState.State).SetToggle(false).Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
@@ -95,6 +81,31 @@ namespace GuwbaPrimeAdventure.Enemy
 						Instantiate(projectile, position, rotation, this.transform);
 					}
 			}
+		}
+		private void FixedUpdate()
+		{
+			if (this._stopMovement || this.Paralyzed)
+				return;
+			if (this._shootInterval > 0f)
+				this._shootInterval -= Time.fixedDeltaTime;
+			if (this._timeStop > 0f)
+				this._timeStop -= Time.fixedDeltaTime;
+			else if (this._timeStop <= 0f && this._isStopped)
+			{
+				this._isStopped = false;
+				this._sender.SetConnectionState(ConnectionState.State).SetToggle(true).Send();
+				if (this._invencibleShoot)
+					this._sender.SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
+				if (this._returnGravity)
+					this._rigidybody.gravityScale = this._gravityScale;
+			}
+			this.Shoot();
+		}
+		public new bool Damage(ushort damage)
+		{
+			if (this._shootDamaged)
+				this.Shoot();
+			return base.Damage(damage);
 		}
 	};
 };
