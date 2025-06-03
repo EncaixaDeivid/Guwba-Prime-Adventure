@@ -63,13 +63,12 @@ namespace GuwbaPrimeAdventure.Hud
 					this._configurationHud.OutLevel.style.display = DisplayStyle.None;
 					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
-				if (SaveController.FileExists())
-					for (ushort i = 1; i <= saveFile.levelsCompleted.Length; i++)
-						if (this.gameObject.scene.name.Contains($"{i}"))
-						{
-							this._configurationHud.SaveGame.style.display = DisplayStyle.None;
-							break;
-						}
+				for (ushort i = 1; i <= 12f; i++)
+					if (this.gameObject.scene.name.Contains($"{i}"))
+					{
+						this._configurationHud.SaveGame.style.display = DisplayStyle.None;
+						break;
+					}
 				this._configurationHud.Close.clicked += this.CloseConfigurations;
 				this._configurationHud.OutLevel.clicked += this.OutLevel;
 				this._configurationHud.SaveGame.clicked += this.SaveGame;
