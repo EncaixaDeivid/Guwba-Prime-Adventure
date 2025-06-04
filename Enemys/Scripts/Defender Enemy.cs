@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						this._timeDamageable = this._timeToDamageable;
 				}
 			}
-			if (this._useAlternatedTime)
+			else if (this._useAlternatedTime)
 			{
 				if (this._timeDamageable > 0f)
 					this._timeDamageable -= Time.fixedDeltaTime;
