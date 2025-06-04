@@ -3,15 +3,13 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : EnemyController, IConnector
+	internal sealed class GroundEnemy : EnemyController, IConnector, IDamageable
 	{
 		private readonly Sender _sender = Sender.Create();
 		private bool _rotate = true;
 		[Header("Ground Enemy")]
-		[SerializeField, Tooltip("The origin point to start the sensor.")] private Vector2 _sensorOriginPoint;
-		[SerializeField, Tooltip("The destiny point to end the sensor.")] private Vector2 _sensorDestinyPoint;
-		[SerializeField, Tooltip("If this enemy will pursue a target who steps on the ground.")] private bool _useGroundPursue;
 		[SerializeField, Tooltip("If this enemy will increase its speed when look to a target.")] private bool _useFaceLookVerifier;
+		[SerializeField, Tooltip("If this enemy will become invencible while pursuing a target.")] private bool _invenciblePursue;
 		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
@@ -35,14 +33,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
-			bool groundWalk = false;
-			if (this._useGroundPursue)
-				foreach (RaycastHit2D ray in Physics2D.LinecastAll(this._sensorOriginPoint, this._sensorDestinyPoint, this._targetLayerMask))
-					if (ray.collider.TryGetComponent<IDamageable>(out _))
-					{
-						groundWalk = true;
-						break;
-					}
 			bool faceLook = false;
 			if (this._useFaceLookVerifier)
 			{
@@ -54,7 +44,8 @@ namespace GuwbaPrimeAdventure.Enemy
 						faceLook = true;
 						break;
 					}
-				this._sender.SetToggle(faceLook).Send();
+				if (this._invenciblePursue)
+					this._sender.SetToggle(faceLook).Send();
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
@@ -72,7 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.fixedDeltaTime * this.transform.up;
 				Vector2 normalSpeed = this._movementSpeed * (Vector2)this.transform.right + gravity;
 				Vector2 upedSpeed = speedIncreased * (Vector2)this.transform.right + gravity;
-				this._rigidybody.linearVelocity = faceLook || groundWalk ? upedSpeed : normalSpeed;
+				this._rigidybody.linearVelocity = faceLook ? upedSpeed : normalSpeed;
 				return;
 			}
 			Vector2 size = new(this._collider.bounds.size.x + .05f, this._collider.bounds.extents.y - .05f);
@@ -82,8 +73,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			bool endWalkableSurface = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer);
 			if (blockPerception || endWalkableSurface)
 				this._movementSide *= -1;
-			bool goStraight = faceLook || groundWalk;
-			this._rigidybody.linearVelocityX = goStraight ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
+			this._rigidybody.linearVelocityX = faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
