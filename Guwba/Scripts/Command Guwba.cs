@@ -286,7 +286,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
 				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
 				Vector2 bottomSize = new(this._wallChecker, rootHeight - .1f);
-				float angle = this.transform.rotation.eulerAngles.z;
+				float angle = this.transform.eulerAngles.z;
 				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, angle, this._groundLayerMask);
 				if (bottomCollider && !Physics2D.OverlapBox(topPosition, topSize, angle, this._groundLayerMask))
 				{
@@ -311,7 +311,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
 			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
-			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, this.transform.rotation.eulerAngles.z, this._groundLayerMask);
+			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, this.transform.eulerAngles.z, this._groundLayerMask);
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
