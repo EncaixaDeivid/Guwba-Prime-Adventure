@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _rotate = true;
 		[Header("Ground Enemy")]
 		[SerializeField, Tooltip("If this enemy will increase its speed when look to a target.")] private bool _useFaceLookVerifier;
-		[SerializeField, Tooltip("If this enemy will become invencible while pursuing a target.")] private bool _invenciblePursue;
+		[SerializeField, Tooltip("Will become invencible while pursuing a target. Requires: Defender Enemy")] private bool _invenciblePursue;
 		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
