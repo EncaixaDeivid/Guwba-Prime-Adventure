@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
+		[SerializeField, Tooltip("The size of the y axis of the blovk perception.")] private float _blockSize;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
 		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
 		public PathConnection PathConnection => PathConnection.Enemy;
@@ -49,8 +50,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
-			Vector2 size = new(this._collider.bounds.size.x + .05f, this._collider.bounds.size.y - .05f);
-			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.rotation.eulerAngles.z, this._groundLayer);
+			Vector2 point = new(this.transform.position.x + this._collider.bounds.extents.x * this._movementSide, this.transform.position.y);
+			Vector2 size = new(this._blockSize, this._collider.bounds.size.y - 0.025f);
+			bool blockPerception = Physics2D.OverlapBox(point, size, this.transform.rotation.eulerAngles.z, this._groundLayer);
 			if (blockPerception)
 				this._movementSide *= -1;
 			if (this._useCrawlMovement)
