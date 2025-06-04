@@ -40,6 +40,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guwbaHud.CoinText.text = $"X {saveFile.coins}";
 			this._vitality = (short)this._guwbaHud.Vitality;
 			_actualState += this.ManualInvencibility;
+			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
@@ -49,6 +50,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			_actualState -= this.ManualInvencibility;
 			this.StopAllCoroutines();
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
