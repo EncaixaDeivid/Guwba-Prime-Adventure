@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
@@ -19,24 +18,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				base.Awake();
 		}
 		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
-		public static void SetRotation(float axisZRotation, float speed = 0f)
-		{
-			Quaternion rotation = Quaternion.AngleAxis(axisZRotation, Vector3.forward);
-			if (speed == 0f)
-				_instance.transform.rotation = rotation;
-			else
-				_instance.StartCoroutine(TimeRotation());
-			IEnumerator TimeRotation()
-			{
-				while (_instance.transform.rotation != rotation)
-				{
-					float speedRotation = speed * Time.fixedDeltaTime;
-					_instance.transform.rotation = Quaternion.RotateTowards(_instance.transform.rotation, rotation, speedRotation);
-					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => _instance.enabled);
-				}
-			}
-		}
+		public static void SetRotation(float axisZRotation) => _instance.transform.rotation = Quaternion.AngleAxis(axisZRotation, Vector3.forward);
 		public static bool EqualObject(params GameObject[] unknowGameObjects)
 		{
 			foreach (GameObject gameObject in unknowGameObjects)
