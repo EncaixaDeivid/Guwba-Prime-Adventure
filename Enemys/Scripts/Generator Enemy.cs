@@ -34,10 +34,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._stopGenerate)
 				return;
-			if (this._continueGeneration)
-				if (this._timeGeneration > 0f)
-					this._timeGeneration -= Time.fixedDeltaTime;
-				else if (this._timeGeneration <= 0f)
+			if (this._continueGeneration && this._timeGeneration > 0f)
+			{
+				this._timeGeneration -= Time.fixedDeltaTime;
+				if (this._timeGeneration <= 0f)
 				{
 					this._timeGeneration = this._summonObject.SummonTime;
 					if (this._summonObject.StopToSummon)
@@ -67,6 +67,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[0], this.transform.rotation);
 					this._enemysGenerated.Add(summon);
 				}
+			}
 			if (this._existentEnemys && !this._especifiedGeneration)
 			{
 				this._enemysGenerated.RemoveAll(summon => !summon);
