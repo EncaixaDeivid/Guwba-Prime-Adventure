@@ -44,6 +44,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (Collider2D collider in colliders)
 					if (collider.TryGetComponent<IDamageable>(out _))
 					{
+						if (Physics2D.Linecast(this.transform.position, collider.transform.position, this._groundLayer))
+							continue;
 						this._targetDirection = collider.transform.position - this.transform.position;
 						hasTarget = true;
 					}
