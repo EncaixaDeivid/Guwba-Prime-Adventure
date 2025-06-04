@@ -26,6 +26,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
+		[SerializeField, Tooltip("Size of the collider in live.")] private Vector2 _normalSize;
+		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
@@ -43,8 +45,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
-		[SerializeField, Tooltip("Size of the collider in live.")] private float _normalSize;
-		[SerializeField, Tooltip("Size of the collider in death.")] private float _deadSize;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
 		{
@@ -119,22 +119,22 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
-		private UnityAction<bool> DeathState => isDead =>
+		private UnityAction<bool> DeathState => isAlive =>
 		{
-			if (isDead)
+			if (isAlive)
 			{
-				this.OnDisable();
-				this._animator.SetBool(this._death, isDead);
-				this._rigidbody.gravityScale = this._gravityScale;
-				this._collider.size = new Vector2(this._collider.size.x, this._deadSize);
-				this._sender.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
+				this.OnEnable();
+				this._animator.SetBool(this._death, !isAlive);
+				this._collider.size = this._normalSize;
+				this._sender.SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 			}
 			else
 			{
-				this.OnEnable();
-				this._animator.SetBool(this._death, isDead);
-				this._collider.size = new Vector2(this._collider.size.x, this._normalSize);
-				this._sender.SetConnectionState(ConnectionState.Enable).SetToggle(false).Send();
+				this.OnDisable();
+				this._animator.SetBool(this._death, !isAlive);
+				this._rigidbody.gravityScale = this._gravityScale;
+				this._collider.size = this._deadSize;
+				this._sender.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => movementAction =>
