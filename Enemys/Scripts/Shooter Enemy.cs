@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class ShooterEnemy : EnemyController
+	internal sealed class ShooterEnemy : EnemyController, IDamageable
 	{
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _targetDirection;
@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
 		[SerializeField, Tooltip("The amount of time to stop this enemy to move.")] private float _stopTime;
-		[SerializeField, Tooltip("If this enemy will become invencible while shooting.")] private bool _invencibleShoot;
+		[SerializeField, Tooltip("If this enemy will become invencible while shooting. Requires: Defender Enemy")] private bool _invencibleShoot;
 		[SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] private bool _shootDamaged;
 		[SerializeField, Tooltip("If this enemy will stop moving when shoot.")] private bool _stop;
 		[SerializeField, Tooltip("If this enemy will paralyze moving.")] private bool _paralyze;
