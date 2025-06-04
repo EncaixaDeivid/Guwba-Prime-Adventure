@@ -15,6 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
+		private readonly Sender _sender = Sender.Create();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
@@ -44,7 +45,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("Size of the collider in live.")] private float _normalSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private float _deadSize;
-		[SerializeField, Tooltip("Where to look.")] private bool _turnLeft;
+		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
 		{
 			base.Awake();
@@ -60,6 +61,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
+			this._sender.SetToWhereConnection(PathConnection.Controller);
 			_actualState += this.DeathState;
 		}
 		private new void OnDestroy()
@@ -125,16 +127,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._death, isDead);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = new Vector2(this._collider.size.x, this._deadSize);
-				Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Disable)
-				.SetToggle(true).Send();
+				this._sender.SetConnectionState(ConnectionState.Disable).SetToggle(true).Send();
 			}
 			else
 			{
 				this.OnEnable();
 				this._animator.SetBool(this._death, isDead);
 				this._collider.size = new Vector2(this._collider.size.x, this._normalSize);
-				Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Enable)
-				.SetToggle(false).Send();
+				this._sender.SetConnectionState(ConnectionState.Enable).SetToggle(false).Send();
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => movementAction =>
@@ -196,6 +196,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			else if (this._attackValue != Vector2.zero)
 			{
 				this._animator.SetBool(this._attack, true);
+				if (this._attackValue.x < 0f)
+					this._spriteRenderer.flipX = true;
+				else if (this._attackValue.x > 0f)
+					this._spriteRenderer.flipX = false;
 				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
 				GuwbaAstral<AttackGuwba>.SetRotation(angle);
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(true);
