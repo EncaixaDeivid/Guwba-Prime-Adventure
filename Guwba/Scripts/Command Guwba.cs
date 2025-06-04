@@ -217,12 +217,15 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<AttackGuwba>._grabObject = null;
 			}
 			else if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
-				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, 0f, this._interactionLayerMask))
+			{
+				float angle = this.transform.rotation.eulerAngles.z;
+				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._interactionLayerMask))
 					if (collider.TryGetComponent<IInteractable>(out var interactable))
 					{
 						interactable.Interaction();
 						return;
 					}
+			}
 		};
 		private void FixedUpdate()
 		{
@@ -233,7 +236,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, Vector2.down, rootHeight + this._groundChecker, this._groundLayerMask);
+				float distance = rootHeight + this._groundChecker;
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, distance, this._groundLayerMask);
 				downStairs = downRay;
 				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
@@ -282,8 +286,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
 				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
 				Vector2 bottomSize = new(this._wallChecker, rootHeight - .1f);
-				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, 0f, this._groundLayerMask);
-				if (bottomCollider && !Physics2D.OverlapBox(topPosition, topSize, 0f, this._groundLayerMask))
+				float angle = this.transform.rotation.eulerAngles.z;
+				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, angle, this._groundLayerMask);
+				if (bottomCollider && !Physics2D.OverlapBox(topPosition, topSize, angle, this._groundLayerMask))
 				{
 					float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
 					float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
