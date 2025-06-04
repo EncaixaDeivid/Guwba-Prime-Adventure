@@ -54,13 +54,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			for (ushort i = 0; i < this._quantityToSummon; i++)
 			{
-				Quaternion rotation = Quaternion.AngleAxis(this._baseAngle + this._spreadAngle * i, Vector3.forward);
+				Quaternion rotation;
 				if (this._useSelfRotation)
 				{
-					float selfRotation = this.transform.rotation.z * Mathf.Rad2Deg;
+					float selfRotation = this.transform.rotation.eulerAngles.z;
 					rotation = Quaternion.AngleAxis(selfRotation + this._baseAngle + this._spreadAngle * i, Vector3.forward);
 				}
-				Instantiate(this._secondProjectile, this.transform.position, rotation);
+				else
+					rotation = Quaternion.AngleAxis(this._baseAngle + this._spreadAngle * i, Vector3.forward);
+				Instantiate(this._secondProjectile, this.transform.position, rotation, this.transform);
 			}
 		}
 		private void CellInstance()
@@ -88,9 +90,9 @@ namespace GuwbaPrimeAdventure.Enemy
 						Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 						Vector2 position = new(this._cellPosition.x + .5f, this._cellPosition.y + .5f);
 						if (this._useQuantity)
-							this._projectiles.Add(Instantiate(this._secondProjectile, position, rotation));
+							this._projectiles.Add(Instantiate(this._secondProjectile, position, rotation, this.transform));
 						else
-							Instantiate(this._secondProjectile, position, rotation);
+							Instantiate(this._secondProjectile, position, rotation, this.transform);
 						this._angleMulti++;
 					}
 				}
