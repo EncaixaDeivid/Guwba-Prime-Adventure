@@ -10,6 +10,7 @@ namespace GuwbaPrimeAdventure.Hud
 	{
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
+		private readonly Sender _sender = Sender.Create();
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
 		public PathConnection PathConnection => PathConnection.Controller;
 		private void Awake()
@@ -20,6 +21,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
+			this._sender.SetToWhereConnection(PathConnection.Character).SetConnectionState(ConnectionState.Enable).SetToggle(true);
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -34,7 +36,7 @@ namespace GuwbaPrimeAdventure.Hud
 			}
 			Sender.Exclude(this);
 		}
-		private Action Continue => () => this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
+		private Action Continue => () => this._sender.Send();
 		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
 		private Action GameOver => () =>
 		{
