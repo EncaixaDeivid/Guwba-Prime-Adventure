@@ -57,7 +57,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				Quaternion rotation;
 				if (this._useSelfRotation)
 				{
-					float selfRotation = this.transform.rotation.eulerAngles.z;
+					float selfRotation = this.transform.eulerAngles.z;
 					rotation = Quaternion.AngleAxis(selfRotation + this._baseAngle + this._spreadAngle * i, Vector3.forward);
 				}
 				else
