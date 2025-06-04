@@ -26,7 +26,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
 		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
-		[SerializeField, Tooltip("If this projectile will move to the left side.")] private bool _invertSide;
+		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
 		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
 		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
 		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
