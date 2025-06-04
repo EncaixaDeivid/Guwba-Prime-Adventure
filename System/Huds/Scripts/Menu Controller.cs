@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		private ActionsGuwba _actions;
+		private readonly Sender _sender = Sender.Create();
 		[SerializeField, Tooltip("The object that handles the hud of the menu.")] private MenuHud _menuHudObject;
 		private void Awake()
 		{
@@ -42,6 +43,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[1].clicked += this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
+			this._sender.SetToWhereConnection(PathConnection.Controller);
 		}
 		private void OnDestroy()
 		{
@@ -72,10 +74,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions = new ActionsGuwba();
 			this._actions.commands.hideHud.canceled += this.HideHudAction;
 			this._actions.commands.hideHud.Enable();
-			Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
+			this._sender.SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
 		};
-		private Action OpenConfigurations => () => Sender.Create()
-			.SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+		private Action OpenConfigurations => () => this._sender.SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -84,7 +85,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
-			Sender.Create().SetToWhereConnection(PathConnection.Controller).SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
+			this._sender.SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
