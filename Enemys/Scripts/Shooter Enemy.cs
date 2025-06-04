@@ -46,7 +46,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					{
 						if (Physics2D.Linecast(this.transform.position, collider.transform.position, this._groundLayer))
 							continue;
-						this._targetDirection = collider.transform.position - this.transform.position;
+						this._targetDirection = (collider.transform.position - this.transform.position).normalized;
 						hasTarget = true;
 					}
 			}
