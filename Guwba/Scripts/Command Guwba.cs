@@ -142,9 +142,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			Vector2 movementValue = movementAction.ReadValue<Vector2>();
 			this._movementAction = movementValue.x;
 			if (movementValue.x > 0f)
-				this._movementAction = 1f + movementValue.y;
+				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
-				this._movementAction = -1f - movementValue.y;
+				this._movementAction = -1f;
 			if (movementAction.performed && this._movementAction != 0f)
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
