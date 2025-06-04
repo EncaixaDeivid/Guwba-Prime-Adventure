@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : EnemyController, IConnector, IDamageable
+	internal sealed class GroundEnemy : EnemyController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
 		private bool _rotate = true;
