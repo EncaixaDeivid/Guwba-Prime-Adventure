@@ -67,8 +67,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			}
 			Vector2 size = new(this._collider.bounds.size.x + .05f, this._collider.bounds.size.y - .05f);
-			float rotation = this.transform.rotation.z * Mathf.Rad2Deg;
-			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, rotation, this._groundLayer);
+			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.rotation.eulerAngles.z, this._groundLayer);
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
 			bool endWalkableSurface = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer);
