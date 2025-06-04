@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
+		[SerializeField, Tooltip("The distance to check for the block perception.")] private float _blockDistance;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
 		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
 		public PathConnection PathConnection => PathConnection.Enemy;
@@ -50,7 +51,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			Vector2 size = new(this._collider.bounds.size.x + .025f, this._collider.bounds.size.y - .025f);
-			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, this.transform.right, this._groundLayer);
+			float distance = this._blockDistance;
+			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, this.transform.right, distance, this._groundLayer);
 			if (blockPerception)
 				this._movementSide *= -1;
 			if (this._useCrawlMovement)
