@@ -27,12 +27,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
 			if ((this._stopMovement || this.Paralyzed) && (!this._useAlternatedTime || this._invencible))
 				return;
 			if (this._timeOperation > 0f)
-				this._timeOperation -= Time.fixedDeltaTime;
+				this._timeOperation -= Time.deltaTime;
 			else if (this._timeOperation <= 0f)
 			{
 				if (this._invencible)
@@ -40,11 +40,10 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._invencible = false;
 					this._timeOperation = this._timeToInvencible;
 				}
-				else if (this._useAlternatedTime)
+				else
 				{
 					this._invencible = true;
-					if (this._useAlternatedTime)
-						this._timeOperation = this._timeToDamageable;
+					this._timeOperation = this._timeToDamageable;
 				}
 			}
 		}
