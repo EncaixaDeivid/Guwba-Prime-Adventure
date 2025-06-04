@@ -12,14 +12,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.")] private bool _invencibleStop;
 		[SerializeField, Tooltip("If this enemy will become invencible when damaged.")] private bool _invencibleDamaged;
 		[SerializeField, Tooltip("If this enemy will use time to become invencible/damageable.")] private bool _useAlternatedTime;
-		[SerializeField, Tooltip("The amount of time the enemy will be damageable.")] private float _timeToDamageable;
-		[SerializeField, Tooltip("The amount of time the enemy will be invencible.")] private float _timeToInvencible;
+		[SerializeField, Tooltip("The amount of time the enemy have to become damageable.")] private float _timeToDamageable;
+		[SerializeField, Tooltip("The amount of time the enemy have to become invencible.")] private float _timeToInvencible;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
 			this._sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.State);
 			this._sender.SetAdditionalData(this.gameObject);
+			this._timeOperation = this._timeToInvencible;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -27,18 +28,20 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void Update()
+		private void FixedUpdate()
 		{
-			if ((this._stopMovement || this.Paralyzed) && (!this._useAlternatedTime || this._invencible))
+			if (this._stopMovement || this.Paralyzed || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
-				this._timeOperation -= Time.deltaTime;
-			else if (this._timeOperation <= 0f)
+				this._timeOperation -= Time.fixedDeltaTime;
+			if (this._timeOperation <= 0f)
 			{
 				if (this._invencible)
 				{
 					this._invencible = false;
 					this._timeOperation = this._timeToInvencible;
+					if (this._invencibleStop)
+						this._sender.SetToggle(false).Send();
 				}
 				else
 				{
@@ -66,7 +69,10 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (additionalData as GameObject != this.gameObject)
 				return;
 			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue)
-				this._invencible = data.ToggleValue.Value;
+				if (this._useAlternatedTime && data.ToggleValue.Value)
+					this._invencible = true;
+				else
+					this._invencible = data.ToggleValue.Value;
 			if (this._invencibleStop)
 				this._sender.SetToggle(!this._invencible).Send();
 		}
