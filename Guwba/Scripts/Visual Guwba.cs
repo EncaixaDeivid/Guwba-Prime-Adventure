@@ -4,10 +4,11 @@ using UnityEngine.UIElements;
 using System.Collections;
 using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
-	public sealed class VisualGuwba : GuwbaAstral<VisualGuwba>, IDamageable
+	public sealed class VisualGuwba : GuwbaAstral<VisualGuwba>, IDamageable, IConnector
 	{
 		private static VisualGuwba _instance;
 		private GuwbaHud _guwbaHud;
@@ -22,6 +23,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is taken.")] private float _hitStopSlow;
 		public ushort Health => (ushort)this._vitality;
+		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
 		{
 			base.Awake();
@@ -63,6 +65,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			this._guwbaHud.RootElement.style.display = DisplayStyle.None;
 		}
+		private UnityAction<bool> ManualInvencibility => isInvencible =>
+		{
+			if (isInvencible)
+				this.StartCoroutine(this.Invencibility());
+			else
+				this.StopCoroutine(this.Invencibility());
+		};
 		private IEnumerator Invencibility()
 		{
 			this.StartCoroutine(VisualEffect());
@@ -78,13 +87,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._invencibility = false;
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
-		private UnityAction<bool> ManualInvencibility => isInvencible =>
-		{
-			if (isInvencible)
-				this.StartCoroutine(this.Invencibility());
-			else
-				this.StopCoroutine(this.Invencibility());
-		};
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (other.TryGetComponent<ICollectable>(out var collectable))
@@ -118,7 +120,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				SaveController.WriteSave(saveFile);
 				if (_grabObject)
 					Destroy(_grabObject.gameObject);
-				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
+				GuwbaAstral<CommandGuwba>._actualState.Invoke(false);
 				this.ManualInvencibility.Invoke(false);
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
 				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
@@ -129,6 +131,24 @@ namespace GuwbaPrimeAdventure.Guwba
 			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
 			this.StartCoroutine(this.Invencibility());
 			return true;
+		}
+		public void Receive(DataConnection data, object additionalData)
+		{
+			if (data.ConnectionState == ConnectionState.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			{
+				for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > 0f; i--)
+				{
+					this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+				}
+				this._invencibility = true;
+				this._vitality = (short)this._guwbaHud.Vitality;
+				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
+				this.ManualInvencibility.Invoke(true);
+			}
 		}
 	};
 };
