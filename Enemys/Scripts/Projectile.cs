@@ -27,6 +27,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
 		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
 		[SerializeField, Tooltip("If this projectile will move to the left side.")] private bool _invertSide;
+		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
 		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
 		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
 		[SerializeField, Tooltip("If this projectile will instantiate after its death.")] private bool _inDeath;
@@ -54,6 +55,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			for (ushort i = 0; i < this._quantityToSummon; i++)
 			{
 				Quaternion rotation = Quaternion.AngleAxis(this._baseAngle + this._spreadAngle * i, Vector3.forward);
+				if (this._useSelfRotation)
+				{
+					float selfRotation = this.transform.rotation.z * Mathf.Rad2Deg;
+					rotation = Quaternion.AngleAxis(selfRotation + this._baseAngle + this._spreadAngle * i, Vector3.forward);
+				}
 				Instantiate(this._secondProjectile, this.transform.position, rotation);
 			}
 		}
