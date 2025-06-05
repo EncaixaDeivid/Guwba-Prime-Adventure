@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
-		[SerializeField, Tooltip("Animation parameter.")] private string _slowWalk;
+		[SerializeField, Tooltip("Animation parameter.")] private string _backDash;
 		[SerializeField, Tooltip("Animation parameter.")] private string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
@@ -95,7 +95,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._actions.commands.attackUse.Enable();
 			this._actions.commands.interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._slowWalk, this._movementAction);
+			this._animator.SetFloat(this._backDash, 1f);
 			this._rigidbody.gravityScale = this._gravityScale;
 			this._rigidbody.linearVelocityY = this._yMovement;
 		}
@@ -118,7 +118,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._actions.commands.interaction.Disable();
 			this._actions.Dispose();
 			this._animator.SetFloat(this._isOn, 0f);
-			this._animator.SetFloat(this._slowWalk, 0f);
+			this._animator.SetFloat(this._backDash, 0f);
 			this._movementAction = 0f;
 			this._yMovement = this._rigidbody.linearVelocityY;
 			this._rigidbody.gravityScale = 0f;
@@ -160,8 +160,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			this._animator.SetBool(this._walk, this._movementAction != 0f);
-			if (this._animator.GetBool(this._walk))
-				this._animator.SetFloat(this._slowWalk, this._movementAction < 0f ? this._movementAction * -1f : this._movementAction);
 		};
 		private Action<InputAction.CallbackContext> Jump => jumpAction =>
 		{
@@ -258,8 +256,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
 				this._animator.SetBool(this._walk, this._movementAction != 0f);
-				if (this._animator.GetBool(this._walk))
-					this._animator.SetFloat(this._slowWalk, this._movementAction < 0f ? this._movementAction * -1f : this._movementAction);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
@@ -320,12 +316,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
-				if (this._animator.GetBool(this._walk))
-					this._animator.SetFloat(this._slowWalk, this._movementAction > 0f ? this._movementAction * -1f : this._movementAction);
+				this._animator.SetFloat(this._backDash, -1f);
 				this._rigidbody.linearVelocityX = this._backDashSpeed * -this._movementAction;
 				float distance = Vector2.Distance(this._backDashLocation, this.transform.position);
 				if (distance >= this._backDashDistance || collision || this._backDashMovementValue != this._movementAction || !this._isOnGround)
+				{
+					this._animator.SetFloat(this._backDash, 1f);
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = false);
+				}
 			}
 			else
 				this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
