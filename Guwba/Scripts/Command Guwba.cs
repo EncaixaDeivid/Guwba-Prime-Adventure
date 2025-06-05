@@ -166,8 +166,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					this._animator.SetBool(this._dashSlide, this._dashValue);
 					this._collider.size = this._dashSlideSize;
-					float distanceDifference = this._normalSize.y - this._collider.size.y;
-					this._collider.offset = new Vector2(this._collider.offset.x, distanceDifference / 2f);
+					this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
 				}
 				else if (this._dashDirection < 0f)
