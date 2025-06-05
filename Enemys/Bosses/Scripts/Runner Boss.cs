@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			yield return new WaitTime(this, this._stopDashTime);
 			float dashValue = this._movementSide < 0f ? -this._movementSide : this._movementSide;
 			this._animator.SetBool(this._walk, true);
-			this._animator.SetFloat(this._dash, this._dashSpeed * Time.deltaTime + dashValue);
+			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
 			Vector2 runnedDistance = actualPosition;
 			Vector2Int cellPosition = new((int)actualPosition.x, (int)actualPosition.y);
 			Vector2Int oldCellPosition = cellPosition;
@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				float speedUp = this._climbSpeedUp * this._movementSide;
 				if (this.enabled)
-					if (this.transform.rotation.z == 0f)
+					if (this.transform.eulerAngles.z == 0f)
 						this._rigidybody.linearVelocityX = this._movementSide * this._dashSpeed;
 					else if (this._speedUpOnClimb)
 						this._rigidybody.linearVelocity = (this._movementSide + speedUp) * this._dashSpeed * this.transform.right;
@@ -74,7 +74,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator TimedDash()
 			{
 				yield return new WaitTime(this, this._timeToDash);
-				this.StartCoroutine(this.Dash());
+				yield return this.Dash();
 				this.StartCoroutine(TimedDash());
 			}
 		}
@@ -101,7 +101,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 				return;
 			}
-			if (this._rayDetection && !this._dashIsOn && this.transform.rotation.z == 0f)
+			if (this._rayDetection && !this._dashIsOn && this.transform.eulerAngles.z == 0f)
 			{
 				Vector2 dashOrigin = this.transform.position;
 				Vector2 dashDirection = this.transform.right * this._movementSide;
@@ -109,16 +109,16 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (GuwbaAstral<CommandGuwba>.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
-			if (this._climbWall && this.transform.rotation.z != 0f)
+			if (this._climbWall && this.transform.eulerAngles.z != 0f)
 			{
 				float xAxis = 0f;
 				float yAxis = 0f;
-				if (this.transform.rotation.z > 0f)
+				if (this.transform.eulerAngles.z > 0f)
 				{
 					xAxis = this.transform.position.x + this._collider.bounds.extents.x;
 					yAxis = this.transform.position.y + this._collider.bounds.extents.y * this._movementSide;
 				}
-				else if (this.transform.rotation.z < 0f)
+				else if (this.transform.eulerAngles.z < 0f)
 				{
 					xAxis = this.transform.position.x - this._collider.bounds.extents.x;
 					yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this._movementSide;
@@ -131,12 +131,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2 size = new(this._collider.bounds.size.x - this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
 			Vector2 direction = this.transform.right * this._movementSide;
 			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._groundDistance, this._groundLayer);
-			if (this.transform.rotation.z == 0f)
+			if (this.transform.eulerAngles.z == 0f)
 				this._rigidybody.gravityScale = this._gravityScale;
 			else
 				this._rigidybody.gravityScale = 0f;
 			if (this._climbWall && blockPerception && this.SurfacePerception())
-				this._rigidybody.rotation += this._movementSide * 90f;
+				this.transform.eulerAngles += new Vector3(0f, 0f, this._movementSide * 90f);
 			else if (blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
@@ -145,7 +145,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._walk, true);
 				this._animator.SetFloat(this._dash, 1f);
 				float speedUp = this._climbSpeedUp * this._movementSide;
-				if (this.transform.rotation.z == 0f)
+				if (this.transform.eulerAngles.z == 0f)
 					this._rigidybody.linearVelocityX = this._movementSide * this._movementSpeed;
 				else if (this._speedUpOnClimb)
 					this._rigidybody.linearVelocity = (this._movementSide + speedUp) * this._movementSpeed * this.transform.right;
