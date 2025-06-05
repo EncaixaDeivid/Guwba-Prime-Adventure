@@ -341,6 +341,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetBool(this._dashSlide, this._dashValue);
 						this._collider.size = this._normalSize;
 						this._collider.offset = Vector2.zero;
+						this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + this._normalSize.y / 2f);
 					}
 					else if (this._dashDirection < 0f)
 						this._animator.SetFloat(this._backDash, 1f);
