@@ -52,8 +52,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, Tooltip("The size of the dash slide collision checker.")] private float _dashSlideChecker;
-		[SerializeField, Tooltip("The offset of the dash slide checker.")] private float _dashSlideOffset;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
@@ -164,7 +162,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (this._dashDirection > 0f)
 				{
 					this._collider.size = this._dashSlideSize;
-					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._dashSlideOffset);
+					float distanceDifference = this._normalSize.y - this._collider.size.y;
+					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - distanceDifference / 2f);
 				}
 				else if (this._dashDirection < 0f)
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue);
@@ -330,8 +329,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					this._animator.SetBool(this._dashSlide, true);
 					float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovementValue;
-					Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y - this._dashSlideOffset);
-					Vector2 size = new(this._wallChecker, this._dashSlideChecker - 0.025f);
+					Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
+					Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 					collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
 					this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue;
 				}
