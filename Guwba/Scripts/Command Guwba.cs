@@ -155,13 +155,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = -1f;
 			if (this._movementAction != 0f && movementValue.y != 0f && this._isOnGround && !this._dashValue && !_grabObject)
 			{
+				this._dashValue = true;
 				this._dashLocation = this.transform.position;
 				if (movementValue.y > 0f)
 					this._dashDirection = 1f;
 				else if (movementValue.y < 0f)
 					this._dashDirection = -1f;
 				this._dashMovementValue = this._movementAction;
-				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
 				if (this._dashDirection > 0f)
 				{
 					this._animator.SetBool(this._dashSlide, this._dashValue);
@@ -170,7 +170,10 @@ namespace GuwbaPrimeAdventure.Guwba
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
 				}
 				else if (this._dashDirection < 0f)
+				{
 					this._animator.SetFloat(this._backDash, -1f);
+					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue);
+				}
 			}
 			if (movementAction.performed && this._movementAction != 0f)
 				this._spriteRenderer.flipX = this._movementAction < 0f;
@@ -335,7 +338,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				bool valid = Vector2.Distance(this._dashLocation, this.transform.position) >= this._dashDistance;
 				if (valid || _grabObject || collision || this._dashMovementValue != this._movementAction || !this._isOnGround)
 				{
-					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
+					this._dashValue = false;
 					if (this._dashDirection > 0f)
 					{
 						this._animator.SetBool(this._dashSlide, this._dashValue);
@@ -345,7 +348,10 @@ namespace GuwbaPrimeAdventure.Guwba
 							this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + this._normalSize.y / 2f);
 					}
 					else if (this._dashDirection < 0f)
+					{
 						this._animator.SetFloat(this._backDash, 1f);
+						GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue);
+					}
 				}
 			}
 			else
