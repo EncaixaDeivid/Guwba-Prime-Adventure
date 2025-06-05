@@ -73,7 +73,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (isInvencible)
 				this.StartCoroutine(this.Invencibility());
 			else
+			{
 				this.StopCoroutine(this.Invencibility());
+				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+			}
 		};
 		private IEnumerator Invencibility()
 		{
