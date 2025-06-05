@@ -95,7 +95,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._actions.commands.attackUse.Enable();
 			this._actions.commands.interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._backDash, 1f);
+			this._animator.SetFloat(this._backDash, this._backDashValue ? -1f : 1f);
 			this._rigidbody.gravityScale = this._gravityScale;
 			this._rigidbody.linearVelocityY = this._yMovement;
 		}
