@@ -69,6 +69,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private UnityAction<bool> ManualInvencibility => isInvencible =>
 		{
+			this._invencibility = isInvencible;
 			if (isInvencible)
 				this.StartCoroutine(this.Invencibility());
 			else
