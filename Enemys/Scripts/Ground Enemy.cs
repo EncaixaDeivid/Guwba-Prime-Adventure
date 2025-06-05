@@ -50,10 +50,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
-			Vector2 size = new(this._collider.bounds.size.x + .025f, this._collider.bounds.size.y - .025f);
-			float distance = this._blockDistance;
-			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, this.transform.right, distance, this._groundLayer);
-			if (blockPerception)
+			Vector2 size = new(this._collider.bounds.size.x + this._blockDistance, this._collider.bounds.size.y - this._blockDistance);
+			if (Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer))
 				this._movementSide *= -1;
 			if (this._useCrawlMovement)
 			{
@@ -74,8 +72,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
-			bool endWalkableSurface = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer);
-			if (endWalkableSurface)
+			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer))
 				this._movementSide *= -1;
 			this._rigidybody.linearVelocityX = faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
 		}
