@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
 		private readonly Sender _sender = Sender.Create();
-		private Vector2 _backDashPosition = new();
+		private Vector2 _backDashLocation = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
@@ -152,7 +152,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = -1f;
 			if (movementValue.y < 0f && this._isOnGround && !this._backDashValue)
 			{
-				this._backDashPosition = this.transform.position;
+				this._backDashLocation = this.transform.position;
 				this._backDashMovementValue = this._movementAction;
 				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = true);
 			}
@@ -323,7 +323,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (this._animator.GetBool(this._walk))
 					this._animator.SetFloat(this._slowWalk, this._movementAction > 0f ? this._movementAction * -1f : this._movementAction);
 				this._rigidbody.linearVelocityX = this._backDashSpeed * -this._movementAction;
-				float distance = Vector2.Distance(this._backDashPosition, this.transform.position);
+				float distance = Vector2.Distance(this._backDashLocation, this.transform.position);
 				if (distance >= this._backDashDistance || collision || this._backDashMovementValue != this._movementAction || !this._isOnGround)
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = false);
 			}
