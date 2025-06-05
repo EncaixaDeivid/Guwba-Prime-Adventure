@@ -62,7 +62,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 					rotation = Quaternion.AngleAxis(this._baseAngle + this._spreadAngle * i, Vector3.forward);
-				Instantiate(this._secondProjectile, this.transform.position, rotation, this.transform);
+				Instantiate(this._secondProjectile, this.transform.position, rotation);
 			}
 		}
 		private void CellInstance()
@@ -90,9 +90,9 @@ namespace GuwbaPrimeAdventure.Enemy
 						Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 						Vector2 position = new(this._cellPosition.x + .5f, this._cellPosition.y + .5f);
 						if (this._useQuantity)
-							this._projectiles.Add(Instantiate(this._secondProjectile, position, rotation, this.transform));
+							this._projectiles.Add(Instantiate(this._secondProjectile, position, rotation));
 						else
-							Instantiate(this._secondProjectile, position, rotation, this.transform);
+							Instantiate(this._secondProjectile, position, rotation);
 						this._angleMulti++;
 					}
 				}
