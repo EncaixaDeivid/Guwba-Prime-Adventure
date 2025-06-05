@@ -87,7 +87,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					else
 						this._rigidbody.linearVelocity = this._movementSpeed * this.transform.up;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => _instance.enabled);
+					yield return new WaitUntil(() => this.enabled);
 				}
 			}
 		};
@@ -97,7 +97,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			bool isGrabtable = collisionObject.TryGetComponent<GrabBody>(out var grabBody);
 			bool isDamageable = collisionObject.TryGetComponent<IDamageable>(out var damageable);
-			if ((isGrabtable && !isDamageable || (isGrabtable && isDamageable && damageable.Health == this._valueToGrab)) && grabBody.IsGrabtable)
+			bool valid = isGrabtable && !isDamageable || (isGrabtable && isDamageable && damageable.Health == this._valueToGrab);
+			if (valid && grabBody.IsGrabtable)
 			{
 				GuwbaAstral<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
