@@ -33,19 +33,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					randomDirection = Random.Range(-1f, 1f);
 				while (!this.SurfacePerception())
 				{
-					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
+					float targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
 					if (useTarget)
-						targetPosition = otherTarget;
+						targetPosition = otherTarget.x;
 					if (this._randomFollow)
 					{
 						if (randomDirection >= 0f)
-							targetPosition = GuwbaAstral<CommandGuwba>.Position;
+							targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
 						else if (randomDirection < 0f)
-							targetPosition = otherTarget;
+							targetPosition = otherTarget.x;
 					}
-					float targetDirection = targetPosition.x - this.transform.position.x;
+					float targetDirection = targetPosition - this.transform.position.x;
 					this._movementSide = (short)(targetDirection > 0f ? 1f : -1f);
-					if (this.enabled && Vector2.Distance(this.transform.position, targetPosition) > this._distanceToTarget)
+					if (this.enabled && targetPosition - this.transform.position.x > this._distanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._followSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
