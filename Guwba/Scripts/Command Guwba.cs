@@ -16,13 +16,16 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _backDashPosition = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
+		private float _backDashMovementValue = 0f;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
+		private bool _backDashValue = false;
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
@@ -44,6 +47,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
+		[SerializeField, Tooltip("The amount of speed in the back dash.")] private float _backDashSpeed;
+		[SerializeField, Tooltip("The amount of distance Guwba will go in the back dash.")] private float _backDashDistance;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
@@ -145,6 +150,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
+			if (movementValue.y < 0f && this._isOnGround && !this._backDashValue)
+			{
+				this._backDashPosition = this.transform.position;
+				this._backDashMovementValue = this._movementAction;
+				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = true);
+			}
 			if (movementAction.performed && this._movementAction != 0f)
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
@@ -303,14 +314,28 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 				}
 			}
-			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
+			if (this._backDashValue)
+			{
+				float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * -this._movementAction;
+				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
+				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
+				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
+				if (this._animator.GetBool(this._walk))
+					this._animator.SetFloat(this._slowWalk, this._movementAction > 0f ? this._movementAction * -1f : this._movementAction);
+				this._rigidbody.linearVelocityX = this._backDashSpeed * -this._movementAction;
+				float distance = Vector2.Distance(this._backDashPosition, this.transform.position);
+				if (distance >= this._backDashDistance || collision || this._backDashMovementValue != this._movementAction || !this._isOnGround)
+					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = false);
+			}
+			else
+				this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			this._isOnGround = false;
 		}
 		private void OnCollision()
 		{
 			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
-			Vector2 sizeGround = new(this._collider.size.x - .025f, this._groundChecker);
+			Vector2 sizeGround = new(this._collider.size.x - 0.025f, this._groundChecker);
 			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, this.transform.eulerAngles.z, this._groundLayerMask);
 		}
 		private void OnTrigger(GameObject collisionObject)
