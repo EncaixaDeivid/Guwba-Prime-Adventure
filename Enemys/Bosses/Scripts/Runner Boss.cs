@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class RunnerBoss : BossController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
-		private float _gravityScale = 0f;
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
 		private bool _stopVelocity = false;
@@ -40,7 +39,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			yield return new WaitUntil(() =>
 			{
 				if (this.enabled)
-					this._rigidybody.linearVelocity = this._movementSide * this._dashSpeed * this.transform.right;
+					this._rigidybody.linearVelocityX = this._movementSide * this._dashSpeed;
 				else
 					this._rigidybody.linearVelocity = Vector2.zero;
 				cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
@@ -59,7 +58,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
 			this._sender.SetAdditionalData(BossType.Jumper);
-			this._gravityScale = this._rigidybody.gravityScale;
 			if (this._timedDash)
 				this.StartCoroutine(TimedDash());
 			IEnumerator TimedDash()
@@ -109,7 +107,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				this._animator.SetBool(this._walk, true);
 				this._animator.SetFloat(this._dash, 1f);
-				this._rigidybody.linearVelocity = this._movementSide * this._movementSpeed * this.transform.right;
+				this._rigidybody.linearVelocityX = this._movementSide * this._movementSpeed;
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
