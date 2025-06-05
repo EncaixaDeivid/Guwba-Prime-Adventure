@@ -67,8 +67,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		protected bool SurfacePerception()
 		{
-			Vector2 size = new(this._collider.bounds.size.x - this._groundSize, this._collider.bounds.size.y - this._groundSize);
-			return Physics2D.BoxCast(this.transform.position, size, 0f, -this.transform.up, this._groundSize, this._groundLayer);
+			Vector2 point = new(this.transform.position.x, this.transform.position.y - this._collider.bounds.extents.y - this._groundSize / 2f);
+			Vector2 size = new(this._collider.bounds.size.x - 0.025f, this._groundSize);
+			return Physics2D.OverlapBox(point, size, this.transform.rotation.eulerAngles.z, this._groundLayer);
 		}
 		protected void FixedUpdate()
 		{
