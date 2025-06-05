@@ -16,14 +16,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("If it have a ray to detect the target.")] private bool _rayDetection;
 		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
-		[SerializeField, Tooltip("If the boss can climb walls.")] private bool _climbWall;
-		[SerializeField, Tooltip("If the boss will increase the speed while climbing.")] private bool _speedUpOnClimb;
 		[SerializeField, Tooltip("If the boss can jump while dashing.")] private bool _jumpDash;
 		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
 		[SerializeField, Tooltip("The speed of the boss while dashing.")] private ushort _dashSpeed;
 		[SerializeField, Tooltip("The distance of the rays to hit the ground.")] private float _groundDistance;
 		[SerializeField, Tooltip("The distance of the dash ray.")] private float _rayDistance;
-		[SerializeField, Tooltip("The speed of movement while climbing.")] private float _climbSpeedUp;
 		[SerializeField, Tooltip("The maount of time that before the dash start.")] private float _stopDashTime;
 		[SerializeField, Tooltip("The distance of dash will run.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of time to wait the timed dash to go.")] private float _timeToDash;
@@ -42,14 +39,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2Int oldCellPosition = cellPosition;
 			yield return new WaitUntil(() =>
 			{
-				float speedUp = this._climbSpeedUp * this._movementSide;
 				if (this.enabled)
-					if (this.transform.eulerAngles.z == 0f)
-						this._rigidybody.linearVelocityX = this._movementSide * this._dashSpeed;
-					else if (this._speedUpOnClimb)
-						this._rigidybody.linearVelocity = (this._movementSide + speedUp) * this._dashSpeed * this.transform.right;
-					else
-						this._rigidybody.linearVelocity = this._movementSide * this._dashSpeed * this.transform.right;
+					this._rigidybody.linearVelocity = this._movementSide * this._dashSpeed * this.transform.right;
 				else
 					this._rigidybody.linearVelocity = Vector2.zero;
 				cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
@@ -109,48 +100,16 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (GuwbaAstral<CommandGuwba>.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
-			if (this._climbWall && this.transform.eulerAngles.z != 0f)
-			{
-				float xAxis = 0f;
-				float yAxis = 0f;
-				if (this.transform.eulerAngles.z > 0f)
-				{
-					xAxis = this.transform.position.x + this._collider.bounds.extents.x;
-					yAxis = this.transform.position.y + this._collider.bounds.extents.y * this._movementSide;
-				}
-				else if (this.transform.eulerAngles.z < 0f)
-				{
-					xAxis = this.transform.position.x - this._collider.bounds.extents.x;
-					yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this._movementSide;
-				}
-				Vector2 origin = new(xAxis, yAxis);
-				bool endClimbSurface = !Physics2D.Raycast(origin, -this.transform.up, this._groundDistance, this._groundLayer);
-				if (endClimbSurface)
-					this._movementSide *= -1;
-			}
-			Vector2 size = new(this._collider.bounds.size.x - this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
-			Vector2 direction = this.transform.right * this._movementSide;
-			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._groundDistance, this._groundLayer);
-			if (this.transform.eulerAngles.z == 0f)
-				this._rigidybody.gravityScale = this._gravityScale;
-			else
-				this._rigidybody.gravityScale = 0f;
-			if (this._climbWall && blockPerception && this.SurfacePerception())
-				this.transform.eulerAngles += new Vector3(0f, 0f, this._movementSide * 90f);
-			else if (blockPerception)
+			Vector2 size = new(this._collider.bounds.size.x + this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
+			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer);
+			if (blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (!this._dashIsOn)
 			{
 				this._animator.SetBool(this._walk, true);
 				this._animator.SetFloat(this._dash, 1f);
-				float speedUp = this._climbSpeedUp * this._movementSide;
-				if (this.transform.eulerAngles.z == 0f)
-					this._rigidybody.linearVelocityX = this._movementSide * this._movementSpeed;
-				else if (this._speedUpOnClimb)
-					this._rigidybody.linearVelocity = (this._movementSide + speedUp) * this._movementSpeed * this.transform.right;
-				else
-					this._rigidybody.linearVelocity = this._movementSide * this._movementSpeed * this.transform.right;
+				this._rigidybody.linearVelocity = this._movementSide * this._movementSpeed * this.transform.right;
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
