@@ -156,16 +156,19 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (this._movementAction != 0f && movementValue.y != 0f && this._isOnGround && !this._dashValue && !_grabObject)
 			{
 				this._dashLocation = this.transform.position;
-				this._dashDirection = movementValue.y;
+				if (movementValue.y > 0f)
+					this._dashDirection = 1f;
+				else if (movementValue.y < 0f)
+					this._dashDirection = -1f;
 				this._dashMovementValue = this._movementAction;
 				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
 				if (this._dashDirection > 0f)
 				{
 					this._animator.SetBool(this._dashSlide, this._dashValue);
 					this._collider.size = this._dashSlideSize;
-					float distanceDifference = (this._normalSize.y - this._collider.size.y) / 2f;
-					this._collider.offset = new Vector2(this._collider.offset.x, distanceDifference);
-					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - distanceDifference);
+					float distanceDifference = this._normalSize.y - this._collider.size.y;
+					this._collider.offset = new Vector2(this._collider.offset.x, distanceDifference / 2f);
+					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
 				}
 				else if (this._dashDirection < 0f)
 					this._animator.SetFloat(this._backDash, -1f);
@@ -265,7 +268,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
-			this._rigidbody.gravityScale = this._gravityScale;
 			if (this._isOnGround)
 			{
 				this._animator.SetBool(this._idle, this._movementAction == 0f);
@@ -273,7 +275,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
-				this._rigidbody.linearVelocityY = 0f;
 				this._downStairs = true;
 			}
 			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
@@ -328,7 +329,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				float xDirection = this._dashMovementValue * this._dashDirection;
 				float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
-				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
+				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
 				this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue * this._dashDirection;
@@ -352,7 +353,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnCollision()
 		{
-			float yPoint = this.transform.position.y - this._collider.bounds.extents.y - this._groundChecker / 2f;
+			float yPoint = this.transform.position.y - this._collider.bounds.extents.y + this._collider.offset.y - this._groundChecker / 2f;
 			Vector2 pointGround = new(this.transform.position.x, yPoint);
 			Vector2 sizeGround = new(this._collider.size.x - 0.025f, this._groundChecker);
 			this._isOnGround = Physics2D.OverlapBox(pointGround, sizeGround, this.transform.eulerAngles.z, this._groundLayerMask);
