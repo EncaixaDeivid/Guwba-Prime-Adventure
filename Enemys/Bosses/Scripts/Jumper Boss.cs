@@ -19,6 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
+		[SerializeField, Tooltip("The distance the boss will be to the follow target.")] private float _distanceToTarget;
 		private void HighJump(Vector2 otherTarget, bool useTarget)
 		{
 			this.StartCoroutine(FollowTarget());
@@ -32,19 +33,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					randomDirection = Random.Range(-1f, 1f);
 				while (!this.SurfacePerception())
 				{
-					float targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
+					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
 					if (useTarget)
-						targetPosition = otherTarget.x;
+						targetPosition = otherTarget;
 					if (this._randomFollow)
 					{
 						if (randomDirection >= 0f)
-							targetPosition = GuwbaAstral<CommandGuwba>.Position.x;
+							targetPosition = GuwbaAstral<CommandGuwba>.Position;
 						else if (randomDirection < 0f)
-							targetPosition = otherTarget.x;
+							targetPosition = otherTarget;
 					}
-					float targetDirection = targetPosition - this.transform.position.x;
+					float targetDirection = targetPosition.x - this.transform.position.x;
 					this._movementSide = (short)(targetDirection > 0f ? 1f : -1f);
-					if (this.enabled)
+					if (this.enabled && Vector2.Distance(this.transform.position, targetPosition) > this._distanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._followSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
