@@ -16,6 +16,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _normalSize = new();
 		private Vector2 _dashLocation = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
@@ -30,7 +31,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
-		[SerializeField, Tooltip("Size of the collider in live.")] private Vector2 _normalSize;
 		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
@@ -69,6 +69,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
+			this._normalSize = this._collider.size;
 			this._sender.SetToWhereConnection(PathConnection.Controller);
 			_actualState += this.DeathState;
 		}
