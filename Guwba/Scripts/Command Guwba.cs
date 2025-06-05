@@ -16,24 +16,27 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
 		private readonly Sender _sender = Sender.Create();
-		private Vector2 _backDashLocation = new();
+		private Vector2 _dashLocation = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
-		private float _backDashMovementValue = 0f;
+		private float _dashDirection = 0f;
+		private float _dashMovementValue = 0f;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
-		private bool _backDashValue = false;
+		private bool _dashValue = false;
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Size of the collider in live.")] private Vector2 _normalSize;
+		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
+		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlide;
 		[SerializeField, Tooltip("Animation parameter.")] private string _backDash;
 		[SerializeField, Tooltip("Animation parameter.")] private string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
@@ -47,8 +50,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
-		[SerializeField, Tooltip("The amount of speed in the back dash.")] private float _backDashSpeed;
-		[SerializeField, Tooltip("The amount of distance Guwba will go in the back dash.")] private float _backDashDistance;
+		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
+		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("The size of the dash slide collision checker.")] private float _dashSlideChecker;
+		[SerializeField, Tooltip("The offset of the dash slide checker.")] private float _dashSlideOffset;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
@@ -95,7 +100,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._actions.commands.attackUse.Enable();
 			this._actions.commands.interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._backDash, this._backDashValue ? -1f : 1f);
+			this._animator.SetFloat(this._backDash, this._dashValue ? -1f : 1f);
 			this._rigidbody.gravityScale = this._gravityScale;
 			this._rigidbody.linearVelocityY = this._yMovement;
 		}
@@ -150,11 +155,19 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (movementValue.y < 0f && this._isOnGround && !this._backDashValue)
+			if (this._movementAction != 0f && movementValue.y != 0f && this._isOnGround && !this._dashValue && !_grabObject)
 			{
-				this._backDashLocation = this.transform.position;
-				this._backDashMovementValue = this._movementAction;
-				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = true);
+				this._dashLocation = this.transform.position;
+				this._dashDirection = movementValue.y;
+				this._dashMovementValue = this._movementAction;
+				this._dashValue = true;
+				if (this._dashDirection > 0f)
+				{
+					this._collider.size = this._dashSlideSize;
+					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._dashSlideOffset);
+				}
+				else if (this._dashDirection < 0f)
+					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue);
 			}
 			if (movementAction.performed && this._movementAction != 0f)
 				this._spriteRenderer.flipX = this._movementAction < 0f;
@@ -310,19 +323,41 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 				}
 			}
-			if (this._backDashValue)
+			if (this._dashValue)
 			{
-				float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * -this._movementAction;
-				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
-				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
-				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
-				this._animator.SetFloat(this._backDash, -1f);
-				this._rigidbody.linearVelocityX = this._backDashSpeed * -this._movementAction;
-				float distance = Vector2.Distance(this._backDashLocation, this.transform.position);
-				if (distance >= this._backDashDistance || collision || this._backDashMovementValue != this._movementAction || !this._isOnGround)
+				bool collision = false;
+				if (this._dashDirection > 0f)
 				{
-					this._animator.SetFloat(this._backDash, 1f);
-					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._backDashValue = false);
+					this._animator.SetBool(this._dashSlide, true);
+					float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovementValue;
+					Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y - this._dashSlideOffset);
+					Vector2 size = new(this._wallChecker, this._dashSlideChecker - 0.025f);
+					collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
+					this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue;
+				}
+				else if (this._dashDirection < 0f)
+				{
+					this._animator.SetFloat(this._backDash, -1f);
+					float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * -this._dashMovementValue;
+					Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y);
+					Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
+					collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
+					this._rigidbody.linearVelocityX = this._dashSpeed * -this._dashMovementValue;
+				}
+				bool valid = Vector2.Distance(this._dashLocation, this.transform.position) >= this._dashDistance;
+				if (valid || _grabObject || collision || this._dashMovementValue != this._movementAction || !this._isOnGround)
+				{
+					this._dashValue = false;
+					if (this._dashDirection > 0f)
+					{
+						this._animator.SetBool(this._dashSlide, this._dashValue);
+						this._collider.size = this._normalSize;
+					}
+					else if (this._dashDirection < 0f)
+					{
+						this._animator.SetFloat(this._backDash, 1f);
+						GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue);
+					}
 				}
 			}
 			else
