@@ -90,7 +90,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 				return;
 			}
-			if (this._rayDetection && !this._dashIsOn && this.transform.eulerAngles.z == 0f)
+			if (this._rayDetection && !this._dashIsOn)
 			{
 				Vector2 dashOrigin = this.transform.position;
 				Vector2 dashDirection = this.transform.right * this._movementSide;
