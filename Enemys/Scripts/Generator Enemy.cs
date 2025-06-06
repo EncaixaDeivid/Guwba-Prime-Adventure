@@ -22,12 +22,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnEnable()
 		{
-			foreach (GameObject gameObject in _enemysGenerated.FindAll(gameObject => gameObject))
+			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(true);
 		}
 		private void OnDisable()
 		{
-			foreach (GameObject gameObject in _enemysGenerated.FindAll(gameObject => gameObject))
+			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(false);
 		}
 		private void FixedUpdate()
@@ -66,15 +66,16 @@ namespace GuwbaPrimeAdventure.Enemy
 					else
 						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[0], this.transform.rotation);
 					this._enemysGenerated.Add(summon);
+					bool valid = this._summonObject.QuantityToSummon == this._enemysGenerated.Count;
+					if (this._existentEnemys && !this._especifiedGeneration)
+					{
+						this._enemysGenerated.RemoveAll(summon => !summon);
+						this._continueGeneration = this._summonObject.QuantityToSummon != this._enemysGenerated.Count;
+					}
+					else if (this._especifiedGeneration && !this._existentEnemys && valid)
+						this._stopGenerate = true;
 				}
 			}
-			if (this._existentEnemys && !this._especifiedGeneration)
-			{
-				this._enemysGenerated.RemoveAll(summon => !summon);
-				this._continueGeneration = this._summonObject.QuantityToSummon != this._enemysGenerated.Count;
-			}
-			else if (this._especifiedGeneration && !this._existentEnemys && this._summonObject.QuantityToSummon == this._enemysGenerated.Count)
-				this._stopGenerate = true;
 		}
 	};
 };
