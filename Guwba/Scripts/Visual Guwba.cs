@@ -68,32 +68,20 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			this._guwbaHud.RootElement.style.display = DisplayStyle.None;
 		}
-		private UnityAction<bool> ManualInvencibility => isInvencible =>
-		{
-			if (this._isDamaged)
-				return;
-			this._invencibility = isInvencible;
-			if (isInvencible)
-				this.StartCoroutine(this.Invencibility());
-			else
-			{
-				this.StopCoroutine(this.Invencibility());
-				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-			}
-		};
+		private UnityAction<bool> ManualInvencibility => isInvencible => this._invencibility = isInvencible;
 		private IEnumerator Invencibility()
 		{
 			this.StartCoroutine(VisualEffect());
 			IEnumerator VisualEffect()
 			{
-				while (this._invencibility)
+				while (this._isDamaged)
 				{
 					this._spriteRenderer.color = new Color(1f, 1f, 1f, this._spriteRenderer.color.a >= 1f ? this._invencibilityValue : 1f);
 					yield return new WaitTime(this, this._timeStep);
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
-			this._isDamaged = this._invencibility = false;
+			this._isDamaged = false;
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
@@ -108,9 +96,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public bool Damage(ushort damage)
 		{
-			if (this._invencibility || damage < 1f)
+			if (this._invencibility || this._isDamaged || damage < 1f)
 				return false;
-			this._isDamaged = this._invencibility = true;
+			this._isDamaged = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
