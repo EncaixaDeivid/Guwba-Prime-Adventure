@@ -34,9 +34,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._stopGenerate)
 				return;
-			if (this._continueGeneration && this._timeGeneration > 0f)
+			if (this._continueGeneration)
 			{
-				this._timeGeneration -= Time.fixedDeltaTime;
+				if (this._timeGeneration > 0f)
+					this._timeGeneration -= Time.fixedDeltaTime;
 				if (this._timeGeneration <= 0f)
 				{
 					this._timeGeneration = this._summonObject.SummonTime;
@@ -66,16 +67,16 @@ namespace GuwbaPrimeAdventure.Enemy
 					else
 						summon = Instantiate(this._summonObject.Summon, this._summonObject.SummonPoints[0], this.transform.rotation);
 					this._enemysGenerated.Add(summon);
-					bool valid = this._summonObject.QuantityToSummon == this._enemysGenerated.Count;
-					if (this._existentEnemys && !this._especifiedGeneration)
-					{
-						this._enemysGenerated.RemoveAll(summon => !summon);
-						this._continueGeneration = this._summonObject.QuantityToSummon != this._enemysGenerated.Count;
-					}
-					else if (this._especifiedGeneration && !this._existentEnemys && valid)
-						this._stopGenerate = true;
 				}
 			}
+			bool valid = this._summonObject.QuantityToSummon == this._enemysGenerated.Count;
+			if (this._existentEnemys && !this._especifiedGeneration)
+			{
+				this._enemysGenerated.RemoveAll(summon => !summon);
+				this._continueGeneration = this._summonObject.QuantityToSummon != this._enemysGenerated.Count;
+			}
+			else if (this._especifiedGeneration && !this._existentEnemys && valid)
+				this._stopGenerate = true;
 		}
 	};
 };
