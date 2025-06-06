@@ -18,7 +18,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				base.Awake();
 		}
 		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
-		public static void SetRotation(float axisZRotation) => _instance.transform.rotation = Quaternion.AngleAxis(axisZRotation, Vector3.forward);
+		public static void SetRotation(float axisZRotation) =>
+			_instance.transform.rotation = Quaternion.AngleAxis(axisZRotation, Vector3.forward);
 		public static bool EqualObject(params GameObject[] unknowGameObjects)
 		{
 			foreach (GameObject gameObject in unknowGameObjects)
