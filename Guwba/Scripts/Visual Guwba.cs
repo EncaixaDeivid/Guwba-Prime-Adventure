@@ -15,6 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private SpriteRenderer _spriteRenderer;
 		private short _vitality;
 		private bool _invencibility = false;
+		private bool _isDamaged = false;
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaHud _guwbaHudObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("The amount of time that Guwba stays invencible.")] private ushort _invencibilityTime;
@@ -69,6 +70,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private UnityAction<bool> ManualInvencibility => isInvencible =>
 		{
+			if (this._isDamaged)
+				return;
 			this._invencibility = isInvencible;
 			if (isInvencible)
 				this.StartCoroutine(this.Invencibility());
@@ -90,7 +93,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
-			this._invencibility = false;
+			this._isDamaged = this._invencibility = false;
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
@@ -107,7 +110,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (this._invencibility || damage < 1f)
 				return false;
-			this._invencibility = true;
+			this._isDamaged = this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
