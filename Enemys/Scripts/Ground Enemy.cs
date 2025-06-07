@@ -58,10 +58,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						this._runTowards = true;
 					}
 					else if (this._runTowardsAfter)
-					{
 						this._runnedTimes++;
-						this._runTowards = false;
-					}
 					faceLook = false;
 				}
 			}
@@ -85,7 +82,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
 			{
 				this._timeRun = this._runOfTime;
-				if (!this._runTowards)
+				if (this._runTowards)
+					this._runTowards = false;
+				else
 					this._movementSide *= -1;
 			}
 			if (blockPerception)
