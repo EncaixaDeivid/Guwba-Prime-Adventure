@@ -43,21 +43,27 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._stopMovement || this.Paralyzed)
 				return;
 			bool faceLook = false;
-			if (this._timeRun > 0f)
+			if (this._runFromTarget)
 			{
-				this._timeRun -= Time.fixedDeltaTime;
-				faceLook = true;
-			}
-			if (this._runFromTarget && this._timeRun <= 0f)
-			{
-				if (this._runTowardsAfter && this._runnedTimes >= this._timesToRun)
+				if (this._timeRun > 0f)
 				{
-					this._runnedTimes = 0;
-					this._runTowards = !this._runTowards;
+					this._timeRun -= Time.fixedDeltaTime;
+					faceLook = true;
 				}
-				else if (this._runTowardsAfter)
-					this._runnedTimes++;
-				faceLook = false;
+				if (this._timeRun <= 0f && faceLook)
+				{
+					if (this._runTowardsAfter && this._runnedTimes >= this._timesToRun)
+					{
+						this._runnedTimes = 0;
+						this._runTowards = true;
+					}
+					else if (this._runTowardsAfter)
+					{
+						this._runnedTimes++;
+						this._runTowards = false;
+					}
+					faceLook = false;
+				}
 			}
 			if (this._useFaceLook)
 			{
