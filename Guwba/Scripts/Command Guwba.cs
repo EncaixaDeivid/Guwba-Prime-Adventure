@@ -186,8 +186,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					this._animator.SetBool(this._hold, false);
 					GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
-					_grabObject.transform.position = (Vector2)this.transform.position + Vector2.down;
-					_grabObject.Throw(Vector2.down);
+					_grabObject.transform.position = (Vector2)this.transform.position + -(Vector2)this.transform.up;
+					_grabObject.Throw(-this.transform.up);
 					_grabObject = null;
 					GuwbaAstral<VisualGuwba>._grabObject = null;
 					GuwbaAstral<AttackGuwba>._grabObject = null;
