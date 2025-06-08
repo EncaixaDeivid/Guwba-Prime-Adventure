@@ -13,6 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The collection of the summon places.")] private SummonPlaces[] _summonPlaces;
 		[SerializeField, Tooltip("The summons that will be activate on an event.")] private SummonObject[] _eventSummons;
 		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
+		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
 		private void Summon(SummonObject summon)
 		{
 			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
@@ -66,7 +67,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				IEnumerator TimedSummon(SummonObject summon)
 				{
 					yield return new WaitTime(this, summon.SummonTime);
-					if (!summon.StopTimedSummon && !this._stopSummon)
+					yield return new WaitWhile(() => !summon.StopTimedSummon && !this._stopSummon);
+					if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
 					{
 						this.Summon(summon);
 						this.StartCoroutine(TimedSummon(summon));
@@ -80,11 +82,17 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			BossType bossType = (BossType)additionalData;
 			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
 			{
-				bool has = data.IndexValue.HasValue && this._eventSummons.Length > 0f && this._hasIndex;
+				bool has = data.IndexValue.HasValue && this._hasIndex;
 				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopSummon = !data.ToggleValue.Value;
-				else if (data.ConnectionState == ConnectionState.Action && has)
-					this.Summon(this._eventSummons[data.IndexValue.Value]);
+				else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage && this._eventSummons.Length > 0f)
+					if (this._randomReactSummons)
+					{
+						ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
+						this.Summon(this._eventSummons[randomIndex]);
+					}
+					else if (has && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
+						this.Summon(this._eventSummons[data.IndexValue.Value]);
 			}
 		}
 		[System.Serializable]
