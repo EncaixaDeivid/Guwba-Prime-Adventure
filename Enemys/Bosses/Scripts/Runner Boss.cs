@@ -28,27 +28,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._dashIsOn = true;
 			this._sender.SetToggle(this._jumpDash).Send();
 			this._animator.SetBool(this._walk, false);
-			Vector2 actualPosition = this.transform.position;
+			float actualPosition = this.transform.position.x;
 			yield return new WaitTime(this, this._stopDashTime);
 			float dashValue = this._movementSide < 0f ? -this._movementSide : this._movementSide;
 			this._animator.SetBool(this._walk, true);
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
-			Vector2 runnedDistance = actualPosition;
-			Vector2Int cellPosition = new((int)actualPosition.x, (int)actualPosition.y);
-			Vector2Int oldCellPosition = cellPosition;
 			yield return new WaitUntil(() =>
 			{
 				if (this.enabled)
 					this._rigidybody.linearVelocityX = this._movementSide * this._dashSpeed;
 				else
 					this._rigidybody.linearVelocity = Vector2.zero;
-				cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
-				if (oldCellPosition != cellPosition)
-				{
-					oldCellPosition = cellPosition;
-					runnedDistance += (Vector2)cellPosition;
-				}
-				return Vector2.Distance(actualPosition, runnedDistance) >= this._dashDistance && this.enabled;
+				float distance = this.transform.position.x - actualPosition;
+				return Mathf.Sqrt(distance * distance) >= this._dashDistance && this.enabled;
 			});
 			this._dashIsOn = false;
 			this._sender.SetToggle(true).Send();
