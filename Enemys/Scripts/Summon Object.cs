@@ -13,6 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the instantiator will stop during the summon.")] private bool _stopToSummon;
 		[SerializeField, Tooltip("If the instantiator will paralyze during the summon.")] private bool _paralyzeToSummon;
 		[SerializeField, Tooltip("If the timed summon can be stopped.")] private bool _stopTimedSummon;
+		[SerializeField, Tooltip("If the timed summon will stop permanently.")] private bool _stopPermanently;
 		[SerializeField, Tooltip("If the instanciation will be in the same point as the summoner.")] private bool _self;
 		[SerializeField, Tooltip("If the instanciation will combine the point of the summoner and the instantiation.")] private bool _combine;
 		[SerializeField, Tooltip("If the instantiation will be for every point for the amount of quantity.")] private bool _sequential;
@@ -28,6 +29,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		public bool StopToSummon => this._stopToSummon;
 		public bool ParalyzeToSummon => this._paralyzeToSummon;
 		public bool StopTimedSummon => this._stopTimedSummon;
+		public bool StopPermanently => this._stopPermanently;
 		public bool Self => this._self;
 		public bool Combine => this._combine;
 		public bool Sequential => this._sequential;
