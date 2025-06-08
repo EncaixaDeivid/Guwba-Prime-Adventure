@@ -333,7 +333,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
 				this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue * this._dashDirection;
-				bool valid = Vector2.Distance(this._dashLocation, this.transform.position) >= this._dashDistance;
+				float distance = this.transform.position.x - this._dashLocation.x;
+				bool valid = MathF.Sqrt(distance * distance) >= this._dashDistance;
 				if (valid || _grabObject || collision || this._dashMovementValue != this._movementAction || !this._isOnGround)
 				{
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
