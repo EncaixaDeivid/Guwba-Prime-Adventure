@@ -11,10 +11,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _stopJump = false;
 		[Header("Jumper Boss")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
+		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
 		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
-		[SerializeField, Tooltip("Will stops the execution of a event jump.")] private bool _waitEvent;
 		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
 		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
@@ -45,7 +45,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					}
 					float targetDirection = targetPosition - this.transform.position.x;
 					this._movementSide = (short)(targetDirection > 0f ? 1f : -1f);
-					if (this.enabled && targetPosition - this.transform.position.x > this._distanceToTarget)
+					float distance = targetPosition - this.transform.position.x;
+					if (this.enabled && Mathf.Sqrt(distance * distance) > this._distanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._followSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
@@ -69,22 +70,42 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && (!this._waitEvent || this._stopJump));
-						if (!this._stopJump)
-							if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
+						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
+						if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
+						{
+							if (this._jumpPointStructures[index].JumpStats.StopMove)
 							{
-								if (this._jumpPointStructures[index].StopMove)
-								{
-									this._sender.Send();
-									this._rigidybody.linearVelocityX = 0f;
-								}
-								this._rigidybody.AddForceY(this._jumpPointStructures[index].Strength);
-								if (this._jumpPointStructures[index].High)
-									this.HighJump(this._jumpPointStructures[index].OtherTarget, this._jumpPointStructures[index].UseTarget);
-								this._jumpPointStructures[index].RemovalJumpCount = (short)this._jumpPointStructures[index].JumpCount;
+								this._sender.Send();
+								this._rigidybody.linearVelocityX = 0f;
 							}
+							this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength);
+							if (this._jumpPointStructures[index].JumpStats.High)
+							{
+								bool useTarget = this._jumpPointStructures[index].JumpStats.UseTarget;
+								this.HighJump(this._jumpPointStructures[index].JumpStats.OtherTarget, useTarget);
+							}
+							this._jumpPointStructures[index].RemovalJumpCount = (short)this._jumpPointStructures[index].JumpCount;
+						}
 					}
 				});
+			}
+			foreach (JumpStats jumpStats in this._timedJumps)
+			{
+				this.StartCoroutine(TimedJump(jumpStats));
+				IEnumerator TimedJump(JumpStats stats)
+				{
+					yield return new WaitTime(this, stats.TimeToExecute);
+					yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
+					if (stats.StopMove)
+					{
+						this._sender.Send();
+						this._rigidybody.linearVelocityX = 0f;
+					}
+					this._rigidybody.AddForceY(stats.Strength);
+					if (stats.High)
+						this.HighJump(stats.OtherTarget, stats.UseTarget);
+					this.StartCoroutine(TimedJump(jumpStats));
+				}
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
@@ -108,24 +129,32 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 		}
 		[System.Serializable]
-		private struct JumpPointStructure
+		private struct JumpStats
 		{
-			[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
-			[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
 			[SerializeField, Tooltip("To where this have to go if theres no target.")] private Vector2 _otherTarget;
-			[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
 			[SerializeField, Tooltip("The strenght of the jump.")] private ushort _strength;
 			[SerializeField, Tooltip("If in the high jumo it will stop moving.")] private bool _stopMove;
 			[SerializeField, Tooltip("If this is a high jump.")] private bool _high;
 			[SerializeField, Tooltip("If for this jump it will use the other target.")] private bool _useTarget;
-			internal readonly JumpPoint JumpPointObject => this._jumpPointObject;
-			internal readonly Vector2 Point => this._point;
+			[SerializeField, Tooltip("The amount of time for this jump to execute.")] private float _timeToExecute;
 			internal readonly Vector2 OtherTarget => this._otherTarget;
 			internal readonly ushort Strength => this._strength;
-			internal readonly ushort JumpCount => (ushort)Random.Range(this._jumpCountMaxMin.x, this._jumpCountMaxMin.y);
 			internal readonly bool StopMove => this._stopMove;
 			internal readonly bool High => this._high;
 			internal readonly bool UseTarget => this._useTarget;
+			internal readonly float TimeToExecute => this._timeToExecute;
+		};
+		[System.Serializable]
+		private struct JumpPointStructure
+		{
+			[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
+			[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
+			[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
+			[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
+			internal readonly JumpPoint JumpPointObject => this._jumpPointObject;
+			internal readonly JumpStats JumpStats => this._jumpStats;
+			internal readonly Vector2 Point => this._point;
+			internal readonly ushort JumpCount => (ushort)Random.Range(this._jumpCountMaxMin.x, this._jumpCountMaxMin.y);
 			internal short RemovalJumpCount { get; set; }
 		};
 	};
