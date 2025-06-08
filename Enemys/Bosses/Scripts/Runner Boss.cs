@@ -11,6 +11,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
 		private bool _stopVelocity = false;
+		private bool _blockPerception = false;
+		private float _runnedDistance = 0f;
 		[Header("Runner Boss")]
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("If it have a ray to detect the target.")] private bool _rayDetection;
@@ -35,13 +37,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
 			yield return new WaitUntil(() =>
 			{
-				if (this.enabled)
-					this._rigidybody.linearVelocityX = this._movementSide * this._dashSpeed;
-				else
-					this._rigidybody.linearVelocity = Vector2.zero;
+				this._rigidybody.linearVelocity = this.enabled ? this._dashSpeed * this._movementSide * Vector2.right : Vector2.zero;
 				float distance = this.transform.position.x - actualPosition;
-				return Mathf.Sqrt(distance * distance) >= this._dashDistance && this.enabled;
+				if (this._blockPerception)
+					this._runnedDistance += Mathf.Sqrt(distance * distance);
+				return Mathf.Sqrt(distance * distance) + this._runnedDistance >= this._dashDistance && this.enabled;
 			});
+			this._runnedDistance = 0f;
 			this._dashIsOn = false;
 			this._sender.SetToggle(true).Send();
 		}
@@ -91,8 +93,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.StartCoroutine(this.Dash());
 			}
 			Vector2 size = new(this._collider.bounds.size.x + this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
-			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer);
-			if (blockPerception)
+			this._blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer);
+			if (this._blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (!this._dashIsOn)
