@@ -78,7 +78,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 								this._sender.Send();
 								this._rigidybody.linearVelocityX = 0f;
 							}
-							this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength);
+							this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass);
 							if (this._jumpPointStructures[index].JumpStats.High)
 							{
 								bool useTarget = this._jumpPointStructures[index].JumpStats.UseTarget;
@@ -101,7 +101,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						this._sender.Send();
 						this._rigidybody.linearVelocityX = 0f;
 					}
-					this._rigidybody.AddForceY(stats.Strength);
+					this._rigidybody.AddForceY(stats.Strength * this._rigidybody.mass);
 					if (stats.High)
 						this.HighJump(stats.OtherTarget, stats.UseTarget);
 					this.StartCoroutine(TimedJump(jumpStats));
@@ -123,7 +123,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						this._rigidybody.linearVelocityX = 0f;
 					}
 					this._collider.isTrigger = true;
-					this._rigidybody.AddForceY(this._strenghtReact);
+					this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
 					if (this._highReact)
 						this.HighJump(this._otherTarget, this._useTarget);
 				}
