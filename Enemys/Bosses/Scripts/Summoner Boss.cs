@@ -14,6 +14,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The summons that will be activate on an event.")] private SummonObject[] _eventSummons;
 		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
+		[SerializeField, Tooltip("If this enemy will summon randomized timed.")] private bool _randomTimedSummons;
+		[SerializeField, Tooltip("The time the timed randomized summons will be executed.")] private float _randomSummonsTime;
 		private void Summon(SummonObject summon)
 		{
 			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
@@ -61,18 +63,29 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				summonPoint = Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity);
 				summonPoint.GetTouch(() => this.Summon(this._eventSummons[summonPlaces.IndexValue]));
 			}
-			foreach (SummonObject summon in this._timedSummons)
+			if (this._randomTimedSummons)
 			{
-				this.StartCoroutine(TimedSummon(summon));
-				IEnumerator TimedSummon(SummonObject summon)
+				this.StartCoroutine(RandomTimedSummon());
+				IEnumerator RandomTimedSummon()
 				{
-					yield return new WaitTime(this, summon.SummonTime);
-					yield return new WaitWhile(() => !summon.StopTimedSummon && !this._stopSummon);
-					if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
-					{
-						this.Summon(summon);
+					ushort randomIndex = (ushort)Random.Range(0f, this._timedSummons.Length - 1f);
+					this.StartCoroutine(TimedSummon(this._timedSummons[randomIndex]));
+					yield return new WaitTime(this, this._randomSummonsTime);
+					this.StartCoroutine(RandomTimedSummon());
+				}
+			}
+			else
+				foreach (SummonObject summon in this._timedSummons)
+					this.StartCoroutine(TimedSummon(summon));
+			IEnumerator TimedSummon(SummonObject summon)
+			{
+				yield return new WaitTime(this, summon.SummonTime);
+				yield return new WaitUntil(() => !summon.StopTimedSummon && !this._stopSummon);
+				if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
+				{
+					this.Summon(summon);
+					if (!this._randomTimedSummons)
 						this.StartCoroutine(TimedSummon(summon));
-					}
 				}
 			}
 		}
