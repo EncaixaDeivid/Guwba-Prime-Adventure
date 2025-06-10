@@ -15,7 +15,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized timed.")] private bool _randomTimedSummons;
-		[SerializeField, Tooltip("The time the timed randomized summons will be executed.")] private float _randomSummonsTime;
 		private void Summon(SummonObject summon)
 		{
 			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
@@ -69,8 +68,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				IEnumerator RandomTimedSummon()
 				{
 					ushort randomIndex = (ushort)Random.Range(0f, this._timedSummons.Length - 1f);
-					this.StartCoroutine(TimedSummon(this._timedSummons[randomIndex]));
-					yield return new WaitTime(this, this._randomSummonsTime);
+					yield return TimedSummon(this._timedSummons[randomIndex]);
+					yield return new WaitUntil(() => this.enabled);
 					this.StartCoroutine(RandomTimedSummon());
 				}
 			}
