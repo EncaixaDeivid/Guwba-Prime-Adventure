@@ -13,10 +13,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
-		[Header("Background Objects")]
+		[Header("Background Object")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The images that are placed in each background.")] private Sprite[] _backgroundImages;
-		[Header("Background Stats")]
+		[Header("Background Stat")]
 		[SerializeField, Tooltip("The amount of speed that the background will move horizontally.")] private float _horizontalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount of speed that the background will move vertically.")] private float _verticalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount to slow horizontally for each layer that is after the first.")] private float _slowHorizontal;
