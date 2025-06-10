@@ -283,27 +283,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._downStairs = true;
 				this._isJumping = false;
 			}
-			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
+			else if (this._rigidbody.linearVelocityY != 0f && !downStairs)
 			{
 				this._animator.SetBool(this._idle, false);
 				this._animator.SetBool(this._walk, false);
-				this._animator.SetBool(this._jump, true);
-				this._animator.SetBool(this._fall, false);
-				this._rigidbody.gravityScale = this._gravityScale;
-				this._lastGroundedTime -= Time.fixedDeltaTime;
-				this._lastJumpTime -= Time.fixedDeltaTime;
-				this._downStairs = false;
-			}
-			else if (this._rigidbody.linearVelocityY < 0f && !downStairs)
-			{
-				this._animator.SetBool(this._idle, false);
-				this._animator.SetBool(this._walk, false);
-				this._animator.SetBool(this._jump, false);
-				this._animator.SetBool(this._fall, true);
-				if (this._rigidbody.gravityScale < this._gravityScale * this._amountToFall)
-					this._rigidbody.gravityScale += this._gravityScale * this._amountToFall * Time.fixedDeltaTime;
-				else
-					this._rigidbody.gravityScale = this._gravityScale * this._amountToFall;
+				this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
+				this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
+				this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? this._gravityScale * this._amountToFall : this._gravityScale;
 				this._lastGroundedTime -= Time.fixedDeltaTime;
 				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
