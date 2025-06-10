@@ -4,6 +4,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent]
 	internal sealed class TouchActivator : Activator
 	{
+		[Header("Touch Activator")]
 		[SerializeField, Tooltip("The variety of objects that this activator can be activated.")] private GameObject[] _objectsActivators;
 		[SerializeField, Tooltip("If this activator will be activated on a enter of a collision.")] private bool _enterCollision;
 		[SerializeField, Tooltip("If this activator will be activated on a exit of a collision.")] private bool _exitCollision;
