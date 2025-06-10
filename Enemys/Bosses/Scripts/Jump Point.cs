@@ -8,6 +8,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private UnityAction<ushort> _getTouch;
 		private ushort _touchIndex;
+		[Header("Extern Interaction")]
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
 		internal void GetTouch(ushort touchIndex, UnityAction<ushort> getTouch)
 		{
