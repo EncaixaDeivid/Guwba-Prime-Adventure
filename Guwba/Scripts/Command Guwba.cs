@@ -321,15 +321,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			else
 			{
+				if (this._animator.GetBool(this._walk))
+				{
+					this._animator.SetFloat(this._walkSpeed, Mathf.Abs(this._rigidbody.linearVelocityX) / 16);
+					this._spriteRenderer.flipX = this._movementAction < 0f;
+				}
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
-				if (this._movementAction != 0f)
-					this._spriteRenderer.flipX = this._movementAction < 0f;
-				this._animator.SetBool(this._walk, this._movementAction != 0f);
-				if (this._animator.GetBool(this._walk))
-					this._animator.SetFloat(this._walkSpeed, Mathf.Abs(this._rigidbody.linearVelocityX) / 16);
 				this._rigidbody.AddForceX(movement);
 			}
 			if (this._isOnGround && Mathf.Abs(this._movementAction) <= 0f)
