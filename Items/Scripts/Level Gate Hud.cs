@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class LevelGateHud : MonoBehaviour
 	{
 		private static LevelGateHud _instance;
+		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _levelButton;
 		[SerializeField, Tooltip("User interface element.")] private string _bossButton;
