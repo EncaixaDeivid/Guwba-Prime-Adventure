@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	internal sealed class PointMarker : StateController, IConnector
 	{
 		private static Vector2 _checkpointIndex = new();
+		[Header("Hubby World Interaction")]
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
 		public PathConnection PathConnection => PathConnection.Character;
