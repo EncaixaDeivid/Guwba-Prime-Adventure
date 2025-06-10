@@ -10,6 +10,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Collider2D _collider;
 		private ushort _index = 0;
 		private bool _active = true;
+		[Header("Teleporter")]
 		[SerializeField, Tooltip("The locations that Guwba can teleport to.")] private Vector2[] _locations;
 		[SerializeField, Tooltip("If it have to interact to teleport.")] private bool _isInteractive;
 		[SerializeField, Tooltip("Everyone can use the teleporter.")] private bool _everyone;
