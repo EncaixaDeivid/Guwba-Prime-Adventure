@@ -45,8 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					}
 					float targetDirection = targetPosition - this.transform.position.x;
 					this._movementSide = (short)(targetDirection > 0f ? 1f : -1f);
-					float distance = targetPosition - this.transform.position.x;
-					if (this.enabled && Mathf.Sqrt(distance * distance) > this._distanceToTarget)
+					if (this.enabled && Mathf.Abs(targetPosition - this.transform.position.x) > this._distanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._followSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
