@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
 		private ActionsGuwba _actions;
-		[Header("Interaction Object")]
+		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("The name of the menu scene.")] private string _menuScene;
