@@ -16,10 +16,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		private short _vitality;
 		private bool _invencibility = false;
 		private bool _isDamaged = false;
+		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaHud _guwbaHudObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
-		[SerializeField, Tooltip("The amount of time that Guwba stays invencible.")] private ushort _invencibilityTime;
-		[SerializeField, Tooltip("The value applied to visual when hit is taken.")] private float _invencibilityValue;
+		[SerializeField, Tooltip("The amount of time that Guwba stays invencible.")] private float _invencibilityTime;
+		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is taken.")] private float _hitStopSlow;
