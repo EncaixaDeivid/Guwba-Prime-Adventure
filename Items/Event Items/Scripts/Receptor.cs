@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private ushort _signals = 0;
 		private bool _intercalate = true;
 		private bool _onlyOneActivation = false;
+		[Header("Receptor")]
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
 		[SerializeField, Tooltip("If this will receive a signal from specifics or existent objects.")] private string[] _specificsObjects;
 		[SerializeField, Tooltip("If this will intercalate between active and desactive.")] private bool _intercalateEvents;
