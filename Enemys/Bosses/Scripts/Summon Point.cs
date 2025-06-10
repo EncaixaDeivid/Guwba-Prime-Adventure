@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class SummonPoint : StateController
 	{
 		private UnityAction _getTouch;
+		[Header("Extern Interaction")]
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
 		internal void GetTouch(UnityAction getTouch) => this._getTouch = getTouch;
 		private void OnTriggerEnter2D(Collider2D other)
