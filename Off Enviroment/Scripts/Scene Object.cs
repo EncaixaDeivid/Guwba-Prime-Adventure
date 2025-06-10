@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		[Serializable]
 		internal struct BackgroundImage
 		{
-			[Header("Scene Component")]
+			[Header("Scene Components")]
 			[SerializeField, Tooltip("The main imgae that is placed in the hud.")] private Texture2D _image;
 			[SerializeField, Tooltip("If the dialog will go turned off during the scene.")] private bool _offDialog;
 			[SerializeField, Tooltip("The amount of time that the dialog will be turned off.")] private float _timeToDesapear;
