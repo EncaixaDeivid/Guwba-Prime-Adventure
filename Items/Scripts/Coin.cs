@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class Coin : StateController, ICollectable
 	{
 		private Animator _animator;
+		[Header("Condition")]
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
