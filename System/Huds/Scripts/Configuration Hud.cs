@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
+		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string[] _volumes;
 		[SerializeField, Tooltip("User interface element.")] private string[] _toggles;
 		[SerializeField, Tooltip("User interface element.")] private string _confirmationGroup;
