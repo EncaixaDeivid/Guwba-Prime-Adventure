@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private static DeathScreenController _instance;
 		private DeathScreenHud _deathScreenHud;
 		private readonly Sender _sender = Sender.Create();
+		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
 		public PathConnection PathConnection => PathConnection.Controller;
 		private void Awake()
