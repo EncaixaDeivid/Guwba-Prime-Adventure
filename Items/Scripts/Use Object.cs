@@ -5,8 +5,10 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class UseObject : StateController, IInteractable
     {
 		private Animator _animator;
+		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _use;
+		[Header("Interaction")]
 		[SerializeField, Tooltip("If it have a interaction.")] private bool _isInteractive;
 		private new void Awake()
 		{
