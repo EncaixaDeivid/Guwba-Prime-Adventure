@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Boss Prop")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
+		[Header("Prop Events")]
 		[SerializeField, Tooltip("If this prop will destroy the mais boss after use.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		[SerializeField, Tooltip("If this prop will make a reaction at an index.")] protected bool _indexReact;
