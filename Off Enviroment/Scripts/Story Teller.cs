@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 	{
 		private StorySceneHud _storySceneHud;
 		private ushort _imageIndex = 0;
-		[Header("Scene Object")]
+		[Header("Scene Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the story scene.")] private StorySceneHud _storySceneHudObject;
 		[SerializeField, Tooltip("The object that carry the scene settings.")] private SceneObject _sceneObject;
 		private void UpdateImage()
