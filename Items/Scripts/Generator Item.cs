@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _timeGeneration = 0f;
 		private bool _continueGeneration = true;
 		private bool _stopGenerate = false;
+		[Header("Generation Stats")]
 		[SerializeField, Tooltip("The item to be generated.")] private GameObject _generatedItem;
 		[SerializeField, Tooltip("The amount of items that have to be generated.")] private ushort _quantityToGenerate;
 		[SerializeField, Tooltip("The amount of time to waits to generation.")] private float _generationTime;
