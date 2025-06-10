@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
 	{
+		[Header("Destructive Object")]
 		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
 		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
