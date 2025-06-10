@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Hud
 	internal sealed class MenuHud : MonoBehaviour
 	{
 		private static MenuHud _instance;
-		[Header("Elements")]
+		[Header("Element")]
 		[SerializeField, Tooltip("User interface element.")] private string _buttonsGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _savesGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _playButton;
