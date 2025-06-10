@@ -4,6 +4,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[CreateAssetMenu(fileName = "Summon", menuName = "Scriptable Objects/Summon", order = 1)]
 	public sealed class SummonObject : ScriptableObject
 	{
+		[Header("Components Stats")]
 		[SerializeField, Tooltip("The enemy that will be instantiate.")] private EnemyController _enemySummon;
 		[SerializeField, Tooltip("The projectile that will be instantiate.")] private Projectile _projectileSummon;
 		[SerializeField, Tooltip("The points that the instance can be instantiate.")] private Vector2[] _summonPoints;
