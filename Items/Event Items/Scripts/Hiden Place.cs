@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
 		private Light2DBase _selfLight;
+		[Header("Hidden Place")]
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
