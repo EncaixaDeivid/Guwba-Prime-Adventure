@@ -30,11 +30,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashValue = false;
+		[Header("Scene Interaction")]
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _interactionLayerMask;
 		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
+		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
@@ -45,23 +47,26 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _hold;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
+		[Header("Collider Checkers")]
+		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
+		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
+		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
+		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
+		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the movement.")] private float _acceleration;
 		[SerializeField, Tooltip("The amount of decceleration Guwba will apply to the movement.")] private float _decceleration;
 		[SerializeField, Tooltip("The amount of power the velocity Guwba will apply to the movement.")] private float _velocityPower;
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of movement.")] private float _frictionAmount;
-		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
-		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
-		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
-		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
+		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private float _jumpStrenght;
 		[SerializeField, Tooltip("The amount of time that Guwba can jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can jump when get out of the ground.")] private float _jumpCoyoteTime;
-		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
-		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
+		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		private new void Awake()
 		{
 			base.Awake();
