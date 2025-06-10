@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Item
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
 	internal sealed class Book : StateController, ICollectable
 	{
+		[Header("Conditions")]
 		[SerializeField, Tooltip("The sprite to show when the book gor cacthed.")] private Sprite _bookCacthed;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
