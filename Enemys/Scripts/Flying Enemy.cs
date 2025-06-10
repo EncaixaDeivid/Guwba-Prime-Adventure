@@ -11,13 +11,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointIndex = 0;
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The target this enemy have to pursue.")] private GameObject _target;
-		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
 		[SerializeField, Tooltip("How far this enemy detect any target.")] private float _radiusDetection;
 		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
 		[SerializeField, Tooltip("The time this enemy stay alive during the endless pursue.")] private float _fadeTime;
-		[SerializeField, Tooltip("The speed that this enemy moves to go back to the original point.")] private float _speedReturn;
 		[SerializeField, Tooltip("If this enemy will stop when hit a distance from the target.")] private bool _stopOnTarget;
 		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
+		[Header("Trail Stats")]
+		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
+		[SerializeField, Tooltip("The speed that this enemy moves to go back to the original point.")] private float _speedReturn;
 		[SerializeField, Tooltip("If this enemy pursue only in the horizontal.")] private bool _justHorizontal;
 		[SerializeField, Tooltip("If this enemy pursue only in the vertical.")] private bool _justVertical;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
