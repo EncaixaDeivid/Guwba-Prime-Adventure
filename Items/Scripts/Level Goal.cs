@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Item
 	[RequireComponent(typeof(CircleCollider2D), typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGoal : StateController
 	{
+		[Header("Scene Interactions")]
 		[SerializeField, Tooltip("If this will go direct to the boss.")] private string _goToBoss;
 		[SerializeField, Tooltip("If theres a dialog after the goal.")] private bool _enterInDialog;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
