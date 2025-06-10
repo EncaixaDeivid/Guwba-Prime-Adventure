@@ -45,6 +45,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private ushort _jumpStrenght;
+		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the movement.")] private float _acceleration;
+		[SerializeField, Tooltip("The amount of decceleration Guwba will apply to the movement.")] private float _decceleration;
+		[SerializeField, Tooltip("The amount of power the velocity Guwba will apply to the movement.")] private float _velocityPower;
+		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
@@ -154,7 +158,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (this._movementAction != 0f && movementValue.y != 0f && this._isOnGround && !this._dashValue && !_grabObject)
+			if (this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !this._dashValue && !_grabObject)
 			{
 				if (movementValue.y > 0f)
 					this._dashDirection = 1f;
@@ -175,7 +179,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			if (movementAction.performed && this._movementAction != 0f)
 				this._spriteRenderer.flipX = this._movementAction < 0f;
-			this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
 			this._animator.SetBool(this._walk, this._movementAction != 0f);
 		};
 		private Action<InputAction.CallbackContext> Jump => jumpAction =>
@@ -195,7 +198,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
 				this._isJumping = true;
-				this._rigidbody.AddForceY(this._jumpStrenght);
+				this._rigidbody.AddForceY(this._jumpStrenght * this._rigidbody.mass);
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackRotationConsole =>
@@ -333,8 +336,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
 				this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue * this._dashDirection;
-				float distance = this.transform.position.x - this._dashLocation.x;
-				bool valid = MathF.Sqrt(distance * distance) >= this._dashDistance;
+				bool valid = MathF.Abs(this.transform.position.x - this._dashLocation.x) >= this._dashDistance;
 				if (valid || _grabObject || collision || this._dashMovementValue != this._movementAction || !this._isOnGround)
 				{
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
@@ -344,14 +346,29 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._collider.size = this._normalSize;
 						this._collider.offset = Vector2.zero;
 						if (this._isOnGround)
-							this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + this._normalSize.y / 2f);
+						{
+							float amountToMove = this.transform.position.y + this._normalSize.y / 2f;
+							this.transform.position = new Vector2(this.transform.position.x, amountToMove);
+						}
 					}
 					else if (this._dashDirection < 0f)
 						this._animator.SetFloat(this._backDash, 1f);
 				}
 			}
 			else
-				this._rigidbody.linearVelocityX = this._movementAction * this._movementSpeed;
+			{
+				float targetSpeed = this._movementSpeed * this._movementAction;
+				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
+				float accelerationRate = Mathf.Abs(targetSpeed) > 0.01f ? this._acceleration : this._decceleration;
+				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
+				this._rigidbody.AddForceX(movement);
+			}
+			if (this._isOnGround && Mathf.Abs(this._movementAction) < 0.01f)
+			{
+				float amount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
+				amount *= Mathf.Sign(this._rigidbody.linearVelocityX);
+				this._rigidbody.AddForceX(-amount, ForceMode2D.Impulse);
+			}
 			this._isOnGround = false;
 		}
 		private void OnCollision()
