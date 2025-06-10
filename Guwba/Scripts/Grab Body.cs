@@ -2,20 +2,20 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Effects;
 namespace GuwbaPrimeAdventure.Guwba
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer))]
+	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
 	public sealed class GrabBody : StateController
 	{
 		private Rigidbody2D _rigidbody;
-		private Collider2D[] _colliders;
 		private Transform _parent;
+		private Collider2D[] _colliders;
 		private LayerMask[,] _layerMasks;
 		private Vector2 _guardVelocity = new();
 		private bool[] _isTrigger;
 		private int _layer;
 		private float _gravityScale = 0f;
 		private bool _isThrew = false;
-		[Header("Grab Body")]
+		[Header("Throw Stats")]
 		[SerializeField, Tooltip("The layers that the object will can collide.")] private LayerMask _hitLayers;
 		[SerializeField, Tooltip("The layers that the object will cannot collide.")] private LayerMask _noHitLayers;
 		[SerializeField, Tooltip("The amount of speed that the object will be throw.")] private ushort _throwSpeed;
@@ -25,6 +25,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given at throw.")] private float _throwHitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given at throw.")] private float _throwHitSlowTime;
 		[SerializeField, Tooltip("The amount of time that is given to the object to fade away.")] private float _fadeTime;
+		[Header("Object Stats")]
 		[SerializeField, Tooltip("Indicates if the object is grabtable.")] private bool _isNotGrabtable;
 		[SerializeField, Tooltip("Indicates if the object is damageable.")] private bool _isDamageable;
 		[SerializeField, Tooltip("Indicates if the object is indestructible.")] private bool _isIndestructible;
