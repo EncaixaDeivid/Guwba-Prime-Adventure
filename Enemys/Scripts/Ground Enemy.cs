@@ -11,17 +11,18 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _runnedTimes = 0;
 		private float _timeRun = 0f;
 		[Header("Ground Enemy")]
-		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
+		[SerializeField, Tooltip("The distance to check for the block perception.")] private float _blockDistance;
 		[SerializeField, Tooltip("If this enemy will do some action when look to a target.")] private bool _useFaceLook;
+		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runTowardsAfter;
 		[SerializeField, Tooltip("Will become invencible while pursuing a target.\nRequires: Defender Enemy")] private bool _invenciblePursue;
-		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
-		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
+		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
-		[SerializeField, Tooltip("The distance to check for the block perception.")] private float _blockDistance;
+		[Header("Crawl Movement")]
+		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
 		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
 		public PathConnection PathConnection => PathConnection.Enemy;
