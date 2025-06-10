@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Item
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class HarmfulSurface : StateController
 	{
+		[Header("Interactions")]
 		[SerializeField, Tooltip("The damage the surface hits.")] private ushort _damage;
 		[SerializeField, Tooltip("If anything can be damaged")] private bool _everyone;
 		private void OnCollision(GameObject collisionObject)
