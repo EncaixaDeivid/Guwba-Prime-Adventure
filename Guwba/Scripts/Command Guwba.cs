@@ -24,6 +24,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private float _yMovement = 0f;
 		private float _dashDirection = 0f;
 		private float _dashMovementValue = 0f;
+		private float _lastGroundedTime = 0f;
+		private float _lastJumpTime = 0f;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
@@ -43,8 +45,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _hold;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
-		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private ushort _movementSpeed;
-		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private ushort _jumpStrenght;
+		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the movement.")] private float _acceleration;
 		[SerializeField, Tooltip("The amount of decceleration Guwba will apply to the movement.")] private float _decceleration;
 		[SerializeField, Tooltip("The amount of power the velocity Guwba will apply to the movement.")] private float _velocityPower;
@@ -56,6 +57,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _amountToFall;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of time that Guwba can jump before thouching ground.")] private float _jumpBufferTime;
+		[SerializeField, Tooltip("The amount of time that Guwba can jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		private new void Awake()
@@ -183,23 +187,21 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> Jump => jumpAction =>
 		{
-			if (this._isOnGround || _grabObject)
+			if (_grabObject && !this._isOnGround)
 			{
-				if (_grabObject && !this._isOnGround)
-				{
-					this._animator.SetBool(this._hold, false);
-					GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
-					_grabObject.transform.position = (Vector2)this.transform.position + -(Vector2)this.transform.up;
-					_grabObject.Throw(-this.transform.up);
-					_grabObject = null;
-					GuwbaAstral<VisualGuwba>._grabObject = null;
-					GuwbaAstral<AttackGuwba>._grabObject = null;
-				}
+				this._animator.SetBool(this._hold, false);
+				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
+				_grabObject.transform.position = (Vector2)this.transform.position + -(Vector2)this.transform.up;
+				_grabObject.Throw(-this.transform.up);
+				_grabObject = null;
+				GuwbaAstral<VisualGuwba>._grabObject = null;
+				GuwbaAstral<AttackGuwba>._grabObject = null;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._isJumping = true;
-				this._rigidbody.AddForceY(this._jumpStrenght * this._rigidbody.mass);
+				this._rigidbody.AddForceY(this._jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
+			else
+				this._lastJumpTime = this._jumpBufferTime;
 		};
 		private Action<InputAction.CallbackContext> AttackRotationConsole =>
 			attackAction => this._attackValue = attackAction.ReadValue<Vector2>();
@@ -261,7 +263,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
-			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && !this._isJumping)
+			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f)
 			{
 				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
@@ -277,8 +279,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._walk, this._movementAction != 0f);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				this._rigidbody.gravityScale = this._gravityScale;
+				this._lastGroundedTime = this._jumpCoyoteTime;
 				this._downStairs = true;
+				this._isJumping = false;
 			}
 			else if (this._rigidbody.linearVelocityY > 0f && !downStairs)
 			{
@@ -287,7 +290,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._jump, true);
 				this._animator.SetBool(this._fall, false);
 				this._rigidbody.gravityScale = this._gravityScale;
-				this._isJumping = false;
+				this._lastGroundedTime -= Time.fixedDeltaTime;
+				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
 			}
 			else if (this._rigidbody.linearVelocityY < 0f && !downStairs)
@@ -300,7 +304,8 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._rigidbody.gravityScale += this._gravityScale * this._amountToFall * Time.fixedDeltaTime;
 				else
 					this._rigidbody.gravityScale = this._gravityScale * this._amountToFall;
-				this._isJumping = false;
+				this._lastGroundedTime -= Time.fixedDeltaTime;
+				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
 			}
 			if (this._movementAction != 0f)
@@ -368,6 +373,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				float amount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				amount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-amount, ForceMode2D.Impulse);
+			}
+			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
+			{
+				this._isJumping = true;
+				this._rigidbody.gravityScale = this._gravityScale;
+				this._rigidbody.linearVelocityY = 0f;
+				this._rigidbody.AddForceY(this._jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
 		}
