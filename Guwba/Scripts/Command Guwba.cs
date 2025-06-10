@@ -54,7 +54,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallMultiply;
+		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of strenght that Guwba can jump.")] private float _jumpStrenght;
@@ -289,7 +289,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
 				this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
-				this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? this._gravityScale * this._fallMultiply : this._gravityScale;
+				float fallGravity = this._fallGravityMultiply * this._gravityScale;
+				this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? fallGravity : this._gravityScale;
 				this._lastGroundedTime -= Time.fixedDeltaTime;
 				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
