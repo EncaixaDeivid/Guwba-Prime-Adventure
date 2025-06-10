@@ -308,31 +308,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
 			}
-			if (this._movementAction != 0f)
-			{
-				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
-				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
-				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
-				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
-				Vector2 bottomSize = new(this._wallChecker, rootHeight - .1f);
-				float angle = this.transform.eulerAngles.z;
-				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, angle, this._groundLayerMask);
-				if (bottomCollider && !Physics2D.OverlapBox(topPosition, topSize, angle, this._groundLayerMask))
-				{
-					float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
-					float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
-					Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
-					Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
-					RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayerMask);
-					if (lineWallStep && lineWallStep.collider == bottomCollider)
-					{
-						float xDistance = this.transform.position.x + this._wallChecker * movementValue;
-						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
-						this.transform.position = new Vector2(xDistance, yDistance);
-					}
-				}
-			}
 			if (this._dashValue)
 			{
 				float xDirection = this._dashMovementValue * this._dashDirection;
@@ -373,6 +348,32 @@ namespace GuwbaPrimeAdventure.Guwba
 				float amount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				amount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-amount, ForceMode2D.Impulse);
+			}
+			if (this._movementAction != 0f)
+			{
+				this._spriteRenderer.flipX = this._movementAction < 0f;
+				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
+				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
+				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
+				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
+				Vector2 bottomSize = new(this._wallChecker, rootHeight - .1f);
+				float angle = this.transform.eulerAngles.z;
+				Collider2D bottomCollider = Physics2D.OverlapBox(bottomPosition, bottomSize, angle, this._groundLayerMask);
+				if (bottomCollider && !Physics2D.OverlapBox(topPosition, topSize, angle, this._groundLayerMask))
+				{
+					float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
+					float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
+					Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
+					Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
+					RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayerMask);
+					if (lineWallStep && lineWallStep.collider == bottomCollider)
+					{
+						float xDistance = this.transform.position.x + this._wallChecker * movementValue;
+						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
+						this.transform.position = new Vector2(xDistance, yDistance);
+						this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+					}
+				}
 			}
 			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
 			{
