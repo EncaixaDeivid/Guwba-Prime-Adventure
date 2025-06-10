@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 	[Serializable]
 	internal struct Dialog
 	{
-		[Header("Dialog Component")]
+		[Header("Dialog Components")]
 		[SerializeField, Tooltip("The collection of the object that contais the speach.")] private Speach[] _speach;
 		[SerializeField, Tooltip("The scene to trancision to after the speach.")] private string _sceneToTransition;
 		[SerializeField, Tooltip("The animation to play after the speach.")] private string _animation;
@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure.OffEnviroment
 		[Serializable]
 		internal struct Speach
 		{
-			[Header("Speach Component")]
+			[Header("Speach Components")]
 			[SerializeField, Tooltip("The image icon of the character that is speaking.")] private Sprite _model;
 			[SerializeField, Tooltip("The name of the character that is speaking.")] private string _characterName;
 			[SerializeField, TextArea(1, 12), Tooltip("The speach of the character that is speaking.")] private string _speachText;
