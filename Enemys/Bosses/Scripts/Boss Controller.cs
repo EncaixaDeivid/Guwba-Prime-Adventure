@@ -19,15 +19,18 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Boss Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
+		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _walk;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _dash;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
+		[Header("Boss Stats")]
 		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("The amount of speed to move the boss.")] protected ushort _movementSpeed;
 		[SerializeField, Tooltip("The maount of damage to hit the target.")] private ushort _damage;
 		[SerializeField, Tooltip("If the boss will move firstly to the left.")] protected bool _invertMovementSide;
+		[Header("Boss Events")]
 		[SerializeField, Tooltip("If this boss has a toggle atribute to switch.")] protected bool _hasToggle;
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] protected bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will react to any damage taken.")] protected bool _reactToDamage;
@@ -69,7 +72,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			Vector2 point = new(this.transform.position.x, this.transform.position.y - this._collider.bounds.extents.y - this._groundSize / 2f);
 			Vector2 size = new(this._collider.bounds.size.x - 0.025f, this._groundSize);
-			return Physics2D.OverlapBox(point, size, this.transform.rotation.eulerAngles.z, this._groundLayer);
+			return Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayer);
 		}
 		protected void FixedUpdate()
 		{
