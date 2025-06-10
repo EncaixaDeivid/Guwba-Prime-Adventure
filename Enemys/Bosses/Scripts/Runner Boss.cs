@@ -38,10 +38,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			yield return new WaitUntil(() =>
 			{
 				this._rigidybody.linearVelocity = this.enabled ? this._dashSpeed * this._movementSide * Vector2.right : Vector2.zero;
-				float distance = this.transform.position.x - actualPosition;
 				if (this._blockPerception)
-					this._runnedDistance += Mathf.Sqrt(distance * distance);
-				return Mathf.Sqrt(distance * distance) + this._runnedDistance >= this._dashDistance && this.enabled;
+					this._runnedDistance += Mathf.Abs(this.transform.position.x - actualPosition);
+				return Mathf.Abs(this.transform.position.x - actualPosition) + this._runnedDistance >= this._dashDistance && this.enabled;
 			});
 			this._runnedDistance = 0f;
 			this._dashIsOn = false;
