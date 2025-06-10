@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private Animator _animator;
 		private bool _useOneActivation = false;
+		[Header("Activator")]
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
 		[SerializeField, Tooltip("Animation parameter.")] private string _use;
 		[SerializeField, Tooltip("Animation parameter.")] private string _useOne;
