@@ -1,15 +1,17 @@
 using UnityEngine;
+using Unity.Jobs;
 using System.Collections;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Collider2D), typeof(Receptor))]
-	internal sealed class Teleporter : StateController, Receptor.IReceptor, IInteractable
+	internal sealed class Teleporter : StateController, IJob, IInteractable
 	{
 		private Collider2D _collider;
+		private Coroutine _timerCoroutine;
 		private ushort _index = 0;
-		private bool _active = true;
+		private bool _active = false;
 		[Header("Teleporter")]
 		[SerializeField, Tooltip("The locations that Guwba can teleport to.")] private Vector2[] _locations;
 		[SerializeField, Tooltip("If it have to interact to teleport.")] private bool _isInteractive;
@@ -28,6 +30,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			yield return new WaitTime(this, this._timeToUse);
 			this._active = activeValue;
+			this._timerCoroutine = null;
 		}
 		private IEnumerator Timer()
 		{
@@ -44,19 +47,16 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					break;
 				}
 		}
-		public void ActivationEvent()
+		public void Execute()
 		{
+			this._active = !this._active;
 			if (this._useTimer)
-				this.StartCoroutine(this.Timer(true));
-			else
-				this._active = true;
-		}
-		public void DesactivationEvent()
-		{
-			if (this._useTimer)
-				this.StartCoroutine(this.Timer(false));
-			else
-				this._active = false;
+			{
+				if (this._timerCoroutine == null)
+					this._timerCoroutine = this.StartCoroutine(this.Timer(this._active));
+				else
+					this.StopCoroutine(this._timerCoroutine);
+			}
 		}
 		public void Interaction()
 		{
