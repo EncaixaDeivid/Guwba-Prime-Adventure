@@ -1,21 +1,20 @@
 using UnityEngine;
+using Unity.Jobs;
 using System.Collections;
 using System.Collections.Generic;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptor))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IJob))]
 	internal sealed class Receptor : StateController
 	{
 		private readonly List<Activator> _usedActivators = new();
-		private IReceptor _receptor;
+		private IJob _receptor;
 		private ushort _signals = 0;
-		private bool _intercalate = true;
 		private bool _onlyOneActivation = false;
 		[Header("Receptor")]
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
 		[SerializeField, Tooltip("If this will receive a signal from specifics or existent objects.")] private string[] _specificsObjects;
-		[SerializeField, Tooltip("If this will intercalate between active and desactive.")] private bool _intercalateEvents;
 		[SerializeField, Tooltip("If this will activate for every activator activated.")] private bool _1X1;
 		[SerializeField, Tooltip("If is needed only one activator to activate.")] private bool _oneNeeded;
 		[SerializeField, Tooltip("If it will be inactive after one activation")] private bool _oneActivation;
@@ -25,26 +24,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._receptor = this.GetComponent<IReceptor>();
+			this._receptor = this.GetComponent<IJob>();
 			SaveController.Load(out SaveFile saveFile);
 			if (this._specificsObjects.Length > 0f)
 				foreach (string specificObject in this._specificsObjects)
 					if (saveFile.generalObjects.Contains(specificObject))
 						this.Activate();
 		}
-		private void Activate()
-		{
-			if (this._intercalate)
-			{
-				this._intercalate = !this._intercalateEvents;
-				this._receptor.ActivationEvent();
-			}
-			else if (this._intercalateEvents && !this._intercalate)
-			{
-				this._intercalate = true;
-				this._receptor.DesactivationEvent();
-			}
-		}
+		private void Activate() => this._receptor.Execute();
 		private void NormalSignal(Activator signalActivator)
 		{
 			if (this._onlyOneActivation)
@@ -107,10 +94,5 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.NormalSignal(signalActivator);
 			}
 		}
-		internal interface IReceptor
-		{
-			public void ActivationEvent();
-			public void DesactivationEvent();
-		};
 	};
 };
