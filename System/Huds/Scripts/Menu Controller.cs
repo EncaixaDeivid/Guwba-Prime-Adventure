@@ -75,9 +75,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions = new ActionsGuwba();
 			this._actions.commands.hideHud.canceled += this.HideHudAction;
 			this._actions.commands.hideHud.Enable();
-			this._sender.SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
+			this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
 		};
-		private Action OpenConfigurations => () => this._sender.SetConnectionState(ConnectionState.Enable).SetToggle(true).Send();
+		private Action OpenConfigurations => () => this._sender.SetStateForm(StateForm.Enable).SetToggle(true).Send();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -86,7 +86,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._actions.commands.hideHud.canceled -= this.HideHudAction;
 			this._actions.commands.hideHud.Disable();
 			this._actions.Dispose();
-			this._sender.SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
+			this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
