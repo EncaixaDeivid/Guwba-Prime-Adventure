@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._sender.SetToWhereConnection(PathConnection.Character).SetConnectionState(ConnectionState.Enable).SetToggle(true);
+			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Enable).SetToggle(true);
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -46,7 +46,7 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.ConnectionState == ConnectionState.Disable)
+			if (data.StateForm == StateForm.Disable)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
@@ -61,7 +61,7 @@ namespace GuwbaPrimeAdventure.Hud
 					this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
 				}
 			}
-			else if (data.ConnectionState == ConnectionState.Enable)
+			else if (data.StateForm == StateForm.Enable)
 				if (this._deathScreenHud)
 				{
 					this._deathScreenHud.Continue.clicked -= this.Continue;
