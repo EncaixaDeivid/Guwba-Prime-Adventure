@@ -182,13 +182,13 @@ namespace GuwbaPrimeAdventure.Hud
 		public void Receive(DataConnection data, object additionalData)
 		{
 			bool hasToggle = data.ToggleValue.HasValue && data.ToggleValue.Value;
-			if (this.gameObject.scene.name == this._menuScene && data.ConnectionState == ConnectionState.Enable && hasToggle)
+			if (this.gameObject.scene.name == this._menuScene && data.StateForm == StateForm.Enable && hasToggle)
 				this.OpenCloseConfigurations();
-			else if (data.ConnectionState == ConnectionState.Disable && hasToggle)
+			else if (data.StateForm == StateForm.Disable && hasToggle)
 				this._actions.commands.hideHud.Disable();
-			if ((data.ConnectionState == ConnectionState.Action || data.ConnectionState == ConnectionState.Enable) && hasToggle)
+			if ((data.StateForm == StateForm.Action || data.StateForm == StateForm.Enable) && hasToggle)
 				this._actions.commands.hideHud.Enable();
-			else if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 				this._actions.commands.hideHud.Disable();
 		}
 	};
