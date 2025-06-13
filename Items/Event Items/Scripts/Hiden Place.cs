@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
+using Unity.Jobs;
 using System.Collections;
 using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(PolygonCollider2D), typeof(Receptor))]
-	internal sealed class HidenPlace : StateController, Receptor.IReceptor
+	internal sealed class HidenPlace : StateController, IJob
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
@@ -58,7 +59,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._hasColliders)
 				this._collider.enabled = appear;
 		}
-		public void ActivationEvent()
+		public void Execute()
 		{
 			if (this._timeToFadeAppearAgain > 0f)
 				this.StartCoroutine(FadeTimed(!this._fadeActivation));
@@ -70,13 +71,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				yield return new WaitTime(this, this._timeToFadeAppearAgain);
 				this.StartCoroutine(this.Fade(!appear));
 			}
-		}
-		public void DesactivationEvent()
-		{
-			if (this._fadeActivation)
-				this.StartCoroutine(this.Fade(true));
-			else
-				this.StartCoroutine(this.Fade(false));
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
