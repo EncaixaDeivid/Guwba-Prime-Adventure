@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Connection
 		Controller,
 		Dialog
 	};
-	public enum ConnectionState
+	public enum StateForm
 	{
 		None,
 		State,
