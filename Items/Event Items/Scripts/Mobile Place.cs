@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Unity.Jobs;
 using System.Collections;
 using System.Linq;
 namespace GuwbaPrimeAdventure.Item.EventItem
@@ -7,8 +8,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
 	[RequireComponent(typeof(TilemapCollider2D), typeof(Rigidbody2D), typeof(CompositeCollider2D))]
 	[RequireComponent(typeof(BoxCollider2D), typeof(Receptor))]
-	internal sealed class MobilePlace : StateController, Receptor.IReceptor
+	internal sealed class MobilePlace : StateController, IJob
 	{
+		private Coroutine _movementCoroutine;
 		private bool _touchActivate = false;
 		private ushort _actualPoint = 0;
 		[Header("Mobile Place")]
@@ -62,6 +64,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				}
 			}
 			while (this._executeAlways);
+			this._movementCoroutine = null;
 		}
 		private IEnumerator Movement1X1()
 		{
@@ -74,17 +77,17 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				return (Vector2)this.transform.position == point && this.enabled;
 			});
 		}
-		public void ActivationEvent()
+		public void Execute()
 		{
 			if (this._execution1X1)
 				this.StartCoroutine(this.Movement1X1());
 			else
-				this.StartCoroutine(this.Movement());
-		}
-		public void DesactivationEvent()
-		{
-			if (!this._execution1X1)
-				this.StopCoroutine(this.Movement());
+			{
+				if (this._movementCoroutine == null)
+					this._movementCoroutine = this.StartCoroutine(this.Movement());
+				else
+					this.StopCoroutine(this._movementCoroutine);
+			}
 		}
 		private void EnterOnTrigger()
 		{
