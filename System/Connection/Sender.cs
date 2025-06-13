@@ -1,6 +1,4 @@
-using Unity.Jobs;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 namespace GuwbaPrimeAdventure.Connection
 {
 	public sealed class Sender
@@ -9,21 +7,19 @@ namespace GuwbaPrimeAdventure.Connection
 		{
 			this._toWhereConnection = PathConnection.None;
 			this._stateForm = StateForm.None;
-			this.additionalData = null;
+			this._additionalData = null;
 			this._toggleValue = null;
 			this._indexValue = null;
 		}
 		private static readonly List<IConnector> _connectors = new();
-		private IConnector _connectionToIgnore;
 		private PathConnection _toWhereConnection;
 		private StateForm _stateForm;
-		private object additionalData;
+		private object _additionalData;
 		private bool? _toggleValue;
 		private uint? _indexValue;
 		internal static IReadOnlyList<IConnector> Connectors => _connectors.AsReadOnly();
-		internal IConnector ConnectionToIgnore => this._connectionToIgnore;
 		internal PathConnection ToWhereConnection => this._toWhereConnection;
-		internal object AdditionalData => this.additionalData;
+		internal object AdditionalData => this._additionalData;
 		public static void Include(IConnector connector)
 		{
 			if (!_connectors.Contains(connector))
@@ -35,14 +31,9 @@ namespace GuwbaPrimeAdventure.Connection
 				_connectors.Remove(connector);
 		}
 		public static Sender Create() => new();
-		public Sender SetObjectToIgnore(IConnector instanceToIgnore)
-		{
-			this._connectionToIgnore = instanceToIgnore;
-			return this;
-		}
 		public Sender SetAdditionalData(object additionalData)
 		{
-			this.additionalData = additionalData;
+			this._additionalData = additionalData;
 			return this;
 		}
 		public Sender SetToWhereConnection(PathConnection toWhereConnection)
@@ -66,13 +57,12 @@ namespace GuwbaPrimeAdventure.Connection
 			this._indexValue = indexValue;
 			return this;
 		}
-		public async void Send()
+		public void Send()
 		{
-			SenderPoperties senderPoperties = new(this._connectionToIgnore, this._toWhereConnection, this.additionalData);
-			DataConnection dataConnection = new(senderPoperties, this._stateForm, this._toggleValue, this._indexValue);
-			JobHandle jobHandle = dataConnection.Schedule();
-			await Task.Yield();
-			jobHandle.Complete();
+			DataConnection dataConnection = new(this._stateForm, this._toggleValue, this._indexValue);
+			foreach (IConnector connector in Sender.Connectors)
+				if (connector.PathConnection == this._toWhereConnection)
+					connector.Receive(dataConnection, this._additionalData);
 		}
 	};
 };
