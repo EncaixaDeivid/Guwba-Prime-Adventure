@@ -1,4 +1,6 @@
+using Unity.Jobs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace GuwbaPrimeAdventure.Connection
 {
 	public sealed class Sender
@@ -64,6 +66,12 @@ namespace GuwbaPrimeAdventure.Connection
 			this._indexValue = indexValue;
 			return this;
 		}
-		public void Send() => new DataConnection(this, this._stateForm, this._toggleValue, this._indexValue).Execute();
+		public async void Send()
+		{
+			DataConnection dataConnection = new(this, this._stateForm, this._toggleValue, this._indexValue);
+			JobHandle jobHandle = dataConnection.Schedule();
+			await Task.Yield();
+			jobHandle.Complete();
+		}
 	};
 };
