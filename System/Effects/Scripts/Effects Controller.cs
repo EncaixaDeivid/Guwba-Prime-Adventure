@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Effects
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
