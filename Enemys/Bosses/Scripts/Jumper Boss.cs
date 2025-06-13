@@ -57,7 +57,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateFo	rm.Action);
 			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
 			{
@@ -112,9 +112,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Receive(data, additionalData);
 			BossType bossType = (BossType)additionalData;
 			if (bossType.HasFlag(BossType.Jumper) || bossType.HasFlag(BossType.All))
-				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
+				if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopJump = !data.ToggleValue.Value;
-				else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage)
+				else if (data.StateForm == StateForm.Action && this._reactToDamage)
 				{
 					if (this._stopMoveReact)
 					{
