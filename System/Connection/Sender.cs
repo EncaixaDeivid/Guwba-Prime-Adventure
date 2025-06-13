@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Connection
 			this._toWhereConnection = toWhereConnection;
 			return this;
 		}
-		public Sender SetConnectionState(StateForm stateForm)
+		public Sender SetStateForm(StateForm stateForm)
 		{
 			this._stateForm = stateForm;
 			return this;
