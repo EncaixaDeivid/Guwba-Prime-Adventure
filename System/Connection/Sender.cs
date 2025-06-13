@@ -6,18 +6,22 @@ namespace GuwbaPrimeAdventure.Connection
 		private Sender()
 		{
 			this._toWhereConnection = PathConnection.None;
-			this._connectionState = ConnectionState.None;
+			this._stateForm = StateForm.None;
 			this.additionalData = null;
 			this._toggleValue = null;
 			this._indexValue = null;
 		}
+		private static readonly List<IConnector> _connectors = new();
 		private IConnector _connectionToIgnore;
 		private PathConnection _toWhereConnection;
-		private ConnectionState _connectionState;
+		private StateForm _stateForm;
 		private object additionalData;
 		private bool? _toggleValue;
 		private uint? _indexValue;
-		private static readonly List<IConnector> _connectors = new();
+		internal static IReadOnlyList<IConnector> Connectors => _connectors.AsReadOnly();
+		internal IConnector ConnectionToIgnore => this._connectionToIgnore;
+		internal PathConnection ToWhereConnection => this._toWhereConnection;
+		internal object AdditionalData => this.additionalData;
 		public static void Include(IConnector connector)
 		{
 			if (!_connectors.Contains(connector))
@@ -44,9 +48,9 @@ namespace GuwbaPrimeAdventure.Connection
 			this._toWhereConnection = toWhereConnection;
 			return this;
 		}
-		public Sender SetConnectionState(ConnectionState connectionState)
+		public Sender SetConnectionState(StateForm stateForm)
 		{
-			this._connectionState = connectionState;
+			this._stateForm = stateForm;
 			return this;
 		}
 		public Sender SetToggle(bool value)
@@ -60,15 +64,6 @@ namespace GuwbaPrimeAdventure.Connection
 			this._indexValue = indexValue;
 			return this;
 		}
-		public void Send()
-		{
-			DataConnection dataConnection = new(this._connectionState, this._toggleValue, this._indexValue);
-			foreach (IConnector connector in _connectors)
-			{
-				if (connector == this._connectionToIgnore || connector.PathConnection != this._toWhereConnection)
-					continue;
-				connector.Receive(dataConnection, this.additionalData);
-			}
-		}
+		public void Send() => new DataConnection(this, this._stateForm, this._toggleValue, this._indexValue).Execute();
 	};
 };
