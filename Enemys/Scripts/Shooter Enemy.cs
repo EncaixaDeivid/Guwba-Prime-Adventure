@@ -58,13 +58,13 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				this._shootInterval = this._intervalToShoot;
 				if (this._invencibleShoot)
-					this._sender.SetConnectionState(ConnectionState.Action).SetToggle(true).Send();
+					this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
 				if (this._stop)
 				{
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					this._sender.SetConnectionState(ConnectionState.State).SetToggle(false).Send();
+					this._sender.SetStateForm(StateForm.State).SetToggle(false).Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
@@ -95,9 +95,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
-				this._sender.SetConnectionState(ConnectionState.State).SetToggle(true).Send();
+				this._sender.SetStateForm(StateForm.State).SetToggle(true).Send();
 				if (this._invencibleShoot)
-					this._sender.SetConnectionState(ConnectionState.Action).SetToggle(false).Send();
+					this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
