@@ -53,7 +53,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(BossType.Runner | BossType.Jumper);
 			this._gravityScale = this._rigidybody.gravityScale;
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
@@ -95,9 +95,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
 			{
 				bool has = data.IndexValue.HasValue && this._hasIndex;
-				if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue && this._hasToggle)
+				if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopSummon = !data.ToggleValue.Value;
-				else if (data.ConnectionState == ConnectionState.Action && this._reactToDamage && this._eventSummons.Length > 0f)
+				else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
 					if (this._randomReactSummons)
 					{
 						ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
