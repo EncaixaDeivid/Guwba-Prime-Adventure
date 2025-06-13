@@ -136,16 +136,16 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > 0f; i--)
 				{
-					this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(0.3764706f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(96f / 255f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
 				}
 				this._invencibility = true;
 				this._vitality = (short)this._guwbaHud.Vitality;
 				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
-				this.ManualInvencibility.Invoke(true);
+				this.StartCoroutine(this.Invencibility());
 			}
 		}
 	};
