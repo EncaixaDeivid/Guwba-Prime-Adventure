@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(IInteractable), typeof(Transitioner))]
 	internal sealed class WeakBoss : BossController, IDamageable
 	{
 		private readonly Sender _sender = Sender.Create();
