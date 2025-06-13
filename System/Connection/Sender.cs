@@ -68,7 +68,8 @@ namespace GuwbaPrimeAdventure.Connection
 		}
 		public async void Send()
 		{
-			DataConnection dataConnection = new(this, this._stateForm, this._toggleValue, this._indexValue);
+			SenderPoperties senderPoperties = new(this._connectionToIgnore, this._toWhereConnection, this.additionalData);
+			DataConnection dataConnection = new(senderPoperties, this._stateForm, this._toggleValue, this._indexValue);
 			JobHandle jobHandle = dataConnection.Schedule();
 			await Task.Yield();
 			jobHandle.Complete();
