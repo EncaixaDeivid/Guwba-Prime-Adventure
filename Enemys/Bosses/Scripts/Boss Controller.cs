@@ -30,6 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The amount of speed to move the boss.")] protected ushort _movementSpeed;
 		[SerializeField, Tooltip("The maount of damage to hit the target.")] private ushort _damage;
 		[SerializeField, Tooltip("If the boss will move firstly to the left.")] protected bool _invertMovementSide;
+		[SerializeField, Tooltip("If this boss will not do damage.")] private bool _noDealDamage;
 		[Header("Boss Events")]
 		[SerializeField, Tooltip("If this boss has a toggle atribute to switch.")] protected bool _hasToggle;
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] protected bool _hasIndex;
@@ -99,7 +100,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if (collision.TryGetComponent<IDamageable>(out var damageable))
+			if (!this._noDealDamage && collision.TryGetComponent<IDamageable>(out var damageable))
 				damageable.Damage(this._damage);
 		}
 		public void Receive(DataConnection data, object additionalData)
