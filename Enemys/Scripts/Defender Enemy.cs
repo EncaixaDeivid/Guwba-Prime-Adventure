@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.State);
+			this._sender.SetToWhereConnection(PathConnection.Enemy).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this.gameObject);
 			this._timeOperation = this._timeToInvencible;
 			Sender.Include(this);
@@ -68,7 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
-			if (data.ConnectionState == ConnectionState.Action && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 				if (this._useAlternatedTime && data.ToggleValue.Value)
 					this._invencible = true;
 				else
