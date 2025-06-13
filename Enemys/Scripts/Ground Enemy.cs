@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._timeRun = this._timesToRun;
-			this._sender.SetToWhereConnection(PathConnection.Enemy).SetConnectionState(ConnectionState.Action);
+			this._sender.SetToWhereConnection(PathConnection.Enemy).SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(this.gameObject);
 			Sender.Include(this);
 		}
@@ -117,7 +117,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
-			if (data.ConnectionState == ConnectionState.State && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this._stopMovement = !data.ToggleValue.Value;
 		}
 	};
