@@ -3,8 +3,7 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Transitioner)), RequireComponent(typeof(IInteractable))]
+	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 	internal abstract class BossController : StateController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
