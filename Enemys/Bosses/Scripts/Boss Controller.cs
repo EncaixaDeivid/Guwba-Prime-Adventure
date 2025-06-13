@@ -46,7 +46,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(BossType.Runner).SetToggle(true);
 			Sender.Include(this);
 		}
@@ -105,7 +105,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public void Receive(DataConnection data, object additionalData)
 		{
 			BossType bossType = (BossType)additionalData;
-			if (bossType.HasFlag(BossType.Controller) && data.ConnectionState == ConnectionState.Disable && !_isDeafeted)
+			if (bossType.HasFlag(BossType.Controller) && data.StateForm == StateForm.Disable && !_isDeafeted)
 			{
 				_isDeafeted = true;
 				SaveController.Load(out SaveFile saveFile);
