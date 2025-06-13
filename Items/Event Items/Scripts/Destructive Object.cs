@@ -1,9 +1,10 @@
 using UnityEngine;
+using Unity.Jobs;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
+	internal sealed class DestructiveObject : StateController, IJob, IDamageable
 	{
 		[Header("Destructive Object")]
 		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
@@ -20,14 +21,13 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
 		}
-		public void ActivationEvent()
+		public void Execute()
 		{
 			if (this._hiddenObject)
 				Instantiate(this._hiddenObject, this.transform.position, this._hiddenObject.transform.rotation);
 			this.SaveObject();
 			Destroy(this.gameObject);
 		}
-		public void DesactivationEvent() => this.ActivationEvent();
 		private void SaveObject()
 		{
 			SaveController.Load(out SaveFile saveFile);
