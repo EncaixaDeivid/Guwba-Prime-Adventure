@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetConnectionState(ConnectionState.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(BossType.All);
 		}
 		private new void OnDestroy()
@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				Sender sender = Sender.Create();
 				sender.SetToWhereConnection(PathConnection.Boss).SetAdditionalData(BossType.Controller);
-				sender.SetConnectionState(ConnectionState.Disable).Send();
+				sender.SetStateForm(StateForm.Disable).Send();
 			}
 		}
 		public bool Damage(ushort damage)
