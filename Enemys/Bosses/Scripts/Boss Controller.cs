@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
@@ -119,6 +120,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			}
 		}
 	};
+	[Flags]
 	internal enum BossType
 	{
 		None,
