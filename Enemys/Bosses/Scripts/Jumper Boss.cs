@@ -57,7 +57,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateFo	rm.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
 			{
@@ -69,7 +69,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
+						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled);
+						if (this._stopJump)
+							yield break;
 						if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
 						{
 							if (this._jumpPointStructures[index].JumpStats.StopMove)
