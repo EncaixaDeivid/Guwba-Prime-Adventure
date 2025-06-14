@@ -37,7 +37,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
 			yield return new WaitUntil(() =>
 			{
-				this._rigidybody.linearVelocity = this.enabled ? this._dashSpeed * this._movementSide * Vector2.right : Vector2.zero;
+				Vector2 linearVelocity = new(this._dashSpeed * this._movementSide, this._rigidybody.linearVelocity.y);
+				this._rigidybody.linearVelocity = this.enabled ? linearVelocity : Vector2.zero;
 				if (this._blockPerception)
 					this._runnedDistance += Mathf.Abs(this.transform.position.x - actualPosition);
 				return Mathf.Abs(this.transform.position.x - actualPosition) + this._runnedDistance >= this._dashDistance && this.enabled;
@@ -91,8 +92,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (GuwbaAstral<CommandGuwba>.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
-			Vector2 size = new(this._collider.bounds.size.x + this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
-			this._blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer);
+			float xPoint = (this._collider.bounds.extents.x + this._groundDistance / 2f) * this._movementSide;
+			Vector2 point = new(this.transform.position.x + xPoint, this.transform.position.y);
+			Vector2 size = new(this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
+			this._blockPerception = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayer);
 			if (this._blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
