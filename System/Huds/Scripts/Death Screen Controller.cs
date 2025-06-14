@@ -37,7 +37,13 @@ namespace GuwbaPrimeAdventure.Hud
 			}
 			Sender.Exclude(this);
 		}
-		private Action Continue => () => this._sender.Send();
+		private Action Continue => () =>
+		{
+			if (this.gameObject.scene.name.Contains("Boss"))
+				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
+			else
+				this._sender.Send();
+		};
 		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
 		private Action GameOver => () =>
 		{
