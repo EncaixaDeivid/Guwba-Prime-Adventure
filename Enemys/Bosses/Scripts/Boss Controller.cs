@@ -6,7 +6,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 	internal abstract class BossController : StateController, IConnector
 	{
-		private readonly Sender _sender = Sender.Create();
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
@@ -46,8 +45,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(BossType.Runner).SetToggle(true);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -81,7 +78,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._jump, false);
 				this._animator.SetBool(this._fall, false);
-				this._sender.Send();
 			}
 			else if (this._rigidybody.linearVelocityY > 0f)
 			{
@@ -130,6 +126,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		Controller,
 		Runner,
 		Jumper,
-		Summoner
+		Summoner,
+		Weak,
+		Place
 	};
 };
