@@ -37,6 +37,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
 			yield return new WaitUntil(() =>
 			{
+				this._sender.SetToggle(this._jumpDash).Send();
 				Vector2 linearVelocity = new(this._dashSpeed * this._movementSide, this._rigidybody.linearVelocity.y);
 				this._rigidybody.linearVelocity = this.enabled ? linearVelocity : Vector2.zero;
 				if (this._blockPerception)
