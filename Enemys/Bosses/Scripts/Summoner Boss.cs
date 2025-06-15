@@ -94,7 +94,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			BossType bossType = (BossType)additionalData;
 			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
 			{
-				bool has = data.IndexValue.HasValue && this._hasIndex;
+				bool hasIndex = data.IndexValue.HasValue && this._hasIndex;
 				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopSummon = !data.ToggleValue.Value;
 				else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
@@ -103,7 +103,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
 						this.Summon(this._eventSummons[randomIndex]);
 					}
-					else if (has && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
+					else if (hasIndex && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
 						this.Summon(this._eventSummons[data.IndexValue.Value]);
 			}
 		}
