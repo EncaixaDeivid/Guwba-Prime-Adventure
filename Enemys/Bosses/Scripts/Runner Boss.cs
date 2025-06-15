@@ -10,6 +10,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private SpriteRenderer _spriteRenderer;
 		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _guardVelocity = new();
+		private float _guardGravityScale = 0f;
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
 		private bool _stopVelocity = false;
@@ -61,6 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._animator = this.GetComponent<Animator>();
+			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(BossType.Jumper);
 			if (this._timedDash)
@@ -72,15 +75,18 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(TimedDash());
 			}
 		}
-		private new void OnEnable()
+		private void OnEnable()
 		{
-			base.OnEnable();
 			this._animator.enabled = true;
+			this._rigidybody.gravityScale = this._guardGravityScale;
+			this._rigidybody.linearVelocity = this._guardVelocity;
 		}
-		private new void OnDisable()
+		private void OnDisable()
 		{
-			base.OnDisable();
 			this._animator.enabled = false;
+			this._guardVelocity = this._rigidybody.linearVelocity;
+			this._rigidybody.gravityScale = 0f;
+			this._rigidybody.linearVelocity = Vector2.zero;
 		}
 		private void FixedUpdate()
 		{
