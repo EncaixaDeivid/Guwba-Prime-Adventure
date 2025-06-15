@@ -20,9 +20,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
-		[SerializeField, Tooltip("Animation parameter.")] protected string _walk;
-		[SerializeField, Tooltip("Animation parameter.")] protected string _dash;
-		[SerializeField, Tooltip("Animation parameter.")] protected string _jump;
 		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
 		[Header("Boss Stats")]
 		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
@@ -74,25 +71,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		protected void FixedUpdate()
 		{
-			if (this.SurfacePerception())
-			{
-				this._animator.SetBool(this._idle, true);
-				this._animator.SetBool(this._jump, false);
-				this._animator.SetBool(this._fall, false);
-			}
-			else if (this._rigidybody.linearVelocityY > 0f)
-			{
-				this._animator.SetBool(this._idle, false);
-				this._animator.SetBool(this._jump, true);
-				this._animator.SetBool(this._fall, false);
-			}
-			else if (this._rigidybody.linearVelocityY < 0f)
-			{
-				this._animator.SetBool(this._idle, false);
-				this._animator.SetBool(this._jump, false);
-				this._animator.SetBool(this._fall, true);
-				this._collider.isTrigger = false;
-			}
+			this._animator.SetBool(this._idle, this.SurfacePerception());
+			this._animator.SetBool(this._fall, !this.SurfacePerception() && this._rigidybody.linearVelocityY < 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
