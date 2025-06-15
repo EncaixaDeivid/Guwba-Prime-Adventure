@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			yield return new WaitTime(this, this._stopDashTime);
 			float dashValue = this._movementSide < 0f ? -this._movementSide : this._movementSide;
 			this._animator.SetBool(this._walk, true);
-			this._animator.SetFloat(this._dash, this._dashSpeed * Time.fixedDeltaTime + dashValue);
+			this._animator.SetFloat(this._dash, Mathf.Abs(this._rigidybody.linearVelocityX) / this._dashSpeed);
 			yield return new WaitUntil(() =>
 			{
 				Vector2 linearVelocity = new(this._dashSpeed * this._movementSide, this._rigidybody.linearVelocity.y);
@@ -69,7 +69,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (this._stopMovement && !this._dashIsOn)
 			{
 				this._animator.SetBool(this._walk, false);
-				this._animator.SetFloat(this._dash, 1f);
+				this._animator.SetFloat(this._dash, 0f);
 				this.StopAllCoroutines();
 				if (this._stopVelocity)
 				{
