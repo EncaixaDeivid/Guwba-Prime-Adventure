@@ -212,7 +212,10 @@ namespace GuwbaPrimeAdventure.Guwba
 								}
 							}
 							else if (dashDirection < 0f)
+							{
+								this._animator.SetBool(this._walk, this._movementAction != 0f);
 								this._animator.SetFloat(this._walkSpeed, 1f);
+							}
 						}
 						yield return new WaitForFixedUpdate();
 					}
