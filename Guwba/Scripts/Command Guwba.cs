@@ -183,13 +183,13 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 						this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
 					}
+					else if (dashDirection < 0f)
+					{
+						this._animator.SetBool(this._walk, true);
+						this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
+					}
 					while (this._dashValue)
 					{
-						if (dashDirection < 0f)
-						{
-							this._animator.SetBool(this._walk, true);
-							this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
-						}
 						float xDirection = dashMovementValue * dashDirection;
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
 						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
@@ -215,6 +215,7 @@ namespace GuwbaPrimeAdventure.Guwba
 								this._animator.SetFloat(this._walkSpeed, 1f);
 						}
 						yield return new WaitForFixedUpdate();
+						yield return new WaitUntil(() => this.enabled);
 					}
 				}
 			}
@@ -307,28 +308,29 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
-			if (this._isOnGround)
-			{
-				this._animator.SetBool(this._idle, this._movementAction == 0f);
-				this._animator.SetBool(this._walk, this._movementAction != 0f);
-				this._animator.SetBool(this._jump, false);
-				this._animator.SetBool(this._fall, false);
-				this._lastGroundedTime = this._jumpCoyoteTime;
-				this._downStairs = true;
-				this._isJumping = false;
-			}
-			else if (this._rigidbody.linearVelocityY != 0f && !downStairs)
-			{
-				this._animator.SetBool(this._idle, false);
-				this._animator.SetBool(this._walk, false);
-				this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
-				this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
-				float fallGravity = this._fallGravityMultiply * this._gravityScale;
-				this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? fallGravity : this._gravityScale;
-				this._lastGroundedTime -= Time.fixedDeltaTime;
-				this._lastJumpTime -= Time.fixedDeltaTime;
-				this._downStairs = false;
-			}
+			if (!this._dashValue)
+				if (this._isOnGround)
+				{
+					this._animator.SetBool(this._idle, this._movementAction == 0f);
+					this._animator.SetBool(this._walk, this._movementAction != 0f);
+					this._animator.SetBool(this._jump, false);
+					this._animator.SetBool(this._fall, false);
+					this._lastGroundedTime = this._jumpCoyoteTime;
+					this._downStairs = true;
+					this._isJumping = false;
+				}
+				else if (this._rigidbody.linearVelocityY != 0f && !downStairs)
+				{
+					this._animator.SetBool(this._idle, false);
+					this._animator.SetBool(this._walk, false);
+					this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
+					this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
+					float fallGravity = this._fallGravityMultiply * this._gravityScale;
+					this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? fallGravity : this._gravityScale;
+					this._lastGroundedTime -= Time.fixedDeltaTime;
+					this._lastJumpTime -= Time.fixedDeltaTime;
+					this._downStairs = false;
+				}
 			if (!this._dashValue)
 			{
 				if (this._animator.GetBool(this._walk))
