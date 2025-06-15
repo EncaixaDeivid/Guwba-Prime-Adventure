@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 	internal sealed class RunnerBoss : BossController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(BossType.Jumper);
 			if (this._timedDash)
 				this.StartCoroutine(TimedDash());
@@ -112,7 +112,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Receive(data, additionalData);
 			BossType bossType = (BossType)additionalData;
 			if (bossType.HasFlag(BossType.Runner) || bossType.HasFlag(BossType.All))
-				if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && this._hasToggle)
+				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
 				else if (data.StateForm == StateForm.Action && this._reactToDamage)
 				{
