@@ -7,6 +7,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 	internal sealed class RunnerBoss : BossController, IConnector
 	{
+		private SpriteRenderer _spriteRenderer;
+		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
 		private bool _stopMovement = false;
 		private bool _dashIsOn = false;
@@ -17,6 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("The distance of the rays to hit the ground.")] private float _groundDistance;
 		[Header("Animation")]
+		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
 		[SerializeField, Tooltip("Animation parameter.")] private string _dash;
 		[Header("Dash")]
@@ -54,6 +57,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
+			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
+			this._animator = this.GetComponent<Animator>();
 			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(BossType.Jumper);
 			if (this._timedDash)
@@ -65,11 +70,21 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(TimedDash());
 			}
 		}
-		private new void FixedUpdate()
+		private new void OnEnable()
 		{
-			base.FixedUpdate();
+			base.OnEnable();
+			this._animator.enabled = true;
+		}
+		private new void OnDisable()
+		{
+			base.OnDisable();
+			this._animator.enabled = false;
+		}
+		private void FixedUpdate()
+		{
 			if (this._stopMovement && !this._dashIsOn)
 			{
+				this._animator.SetBool(this._idle, true);
 				this._animator.SetBool(this._walk, false);
 				this._animator.SetFloat(this._dash, 0f);
 				this.StopAllCoroutines();
@@ -106,6 +121,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			if (!this._dashIsOn)
 			{
+				this._animator.SetBool(this._idle, false);
 				this._animator.SetBool(this._walk, true);
 				this._animator.SetFloat(this._dash, 1f);
 				this._rigidybody.linearVelocityX = this._movementSide * this._movementSpeed;
