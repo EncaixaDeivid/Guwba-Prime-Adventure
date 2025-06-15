@@ -15,6 +15,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private float _runnedDistance = 0f;
 		[Header("Runner Boss")]
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
+		[SerializeField, Tooltip("Animation parameter.")] private string _dash;
 		[SerializeField, Tooltip("If it have a ray to detect the target.")] private bool _rayDetection;
 		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
 		[SerializeField, Tooltip("If the boss can jump while dashing.")] private bool _jumpDash;
