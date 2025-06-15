@@ -199,7 +199,6 @@ namespace GuwbaPrimeAdventure.Guwba
 						bool valid = MathF.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
 						if (valid || _grabObject || collision || !this._isOnGround)
 						{
-							this._animator.SetBool(this._walk, this._movementAction != 0f);
 							GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
 							if (dashDirection > 0f)
 							{
