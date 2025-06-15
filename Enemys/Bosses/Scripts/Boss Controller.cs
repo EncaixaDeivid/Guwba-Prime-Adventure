@@ -9,8 +9,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
-		private Vector2 _guardVelocity = new();
-		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
 		private static bool _isDeafeted = false;
 		[Header("Boss Controller")]
@@ -34,7 +32,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
 			Sender.Include(this);
 		}
@@ -42,17 +39,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
-		}
-		protected void OnEnable()
-		{
-			this._rigidybody.gravityScale = this._guardGravityScale;
-			this._rigidybody.linearVelocity = this._guardVelocity;
-		}
-		protected void OnDisable()
-		{
-			this._guardVelocity = this._rigidybody.linearVelocity;
-			this._rigidybody.gravityScale = 0f;
-			this._rigidybody.linearVelocity = Vector2.zero;
 		}
 		protected bool SurfacePerception()
 		{
