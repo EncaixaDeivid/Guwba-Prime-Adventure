@@ -3,7 +3,7 @@ using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 	internal sealed class SummonerBoss : BossController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
@@ -53,8 +53,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(BossType.Runner | BossType.Jumper);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
+			this._sender.SetAdditionalData(BossType.Runner | BossType.Jumper | BossType.Place);
 			this._gravityScale = this._rigidybody.gravityScale;
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
 			{
@@ -95,7 +95,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
 			{
 				bool has = data.IndexValue.HasValue && this._hasIndex;
-				if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && this._hasToggle)
+				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
 					this._stopSummon = !data.ToggleValue.Value;
 				else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
 					if (this._randomReactSummons)
