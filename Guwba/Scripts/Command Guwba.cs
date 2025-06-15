@@ -328,7 +328,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				if (this._animator.GetBool(this._walk))
 				{
-					this._animator.SetFloat(this._walkSpeed, Mathf.Abs(this._rigidbody.linearVelocityX) / 16);
+					this._animator.SetFloat(this._walkSpeed, Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 					this._spriteRenderer.flipX = this._movementAction < 0f;
 				}
 				float targetSpeed = this._movementSpeed * this._movementAction;
