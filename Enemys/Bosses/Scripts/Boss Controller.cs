@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
-	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
 	internal abstract class BossController : StateController, IConnector
 	{
 		protected SpriteRenderer _spriteRenderer;
@@ -123,7 +123,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[Flags]
 	internal enum BossType
 	{
-		None,
 		All,
 		Controller,
 		Runner,
