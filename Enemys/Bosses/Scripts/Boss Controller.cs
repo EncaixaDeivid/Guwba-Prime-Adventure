@@ -7,8 +7,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
 	internal abstract class BossController : StateController, IConnector
 	{
-		protected SpriteRenderer _spriteRenderer;
-		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
 		private Vector2 _guardVelocity = new();
@@ -18,9 +16,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Boss Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
-		[Header("Animation")]
-		[SerializeField, Tooltip("Animation parameter.")] protected string _idle;
-		[SerializeField, Tooltip("Animation parameter.")] protected string _fall;
 		[Header("Boss Stats")]
 		[SerializeField, Tooltip("The size of the ground identifier.")] private float _groundSize;
 		[SerializeField, Tooltip("The amount of speed to move the boss.")] protected ushort _movementSpeed;
@@ -37,8 +32,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		protected new void Awake()
 		{
 			base.Awake();
-			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-			this._animator = this.GetComponent<Animator>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
@@ -50,15 +43,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void OnEnable()
+		protected void OnEnable()
 		{
-			this._animator.enabled = true;
 			this._rigidybody.gravityScale = this._guardGravityScale;
 			this._rigidybody.linearVelocity = this._guardVelocity;
 		}
-		private void OnDisable()
+		protected void OnDisable()
 		{
-			this._animator.enabled = false;
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.gravityScale = 0f;
 			this._rigidybody.linearVelocity = Vector2.zero;
@@ -68,11 +59,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2 point = new(this.transform.position.x, this.transform.position.y - this._collider.bounds.extents.y - this._groundSize / 2f);
 			Vector2 size = new(this._collider.bounds.size.x - 0.025f, this._groundSize);
 			return Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayer);
-		}
-		protected void FixedUpdate()
-		{
-			this._animator.SetBool(this._idle, this.SurfacePerception());
-			this._animator.SetBool(this._fall, !this.SurfacePerception() && this._rigidybody.linearVelocityY < 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
