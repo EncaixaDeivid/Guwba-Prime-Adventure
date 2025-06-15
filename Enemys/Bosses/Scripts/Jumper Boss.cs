@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 	internal sealed class JumperBoss : BossController, IConnector
 	{
+		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
 		private bool _stopJump = false;
 		[Header("Jumper Boss")]
@@ -18,7 +19,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		[SerializeField, Tooltip("The distance the boss will be to the follow target.")] private float _distanceToTarget;
 		[Header("Animation")]
+		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
 		[SerializeField, Tooltip("Animation parameter.")] private string _jump;
+		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
 		[Header("Damage React")]
 		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
 		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
@@ -60,6 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void Awake()
 		{
 			base.Awake();
+			this._animator = this.GetComponent<Animator>();
 			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
@@ -111,6 +115,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.StartCoroutine(TimedJump(jumpStats));
 				}
 			}
+		}
+		private void FixedUpdate()
+		{
+			this._animator.SetBool(this._idle, this.SurfacePerception());
+			this._animator.SetBool(this._jump, !this.SurfacePerception() && this._rigidybody.linearVelocityY > 0f);
+			this._animator.SetBool(this._fall, !this.SurfacePerception() && this._rigidybody.linearVelocityY < 0f);
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
