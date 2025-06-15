@@ -13,14 +13,16 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
 		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
-		[SerializeField, Tooltip("Animation parameter.")] private string _jump;
 		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
-		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
-		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
-		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		[SerializeField, Tooltip("The distance the boss will be to the follow target.")] private float _distanceToTarget;
+		[Header("Animation")]
+		[SerializeField, Tooltip("Animation parameter.")] private string _jump;
+		[Header("Damage React")]
+		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
+		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _highReact;
+		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
 		private void HighJump(Vector2 otherTarget, bool useTarget)
 		{
 			this.StartCoroutine(FollowTarget());
