@@ -9,6 +9,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _guardVelocity = new();
+		private float _guardGravityScale = 0f;
 		private bool _stopJump = false;
 		[Header("Jumper Boss")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
@@ -64,6 +66,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
+			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
@@ -115,6 +118,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.StartCoroutine(TimedJump(jumpStats));
 				}
 			}
+		}
+		private void OnEnable()
+		{
+			this._animator.enabled = true;
+			this._rigidybody.gravityScale = this._guardGravityScale;
+			this._rigidybody.linearVelocity = this._guardVelocity;
+		}
+		private void OnDisable()
+		{
+			this._animator.enabled = false;
+			this._guardVelocity = this._rigidybody.linearVelocity;
+			this._rigidybody.gravityScale = 0f;
+			this._rigidybody.linearVelocity = Vector2.zero;
 		}
 		private void FixedUpdate()
 		{
