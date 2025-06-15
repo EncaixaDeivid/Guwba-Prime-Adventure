@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using System;
+using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
@@ -17,13 +18,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private ActionsGuwba _actions;
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _normalSize = new();
-		private Vector2 _dashLocation = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
-		private float _dashDirection = 0f;
-		private float _dashMovementValue = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
 		private bool _isOnGround = false;
@@ -167,24 +165,58 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !this._dashValue && !_grabObject)
+			if (!this._dashValue && this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !_grabObject)
 			{
-				if (movementValue.y > 0f)
-					this._dashDirection = 1f;
-				else if (movementValue.y < 0f)
-					this._dashDirection = -1f;
-				this._dashMovementValue = this._movementAction;
-				this._dashLocation = this.transform.position;
-				GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
-				if (this._dashDirection > 0f)
+				this.StartCoroutine(Dash());
+				IEnumerator Dash()
 				{
-					this._animator.SetBool(this._dashSlide, this._dashValue);
-					this._collider.size = this._dashSlideSize;
-					this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
-					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
+					float dashDirection = 1f;
+					if (movementValue.y < 0f)
+						dashDirection = -1f;
+					float dashMovementValue = this._movementAction;
+					float dashLocation = this.transform.position.x;
+					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
+					if (dashDirection > 0f)
+					{
+						this._animator.SetBool(this._dashSlide, this._dashValue);
+						this._collider.size = this._dashSlideSize;
+						this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
+						this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
+					}
+					else if (dashDirection < 0f)
+					{
+						this._animator.SetBool(this._walk, true);
+						this._animator.SetFloat(this._walkSpeed, this._dashSpeed * -1f);
+					}
+					while (this._dashValue)
+					{
+						float xDirection = dashMovementValue * dashDirection;
+						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
+						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
+						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
+						bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
+						this._rigidbody.linearVelocityX = this._dashSpeed * dashMovementValue * dashDirection;
+						bool valid = MathF.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
+						if (valid || _grabObject || collision || !this._isOnGround)
+						{
+							GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
+							if (dashDirection > 0f)
+							{
+								this._animator.SetBool(this._dashSlide, this._dashValue);
+								this._collider.size = this._normalSize;
+								this._collider.offset = Vector2.zero;
+								if (this._isOnGround)
+								{
+									float amountToMove = this.transform.position.y + this._normalSize.y / 2f;
+									this.transform.position = new Vector2(this.transform.position.x, amountToMove);
+								}
+							}
+							else if (dashDirection < 0f)
+								this._animator.SetFloat(this._walkSpeed, 1f);
+						}
+						yield return new WaitForFixedUpdate();
+					}
 				}
-				else if (this._dashDirection < 0f)
-					this._animator.SetFloat(this._walkSpeed, -1f);
 			}
 		};
 		private Action<InputAction.CallbackContext> Jump => jumpAction =>
@@ -297,34 +329,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._lastJumpTime -= Time.fixedDeltaTime;
 				this._downStairs = false;
 			}
-			if (this._dashValue)
-			{
-				float xDirection = this._dashMovementValue * this._dashDirection;
-				float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
-				Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
-				Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
-				bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
-				this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovementValue * this._dashDirection;
-				bool valid = MathF.Abs(this.transform.position.x - this._dashLocation.x) >= this._dashDistance;
-				if (valid || _grabObject || collision || this._dashMovementValue != this._movementAction || !this._isOnGround)
-				{
-					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
-					if (this._dashDirection > 0f)
-					{
-						this._animator.SetBool(this._dashSlide, this._dashValue);
-						this._collider.size = this._normalSize;
-						this._collider.offset = Vector2.zero;
-						if (this._isOnGround)
-						{
-							float amountToMove = this.transform.position.y + this._normalSize.y / 2f;
-							this.transform.position = new Vector2(this.transform.position.x, amountToMove);
-						}
-					}
-					else if (this._dashDirection < 0f)
-						this._animator.SetFloat(this._walkSpeed, 1f);
-				}
-			}
-			else
+			if (!this._dashValue)
 			{
 				if (this._animator.GetBool(this._walk))
 				{
@@ -337,7 +342,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
 				this._rigidbody.AddForceX(movement);
 			}
-			if (this._isOnGround && Mathf.Abs(this._movementAction) <= 0f)
+			if (this._isOnGround && Mathf.Abs(this._movementAction) <= 0f && !this._dashValue)
 			{
 				float amount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				amount *= Mathf.Sign(this._rigidbody.linearVelocityX);
@@ -397,6 +402,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
 				if (_grabObject)
 				{
+
 					_grabObject.transform.parent = this.transform;
 					float yPoint = this.transform.position.y + this._collider.size.y - this._lowHoldOffset;
 					Vector2 newPosition = new(this.transform.position.x, yPoint);
