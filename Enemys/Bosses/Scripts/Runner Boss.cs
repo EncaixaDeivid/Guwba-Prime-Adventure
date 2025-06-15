@@ -36,10 +36,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			this._dashIsOn = true;
 			this._sender.SetToggle(this._jumpDash).Send();
+			this._animator.SetBool(this._idle, true);
 			this._animator.SetBool(this._walk, false);
 			float actualPosition = this.transform.position.x;
 			yield return new WaitTime(this, this._stopDashTime);
 			float dashValue = this._movementSide < 0f ? -this._movementSide : this._movementSide;
+			this._animator.SetBool(this._idle, false);
 			this._animator.SetBool(this._walk, true);
 			this._animator.SetFloat(this._dash, Mathf.Abs(this._rigidybody.linearVelocityX) / this._dashSpeed);
 			yield return new WaitUntil(() =>
