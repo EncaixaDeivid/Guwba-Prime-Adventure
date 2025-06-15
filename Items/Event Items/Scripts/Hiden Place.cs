@@ -54,7 +54,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			{
 				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => this.enabled);
-				this._tilemap.color = new Color(this._tilemap.color.r, this._tilemap.color.g, this._tilemap.color.b, alpha);
+				Color color = this._tilemap.color;
+				color.a = alpha;
+				this._tilemap.color = color;
 			}
 			if (this._hasColliders)
 				this._collider.enabled = appear;
