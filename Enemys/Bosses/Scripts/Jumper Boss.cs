@@ -70,23 +70,22 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					IEnumerator WaitToHitSurface()
 					{
 						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled);
-						if (!this._stopJump)
+						if (this._stopJump)
+							yield break;
+						if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
 						{
-							if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
+							if (this._jumpPointStructures[index].JumpStats.StopMove)
 							{
-								if (this._jumpPointStructures[index].JumpStats.StopMove)
-								{
-									this._sender.Send();
-									this._rigidybody.linearVelocityX = 0f;
-								}
-								this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass);
-								if (this._jumpPointStructures[index].JumpStats.High)
-								{
-									bool useTarget = this._jumpPointStructures[index].JumpStats.UseTarget;
-									this.HighJump(this._jumpPointStructures[index].JumpStats.OtherTarget, useTarget);
-								}
-								this._jumpPointStructures[index].RemovalJumpCount = (short)this._jumpPointStructures[index].JumpCount;
+								this._sender.Send();
+								this._rigidybody.linearVelocityX = 0f;
 							}
+							this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass);
+							if (this._jumpPointStructures[index].JumpStats.High)
+							{
+								bool useTarget = this._jumpPointStructures[index].JumpStats.UseTarget;
+								this.HighJump(this._jumpPointStructures[index].JumpStats.OtherTarget, useTarget);
+							}
+							this._jumpPointStructures[index].RemovalJumpCount = (short)this._jumpPointStructures[index].JumpCount;
 						}
 					}
 				});
