@@ -70,6 +70,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					IEnumerator WaitToHitSurface()
 					{
 						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled);
+						if (this._stopJump)
+							yield break;
 						if (this._jumpPointStructures[index].RemovalJumpCount-- <= 0f)
 						{
 							if (this._jumpPointStructures[index].JumpStats.StopMove)
