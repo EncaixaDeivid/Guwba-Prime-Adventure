@@ -183,13 +183,13 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 						this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
 					}
-					else if (dashDirection < 0f)
-					{
-						this._animator.SetBool(this._walk, true);
-						this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
-					}
 					while (this._dashValue)
 					{
+						if (dashDirection < 0f)
+						{
+							this._animator.SetBool(this._walk, true);
+							this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
+						}
 						float xDirection = dashMovementValue * dashDirection;
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
 						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
