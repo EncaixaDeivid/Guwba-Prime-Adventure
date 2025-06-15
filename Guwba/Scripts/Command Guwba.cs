@@ -186,7 +186,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					else if (dashDirection < 0f)
 					{
 						this._animator.SetBool(this._walk, true);
-						this._animator.SetFloat(this._walkSpeed, this._dashSpeed * -1f);
+						this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
 					}
 					while (this._dashValue)
 					{
