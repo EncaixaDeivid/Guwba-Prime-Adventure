@@ -1,5 +1,4 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Effects;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer))]
