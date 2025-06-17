@@ -3,7 +3,6 @@ using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using Unity.Jobs;
 using System.Collections;
-using GuwbaPrimeAdventure.Effects;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
