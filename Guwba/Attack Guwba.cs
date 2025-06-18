@@ -69,9 +69,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 				this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 				Vector2 targetDistance = GuwbaAstral<CommandGuwba>.Position;
+				Vector2 targetPosition;
 				while (this._isAttacking)
 				{
-					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
+					targetPosition = GuwbaAstral<CommandGuwba>.Position;
 					if (Vector2.Distance(this.transform.position, targetDistance) >= this._movementDistance)
 					{
 						GuwbaAstral<CommandGuwba>._returnAttack = true;
