@@ -6,7 +6,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 	internal sealed class SummonerBoss : BossController, IConnector
 	{
-		private readonly Sender _sender = Sender.Create();
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
 		[Header("Summoner Boss")]
@@ -17,7 +16,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If this enemy will summon randomized timed.")] private bool _randomTimedSummons;
 		private void Summon(SummonObject summon)
 		{
-			Vector2 combinePoint = (Vector2)this.transform.position + summon.SummonPoints[0];
 			if (summon.StopToSummon)
 				this.StartCoroutine(StopToSummon());
 			IEnumerator StopToSummon()
@@ -30,46 +28,45 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._sender.SetToggle(true).Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
+			GameObject gameObject;
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
+			{
+				gameObject = summon.Summons[0];
 				if (summon.Self)
-					Instantiate(summon.Summon, this.transform.position, summon.Summon.transform.rotation, this.transform);
-				else if (summon.Combine && summon.Sequential)
-				{
-					Vector2 combineSequentialPoint = (Vector2)this.transform.position + summon.SummonPoints[i];
-					Instantiate(summon.Summon, combineSequentialPoint, summon.Summon.transform.rotation, this.transform);
-				}
-				else if (summon.Combine)
-					Instantiate(summon.Summon, combinePoint, summon.Summon.transform.rotation, this.transform);
+					Instantiate(gameObject, this.transform.position, gameObject.transform.rotation, this.transform);
 				else if (summon.Sequential)
-					Instantiate(summon.Summon, summon.SummonPoints[i], summon.Summon.transform.rotation, this.transform);
+				{
+					gameObject = summon.Summons[i];
+					Instantiate(gameObject, summon.SummonPoints[i], gameObject.transform.rotation, this.transform);
+				}
 				else if (summon.Random)
 				{
 					ushort pointIndex = (ushort)Random.Range(0f, summon.SummonPoints.Length - 1f);
-					Instantiate(summon.Summon, summon.SummonPoints[pointIndex], summon.Summon.transform.rotation, this.transform);
+					Instantiate(gameObject, summon.SummonPoints[pointIndex], gameObject.transform.rotation, this.transform);
 				}
 				else
-					Instantiate(summon.Summon, summon.SummonPoints[0], summon.Summon.transform.rotation, this.transform);
+					Instantiate(gameObject, summon.SummonPoints[0], gameObject.transform.rotation, this.transform);
+			}
 		}
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(BossType.Runner | BossType.Jumper | BossType.Place);
+			this._sender.SetStateForm(StateForm.State);
 			this._gravityScale = this._rigidybody.gravityScale;
 			foreach (SummonPlaces summonPlaces in this._summonPlaces)
 			{
 				SummonPoint summonPoint = summonPlaces.SummonPointObject;
 				summonPoint = Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity);
-				summonPoint.GetTouch(() => this.Summon(this._eventSummons[summonPlaces.IndexValue]));
+				summonPoint.GetTouch(() => this.Summon(summonPlaces.Summon));
 			}
 			if (this._randomTimedSummons)
 			{
 				this.StartCoroutine(RandomTimedSummon());
 				IEnumerator RandomTimedSummon()
 				{
-					ushort randomIndex = (ushort)Random.Range(0f, this._timedSummons.Length - 1f);
+					ushort randomIndex = (ushort)Random.Range(0f, this._timedSummons.Length);
 					yield return TimedSummon(this._timedSummons[randomIndex]);
-					yield return new WaitUntil(() => this.enabled);
+					yield return new WaitTime(this, this._timedSummons[randomIndex].PostSummonTime);
 					this.StartCoroutine(RandomTimedSummon());
 				}
 			}
@@ -83,6 +80,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
 				{
 					this.Summon(summon);
+					yield return new WaitTime(this, summon.PostSummonTime);
 					if (!this._randomTimedSummons)
 						this.StartCoroutine(TimedSummon(summon));
 				}
@@ -91,31 +89,32 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			BossType bossType = (BossType)additionalData;
-			if (bossType.HasFlag(BossType.Summoner) || bossType.HasFlag(BossType.All))
-			{
-				bool hasIndex = data.IndexValue.HasValue && this._hasIndex;
-				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
-					this._stopSummon = !data.ToggleValue.Value;
-				else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
-					if (this._randomReactSummons)
-					{
-						ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
-						this.Summon(this._eventSummons[randomIndex]);
-					}
-					else if (hasIndex && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
-						this.Summon(this._eventSummons[data.IndexValue.Value]);
-			}
+			BossController[] bosses = (BossController[])additionalData;
+			foreach (BossController boss in bosses)
+				if (boss == this)
+				{
+					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+						this._stopSummon = !data.ToggleValue.Value;
+					else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
+						if (this._randomReactSummons)
+						{
+							ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
+							this.Summon(this._eventSummons[randomIndex]);
+						}
+						else if (data.IndexValue.HasValue && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
+							this.Summon(this._eventSummons[data.IndexValue.Value]);
+					break;
+				}
 		}
 		[System.Serializable]
 		private struct SummonPlaces
 		{
 			[SerializeField, Tooltip("The object to activate the summon.")] private SummonPoint _summonPointObject;
+			[SerializeField, Tooltip("Which summon event the summon point will activate.")] private SummonObject _objectToSummon;
 			[SerializeField, Tooltip("The point where the summon point will be.")] private Vector2 _point;
-			[SerializeField, Tooltip("Which summon event the summon point will activate.")] private ushort _indexValue;
 			internal readonly SummonPoint SummonPointObject => this._summonPointObject;
+			internal readonly SummonObject Summon => this._objectToSummon;
 			internal readonly Vector2 Point => this._point;
-			internal readonly ushort IndexValue => this._indexValue;
 		};
 	};
 };
