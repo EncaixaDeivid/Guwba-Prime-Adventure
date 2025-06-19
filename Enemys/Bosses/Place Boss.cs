@@ -34,19 +34,23 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					yield return new WaitForEndOfFrame();
 				}
 				if (appear)
-					for (float i = 0f; i < this._tilemap.color.a; i += 0.1f)
+					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 						yield return Opacity(i);
 				else
-					for (float i = this._tilemap.color.a; i > 0f; i -= 0.1f)
+					for (float i = this._tilemap.color.a; this._tilemap.color.a > 0f; i -= 0.1f)
 						yield return Opacity(i);
 				this._tilemapCollider2D.enabled = appear;
 			}
-			BossType bossType = (BossType)additionalData;
-			bool valid = data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle;
-			if (bossType.HasFlag(BossType.Place) || bossType.HasFlag(BossType.All) && valid)
-				this.StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (this._reactToDamage && data.StateForm == StateForm.Action)
-				this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
+			BossController[] bosses = (BossController[])additionalData;
+			foreach (BossController boss in bosses)
+				if (boss == this)
+				{
+					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+						this.StartCoroutine(AppearFade(data.ToggleValue.Value));
+					else if (this._reactToDamage && data.StateForm == StateForm.Action)
+						this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
+					break;
+				}
 		}
 	}
 };
