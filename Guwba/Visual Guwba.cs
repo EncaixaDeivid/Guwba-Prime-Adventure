@@ -135,7 +135,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > 0f; i--)
 				{
