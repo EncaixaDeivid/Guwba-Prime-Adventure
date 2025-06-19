@@ -27,13 +27,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (!this._useDestructuion)
+			if (!this._useDestructuion || this._vitality > 0f)
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
-				this._sender.SetStateForm(StateForm.Disable).Send();
+				this._sender.SetStateForm(StateForm.Disable).SetToggle(true).Send();
 		}
 		public bool Damage(ushort damage)
 		{
