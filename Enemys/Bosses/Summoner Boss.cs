@@ -21,7 +21,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator StopToSummon()
 			{
 				this._sender.SetToggle(false).Send();
-				this._rigidybody.linearVelocityX = 0f;
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
@@ -90,21 +89,22 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossController[] bosses = (BossController[])additionalData;
-			foreach (BossController boss in bosses)
-				if (boss == this)
-				{
-					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-						this._stopSummon = !data.ToggleValue.Value;
-					else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
-						if (this._randomReactSummons)
-						{
-							ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
-							this.Summon(this._eventSummons[randomIndex]);
-						}
-						else if (data.IndexValue.HasValue && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
-							this.Summon(this._eventSummons[data.IndexValue.Value]);
-					break;
-				}
+			if (bosses != null)
+				foreach (BossController boss in bosses)
+					if (boss == this)
+					{
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							this._stopSummon = !data.ToggleValue.Value;
+						else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
+							if (this._randomReactSummons)
+							{
+								ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
+								this.Summon(this._eventSummons[randomIndex]);
+							}
+							else if (data.IndexValue.HasValue && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
+								this.Summon(this._eventSummons[data.IndexValue.Value]);
+						break;
+					}
 		}
 		[System.Serializable]
 		private struct SummonPlaces
