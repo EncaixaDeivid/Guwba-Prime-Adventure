@@ -17,9 +17,6 @@ namespace GuwbaPrimeAdventure.Connection
 		private object _additionalData;
 		private bool? _toggleValue;
 		private uint? _indexValue;
-		internal static IReadOnlyList<IConnector> Connectors => _connectors.AsReadOnly();
-		internal PathConnection ToWhereConnection => this._toWhereConnection;
-		internal object AdditionalData => this._additionalData;
 		public static void Include(IConnector connector)
 		{
 			if (!_connectors.Contains(connector))
@@ -60,7 +57,7 @@ namespace GuwbaPrimeAdventure.Connection
 		public void Send()
 		{
 			DataConnection dataConnection = new(this._stateForm, this._toggleValue, this._indexValue);
-			foreach (IConnector connector in Sender.Connectors)
+			foreach (IConnector connector in _connectors)
 				if (connector.PathConnection == this._toWhereConnection)
 					connector.Receive(dataConnection, this._additionalData);
 		}
