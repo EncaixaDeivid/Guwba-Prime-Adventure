@@ -53,21 +53,25 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Disable && !_isDeafeted)
+			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue && !_isDeafeted)
 			{
-				_isDeafeted = true;
-				SaveController.Load(out SaveFile saveFile);
-				SettingsController.Load(out Settings settings);
-				ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
-				if (!saveFile.deafetedBosses[sceneIndex])
+				if (data.ToggleValue.Value)
 				{
-					saveFile.deafetedBosses[sceneIndex] = true;
-					SaveController.WriteSave(saveFile);
+					_isDeafeted = true;
+					SaveController.Load(out SaveFile saveFile);
+					SettingsController.Load(out Settings settings);
+					ushort sceneIndex = (ushort)(ushort.Parse($"{this.gameObject.scene.name[^1]}") - 1f);
+					if (!saveFile.deafetedBosses[sceneIndex])
+					{
+						saveFile.deafetedBosses[sceneIndex] = true;
+						SaveController.WriteSave(saveFile);
+					}
+					if (settings.dialogToggle && this._haveDialog)
+						this.GetComponent<IInteractable>().Interaction();
+					else if (this._isTransitioner)
+						this.GetComponent<Transitioner>().Transicion();
 				}
-				if (settings.dialogToggle && this._haveDialog)
-					this.GetComponent<IInteractable>().Interaction();
-				else if (this._isTransitioner)
-					this.GetComponent<Transitioner>().Transicion();
+				this.enabled = false;
 			}
 		}
 	};
