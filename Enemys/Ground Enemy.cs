@@ -25,7 +25,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
 		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
-		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
@@ -113,7 +112,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._movementSide *= -1;
 			this._rigidybody.linearVelocityX = faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data, object additionalData)
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
