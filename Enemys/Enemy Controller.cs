@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IGrabtable, IDamageable
+	public abstract class EnemyController : StateController, IGrabtable, IDamageable
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
@@ -23,6 +23,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy do not deal damage at the contact.")] private bool _noContactDamage;
+		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
+		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
 		protected bool Paralyzed => this._paralyzed;
 		public ushort Health => (ushort)this._vitality;
@@ -35,6 +37,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._movementSide = (short)(this._invertMovementSide ? -1 : 1);
+			if (this._fadeOverTime)
+				Destroy(this.gameObject, this._timeToFadeAway);
 		}
 		private new void OnDestroy()
 		{
