@@ -42,15 +42,16 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._tilemapCollider2D.enabled = appear;
 			}
 			BossController[] bosses = (BossController[])additionalData;
-			foreach (BossController boss in bosses)
-				if (boss == this)
-				{
-					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-						this.StartCoroutine(AppearFade(data.ToggleValue.Value));
-					else if (this._reactToDamage && data.StateForm == StateForm.Action)
-						this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
-					break;
-				}
+			if (bosses != null)
+				foreach (BossController boss in bosses)
+					if (boss == this)
+					{
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							this.StartCoroutine(AppearFade(data.ToggleValue.Value));
+						else if (this._reactToDamage && data.StateForm == StateForm.Action)
+							this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
+						break;
+					}
 		}
 	}
 };
