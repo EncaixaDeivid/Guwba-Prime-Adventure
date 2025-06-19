@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class JumperBoss : BossController, IConnector
 	{
 		private Animator _animator;
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		private bool _stopJump = false;
@@ -16,6 +15,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
 		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("If the timmed jumps will be executed in a sequence.")] private bool _sequentialTimmedJumps;
+		[SerializeField, Tooltip("If the sequential timmed jumps will be repeated again over again.")] private bool _repeatTimmedJumps;
 		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
@@ -60,6 +61,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => this.enabled);
 				}
+				this._rigidybody.linearVelocityX = 0f;
 			}
 		}
 		private new void Awake()
@@ -67,8 +69,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(BossType.Runner).SetToggle(false);
+			this._sender.SetStateForm(StateForm.State).SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
 			{
 				JumpPoint jumpPoint = this._jumpPointStructures[i].JumpPointObject;
@@ -100,23 +101,34 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					}
 				});
 			}
-			foreach (JumpStats jumpStats in this._timedJumps)
+			if (this._sequentialTimmedJumps)
 			{
-				this.StartCoroutine(TimedJump(jumpStats));
-				IEnumerator TimedJump(JumpStats stats)
+				this.StartCoroutine(SequentialJumps());
+				IEnumerator SequentialJumps()
 				{
-					yield return new WaitTime(this, stats.TimeToExecute);
-					yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
-					if (stats.StopMove)
-					{
-						this._sender.Send();
-						this._rigidybody.linearVelocityX = 0f;
-					}
-					this._rigidybody.AddForceY(stats.Strength * this._rigidybody.mass);
-					if (stats.High)
-						this.HighJump(stats.OtherTarget, stats.UseTarget);
-					this.StartCoroutine(TimedJump(jumpStats));
+					for (ushort index = 0; index < this._timedJumps.Length; index++)
+						yield return TimedJump(this._timedJumps[index]);
+					if (this._repeatTimmedJumps)
+						this.StartCoroutine(SequentialJumps());
 				}
+			}
+			else
+				foreach (JumpStats jumpStats in this._timedJumps)
+					this.StartCoroutine(TimedJump(jumpStats));
+			IEnumerator TimedJump(JumpStats stats)
+			{
+				yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
+				yield return new WaitTime(this, stats.TimeToExecute);
+				if (stats.StopMove)
+				{
+					this._sender.Send();
+					this._rigidybody.linearVelocityX = 0f;
+				}
+				this._rigidybody.AddForceY(stats.Strength * this._rigidybody.mass);
+				if (stats.High)
+					this.HighJump(stats.OtherTarget, stats.UseTarget);
+				if (!this._sequentialTimmedJumps)
+					this.StartCoroutine(TimedJump(stats));
 			}
 		}
 		private void OnEnable()
@@ -141,20 +153,24 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			BossType bossType = (BossType)additionalData;
-			if (bossType.HasFlag(BossType.Jumper) || bossType.HasFlag(BossType.All))
-				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
-					this._stopJump = !data.ToggleValue.Value;
-				else if (data.StateForm == StateForm.Action && this._reactToDamage)
+			BossController[] bosses = (BossController[])additionalData;
+			foreach (BossController boss in bosses)
+				if (boss == this)
 				{
-					if (this._stopMoveReact)
+					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+						this._stopJump = !data.ToggleValue.Value;
+					else if (data.StateForm == StateForm.Action && this._reactToDamage)
 					{
-						this._sender.Send();
-						this._rigidybody.linearVelocityX = 0f;
+						if (this._stopMoveReact)
+						{
+							this._sender.Send();
+							this._rigidybody.linearVelocityX = 0f;
+						}
+						this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
+						if (this._highReact)
+							this.HighJump(this._otherTarget, this._useTarget);
 					}
-					this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
-					if (this._highReact)
-						this.HighJump(this._otherTarget, this._useTarget);
+					break;
 				}
 		}
 		[System.Serializable]
