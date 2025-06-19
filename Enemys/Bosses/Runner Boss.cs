@@ -9,7 +9,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private SpriteRenderer _spriteRenderer;
 		private Animator _animator;
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		private bool _stopMovement = false;
@@ -64,8 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._animator = this.GetComponent<Animator>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(BossType.Jumper);
+			this._sender.SetStateForm(StateForm.State);
 			if (this._timedDash)
 				this.StartCoroutine(TimedDash());
 			IEnumerator TimedDash()
@@ -138,19 +136,23 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			BossType bossType = (BossType)additionalData;
-			if (bossType.HasFlag(BossType.Runner) || bossType.HasFlag(BossType.All))
-				if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && this._hasToggle)
-					this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
-				else if (data.StateForm == StateForm.Action && this._reactToDamage)
+			BossController[] bosses = (BossController[])additionalData;
+			foreach (BossController boss in bosses)
+				if (boss == this)
 				{
-					Vector2 targetPosition;
-					if (this._useOtherTarget)
-						targetPosition = this._otherTarget;
-					else
-						targetPosition = GuwbaAstral<CommandGuwba>.Position;
-					this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
-					this.StartCoroutine(this.Dash());
+					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+						this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
+					else if (data.StateForm == StateForm.Action && this._reactToDamage)
+					{
+						Vector2 targetPosition;
+						if (this._useOtherTarget)
+							targetPosition = this._otherTarget;
+						else
+							targetPosition = GuwbaAstral<CommandGuwba>.Position;
+						this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
+						this.StartCoroutine(this.Dash());
+					}
+					break;
 				}
 		}
 	};
