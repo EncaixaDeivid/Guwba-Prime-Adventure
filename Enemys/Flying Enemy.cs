@@ -22,7 +22,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy pursue only in the horizontal.")] private bool _justHorizontal;
 		[SerializeField, Tooltip("If this enemy pursue only in the vertical.")] private bool _justVertical;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
-		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
@@ -122,7 +121,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._pointOrigin = this.transform.position;
 			}
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data, object additionalData)
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
