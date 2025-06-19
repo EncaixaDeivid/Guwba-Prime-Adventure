@@ -7,7 +7,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	internal sealed class SummonPoint : StateController
 	{
 		private UnityAction _getTouch;
-		[Header("Extern Interaction")]
+		[Header("Interactions")]
+		[SerializeField, Tooltip("If this point will destroy itself after use.")] private bool _destroyAfter;
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
 		internal void GetTouch(UnityAction getTouch) => this._getTouch = getTouch;
 		private void OnTriggerEnter2D(Collider2D other)
@@ -20,6 +21,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			}
 			if (other.TryGetComponent<SummonerBoss>(out _))
 				this._getTouch.Invoke();
+			if (this._destroyAfter)
+				Destroy(this.gameObject);
 		}
 	};
 };
