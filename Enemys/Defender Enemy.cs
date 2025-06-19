@@ -14,7 +14,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will use time to become invencible/damageable.")] private bool _useAlternatedTime;
 		[SerializeField, Tooltip("The amount of time the enemy have to become damageable.")] private float _timeToDamageable;
 		[SerializeField, Tooltip("The amount of time the enemy have to become invencible.")] private float _timeToInvencible;
-		public PathConnection PathConnection => PathConnection.Enemy;
 		private new void Awake()
 		{
 			base.Awake();
@@ -64,7 +63,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			return isDamaged;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data, object additionalData)
 		{
 			if (additionalData as GameObject != this.gameObject)
 				return;
