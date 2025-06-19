@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy.Boss
@@ -9,9 +8,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
+		protected readonly Sender _sender = Sender.Create();
 		protected short _movementSide = 1;
 		private static bool _isDeafeted = false;
 		[Header("Boss Controller")]
+		[SerializeField, Tooltip("The bosses to send messages.")] private BossController[] _bossesToSend;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[Header("Boss Stats")]
@@ -21,8 +22,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If the boss will move firstly to the left.")] protected bool _invertMovementSide;
 		[SerializeField, Tooltip("If this boss will not do damage.")] private bool _noDealDamage;
 		[Header("Boss Events")]
-		[SerializeField, Tooltip("If this boss has a toggle atribute to switch.")] protected bool _hasToggle;
-		[SerializeField, Tooltip("If this boss has a index atribute to use.")] protected bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will react to any damage taken.")] protected bool _reactToDamage;
 		[SerializeField, Tooltip("If this boss will start a trancision.")] private bool _isTransitioner;
 		[SerializeField, Tooltip("If this boss have any dialog to start after his death.")] private bool _haveDialog;
@@ -32,6 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetAdditionalData(this._bossesToSend);
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
 			Sender.Include(this);
 		}
@@ -53,8 +53,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			BossType bossType = (BossType)additionalData;
-			if (bossType.HasFlag(BossType.Controller) && data.StateForm == StateForm.Disable && !_isDeafeted)
+			if (data.StateForm == StateForm.Disable && !_isDeafeted)
 			{
 				_isDeafeted = true;
 				SaveController.Load(out SaveFile saveFile);
@@ -71,16 +70,5 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this.GetComponent<Transitioner>().Transicion();
 			}
 		}
-	};
-	[Flags]
-	internal enum BossType
-	{
-		All,
-		Controller,
-		Runner,
-		Jumper,
-		Summoner,
-		Weak,
-		Place
 	};
 };
