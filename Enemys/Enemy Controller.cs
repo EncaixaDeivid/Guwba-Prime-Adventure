@@ -1,9 +1,10 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IGrabtable, IDamageable
+	internal abstract class EnemyController : StateController, IGrabtable, IDamageable, IConnector
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
@@ -28,6 +29,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
 		protected bool Paralyzed => this._paralyzed;
 		public ushort Health => (ushort)this._vitality;
+		public PathConnection PathConnection => PathConnection.Enemy;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -77,6 +79,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			if ((this._vitality -= (short)damage) <= 0)
 				Destroy(this.gameObject);
 			return true;
+		}
+		public void Receive(DataConnection data, object additionalData)
+		{
+			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue)
+				this.enabled = data.ToggleValue.Value;
 		}
 	};
 };
