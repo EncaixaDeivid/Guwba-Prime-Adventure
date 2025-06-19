@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Enable).SetToggle(true);
+			this._sender.SetStateForm(StateForm.Disable).SetToggle(true);
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -42,7 +42,10 @@ namespace GuwbaPrimeAdventure.Hud
 			if (this.gameObject.scene.name.Contains("Boss"))
 				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
 			else
-				this._sender.Send();
+			{
+				this._sender.SetToWhereConnection(PathConnection.Character).Send();
+				this._sender.SetToWhereConnection(PathConnection.Enemy).Send();
+			}
 		};
 		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
 		private Action GameOver => () =>
