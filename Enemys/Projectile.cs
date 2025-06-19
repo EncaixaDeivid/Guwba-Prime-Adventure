@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal sealed class Projectile : StateController, IGrabtable
+	public sealed class Projectile : StateController, IGrabtable
 	{
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
@@ -21,6 +21,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _isParalyzed = false, _breakInUse = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
@@ -30,7 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
 		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
 		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
-		[SerializeField, Tooltip("If this projectile will instantiate after its death.")] private bool _inDeath;
+		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
 		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
 		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
@@ -198,11 +199,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			else
 			{
-				if (this._inDeath && this._secondProjectile)
-					if (this._inCell)
-						this.CellInstanceRange();
-					else
-						this.CommonInstance();
+				if (this._inDeath)
+					if (this._enemyOnDeath)
+						Instantiate(this._enemyOnDeath);
+					else if (this._secondProjectile)
+						if (this._inCell)
+							this.CellInstanceRange();
+						else
+							this.CommonInstance();
 				Destroy(this.gameObject);
 			}
 		}
