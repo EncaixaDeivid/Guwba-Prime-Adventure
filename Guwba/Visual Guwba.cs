@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static VisualGuwba _instance;
 		private GuwbaHud _guwbaHud;
 		private SpriteRenderer _spriteRenderer;
+		private readonly Sender _sender = Sender.Create();
 		private short _vitality;
 		private bool _invencibility = false;
 		private bool _isDamaged = false;
@@ -34,9 +35,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			}
 			_instance = this;
-			SaveController.Load(out SaveFile saveFile);
 			this._spriteRenderer = this.GetComponentInParent<SpriteRenderer>();
 			this._guwbaHud = Instantiate(this._guwbaHudObject, this.transform);
+			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Disable).SetToggle(false);
+			SaveController.Load(out SaveFile saveFile);
 			this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
 			this._guwbaHud.CoinText.text = $"X {saveFile.coins}";
 			this._vitality = (short)this._guwbaHud.Vitality;
@@ -111,6 +113,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (this._vitality <= 0f)
 			{
 				this._vitality = 0;
+				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 				SaveController.Load(out SaveFile saveFile);
 				saveFile.lifes -= 1;
 				this._guwbaHud.LifeText.text = $"X {saveFile.lifes}";
@@ -122,7 +125,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
 				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
 				this.StopAllCoroutines();
-				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+				this._sender.Send();
 				return true;
 			}
 			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
