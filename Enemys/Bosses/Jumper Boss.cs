@@ -154,24 +154,25 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossController[] bosses = (BossController[])additionalData;
-			foreach (BossController boss in bosses)
-				if (boss == this)
-				{
-					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-						this._stopJump = !data.ToggleValue.Value;
-					else if (data.StateForm == StateForm.Action && this._reactToDamage)
+			if (bosses != null)
+				foreach (BossController boss in bosses)
+					if (boss == this)
 					{
-						if (this._stopMoveReact)
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							this._stopJump = !data.ToggleValue.Value;
+						else if (data.StateForm == StateForm.Action && this._reactToDamage)
 						{
-							this._sender.Send();
-							this._rigidybody.linearVelocityX = 0f;
+							if (this._stopMoveReact)
+							{
+								this._sender.Send();
+								this._rigidybody.linearVelocityX = 0f;
+							}
+							this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
+							if (this._highReact)
+								this.HighJump(this._otherTarget, this._useTarget);
 						}
-						this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
-						if (this._highReact)
-							this.HighJump(this._otherTarget, this._useTarget);
+						break;
 					}
-					break;
-				}
 		}
 		[System.Serializable]
 		private struct JumpStats
