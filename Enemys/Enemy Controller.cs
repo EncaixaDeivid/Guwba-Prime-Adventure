@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	public abstract class EnemyController : StateController, IGrabtable, IDamageable
+	internal abstract class EnemyController : StateController, IGrabtable, IDamageable
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
