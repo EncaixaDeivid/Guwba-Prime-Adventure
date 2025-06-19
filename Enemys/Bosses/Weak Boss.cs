@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	[RequireComponent(typeof(IInteractable))]
 	internal sealed class WeakBoss : BossController, IDamageable
 	{
-		private readonly Sender _sender = Sender.Create();
 		private bool _blockDamage = false;
 		private bool _useDestructuion = false;
 		[Header("Weak Boss")]
@@ -16,14 +15,14 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
 		[SerializeField, Tooltip("The amount of time to wait after damaging the prop again.")] private float _timeToDamage;
 		[SerializeField, Tooltip("The index to a event to a boss make.")] private ushort _indexEvent;
+		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will destroy the main boss after it's destruction.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this boss will be saved as already existent object.")] private bool _saveOnSpecifics;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(BossType.All);
+			this._sender.SetStateForm(StateForm.Action);
 		}
 		private new void OnDestroy()
 		{
@@ -34,11 +33,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
-			{
-				Sender sender = Sender.Create();
-				sender.SetToWhereConnection(PathConnection.Boss).SetAdditionalData(BossType.Controller);
-				sender.SetStateForm(StateForm.Disable).Send();
-			}
+				this._sender.SetStateForm(StateForm.Disable).Send();
 		}
 		public bool Damage(ushort damage)
 		{
