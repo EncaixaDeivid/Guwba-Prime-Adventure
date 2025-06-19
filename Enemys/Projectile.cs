@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	public sealed class Projectile : StateController, IGrabtable
+	internal sealed class Projectile : StateController, IGrabtable
 	{
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
@@ -201,7 +201,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				if (this._inDeath)
 					if (this._enemyOnDeath)
-						Instantiate(this._enemyOnDeath);
+						Instantiate(this._enemyOnDeath, this.transform.position, this._enemyOnDeath.transform.rotation);
 					else if (this._secondProjectile)
 						if (this._inCell)
 							this.CellInstanceRange();
