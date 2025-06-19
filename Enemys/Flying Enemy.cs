@@ -123,6 +123,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
+			base.Receive(data, additionalData);
 			if (additionalData as GameObject != this.gameObject)
 				return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
