@@ -137,23 +137,24 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			base.Receive(data, additionalData);
 			BossController[] bosses = (BossController[])additionalData;
-			foreach (BossController boss in bosses)
-				if (boss == this)
-				{
-					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-						this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
-					else if (data.StateForm == StateForm.Action && this._reactToDamage)
+			if (bosses != null)
+				foreach (BossController boss in bosses)
+					if (boss == this)
 					{
-						Vector2 targetPosition;
-						if (this._useOtherTarget)
-							targetPosition = this._otherTarget;
-						else
-							targetPosition = GuwbaAstral<CommandGuwba>.Position;
-						this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
-						this.StartCoroutine(this.Dash());
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							this._stopVelocity = this._stopMovement = !data.ToggleValue.Value;
+						else if (data.StateForm == StateForm.Action && this._reactToDamage)
+						{
+							Vector2 targetPosition;
+							if (this._useOtherTarget)
+								targetPosition = this._otherTarget;
+							else
+								targetPosition = GuwbaAstral<CommandGuwba>.Position;
+							this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
+							this.StartCoroutine(this.Dash());
+						}
+						break;
 					}
-					break;
-				}
 		}
 	};
 };
