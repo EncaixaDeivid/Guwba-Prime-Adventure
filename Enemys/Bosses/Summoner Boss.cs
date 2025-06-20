@@ -93,6 +93,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				foreach (BossController boss in bosses)
 					if (boss == this)
 					{
+						bool numberValid = data.NumberValue.HasValue && data.NumberValue.Value < this._eventSummons.Length;
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 							this._stopSummon = !data.ToggleValue.Value;
 						else if (data.StateForm == StateForm.Action && this._reactToDamage && this._eventSummons.Length > 0f)
@@ -101,8 +102,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 								ushort randomIndex = (ushort)Random.Range(0f, this._eventSummons.Length - 1f);
 								this.Summon(this._eventSummons[randomIndex]);
 							}
-							else if (data.IndexValue.HasValue && data.IndexValue.Value < this._eventSummons.Length && data.IndexValue.Value >= 0)
-								this.Summon(this._eventSummons[data.IndexValue.Value]);
+							else if (numberValid && data.NumberValue.Value >= 0)
+								this.Summon(this._eventSummons[data.NumberValue.Value]);
 						break;
 					}
 		}
