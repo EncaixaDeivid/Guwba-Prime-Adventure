@@ -14,7 +14,10 @@
             </ui:GroupBox>
             <ui:GroupBox name="Vitality" >
                 <ui:VisualElement name="VitalityPiece" />
-            </ui:GroupBox >
+            </ui:GroupBox>
+            <ui:GroupBox name="RecoverVitality" >
+                <ui:VisualElement name="RecoverVitalityPiece" />
+            </ui:GroupBox>
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
