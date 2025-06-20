@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._sender.SetStateForm(StateForm.Disable).SetToggle(true);
+			this._sender.SetToggle(true);
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -43,8 +43,8 @@ namespace GuwbaPrimeAdventure.Hud
 				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
 			else
 			{
-				this._sender.SetToWhereConnection(PathConnection.Character).Send();
-				this._sender.SetToWhereConnection(PathConnection.Enemy).Send();
+				this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Enable).Send();
+				this._sender.SetToWhereConnection(PathConnection.Enemy).SetStateForm(StateForm.Disable).Send();
 			}
 		};
 		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
