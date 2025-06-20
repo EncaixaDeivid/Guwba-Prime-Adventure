@@ -4,12 +4,12 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		public StateForm StateForm { get; private set; }
 		public bool? ToggleValue { get; private set; }
-		public uint? IndexValue { get; private set; }
-		internal DataConnection(StateForm stateForm, bool? toggleValue, uint? indexValue)
+		public uint? NumberValue { get; private set; }
+		internal DataConnection(StateForm stateForm, bool? toggleValue, uint? numberValue)
 		{
 			this.StateForm = stateForm;
 			this.ToggleValue = toggleValue;
-			this.IndexValue = indexValue;
+			this.NumberValue = numberValue;
 		}
 	};
 };
