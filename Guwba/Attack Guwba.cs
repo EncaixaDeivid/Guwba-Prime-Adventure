@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
@@ -30,6 +31,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			_instance = this;
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
+			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action).SetToggle(true);
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
 			_actualState += this.Movement;
 		}
@@ -68,12 +70,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
 				this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
-				Vector2 targetDistance = GuwbaAstral<CommandGuwba>.Position;
-				Vector2 targetPosition;
 				while (this._isAttacking)
 				{
-					targetPosition = GuwbaAstral<CommandGuwba>.Position;
-					if (Vector2.Distance(this.transform.position, targetDistance) >= this._movementDistance)
+					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
+					if (Vector2.Distance(this.transform.position, targetPosition) >= this._movementDistance)
 					{
 						GuwbaAstral<CommandGuwba>._returnAttack = true;
 						_returnAttack = true;
@@ -109,13 +109,17 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<VisualGuwba>._grabObject = grabBody;
 				_grabObject = grabBody;
 				_grabObject.Stop((ushort)this.gameObject.layer);
+				this._sender.Send();
 			}
 			else if (isDamageable)
 			{
 				GuwbaAstral<CommandGuwba>._returnAttack = true;
 				_returnAttack = true;
 				if (damageable.Damage(this._damage))
+				{
 					EffectsController.SetHitStop(this._hitStopTime, this._hitSlowTime);
+					this._sender.Send();
+				}
 			}
 			else if (collisionObject.TryGetComponent<Surface>(out _))
 			{
