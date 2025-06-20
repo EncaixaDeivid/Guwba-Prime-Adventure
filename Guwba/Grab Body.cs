@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer))]
@@ -8,6 +9,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private Transform _parent;
 		private Collider2D[] _colliders;
+		private readonly Sender _sender = Sender.Create();
 		private LayerMask[,] _layerMasks;
 		private Vector2 _guardVelocity = new();
 		private bool[] _isTrigger;
@@ -36,6 +38,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._colliders = this.GetComponents<Collider2D>();
+			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action).SetToggle(true);
 		}
 		private void OnEnable()
 		{
@@ -56,7 +59,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				bool isDamageable = collisionObject.TryGetComponent(out IDamageable damageable);
 				if (isDamageable && damageable.Damage(this._throwDamage))
+				{
 					EffectsController.SetHitStop(this._throwHitStopTime, this._throwHitSlowTime);
+					this._sender.Send();
+				}
 				if (isDamageable || collisionObject.TryGetComponent<Surface>(out _))
 				{
 					this._isThrew = false;
