@@ -10,6 +10,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    align-content: center;
     margin: 10px;
     width: 40%;
     height: 200px;
@@ -48,7 +49,6 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 692px;
     height: 25%;
 }
 #VitalityPiece {
