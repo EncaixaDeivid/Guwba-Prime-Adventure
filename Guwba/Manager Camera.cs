@@ -105,8 +105,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this.transform.position = (Vector2)additionalData + Vector2.up * 4f;
+			if (data.StateForm == StateForm.Action)
+				this.transform.position = GuwbaAstral<CommandGuwba>.Position + Vector2.up * 4f;
 		}
 	};
 };
