@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public abstract class GuwbaAstral<GuwbaInstance> : StateController where GuwbaInstance : StateController
 	{
 		private static GuwbaInstance _instance;
+		protected readonly Sender _sender = Sender.Create();
 		protected static GrabBody _grabObject;
 		protected static UnityAction<bool> _actualState;
 		protected static bool _returnAttack;
