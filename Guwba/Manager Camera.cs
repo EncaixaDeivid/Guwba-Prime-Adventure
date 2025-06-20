@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Cinemachine;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
 	[RequireComponent(typeof(SortingGroup), typeof(Rigidbody2D), typeof(BoxCollider2D))]
-	internal sealed class ManagerCamera : StateController
+	internal sealed class ManagerCamera : StateController, IConnector
 	{
 		private static ManagerCamera _instance;
 		private Camera _cameraGuwba;
@@ -21,6 +22,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of speed that the background will move vertically.")] private float _verticalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount to slow horizontally for each layer that is after the first.")] private float _slowHorizontal;
 		[SerializeField, Tooltip("The amount to slow vertically for each layer that is after the first.")] private float _slowVertical;
+		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
 		{
 			if (_instance)
@@ -64,6 +66,12 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._cameraCollider.size = new Vector2(sizeX, sizeY);
 			foreach (Collider2D objects in Physics2D.OverlapBoxAll(this.transform.position, this._cameraCollider.size, 0f))
 				this.SetOtherChildren(objects.gameObject, true);
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void SetOtherChildren(GameObject gameObject, bool activeValue)
 		{
@@ -95,5 +103,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
+		public void Receive(DataConnection data, object additionalData)
+		{
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this.transform.position = (Vector2)additionalData + Vector2.up * 4f;
+		}
 	};
 };
