@@ -16,7 +16,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
 		private ActionsGuwba _actions;
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _normalSize = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
@@ -80,10 +79,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
+			this._sender.SetToWhereConnection(PathConnection.Controller);
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
-			this._sender.SetToWhereConnection(PathConnection.Controller);
 			_actualState += this.DeathState;
 		}
 		private new void OnDestroy()
