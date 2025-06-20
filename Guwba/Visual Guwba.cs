@@ -150,6 +150,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
 				this.StartCoroutine(this.Invencibility());
 			}
+			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
+				this._vitality = (short)this._guwbaHud.Vitality;
 		}
 	};
 };
