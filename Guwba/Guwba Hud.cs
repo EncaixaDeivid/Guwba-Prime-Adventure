@@ -1,58 +1,49 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-#RootElement {
-    width: 100%;
-    height: 100%;
-}
-#GroupElements {
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    margin: 10px;
-    width: 40%;
-    height: 200px;
-}
-#Texts {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-    height: 50%;
-    align-self: center;
-}
-#SubText {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    height: 100%;
-    align-self: center;
-}
-#LifeText, #CoinText {
-    font-size: 40px;
-    margin-left: 20px;
-}
-#LifeIcon, #CoinIcon{
-    width: 100px;
-    height: 100%;
-}
-#LifeIcon{
-    background-image: url("project://database/Assets/Items/Designs/Guwba Extra Life (Heart).png");
-}
-#CoinIcon {
-    background-image: url("project://database/Assets/Items/Designs/Coin Frame.png");
-}
-#Vitality {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 25%;
-}
-#VitalityPiece {
-    height: 100%;
-    background-color: rgb(96, 0, 0);
-    border-width: 7.5px;
-    border-color: rgb(32, 0, 0);
-}
+using UnityEngine;
+using UnityEngine.UIElements;
+namespace GuwbaPrimeAdventure.Guwba
+{
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
+	internal sealed class GuwbaHud : MonoBehaviour
+	{
+		private static GuwbaHud _instance;
+		[Header("Elements")]
+		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
+		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
+		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
+		[Header("Vitality Visual")]
+		[SerializeField, Tooltip("The total of vitality that Guwba have.")] private ushort _vitality;
+		[SerializeField, Tooltip("The total width of Guwba's vitality bar.")] private float _totalWidth;
+		internal VisualElement RootElement { get; private set; }
+		internal VisualElement[] VitalityVisual { get; private set; }
+		internal Label LifeText { get; private set; }
+		internal Label CoinText { get; private set; }
+		internal ushort Vitality => (ushort)this._vitality;
+		private void Awake()
+		{
+			if (_instance)
+			{
+				Destroy(this.gameObject, 0.001f);
+				return;
+			}
+			_instance = this;
+			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
+			this.RootElement = root.Q<VisualElement>(this._rootElementObject);
+			this.LifeText = root.Q<Label>(this._lifeTextObject);
+			this.CoinText = root.Q<Label>(this._coinTextObject);
+			VisualElement vitality = root.Q<VisualElement>($"{this._vitalityVisual}");
+			vitality.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
+			VisualElement vitalityPiece = root.Q<VisualElement>($"{this._vitalityPieceVisual}");
+			this.VitalityVisual = new VisualElement[this._vitality];
+			for (ushort i = 0; i < this._vitality; i++)
+			{
+				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
+				vitalityPieceClone.style.width = new StyleLength(new Length(this._totalWidth / this._vitality, LengthUnit.Pixel));
+				vitality.Add(vitalityPieceClone);
+				this.VitalityVisual[i] = vitality[i + 1];
+			}
+			vitality.Remove(vitalityPiece);
+		}
+	};
+};
