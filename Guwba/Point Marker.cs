@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action).SetToggle(true);
+			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				GuwbaAstral<CommandGuwba>.Position = _checkpointIndex;
-				this._sender.SetAdditionalData(_checkpointIndex);
+				this._sender.Send();
 			}
 		}
 	};
