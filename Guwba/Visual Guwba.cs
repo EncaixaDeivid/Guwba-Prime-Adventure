@@ -12,8 +12,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static VisualGuwba _instance;
 		private GuwbaHud _guwbaHud;
 		private SpriteRenderer _spriteRenderer;
-		private readonly Sender _sender = Sender.Create();
 		private short _vitality;
+		private ushort _recoverVitality = 0;
 		private bool _invencibility = false;
 		private bool _isDamaged = false;
 		[Header("Visual Interaction")]
@@ -104,11 +104,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
-				this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
-				this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(0.75f, 0.75f, 0.75f));
+				this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
+				this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
+				this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
+				this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
+				this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
 			}
 			if (this._vitality <= 0f)
 			{
@@ -137,13 +137,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				for (ushort i = (ushort)this._guwbaHud.VitalityVisual.Length; i > 0f; i--)
+				for (ushort i = 0; i < this._guwbaHud.VitalityVisual.Length; i++)
 				{
-					this._guwbaHud.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(new Color(96f / 255f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
-					this._guwbaHud.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(new Color(32f / 255f, 0f, 0f));
+					this._guwbaHud.VitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHud.BackgroundColor);
+					this._guwbaHud.VitalityVisual[i].style.borderBottomColor = new StyleColor(this._guwbaHud.BorderColor);
+					this._guwbaHud.VitalityVisual[i].style.borderLeftColor = new StyleColor(this._guwbaHud.BorderColor);
+					this._guwbaHud.VitalityVisual[i].style.borderRightColor = new StyleColor(this._guwbaHud.BorderColor);
+					this._guwbaHud.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHud.BorderColor);
 				}
 				this._invencibility = true;
 				this._vitality = (short)this._guwbaHud.Vitality;
@@ -151,7 +151,27 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.StartCoroutine(this.Invencibility());
 			}
 			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				this._vitality = (short)this._guwbaHud.Vitality;
+				if (this._recoverVitality >= this._guwbaHud.Vitality)
+				{
+					this._recoverVitality = 0;
+					for (ushort i = 0; i < this._guwbaHud.Vitality; i++)
+						this._guwbaHud.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHud.MissingVitalityColor);
+					this._vitality += 1;
+					for (ushort i = 0; i < this._vitality; i++)
+					{
+						this._guwbaHud.VitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHud.BackgroundColor);
+						this._guwbaHud.VitalityVisual[i].style.borderBottomColor = new StyleColor(this._guwbaHud.BorderColor);
+						this._guwbaHud.VitalityVisual[i].style.borderLeftColor = new StyleColor(this._guwbaHud.BorderColor);
+						this._guwbaHud.VitalityVisual[i].style.borderRightColor = new StyleColor(this._guwbaHud.BorderColor);
+						this._guwbaHud.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHud.BorderColor);
+					}
+				}
+				else
+				{
+					this._recoverVitality += 1;
+					for (ushort i = 0; i < this._recoverVitality; i++)
+						this._guwbaHud.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHud.BorderColor);
+				}
 		}
 	};
 };
