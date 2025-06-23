@@ -109,7 +109,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<VisualGuwba>._grabObject = grabBody;
 				_grabObject = grabBody;
 				_grabObject.Stop((ushort)this.gameObject.layer);
-				this._sender.Send();
+				if (isDamageable)
+					this._sender.Send();
 			}
 			else if (isDamageable)
 			{
