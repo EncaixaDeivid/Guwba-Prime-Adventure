@@ -166,7 +166,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._guwbaHud.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHud.BorderColor);
 					}
 				}
-				else if (this._vitality < this._guwbaHud.Vitality)
+				else if (this._recoverVitality < this._guwbaHud.Vitality)
 				{
 					this._recoverVitality += 1;
 					for (ushort i = 0; i < this._recoverVitality; i++)
