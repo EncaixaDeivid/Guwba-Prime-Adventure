@@ -151,7 +151,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.StartCoroutine(this.Invencibility());
 			}
 			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				if (this._recoverVitality >= this._guwbaHud.Vitality)
+				if (this._recoverVitality >= this._guwbaHud.Vitality && this._vitality < this._guwbaHud.Vitality)
 				{
 					this._recoverVitality = 0;
 					for (ushort i = 0; i < this._guwbaHud.Vitality; i++)
@@ -166,7 +166,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._guwbaHud.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHud.BorderColor);
 					}
 				}
-				else
+				else if (this._vitality < this._guwbaHud.Vitality)
 				{
 					this._recoverVitality += 1;
 					for (ushort i = 0; i < this._recoverVitality; i++)
