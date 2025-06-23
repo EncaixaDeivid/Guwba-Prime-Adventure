@@ -116,7 +116,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._isThrew = true;
 			for (ushort i = 0; i < this._colliders.Length; i++)
 				this._colliders[i].isTrigger = this._isTrigger[i];
-			this._rigidbody.AddForce(direction * this._throwSpeed, ForceMode2D.Force);
+			this._rigidbody.AddForce(this._rigidbody.mass * this._throwSpeed * direction, ForceMode2D.Force);
 			if (this._fadeAway)
 				Destroy(this.gameObject, this._fadeTime);
 		}
