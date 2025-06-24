@@ -73,8 +73,8 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
 			this._inputController = new InputController();
-			this._inputController.commands.hideHud.canceled += this.HideHudAction;
-			this._inputController.commands.hideHud.Enable();
+			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
+			this._inputController.Commands.HideHud.Enable();
 			this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
 		};
 		private Action OpenConfigurations => () => this._sender.SetStateForm(StateForm.Enable).SetToggle(true).Send();
@@ -83,8 +83,8 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-			this._inputController.commands.hideHud.canceled -= this.HideHudAction;
-			this._inputController.commands.hideHud.Disable();
+			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
+			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
 			this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
 		};
