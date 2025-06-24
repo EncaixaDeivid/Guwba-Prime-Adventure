@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Hud
 	{
 		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
-		private ActionsGuwba _actions;
+		private InputController _inputController;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
@@ -37,17 +37,17 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._actions = new ActionsGuwba();
-			this._actions.commands.hideHud.canceled += this.HideHudAction;
-			this._actions.commands.hideHud.Enable();
+			this._inputController = new InputController();
+			this._inputController.commands.hideHud.canceled += this.HideHudAction;
+			this._inputController.commands.hideHud.Enable();
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._actions.commands.hideHud.canceled -= this.HideHudAction;
-			this._actions.commands.hideHud.Disable();
-			this._actions.Dispose();
+			this._inputController.commands.hideHud.canceled -= this.HideHudAction;
+			this._inputController.commands.hideHud.Disable();
+			this._inputController.Dispose();
 		}
 		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.OpenCloseConfigurations();
 		private void OpenCloseConfigurations()
@@ -185,11 +185,11 @@ namespace GuwbaPrimeAdventure.Hud
 			if (this.gameObject.scene.name == this._menuScene && data.StateForm == StateForm.Enable && hasToggle)
 				this.OpenCloseConfigurations();
 			else if (data.StateForm == StateForm.Disable && hasToggle)
-				this._actions.commands.hideHud.Disable();
+				this._inputController.commands.hideHud.Disable();
 			if ((data.StateForm == StateForm.Action || data.StateForm == StateForm.Enable) && hasToggle)
-				this._actions.commands.hideHud.Enable();
+				this._inputController.commands.hideHud.Enable();
 			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
-				this._actions.commands.hideHud.Disable();
+				this._inputController.commands.hideHud.Disable();
 		}
 	};
 };
