@@ -12,27 +12,22 @@ namespace GuwbaPrimeAdventure.Story
 		private Animator _animator;
 		private Dialog _dialogTalk;
 		private string _text = "";
-		private ushort _dialogObjectIndex = 0;
-		private ushort _dialogIndex = 0;
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
 		private bool _nextSlide = false;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
-		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject[] _dialogObject;
+		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
 		public void Interaction()
 		{
-			if (this._dialogObject?.Length > 0f && this._dialogHudObject)
+			if (this._dialogObject && this._dialogHudObject)
 			{
 				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
 				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
-				this._dialogTalk = this._dialogObject[this._dialogObjectIndex].Dialogs[this._dialogIndex];
-				bool indexValidation = this._dialogIndex < this._dialogObject[this._dialogObjectIndex].Dialogs.Length - 1f;
-				this._dialogIndex = (ushort)(indexValidation ? this._dialogIndex + 1f : 0f);
-				this._dialogObjectIndex = (ushort)(this._dialogObjectIndex < this._dialogObject.Length - 1f ? this._dialogObjectIndex + 1f : 0f);
+				this._dialogTalk = this._dialogObject.ObjectDialog;
 				this._dialogTime = settings.dialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this.StartCoroutine(this.TextDigitation());
