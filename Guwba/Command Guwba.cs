@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
-		private ActionsGuwba _actions;
+		private InputController _inputController;
 		private Vector2 _normalSize = new();
 		private Vector2 _attackValue = new();
 		private float _gravityScale = 0f;
@@ -96,20 +96,20 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._actions = new ActionsGuwba();
-			this._actions.commands.movement.performed += this.Movement;
-			this._actions.commands.movement.canceled += this.Movement;
-			this._actions.commands.jump.started += this.Jump;
-			this._actions.commands.attackRotationConsole.performed += this.AttackRotationConsole;
-			this._actions.commands.attackRotationKeyboard.performed += this.AttackRotationKeyboard;
-			this._actions.commands.attackUse.started += this.AttackUse;
-			this._actions.commands.interaction.started += this.Interaction;
-			this._actions.commands.movement.Enable();
-			this._actions.commands.jump.Enable();
-			this._actions.commands.attackRotationConsole.Enable();
-			this._actions.commands.attackRotationKeyboard.Enable();
-			this._actions.commands.attackUse.Enable();
-			this._actions.commands.interaction.Enable();
+			this._inputController = new InputController();
+			this._inputController.commands.movement.performed += this.Movement;
+			this._inputController.commands.movement.canceled += this.Movement;
+			this._inputController.commands.jump.started += this.Jump;
+			this._inputController.commands.attackRotationConsole.performed += this.AttackRotationConsole;
+			this._inputController.commands.attackRotationKeyboard.performed += this.AttackRotationKeyboard;
+			this._inputController.commands.attackUse.started += this.AttackUse;
+			this._inputController.commands.interaction.started += this.Interaction;
+			this._inputController.commands.movement.Enable();
+			this._inputController.commands.jump.Enable();
+			this._inputController.commands.attackRotationConsole.Enable();
+			this._inputController.commands.attackRotationKeyboard.Enable();
+			this._inputController.commands.attackUse.Enable();
+			this._inputController.commands.interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
 			this._animator.SetFloat(this._walkSpeed, this._dashValue ? -1f : 1f);
 			if (this._dashValue)
@@ -121,20 +121,20 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._actions.commands.movement.performed -= this.Movement;
-			this._actions.commands.movement.canceled -= this.Movement;
-			this._actions.commands.jump.started -= this.Jump;
-			this._actions.commands.attackRotationConsole.performed -= this.AttackRotationConsole;
-			this._actions.commands.attackRotationKeyboard.performed -= this.AttackRotationKeyboard;
-			this._actions.commands.attackUse.started -= this.AttackUse;
-			this._actions.commands.interaction.started -= this.Interaction;
-			this._actions.commands.movement.Disable();
-			this._actions.commands.jump.Disable();
-			this._actions.commands.attackRotationConsole.Disable();
-			this._actions.commands.attackRotationKeyboard.Disable();
-			this._actions.commands.attackUse.Disable();
-			this._actions.commands.interaction.Disable();
-			this._actions.Dispose();
+			this._inputController.commands.movement.performed -= this.Movement;
+			this._inputController.commands.movement.canceled -= this.Movement;
+			this._inputController.commands.jump.started -= this.Jump;
+			this._inputController.commands.attackRotationConsole.performed -= this.AttackRotationConsole;
+			this._inputController.commands.attackRotationKeyboard.performed -= this.AttackRotationKeyboard;
+			this._inputController.commands.attackUse.started -= this.AttackUse;
+			this._inputController.commands.interaction.started -= this.Interaction;
+			this._inputController.commands.movement.Disable();
+			this._inputController.commands.jump.Disable();
+			this._inputController.commands.attackRotationConsole.Disable();
+			this._inputController.commands.attackRotationKeyboard.Disable();
+			this._inputController.commands.attackUse.Disable();
+			this._inputController.commands.interaction.Disable();
+			this._inputController.Dispose();
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
 			this._movementAction = 0f;
