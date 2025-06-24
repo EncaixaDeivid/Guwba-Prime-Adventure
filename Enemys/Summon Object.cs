@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[CreateAssetMenu(fileName = "Summon", menuName = "Scriptable Objects/Summon", order = 1)]
+	[CreateAssetMenu(fileName = "Summon", menuName = "Scriptable Objects/Summon", order = 0)]
 	public sealed class SummonObject : ScriptableObject
 	{
 		[Header("Components Stats")]
