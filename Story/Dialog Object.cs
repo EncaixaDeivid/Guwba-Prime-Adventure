@@ -5,13 +5,6 @@ namespace GuwbaPrimeAdventure.Story
 	[CreateAssetMenu(fileName = "Dialog", menuName = "Scriptable Objects/Dialog", order = 1)]
 	internal class DialogObject : ScriptableObject
     {
-		[Header("Dialog Collection")]
-		[SerializeField, Tooltip("The collection of the object that contais the entire dialog.")] private Dialog _dialog;
-		internal Dialog ObjectDialog => this._dialog;
-	};
-	[Serializable]
-	internal struct Dialog
-	{
 		[Header("Dialog Components")]
 		[SerializeField, Tooltip("The collection of the object that contais the speach.")] private Speach[] _speach;
 		[SerializeField, Tooltip("The scene to trancision to after the speach.")] private string _sceneToTransition;
@@ -22,15 +15,15 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("If the object will destruct.")] private bool _activateDestroy;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnEspecific;
 		[SerializeField, Tooltip("The amount of time to wait to destroy after the speach.")] private float _timeToDestroy;
-		internal readonly Speach[] Speachs => this._speach;
-		internal readonly string SceneToTransition => this._sceneToTransition;
-		internal readonly string Animation => this._animation;
-		internal readonly bool ActivateTransition => this._activateTransition;
-		internal readonly bool DesactiveInteraction => this._desactiveInteraction;
-		internal readonly bool ActivateAnimation => this._activateAnimation;
-		internal readonly bool ActivateDestroy => this._activateDestroy;
-		internal readonly bool SaveOnEspecific => this._saveOnEspecific;
-		internal readonly float TimeToDestroy => this._timeToDestroy;
+		internal Speach[] Speachs => this._speach;
+		internal string SceneToTransition => this._sceneToTransition;
+		internal string Animation => this._animation;
+		internal bool ActivateTransition => this._activateTransition;
+		internal bool DesactiveInteraction => this._desactiveInteraction;
+		internal bool ActivateAnimation => this._activateAnimation;
+		internal bool ActivateDestroy => this._activateDestroy;
+		internal bool SaveOnEspecific => this._saveOnEspecific;
+		internal float TimeToDestroy => this._timeToDestroy;
 		[Serializable]
 		internal struct Speach
 		{
