@@ -38,15 +38,15 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!_instance || _instance != this)
 				return;
 			this._inputController = new InputController();
-			this._inputController.commands.hideHud.canceled += this.HideHudAction;
-			this._inputController.commands.hideHud.Enable();
+			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
+			this._inputController.Commands.HideHud.Enable();
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._inputController.commands.hideHud.canceled -= this.HideHudAction;
-			this._inputController.commands.hideHud.Disable();
+			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
+			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
 		}
 		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.OpenCloseConfigurations();
@@ -185,11 +185,11 @@ namespace GuwbaPrimeAdventure.Hud
 			if (this.gameObject.scene.name == this._menuScene && data.StateForm == StateForm.Enable && hasToggle)
 				this.OpenCloseConfigurations();
 			else if (data.StateForm == StateForm.Disable && hasToggle)
-				this._inputController.commands.hideHud.Disable();
+				this._inputController.Commands.HideHud.Disable();
 			if ((data.StateForm == StateForm.Action || data.StateForm == StateForm.Enable) && hasToggle)
-				this._inputController.commands.hideHud.Enable();
+				this._inputController.Commands.HideHud.Enable();
 			else if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
-				this._inputController.commands.hideHud.Disable();
+				this._inputController.Commands.HideHud.Disable();
 		}
 	};
 };
