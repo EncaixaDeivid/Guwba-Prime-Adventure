@@ -10,7 +10,6 @@ namespace GuwbaPrimeAdventure.Story
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
 		private Animator _animator;
-		private Dialog _dialogTalk;
 		private string _text = "";
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
@@ -27,7 +26,6 @@ namespace GuwbaPrimeAdventure.Story
 				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject);
-				this._dialogTalk = this._dialogObject.ObjectDialog;
 				this._dialogTime = settings.dialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this.StartCoroutine(this.TextDigitation());
@@ -37,10 +35,10 @@ namespace GuwbaPrimeAdventure.Story
 		}
 		private IEnumerator TextDigitation()
 		{
-			StyleBackground image = new(this._dialogTalk.Speachs[this._speachIndex].Model);
+			StyleBackground image = new(this._dialogObject.Speachs[this._speachIndex].Model);
 			this._dialogHud.CharacterIcon.style.backgroundImage = image;
-			this._dialogHud.CharacterName.text = this._dialogTalk.Speachs[this._speachIndex].CharacterName;
-			this._text = this._dialogTalk.Speachs[this._speachIndex].SpeachText;
+			this._dialogHud.CharacterName.text = this._dialogObject.Speachs[this._speachIndex].CharacterName;
+			this._text = this._dialogObject.Speachs[this._speachIndex].SpeachText;
 			this._dialogHud.CharacterSpeach.text = "";
 			if (this._nextSlide)
 			{
@@ -57,19 +55,19 @@ namespace GuwbaPrimeAdventure.Story
 		private void WorldInteraction()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (this._dialogTalk.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
-			if (this._dialogTalk.ActivateTransition)
-				this.GetComponent<Transitioner>().Transicion(this._dialogTalk.SceneToTransition);
-			else if (this._dialogTalk.ActivateAnimation)
-				this._animator.SetTrigger(this._dialogTalk.Animation);
-			if (this._dialogTalk.DesactiveInteraction)
+			if (this._dialogObject.ActivateTransition)
+				this.GetComponent<Transitioner>().Transicion(this._dialogObject.SceneToTransition);
+			else if (this._dialogObject.ActivateAnimation)
+				this._animator.SetTrigger(this._dialogObject.Animation);
+			if (this._dialogObject.DesactiveInteraction)
 				this.enabled = false;
-			if (!this._dialogTalk.ActivateTransition && this._dialogTalk.ActivateDestroy)
-				Destroy(this.gameObject, this._dialogTalk.TimeToDestroy);
+			if (!this._dialogObject.ActivateTransition && this._dialogObject.ActivateDestroy)
+				Destroy(this.gameObject, this._dialogObject.TimeToDestroy);
 		}
 		private void AdvanceSpeach()
 		{
@@ -77,9 +75,9 @@ namespace GuwbaPrimeAdventure.Story
 			{
 				SettingsController.Load(out Settings settings);
 				this._dialogTime = settings.dialogSpeed;
-				if (this._speachIndex < this._dialogTalk.Speachs.Length - 1f)
+				if (this._speachIndex < this._dialogObject.Speachs.Length - 1f)
 				{
-					if (this._storyTeller && this._dialogTalk.Speachs[this._speachIndex].NextSlide)
+					if (this._storyTeller && this._dialogObject.Speachs[this._speachIndex].NextSlide)
 					{
 						this._nextSlide = true;
 						this._dialogHud.RootElement.style.display = DisplayStyle.None;
