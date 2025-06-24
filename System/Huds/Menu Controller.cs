@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Hud
 	{
 		private static MenuController _instance;
 		private MenuHud _menuHud;
-		private ActionsGuwba _actions;
+		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the menu.")] private MenuHud _menuHudObject;
@@ -72,9 +72,9 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
-			this._actions = new ActionsGuwba();
-			this._actions.commands.hideHud.canceled += this.HideHudAction;
-			this._actions.commands.hideHud.Enable();
+			this._inputController = new InputController();
+			this._inputController.commands.hideHud.canceled += this.HideHudAction;
+			this._inputController.commands.hideHud.Enable();
 			this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
 		};
 		private Action OpenConfigurations => () => this._sender.SetStateForm(StateForm.Enable).SetToggle(true).Send();
@@ -83,9 +83,9 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-			this._actions.commands.hideHud.canceled -= this.HideHudAction;
-			this._actions.commands.hideHud.Disable();
-			this._actions.Dispose();
+			this._inputController.commands.hideHud.canceled -= this.HideHudAction;
+			this._inputController.commands.hideHud.Disable();
+			this._inputController.Dispose();
 			this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
