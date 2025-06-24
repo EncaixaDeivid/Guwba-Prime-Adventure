@@ -6,8 +6,8 @@ namespace GuwbaPrimeAdventure.Story
 	internal class DialogObject : ScriptableObject
     {
 		[Header("Dialog Collection")]
-		[SerializeField, Tooltip("The collection of the object that contais the entire dialog.")] private Dialog[] _dialog;
-		internal Dialog[] Dialogs => this._dialog;
+		[SerializeField, Tooltip("The collection of the object that contais the entire dialog.")] private Dialog _dialog;
+		internal Dialog ObjectDialog => this._dialog;
 	};
 	[Serializable]
 	internal struct Dialog
