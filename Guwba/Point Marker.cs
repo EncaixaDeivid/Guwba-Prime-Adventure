@@ -16,7 +16,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action);
+			this._sender.SetToWhereConnection(PathConnection.Character);
+			this._sender.SetStateForm(StateForm.Action);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
