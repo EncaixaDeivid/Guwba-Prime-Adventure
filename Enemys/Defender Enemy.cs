@@ -17,7 +17,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy).SetStateForm(StateForm.State);
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this.gameObject);
 			this._timeOperation = this._timeToInvencible;
 			Sender.Include(this);
@@ -40,7 +41,10 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._invencible = false;
 					this._timeOperation = this._timeToInvencible;
 					if (this._invencibleStop)
-						this._sender.SetToggle(false).Send();
+					{
+						this._sender.SetToggle(false);
+						this._sender.Send();
+					}
 				}
 				else
 				{
@@ -59,7 +63,10 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._timeOperation = this._timeToDamageable;
 				this._invencible = true;
 				if (this._invencibleStop)
-					this._sender.SetToggle(true).Send();
+				{
+					this._sender.SetToggle(true);
+					this._sender.Send();
+				}
 			}
 			return isDamaged;
 		}
@@ -74,7 +81,10 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					this._invencible = data.ToggleValue.Value;
 			if (this._invencibleStop)
-				this._sender.SetToggle(!this._invencible).Send();
+			{
+				this._sender.SetToggle(!this._invencible);
+				this._sender.Send();
+			}
 		}
 	};
 };
