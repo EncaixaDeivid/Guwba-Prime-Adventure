@@ -69,7 +69,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
-			this._sender.SetStateForm(StateForm.State).SetToggle(false);
+			this._sender.SetStateForm(StateForm.State);
+			this._sender.SetToggle(false);
 			for (ushort i = 0; i < this._jumpPointStructures.Length; i++)
 			{
 				JumpPoint jumpPoint = this._jumpPointStructures[i].JumpPointObject;
