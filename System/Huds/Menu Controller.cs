@@ -75,9 +75,16 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
 			this._inputController.Commands.HideHud.Enable();
-			this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
+			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetToggle(false);
+			this._sender.Send();
 		};
-		private Action OpenConfigurations => () => this._sender.SetStateForm(StateForm.Enable).SetToggle(true).Send();
+		private Action OpenConfigurations => () =>
+		{
+			this._sender.SetStateForm(StateForm.Enable);
+			this._sender.SetToggle(true);
+			this._sender.Send();
+		};
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -86,7 +93,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
-			this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
+			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetToggle(true);
+			this._sender.Send();
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
