@@ -20,11 +20,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this.StartCoroutine(StopToSummon());
 			IEnumerator StopToSummon()
 			{
-				this._sender.SetToggle(false).Send();
+				this._sender.SetToggle(false);
+				this._sender.Send();
 				if (summon.ParalyzeToSummon)
 					this._rigidybody.gravityScale = 0f;
 				yield return new WaitTime(this, summon.TimeToStop);
-				this._sender.SetToggle(true).Send();
+				this._sender.SetToggle(true);
+				this._sender.Send();
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
 			GameObject gameObject;
