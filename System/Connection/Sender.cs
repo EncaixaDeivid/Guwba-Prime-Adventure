@@ -28,31 +28,14 @@ namespace GuwbaPrimeAdventure.Connection
 				_connectors.Remove(connector);
 		}
 		public static Sender Create() => new();
-		public Sender SetAdditionalData(object additionalData)
-		{
-			this._additionalData = additionalData;
-			return this;
-		}
-		public Sender SetToWhereConnection(PathConnection toWhereConnection)
-		{
-			this._toWhereConnection = toWhereConnection;
-			return this;
-		}
-		public Sender SetStateForm(StateForm stateForm)
-		{
-			this._stateForm = stateForm;
-			return this;
-		}
-		public Sender SetToggle(bool value)
-		{
-			this._toggleValue = value;
-			return this;
-		}
-		public Sender SetIndex(int value)
+		public void SetAdditionalData(object additionalData) => this._additionalData = additionalData;
+		public void SetToWhereConnection(PathConnection toWhereConnection) => this._toWhereConnection = toWhereConnection;
+		public void SetStateForm(StateForm stateForm) => this._stateForm = stateForm;
+		public void SetToggle(bool value) => this._toggleValue = value;
+		public void SetNumber(int value)
 		{
 			uint indexValue = (uint)(value < 0f ? -value : value);
 			this._numberValue = indexValue;
-			return this;
 		}
 		public void Send()
 		{
