@@ -36,7 +36,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private IEnumerator Dash()
 		{
 			this._dashIsOn = true;
-			this._sender.SetToggle(this._jumpDash).Send();
+			this._sender.SetToggle(this._jumpDash);
+			this._sender.Send();
 			this._animator.SetBool(this._idle, true);
 			this._animator.SetBool(this._walk, false);
 			float actualPosition = this.transform.position.x;
@@ -55,7 +56,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			});
 			this._runnedDistance = 0f;
 			this._dashIsOn = false;
-			this._sender.SetToggle(true).Send();
+			this._sender.SetToggle(true);
+			this._sender.Send();
 		}
 		private new void Awake()
 		{
