@@ -29,7 +29,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._timeRun = this._timesToRun;
-			this._sender.SetToWhereConnection(PathConnection.Enemy).SetStateForm(StateForm.Action);
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(this.gameObject);
 			Sender.Include(this);
 		}
@@ -73,7 +74,10 @@ namespace GuwbaPrimeAdventure.Enemy
 						break;
 					}
 				if (this._invenciblePursue)
-					this._sender.SetToggle(faceLook).Send();
+				{
+					this._sender.SetToggle(faceLook);
+					this._sender.Send();
+				}
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
