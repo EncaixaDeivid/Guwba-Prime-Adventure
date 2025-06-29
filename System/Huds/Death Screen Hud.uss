@@ -16,19 +16,17 @@
 	align-self: center;
 }
 #Continue, #OutLevel, #GameOver{
-	font-size: 40px;
-	width: 800px;
-	height: 75px;
+	width : 500px;
+	height : 62.5px;
+	font-size : 30px;
 	margin-top: 60px;
-	background-color: rgb(255, 160, 0);
+	background-color : rgba(255, 255, 0, 0.5);
 	border-width : 0px;
-	border-radius : 25px;
-	border-color : rgb(255, 160, 0);
+	border-radius : 35px;
 }
 #GameOver{
 	display: none;
 }
 #Continue:hover, #OutLevel:hover, #GameOver:hover{
-	background-color : rgb(255, 255, 0);
-	border-width : 5px;
+	background-color : rgba(255, 160, 0, 0.85);
 }
