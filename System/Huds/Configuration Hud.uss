@@ -1,149 +1,195 @@
-*{
-	margin: 0px;
-	padding: 0px;
+* {
+    margin: 0;
+    padding: 0;
 }
-#RootElement{
-	width: 100%;
-	height: 100%;
-	align-items: center;
-	justify-content: space-around;
-	background-image: url("project://database/Assets/System/Huds/Designs/Configuration Screen.png");
+
+#RootElement {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    background-image: url("project://database/Assets/System/Huds/Designs/Configuration Screen.png");
 }
-#Settings{
-	width: 100%;
-	height: 100%;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	align-self: center;
+
+#Settings {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
 }
-#LeftPage{
-	width: 47.5%;
-	height: 100%;
-	align-items: center;
-	justify-content: space-evenly;
-	align-self: center;
+
+#LeftPage {
+    width: 47.5%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
 }
-#Sounds{
-	width: 100%;
-	height: 40%;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	align-self: center;
+
+#Sounds {
+    width: 100%;
+    height: 40%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
 }
-#Slider1, #Slider2, #Slider3, #Slider4{
-	width: 100%;
-	height: 25%;
-	align-items: center;
-	justify-content: space-evenly;
-	align-self: center;
-	flex-direction: row;
+
+#Slider1 {
+    width: 100%;
+    height: 25%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
+    flex-direction: row;
 }
-Slider{
-	width: 75%;
-	height: 80px;
-	min-height: 80px;
-	padding-bottom: 55px;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: center;
-	align-self: center;
+
+#Slider2 {
+    width: 100%;
+    height: 25%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
+    flex-direction: row;
 }
-Slider Label{
-	font-size: 25px;
+
+#Slider3 {
+    width: 100%;
+    height: 25%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
+    flex-direction: row;
 }
-Slider VisualElement{
-	width: 100%;
-	height: 30px;
-	min-height: 30px;
-	flex-direction: column;
-	align-content: center;
-	align-self: center;
+
+#Slider4 {
+    width: 100%;
+    height: 25%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
+    flex-direction: row;
 }
-Slider #unity-drag-container{
-	width: 100%;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-content: center;
-	align-self: center;
-	align-items: center;
+
+Slider {
+    width: 75%;
+    height: 80px;
+    min-height: 80px;
+    padding-bottom: 55px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: center;
 }
-Slider #unity-tracker{
-	height: 25px;
-	background-color: rgb(192, 192, 192);
-	flex-direction: row;
-	align-self: center;
-	border-radius: 10px;
+
+Slider Label {
+    font-size: 25px;
 }
-Slider #unity-dragger{
-	width: 20px;
-	background-color: rgb(255, 160, 0);
-	flex-direction: row;
-	border-radius: 10px;
+
+Slider VisualElement {
+    width: 100%;
+    height: 30px;
+    min-height: 30px;
+    flex-direction: column;
+    align-content: center;
+    align-self: center;
 }
-Toggle{
-	width: 40px;
-	height: 40px;
-	align-self: center;
+
+Slider #unity-drag-container {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    align-self: center;
+    align-items: center;
 }
-Toggle VisualElement{
-	width: 40px;
-	height: 40px;
-	align-self: center;
-	justify-content: center;
-	align-content: center;
-	border-radius: 10px;
+
+Slider #unity-tracker {
+    height: 25px;
+    background-color: rgb(192, 192, 192);
+    flex-direction: row;
+    align-self: center;
+    border-radius: 10px;
 }
-Toggle #unity-checkmark{
-	width: 40px;
-	height: 40px;
-	align-self: center;
-	border-radius: 10px;
-	background-color: rgb(255, 255, 0);
+
+Slider #unity-dragger {
+    width: 20px;
+    background-color: rgb(255, 160, 0);
+    flex-direction: row;
+    border-radius: 10px;
 }
-Toggle #unity-checkmark:checked{
-	background-color: rgb(255, 160, 0);
+
+Toggle {
+    width: 40px;
+    height: 40px;
+    align-self: center;
 }
-#RightPage{
-	width: 47.5%;
-	height: 100%;
-	align-items: center;
-	justify-content: space-around;
-	align-self: center;
+
+Toggle VisualElement {
+    width: 40px;
+    height: 40px;
+    align-self: center;
+    justify-content: center;
+    align-content: center;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 0);
 }
-#Buttons{
-	flex-direction: row;
-	width: 100%;
-	align-items: flex-end;
-	justify-content: space-evenly;
-	align-self: flex-start;
+
+Toggle #unity-checkmark {
+    width: 40px;
+    height: 40px;
+    align-self: center;
+    border-radius: 10px;
 }
-.Button
-{
-	width : 200px;
-	height : 100px;
-	background-color : rgb(255, 160, 0);
-	font-size : 40px;
-	border-width : 0px;
-	border-radius: 10px;
+
+Toggle #unity-checkmark:checked, Toggle VisualElement:checked {
+    background-color: rgb(255, 160, 0);
 }
-.Button:hover
-{
-	background-color : rgb(255, 255, 0);
+
+#RightPage {
+    width: 47.5%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    align-self: center;
 }
-#Confirmation{
-	display: none;
-	width : 50%;
-	height : 50%;
-	align-items: center;
-	justify-content: space-around;
-	align-self: center;
-	background-color : rgb(255, 160, 0);
+
+#Buttons {
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: space-evenly;
+    align-self: flex-start;
 }
-#ConfirmationButtons{
-	flex-direction: row;
-	width: 100%;
-	align-items: center;
-	justify-content: space-around;
+
+#Buttons Button {
+    width: 200px;
+    height: 100px;
+    background-color: rgb(255, 255, 0);
+    font-size: 40px;
+    border-width: 0;
+    border-radius: 10px;
+}
+
+#Buttons Button:hover {
+    background-color: rgb(255, 160, 0);
+}
+
+#Confirmation {
+    display: none;
+    width: 50%;
+    height: 50%;
+    align-items: center;
+    justify-content: space-around;
+    align-self: center;
+    background-color: rgb(255, 160, 0);
+}
+
+#ConfirmationButtons {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
 }
