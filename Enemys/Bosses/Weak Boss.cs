@@ -33,7 +33,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
-				this._sender.SetStateForm(StateForm.Disable).SetToggle(true).Send();
+			{
+				this._sender.SetStateForm(StateForm.Disable);
+				this._sender.SetToggle(true);
+				this._sender.Send();
+			}
 		}
 		public bool Damage(ushort damage)
 		{
@@ -49,7 +53,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._vitality -= (short)damage;
 				if (this._reactToDamage)
 					if (this._hasIndex)
-						this._sender.SetIndex(this._indexEvent).Send();
+					{
+						this._sender.SetNumber(this._indexEvent);
+						this._sender.Send();
+					}
 					else
 						this._sender.Send();
 				if (this._vitality <= 0)
