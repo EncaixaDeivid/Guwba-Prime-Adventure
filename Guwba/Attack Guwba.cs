@@ -31,7 +31,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			_instance = this;
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
-			this._sender.SetToWhereConnection(PathConnection.Character).SetStateForm(StateForm.Action).SetToggle(true);
+			this._sender.SetToWhereConnection(PathConnection.Character);
+			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetToggle(true);
 			this._spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
 			_actualState += this.Movement;
 		}
