@@ -154,7 +154,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.OnEnable();
 				this._animator.SetBool(this._death, !isAlive);
 				this._collider.size = this._normalSize;
-				this._sender.SetStateForm(StateForm.Enable).SetToggle(true).Send();
+				this._sender.SetStateForm(StateForm.Enable);
+				this._sender.SetToggle(true);
+				this._sender.Send();
 			}
 			else
 			{
@@ -162,7 +164,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._death, !isAlive);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = this._deadSize;
-				this._sender.SetStateForm(StateForm.Disable).SetToggle(true).Send();
+				this._sender.SetStateForm(StateForm.Disable);
+				this._sender.SetToggle(true);
+				this._sender.Send();
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => MovementAction =>
