@@ -31,7 +31,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Boss).SetAdditionalData(this._bossesToSend);
+			this._sender.SetToWhereConnection(PathConnection.Boss);
+			this._sender.SetAdditionalData(this._bossesToSend);
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
 			Sender.Include(this);
 		}
