@@ -29,7 +29,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy).SetAdditionalData(this.gameObject);
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetAdditionalData(this.gameObject);
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
 		private void Shoot()
@@ -58,13 +59,19 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				this._shootInterval = this._intervalToShoot;
 				if (this._invencibleShoot)
-					this._sender.SetStateForm(StateForm.Action).SetToggle(true).Send();
+				{
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.SetToggle(true);
+					this._sender.Send();
+				}
 				if (this._stop)
 				{
 					this._timeStop = this._stopTime;
 					this._isStopped = true;
 					this._rigidybody.linearVelocity = Vector2.zero;
-					this._sender.SetStateForm(StateForm.State).SetToggle(false).Send();
+					this._sender.SetStateForm(StateForm.State);
+					this._sender.SetToggle(false);
+					this._sender.Send();
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
@@ -95,9 +102,15 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
-				this._sender.SetStateForm(StateForm.State).SetToggle(true).Send();
+				this._sender.SetStateForm(StateForm.State);
+				this._sender.SetToggle(true);
+				this._sender.Send();
 				if (this._invencibleShoot)
-					this._sender.SetStateForm(StateForm.Action).SetToggle(false).Send();
+				{
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.SetToggle(false);
+					this._sender.Send();
+				}
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
