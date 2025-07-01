@@ -362,7 +362,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
-			if (this._movementAction != 0f)
+			if (this._movementAction != 0f && !this._dashValue)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
