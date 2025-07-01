@@ -60,6 +60,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("The speed of the back dash's animation.")] private float _backDashSpeed;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
@@ -198,7 +199,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					else
 					{
 						this._animator.SetBool(this._walk, true);
-						this._animator.SetFloat(this._walkSpeed, -2f);
+						this._animator.SetFloat(this._walkSpeed, -this._backDashSpeed);
 					}
 					while (this._dashValue)
 					{
