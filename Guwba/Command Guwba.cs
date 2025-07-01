@@ -169,21 +169,21 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._sender.Send();
 			}
 		};
-		private Action<InputAction.CallbackContext> Movement => MovementAction =>
+		private Action<InputAction.CallbackContext> Movement => movementAction =>
 		{
-			Vector2 MovementValue = MovementAction.ReadValue<Vector2>();
-			this._movementAction = MovementValue.x;
-			if (MovementValue.x > 0f)
+			Vector2 movementValue = movementAction.ReadValue<Vector2>();
+			this._movementAction = movementValue.x;
+			if (movementValue.x > 0f)
 				this._movementAction = 1f;
-			else if (MovementValue.x < 0f)
+			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (!this._dashValue && this._movementAction != 0f && Mathf.Abs(MovementValue.y) > 0.5f && this._isOnGround && !_grabObject)
+			if (!this._dashValue && this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !_grabObject)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
 					float dashDirection = 1f;
-					if (MovementValue.y < 0f)
+					if (movementValue.y < 0f)
 						dashDirection = -1f;
 					this._dashMovementValue = this._movementAction;
 					float dashLocation = this.transform.position.x;
@@ -232,7 +232,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 		};
-		private Action<InputAction.CallbackContext> Jump => JumpAction =>
+		private Action<InputAction.CallbackContext> Jump => jumpAction =>
 		{
 			if (_grabObject && !this._isOnGround)
 			{
@@ -307,12 +307,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void FixedUpdate()
 		{
-			float MovementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
+			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f)
 			{
-				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * MovementValue);
+				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
 				float distance = rootHeight + this._groundChecker;
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, distance, this._groundLayerMask);
@@ -353,19 +353,19 @@ namespace GuwbaPrimeAdventure.Guwba
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
-				float Movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
-				this._rigidbody.AddForceX(Movement);
+				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
+				this._rigidbody.AddForceX(movement * this._rigidbody.mass);
 			}
 			if (this._isOnGround && Mathf.Abs(this._movementAction) <= 0f && !this._dashValue)
 			{
-				float amount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
-				amount *= Mathf.Sign(this._rigidbody.linearVelocityX);
-				this._rigidbody.AddForceX(-amount, ForceMode2D.Impulse);
+				float frictionAmount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
+				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
+				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			if (this._movementAction != 0f)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * MovementValue;
+				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 				Vector2 topPosition = new(xPosition, this.transform.position.y + rootHeight * .5f);
 				Vector2 bottomPosition = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
 				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - .1f);
@@ -376,12 +376,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
 					float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
-					Vector2 lineStart = new(xPosition + this._wallChecker / 2f * MovementValue, topCorner);
-					Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * MovementValue, bottomCorner);
+					Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
+					Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
 					RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayerMask);
 					if (lineWallStep && lineWallStep.collider == bottomCollider)
 					{
-						float xDistance = this.transform.position.x + this._wallChecker * MovementValue;
+						float xDistance = this.transform.position.x + this._wallChecker * movementValue;
 						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
 						this.transform.position = new Vector2(xDistance, yDistance);
 						this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
