@@ -29,7 +29,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashValue = false;
-		[Header("Scene Interaction")]
+		[Header("World Interaction")]
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
