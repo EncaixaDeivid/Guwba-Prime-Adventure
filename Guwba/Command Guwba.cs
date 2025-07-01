@@ -198,7 +198,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					else
 					{
 						this._animator.SetBool(this._walk, true);
-						this._animator.SetFloat(this._walkSpeed, -this._dashSpeed);
+						this._animator.SetFloat(this._walkSpeed, -2f);
 					}
 					while (this._dashValue)
 					{
@@ -310,7 +310,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
-			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f)
+			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashValue)
 			{
 				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
