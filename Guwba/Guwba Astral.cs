@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	public abstract class GuwbaAstral<GuwbaInstance> : StateController where GuwbaInstance : StateController
 	{
 		private static GuwbaInstance _instance;
@@ -20,7 +20,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				base.Awake();
 		}
 		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
-		public static void SetRotation(float axisZRotation) => _instance.transform.eulerAngles = new Vector3(0f, 0f, axisZRotation);
+		public static float Rotation
+		{
+			get => _instance.transform.eulerAngles.z;
+			set => _instance.transform.eulerAngles = new Vector3(0, 0, value);
+		}
 		public static bool EqualObject(params GameObject[] unknowGameObjects)
 		{
 			foreach (GameObject gameObject in unknowGameObjects)
