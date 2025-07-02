@@ -201,7 +201,8 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetBool(this._walk, true);
 						this._animator.SetFloat(this._walkSpeed, -this._backDashSpeed);
 					}
-					while (this._dashValue)
+					bool onWall = false;
+					while (this._dashValue || onWall)
 					{
 						float xDirection = this._dashMovementValue * dashDirection;
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
@@ -210,7 +211,11 @@ namespace GuwbaPrimeAdventure.Guwba
 						bool collision = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
 						this._rigidbody.linearVelocityX = this._dashSpeed * xDirection;
 						bool valid = MathF.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
-						if (valid || _grabObject || collision || !this._isOnGround)
+						float yAxisPoint = this._normalSize.y / 2f + this._groundChecker;
+						Vector2 wallCheckerPoint = new(this.transform.position.x, this.transform.position.y + yAxisPoint);
+						Vector2 wallCheckerSize = new(this._normalSize.x, this._normalSize.y - this._groundChecker);
+						onWall = Physics2D.OverlapBox(wallCheckerPoint, wallCheckerSize, this.transform.eulerAngles.z, this._groundLayerMask);
+						if ((valid || _grabObject || collision || !this._isOnGround) && !onWall)
 						{
 							GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
 							if (dashDirection > 0f)
