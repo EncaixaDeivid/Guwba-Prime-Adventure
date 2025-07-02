@@ -354,7 +354,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				if (this._animator.GetBool(this._walk))
 				{
-					this._animator.SetFloat(this._walkSpeed, Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
+					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
+					this._animator.SetFloat(this._walkSpeed, this._rigidbody.linearVelocityX != 0f ? walkSpeed : 1f);
 					this._spriteRenderer.flipX = this._movementAction < 0f;
 				}
 				float targetSpeed = this._movementSpeed * this._movementAction;
@@ -363,7 +364,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
 				this._rigidbody.AddForceX(movement * this._rigidbody.mass);
 			}
-			if (this._isOnGround && Mathf.Abs(this._movementAction) <= 0f && !this._dashValue)
+			if (this._isOnGround && this._movementAction == 0f && !this._dashValue)
 			{
 				float frictionAmount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
