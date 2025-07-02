@@ -183,10 +183,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
+					this._dashMovementValue = this._movementAction;
+					this._spriteRenderer.flipX = this._dashMovementValue < 0f;
 					float dashDirection = 1f;
 					if (movementValue.y < 0f)
 						dashDirection = -1f;
-					this._dashMovementValue = this._movementAction;
 					float dashLocation = this.transform.position.x;
 					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
 					if (dashDirection > 0f)
