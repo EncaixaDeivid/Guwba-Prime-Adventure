@@ -1,15 +1,14 @@
 using UnityEngine;
-using Unity.Jobs;
 using System.Collections;
 using System.Collections.Generic;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IJob))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptor))]
 	internal sealed class Receptor : StateController
 	{
 		private readonly List<Activator> _usedActivators = new();
-		private IJob _receptor;
+		private IReceptor _receptor;
 		private ushort _signals = 0;
 		private bool _onlyOneActivation = false;
 		[Header("Receptor")]
@@ -24,7 +23,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._receptor = this.GetComponent<IJob>();
+			this._receptor = this.GetComponent<IReceptor>();
 			SaveController.Load(out SaveFile saveFile);
 			if (this._specificsObjects.Length > 0f)
 				foreach (string specificObject in this._specificsObjects)
@@ -94,5 +93,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.NormalSignal(signalActivator);
 			}
 		}
+		internal interface IReceptor
+		{
+			public void Execute();
+		};
 	};
 };
