@@ -14,6 +14,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
+		[Header("Camera Stat")]
+		[SerializeField, Tooltip("The offset of the camera.")] private Vector2Int _cameraOffset;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The images that are placed in each background.")] private Sprite[] _backgroundImages;
@@ -106,7 +108,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Action)
-				this.transform.position = GuwbaAstral<CommandGuwba>.Position + Vector2.up * 4f;
+				this.transform.position = GuwbaAstral<CommandGuwba>.Position + this._cameraOffset;
 		}
 	};
 };
