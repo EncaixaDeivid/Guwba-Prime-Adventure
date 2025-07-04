@@ -1,10 +1,9 @@
 using UnityEngine;
-using Unity.Jobs;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, IJob, IDamageable
+	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDamageable
 	{
 		[Header("Destructive Object")]
 		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
