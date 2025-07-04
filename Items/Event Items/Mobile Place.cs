@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Unity.Jobs;
 using System.Collections;
 using System.Linq;
 namespace GuwbaPrimeAdventure.Item.EventItem
@@ -8,7 +7,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
 	[RequireComponent(typeof(TilemapCollider2D), typeof(Rigidbody2D), typeof(CompositeCollider2D))]
 	[RequireComponent(typeof(BoxCollider2D), typeof(Receptor))]
-	internal sealed class MobilePlace : StateController, IJob
+	internal sealed class MobilePlace : StateController, Receptor.IReceptor
 	{
 		private Coroutine _movementCoroutine;
 		private bool _touchActivate = false;
