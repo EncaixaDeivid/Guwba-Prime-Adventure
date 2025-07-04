@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
-using Unity.Jobs;
 using System.Collections;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(PolygonCollider2D), typeof(Receptor))]
-	internal sealed class HidenPlace : StateController, IJob
+	internal sealed class HidenPlace : StateController, Receptor.IReceptor
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
