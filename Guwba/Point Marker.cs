@@ -12,11 +12,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Hubby World Interaction")]
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
-		public PathConnection PathConnection => PathConnection.Character;
+		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Character);
+			this._sender.SetToWhereConnection(PathConnection.Guwba);
 			this._sender.SetStateForm(StateForm.Action);
 			Sender.Include(this);
 		}
