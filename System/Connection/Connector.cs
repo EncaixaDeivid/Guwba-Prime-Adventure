@@ -3,7 +3,7 @@ namespace GuwbaPrimeAdventure.Connection
 	public enum PathConnection
 	{
 		None,
-		Character,
+		Guwba,
 		Enemy,
 		Boss,
 		Item,
