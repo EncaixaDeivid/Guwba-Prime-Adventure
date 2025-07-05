@@ -284,8 +284,6 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._spriteRenderer.flipX = true;
 				else if (this._attackAngle.x > 0f)
 					this._spriteRenderer.flipX = false;
-				float angle = Mathf.Atan2(this._attackAngle.y, this._attackAngle.x) * Mathf.Rad2Deg - 90f;
-				GuwbaAstral<AttackGuwba>.AxisAngleZ = angle;
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(true);
 			}
 		};
