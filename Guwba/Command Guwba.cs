@@ -8,13 +8,14 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	public sealed class CommandGuwba : GuwbaAstral<CommandGuwba>
+	public sealed class CommandGuwba : GuwbaAstral<CommandGuwba>, IConnector
 	{
 		private static CommandGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
+		private Transform _parent;
 		private InputController _inputController;
 		private Vector2 _normalSize = new();
 		private Vector2 _attackAngle = new();
@@ -67,6 +68,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
+		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
 			base.Awake();
@@ -80,11 +82,13 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
+			this._parent = this.transform.parent;
 			this._sender.SetToWhereConnection(PathConnection.Controller);
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
 			_actualState += this.DeathState;
+			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
@@ -92,6 +96,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			_actualState -= this.DeathState;
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
@@ -433,5 +438,17 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
+		public void Receive(DataConnection data, object additionalData)
+		{
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			{
+				Transform parentPlataform = (Transform)additionalData;
+				if (parentPlataform != null)
+					if (data.ToggleValue.Value)
+						this.transform.parent = parentPlataform;
+					else
+						this.transform.parent = this._parent;
+			}
+		}
 	};
 };
