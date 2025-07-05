@@ -38,7 +38,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._colliders = this.GetComponents<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Character);
+			this._sender.SetToWhereConnection(PathConnection.Guwba);
 			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetToggle(true);
 		}
