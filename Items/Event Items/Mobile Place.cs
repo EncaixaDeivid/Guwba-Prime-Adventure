@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				{
 					yield return new WaitUntil(() =>
 					{
-						this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.fixedDeltaTime);
+						this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.deltaTime);
 						return (Vector2)this.transform.position == point && this.enabled;
 					});
 					yield return new WaitTime(this, this._waitWayTime);
@@ -53,7 +53,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					{
 						yield return new WaitUntil(() =>
 						{
-							float maxDistanceDelta = this._speedReturn * Time.fixedDeltaTime;
+							float maxDistanceDelta = this._speedReturn * Time.deltaTime;
 							this.transform.position = Vector2.MoveTowards(this.transform.position, point, maxDistanceDelta);
 							return (Vector2)this.transform.position == point && this.enabled;
 						});
@@ -88,7 +88,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					this.StopCoroutine(this._movementCoroutine);
 			}
 		}
-		private void EnterOnTrigger()
+
+		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (this._touchActivation && this._touchActivate)
 			{
@@ -98,8 +99,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.StartCoroutine(this.Movement());
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other) => this.EnterOnTrigger();
-		private void OnTriggerStay2D(Collider2D other) => this.EnterOnTrigger();
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (this._stopOutTouch && !this._execution1X1)
