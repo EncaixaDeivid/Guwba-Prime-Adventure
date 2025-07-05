@@ -20,11 +20,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				base.Awake();
 		}
 		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
-		public static float AxisAngleZ
-		{
-			get => _instance.transform.eulerAngles.z;
-			set => _instance.transform.eulerAngles = new Vector3(0, 0, value);
-		}
 		public static bool EqualObject(params GameObject[] unknowGameObjects)
 		{
 			foreach (GameObject gameObject in unknowGameObjects)
