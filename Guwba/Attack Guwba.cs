@@ -79,12 +79,13 @@ namespace GuwbaPrimeAdventure.Guwba
 					{
 						GuwbaAstral<CommandGuwba>._returnAttack = true;
 						_returnAttack = true;
+						this._rigidbody.linearVelocity = Vector2.zero;
 					}
 					if (_returnAttack)
 					{
 						Vector2 targetDirection = ((Vector2)this.transform.position - targetPosition).normalized;
 						float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
-						this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+						this.transform.eulerAngles = new Vector3(0f, 0f, angle);
 						this._rigidbody.linearVelocity = this._movementSpeed * -this.transform.up;
 						if (_grabObject)
 							_grabObject.transform.position = this.transform.position;
