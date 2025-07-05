@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Hud
 				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
 			else
 			{
-				this._sender.SetToWhereConnection(PathConnection.Character);
+				this._sender.SetToWhereConnection(PathConnection.Guwba);
 				this._sender.SetStateForm(StateForm.Enable);
 				this._sender.Send();
 				this._sender.SetToWhereConnection(PathConnection.Enemy);
