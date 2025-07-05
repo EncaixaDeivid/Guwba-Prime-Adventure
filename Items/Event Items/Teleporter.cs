@@ -25,7 +25,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Character);
+			this._sender.SetToWhereConnection(PathConnection.Guwba);
 			this._sender.SetStateForm(StateForm.Action);
 			this._active = !this._isReceptor;
 		}
