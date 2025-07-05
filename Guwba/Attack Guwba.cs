@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
@@ -10,8 +12,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static AttackGuwba _instance;
 		private SpriteRenderer _spriteRenderer;
 		private Rigidbody2D _rigidbody;
+		private InputController _inputController;
 		private Vector2 _guardVelocity = new();
+		private Vector2 _attackAngle = new();
 		private bool _isAttacking = false;
+		[Header("World Interaction")]
+		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The speed of the attack of Guwba.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The maximum distance to move forward.")] private float _movementDistance;
@@ -49,12 +55,26 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (!_instance || _instance != this)
 				return;
+			this._inputController = new InputController();
+			this._inputController.Commands.AttackRotationConsole.performed += this.AttackAngleConsole;
+			this._inputController.Commands.AttackRotationKeyboard.performed += this.AttackAngleKeyboard;
+			this._inputController.Commands.AttackUse.started += this.AttackUse;
+			this._inputController.Commands.AttackRotationConsole.Enable();
+			this._inputController.Commands.AttackRotationKeyboard.Enable();
+			this._inputController.Commands.AttackUse.Enable();
 			this._rigidbody.linearVelocity = this._guardVelocity;
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
+			this._inputController.Commands.AttackRotationConsole.performed -= this.AttackAngleConsole;
+			this._inputController.Commands.AttackRotationKeyboard.performed -= this.AttackAngleKeyboard;
+			this._inputController.Commands.AttackUse.started -= this.AttackUse;
+			this._inputController.Commands.AttackRotationConsole.Disable();
+			this._inputController.Commands.AttackRotationKeyboard.Disable();
+			this._inputController.Commands.AttackUse.Disable();
+			this._inputController.Dispose();
 			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
@@ -62,40 +82,50 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			this._isAttacking = isAttacking;
 			if (this._isAttacking)
-				this.StartCoroutine(Attack());
+				this.StartCoroutine(Movement());
 			else
-			{
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
-				this._rigidbody.bodyType = RigidbodyType2D.Kinematic;
-			}
-			IEnumerator Attack()
+			IEnumerator Movement()
 			{
 				this._spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-				this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 				while (this._isAttacking)
 				{
 					Vector2 targetPosition = GuwbaAstral<CommandGuwba>.Position;
-					if (Vector2.Distance(this.transform.position, targetPosition) >= this._movementDistance)
-					{
-						GuwbaAstral<CommandGuwba>._returnAttack = true;
-						_returnAttack = true;
-						this._rigidbody.linearVelocity = Vector2.zero;
-					}
 					if (_returnAttack)
 					{
 						Vector2 targetDirection = ((Vector2)this.transform.position - targetPosition).normalized;
 						float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
-						this.transform.eulerAngles = new Vector3(0f, 0f, angle);
-						this._rigidbody.linearVelocity = this._movementSpeed * -this.transform.up;
+						this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 						if (_grabObject)
 							_grabObject.transform.position = this.transform.position;
 					}
 					else
-						this._rigidbody.linearVelocity = this._movementSpeed * this.transform.up;
+						targetPosition += (Vector2)this.transform.up * this._movementDistance;
+					float maxDistanceDelta = this._movementSpeed * Time.fixedDeltaTime;
+					this.transform.position = Vector2.MoveTowards(this.transform.position, targetPosition, maxDistanceDelta);
+					if (Vector2.Distance(this.transform.position, targetPosition) <= 0f)
+					{
+						GuwbaAstral<CommandGuwba>._returnAttack = true;
+						_returnAttack = true;
+					}
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => this.enabled);
 				}
 			}
+		};
+		private Action<InputAction.CallbackContext> AttackAngleConsole => attackAction => this._attackAngle = attackAction.ReadValue<Vector2>();
+		private Action<InputAction.CallbackContext> AttackAngleKeyboard => attackAction =>
+		{
+			Vector2 attackTarget = attackAction.ReadValue<Vector2>();
+			Vector2 attackAngle = this._mainCamera.ScreenToWorldPoint(new Vector2(attackTarget.x, attackTarget.y));
+			this._attackAngle = (attackAngle - (Vector2)this.transform.position).normalized;
+		};
+		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
+		{
+			if (this._isAttacking)
+				return;
+			float angle = Mathf.Atan2(this._attackAngle.y, this._attackAngle.x) * Mathf.Rad2Deg - 90f;
+			this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 		};
 		private void OnTrigger(GameObject collisionObject)
 		{
