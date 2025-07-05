@@ -25,7 +25,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is taken.")] private float _hitStopSlow;
 		public ushort Health => (ushort)this._vitality;
-		public PathConnection PathConnection => PathConnection.Character;
+		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
 			base.Awake();
