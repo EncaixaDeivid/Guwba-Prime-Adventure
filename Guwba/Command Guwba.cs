@@ -17,18 +17,18 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private InputController _inputController;
 		private Vector2 _normalSize = new();
-		private Vector2 _attackValue = new();
+		private Vector2 _attackAngle = new();
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
-		private float _dashMovementValue = 0f;
+		private float _dashMovement = 0f;
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
-		private bool _dashValue = false;
+		private bool _dashActive = false;
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
@@ -101,8 +101,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.performed += this.Movement;
 			this._inputController.Commands.Movement.canceled += this.Movement;
 			this._inputController.Commands.Jump.started += this.Jump;
-			this._inputController.Commands.AttackRotationConsole.performed += this.AttackRotationConsole;
-			this._inputController.Commands.AttackRotationKeyboard.performed += this.AttackRotationKeyboard;
+			this._inputController.Commands.AttackRotationConsole.performed += this.AttackAngleConsole;
+			this._inputController.Commands.AttackRotationKeyboard.performed += this.AttackAngleKeyboard;
 			this._inputController.Commands.AttackUse.started += this.AttackUse;
 			this._inputController.Commands.Interaction.started += this.Interaction;
 			this._inputController.Commands.Movement.Enable();
@@ -112,9 +112,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.AttackUse.Enable();
 			this._inputController.Commands.Interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._walkSpeed, this._dashValue ? -1f : 1f);
-			if (this._dashValue)
-				this._dashMovementValue = this._guardDashMovement;
+			this._animator.SetFloat(this._walkSpeed, this._dashActive ? -1f : 1f);
+			if (this._dashActive)
+				this._dashMovement = this._guardDashMovement;
 			this._rigidbody.gravityScale = this._gravityScale;
 			this._rigidbody.linearVelocityY = this._yMovement;
 		}
@@ -125,8 +125,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.performed -= this.Movement;
 			this._inputController.Commands.Movement.canceled -= this.Movement;
 			this._inputController.Commands.Jump.started -= this.Jump;
-			this._inputController.Commands.AttackRotationConsole.performed -= this.AttackRotationConsole;
-			this._inputController.Commands.AttackRotationKeyboard.performed -= this.AttackRotationKeyboard;
+			this._inputController.Commands.AttackRotationConsole.performed -= this.AttackAngleConsole;
+			this._inputController.Commands.AttackRotationKeyboard.performed -= this.AttackAngleKeyboard;
 			this._inputController.Commands.AttackUse.started -= this.AttackUse;
 			this._inputController.Commands.Interaction.started -= this.Interaction;
 			this._inputController.Commands.Movement.Disable();
@@ -139,10 +139,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
 			this._movementAction = 0f;
-			if (this._dashValue)
+			if (this._dashActive)
 			{
-				this._guardDashMovement = this._dashMovementValue;
-				this._dashMovementValue = 0f;
+				this._guardDashMovement = this._dashMovement;
+				this._dashMovement = 0f;
 			}
 			this._yMovement = this._rigidbody.linearVelocityY;
 			this._rigidbody.gravityScale = 0f;
@@ -178,21 +178,21 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (!this._dashValue && this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !_grabObject)
+			if (!this._dashActive && this._movementAction != 0f && Mathf.Abs(movementValue.y) > 0.5f && this._isOnGround && !_grabObject)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
-					this._dashMovementValue = this._movementAction;
-					this._spriteRenderer.flipX = this._dashMovementValue < 0f;
+					this._dashMovement = this._movementAction;
+					this._spriteRenderer.flipX = this._dashMovement < 0f;
 					float dashDirection = 1f;
 					if (movementValue.y < 0f)
 						dashDirection = -1f;
 					float dashLocation = this.transform.position.x;
-					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = true);
+					GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashActive = true);
 					if (dashDirection > 0f)
 					{
-						this._animator.SetBool(this._dashSlide, this._dashValue);
+						this._animator.SetBool(this._dashSlide, this._dashActive);
 						this._collider.size = this._dashSlideSize;
 						this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 						this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
@@ -203,9 +203,9 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetFloat(this._walkSpeed, -this._backDashSpeed);
 					}
 					bool onWall = false;
-					while (this._dashValue || onWall)
+					while (this._dashActive || onWall)
 					{
-						float xDirection = this._dashMovementValue * dashDirection;
+						float xDirection = this._dashMovement * dashDirection;
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * xDirection;
 						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
@@ -218,10 +218,10 @@ namespace GuwbaPrimeAdventure.Guwba
 						onWall = Physics2D.OverlapBox(wallCheckerPoint, wallCheckerSize, this.transform.eulerAngles.z, this._groundLayerMask);
 						if ((valid || _grabObject || collision || !this._isOnGround) && !onWall)
 						{
-							GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashValue = false);
+							GuwbaAstral<VisualGuwba>._actualState.Invoke(this._dashActive = false);
 							if (dashDirection > 0f)
 							{
-								this._animator.SetBool(this._dashSlide, this._dashValue);
+								this._animator.SetBool(this._dashSlide, this._dashActive);
 								this._collider.size = this._normalSize;
 								this._collider.offset = Vector2.zero;
 								if (this._isOnGround)
@@ -257,13 +257,12 @@ namespace GuwbaPrimeAdventure.Guwba
 			else
 				this._lastJumpTime = this._jumpBufferTime;
 		};
-		private Action<InputAction.CallbackContext> AttackRotationConsole =>
-			attackAction => this._attackValue = attackAction.ReadValue<Vector2>();
-		private Action<InputAction.CallbackContext> AttackRotationKeyboard => attackAction =>
+		private Action<InputAction.CallbackContext> AttackAngleConsole => attackAction => this._attackAngle = attackAction.ReadValue<Vector2>();
+		private Action<InputAction.CallbackContext> AttackAngleKeyboard => attackAction =>
 		{
 			Vector2 attackTarget = attackAction.ReadValue<Vector2>();
-			Vector2 attackValue = this._mainCamera.ScreenToWorldPoint(new Vector3(attackTarget.x, attackTarget.y, 0f));
-			this._attackValue = (attackValue - (Vector2)this.transform.position).normalized;
+			Vector2 attackAngle = this._mainCamera.ScreenToWorldPoint(new Vector2(attackTarget.x, attackTarget.y));
+			this._attackAngle = (attackAngle - (Vector2)this.transform.position).normalized;
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
@@ -271,21 +270,21 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				this._animator.SetBool(this._hold, false);
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(false);
-				_grabObject.transform.position = (Vector2)this.transform.position + this._attackValue;
-				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
+				_grabObject.transform.position = (Vector2)this.transform.position + this._attackAngle;
+				float angle = Mathf.Atan2(this._attackAngle.y, this._attackAngle.x) * Mathf.Rad2Deg - 90f;
 				_grabObject.Throw(Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up);
 				_grabObject = null;
 				GuwbaAstral<VisualGuwba>._grabObject = null;
 				GuwbaAstral<AttackGuwba>._grabObject = null;
 			}
-			else if (this._attackValue != Vector2.zero)
+			else if (this._attackAngle != Vector2.zero)
 			{
 				this._animator.SetBool(this._attack, true);
-				if (this._attackValue.x < 0f)
+				if (this._attackAngle.x < 0f)
 					this._spriteRenderer.flipX = true;
-				else if (this._attackValue.x > 0f)
+				else if (this._attackAngle.x > 0f)
 					this._spriteRenderer.flipX = false;
-				float angle = Mathf.Atan2(this._attackValue.y, this._attackValue.x) * Mathf.Rad2Deg - 90f;
+				float angle = Mathf.Atan2(this._attackAngle.y, this._attackAngle.x) * Mathf.Rad2Deg - 90f;
 				GuwbaAstral<AttackGuwba>.AxisAngleZ = angle;
 				GuwbaAstral<AttackGuwba>._actualState.Invoke(true);
 			}
@@ -317,7 +316,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
-			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashValue)
+			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
 			{
 				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
 				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
@@ -327,7 +326,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (downStairs)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
-			if (!this._dashValue)
+			if (!this._dashActive)
 				if (this._isOnGround)
 				{
 					this._animator.SetBool(this._idle, this._movementAction == 0f);
@@ -350,7 +349,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._lastJumpTime -= Time.fixedDeltaTime;
 					this._downStairs = false;
 				}
-			if (!this._dashValue)
+			if (!this._dashActive)
 			{
 				if (this._animator.GetBool(this._walk))
 				{
@@ -364,13 +363,13 @@ namespace GuwbaPrimeAdventure.Guwba
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
 				this._rigidbody.AddForceX(movement * this._rigidbody.mass);
 			}
-			if (this._isOnGround && this._movementAction == 0f && !this._dashValue)
+			if (this._isOnGround && this._movementAction == 0f && !this._dashActive)
 			{
 				float frictionAmount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
-			if (this._movementAction != 0f && !this._dashValue)
+			if (this._movementAction != 0f && !this._dashActive)
 			{
 				this._spriteRenderer.flipX = this._movementAction < 0f;
 				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
