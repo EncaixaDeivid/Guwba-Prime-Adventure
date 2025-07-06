@@ -2,17 +2,14 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Linq;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
 	[RequireComponent(typeof(TilemapCollider2D), typeof(Rigidbody2D), typeof(CompositeCollider2D)), RequireComponent(typeof(Receptor))]
 	internal sealed class MobilePlace : StateController, Receptor.IReceptor
 	{
-		private Coroutine _movementCoroutine;
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _startPosition = new();
+		private bool _isMoving = false;
 		private bool _touchActivate = false;
 		private ushort _actualPoint = 0;
 		[Header("Mobile Place")]
@@ -36,9 +33,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
-			this._sender.SetStateForm(StateForm.Enable);
-			this._sender.SetAdditionalData(this.transform);
 			this._startPosition = this.transform.position;
 			this._touchActivate = this._touchActivation;
 			if (!this._isReceptor && !this._touchActivation)
@@ -61,6 +55,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				}
 				yield return new WaitTime(this, this._waitEndTime);
 			}
+			this._isMoving = true;
 			do
 			{
 				yield return PassTrails(false);
@@ -74,10 +69,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.transform.DetachChildren();
 				this.transform.position = this._startPosition;
 			}
-			this._movementCoroutine = null;
+			this._isMoving = false;
 		}
 		private IEnumerator Movement1X1()
 		{
+			this._isMoving = true;
 			Vector2 point = this._trail[this._actualPoint];
 			this._actualPoint = (ushort)(this._actualPoint < this._trail.Length - 1f ? this._actualPoint + 1f : 0f);
 			yield return new WaitTime(this, this._waitStartTime);
@@ -86,30 +82,23 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.fixedDeltaTime);
 				return (Vector2)this.transform.position == point && this.enabled;
 			});
+			this._isMoving = false;
 		}
 		public void Execute()
 		{
-			if (this._execution1X1)
+			if (this._execution1X1 && !this._isMoving)
 				this.StartCoroutine(this.Movement1X1());
+			else if (this._isMoving)
+				this.StopCoroutine(this.Movement());
 			else
-			{
-				if (this._movementCoroutine == null)
-					this._movementCoroutine = this.StartCoroutine(this.Movement());
-				else
-					this.StopCoroutine(this._movementCoroutine);
-			}
+				this.StartCoroutine(this.Movement());
 		}
-		private void OnCollision(GameObject gameObject)
+		private void OnCollisionEnter2D(Collision2D collision)
 		{
 			Vector2 point = (Vector2)this.transform.position + this._checkerOffset;
 			bool isTouching = Physics2D.OverlapBoxAll(point, this._checkerSize, 0f, this._checkerLayerMask)?.Length > 0f;
 			if (!isTouching)
 				return;
-			if (GuwbaAstral<CommandGuwba>.EqualObject(gameObject))
-			{
-				this._sender.SetToggle(true);
-				this._sender.Send();
-			}
 			if (this._touchActivation && this._touchActivate)
 			{
 				this._touchActivate = false;
@@ -119,15 +108,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					this.StartCoroutine(this.Movement());
 			}
 		}
-		private void OnCollisionEnter2D(Collision2D collision) => this.OnCollision(collision.gameObject);
-		private void OnCollisionStay2D(Collision2D collision) => this.OnCollision(collision.gameObject);
 		private void OnCollisionExit2D(Collision2D collision)
 		{
-			if (GuwbaAstral<CommandGuwba>.EqualObject(collision.gameObject))
-			{
-				this._sender.SetToggle(false);
-				this._sender.Send();
-			}
 			if (this._stopOutTouch && !this._execution1X1)
 				this.StopCoroutine(this.Movement());
 		}
