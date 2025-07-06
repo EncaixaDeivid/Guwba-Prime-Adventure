@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure.Item
 	{
 		[Header("Conditions")]
 		[SerializeField, Tooltip("The sprite to show when the book gor cacthed.")] private Sprite _bookCacthed;
-		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
 			base.Awake();
@@ -26,7 +25,7 @@ namespace GuwbaPrimeAdventure.Item
 			if (!saveFile.books[this.gameObject.name])
 				saveFile.books[this.gameObject.name] = true;
 			this.GetComponent<SpriteRenderer>().sprite = this._bookCacthed;
-			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (!saveFile.generalObjects.Contains(this.gameObject.name))
 				saveFile.generalObjects.Add(this.gameObject.name);
 			SaveController.WriteSave(saveFile);
 		}
