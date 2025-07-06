@@ -20,7 +20,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The offset of the plataform object checker.")] private Vector2 _checkerOffset;
 		[SerializeField, Tooltip("The size of the plataform object checker.")] private Vector2 _checkerSize;
 		[SerializeField, Tooltip("The size of the plataform object checker.")] private LayerMask _checkerLayerMask;
-		[SerializeField, Tooltip("The distance of the checker will go.")] private float _distanceChecker;
 		[SerializeField, Tooltip("The speed that this object moves.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The speed that this object moves to make the same way back.")] private float _speedReturn;
 		[SerializeField, Tooltip("The amount of time to wait after the activation.")] private float _waitStartTime;
