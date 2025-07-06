@@ -71,7 +71,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			while (this._executeAlways);
 			this._touchActivate = this._executeAlwaysTouch;
 			if (this._teleportBack)
+			{
+				this.transform.DetachChildren();
 				this.transform.position = this._startPosition;
+			}
 			this._movementCoroutine = null;
 		}
 		private IEnumerator Movement1X1()
