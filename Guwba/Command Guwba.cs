@@ -426,7 +426,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				GuwbaAstral<AttackGuwba>.Position = this.transform.position;
 				if (_grabObject)
 				{
-
 					_grabObject.transform.parent = this.transform;
 					float yPoint = this.transform.position.y + this._collider.size.y - this._lowHoldOffset;
 					Vector2 newPosition = new(this.transform.position.x, yPoint);
@@ -440,7 +439,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue)
 			{
 				Transform parentPlataform = (Transform)additionalData;
 				if (parentPlataform != null)
