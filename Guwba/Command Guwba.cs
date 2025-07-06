@@ -356,8 +356,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				if (this._animator.GetBool(this._walk))
 				{
-					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
-					this._animator.SetFloat(this._walkSpeed, this._rigidbody.linearVelocityX != 0f ? walkSpeed : 1f);
+					float xPoint = this._collider.bounds.extents.x * this._movementAction;
+					Vector2 point = new(this.transform.position.x + xPoint, this.transform.position.y);
+					Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
+					bool wallTouch = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayerMask);
+					this._animator.SetFloat(this._walkSpeed, wallTouch ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 					this._spriteRenderer.flipX = this._movementAction < 0f;
 				}
 				float targetSpeed = this._movementSpeed * this._movementAction;
