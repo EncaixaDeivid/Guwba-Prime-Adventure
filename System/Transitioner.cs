@@ -7,20 +7,9 @@ namespace GuwbaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class Transitioner : MonoBehaviour
 	{
-		private bool _touchActivate = true;
 		[Header("Scene Interaction")]
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
 		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private string _sceneTransicion;
-		[SerializeField, Tooltip("If the trancision will be activated on a collision with another object.")] private bool _touchTransicion;
-		private void OnCollision(GameObject collisionObject)
-		{
-			if (collisionObject.CompareTag(this.gameObject.tag))
-				if (this._touchTransicion && this._touchActivate)
-				{
-					this._touchActivate = false;
-					this.Transicion();
-				}
-		}
 		public void Transicion(string sceneName = "")
 		{
 			this.StartCoroutine(SceneTransicion());
@@ -34,7 +23,6 @@ namespace GuwbaPrimeAdventure
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
 				}
-				yield return new WaitForSeconds(1);
 				string newSceneName = sceneName != "" ? sceneName : this._sceneTransicion;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newSceneName, LoadSceneMode.Single);
 				if (newSceneName != this.gameObject.scene.name)
@@ -49,7 +37,5 @@ namespace GuwbaPrimeAdventure
 				asyncOperation.allowSceneActivation = true;
 			}
 		}
-		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
-		private void OnTriggerEnter2D(Collider2D other) => this.OnCollision(other.gameObject);
 	};
 };
