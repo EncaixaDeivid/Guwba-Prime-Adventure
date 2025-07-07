@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
