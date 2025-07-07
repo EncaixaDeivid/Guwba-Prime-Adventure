@@ -1,5 +1,6 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Data;
+using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
