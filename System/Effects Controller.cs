@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure
 				Time.timeScale = 1f;
 			}
 		}
-		public static void OnGlobalLight(ref Light2DBase globalLight)
+		public static void OnGlobalLight(Light2DBase globalLight)
 		{
 			if (_instance._lightsStack.Contains(globalLight))
 				return;
@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure
 			globalLight.enabled = true;
 			_instance._lightsStack.Add(globalLight);
 		}
-		public static void OffGlobalLight(ref Light2DBase globalLight)
+		public static void OffGlobalLight(Light2DBase globalLight)
 		{
 			if (!_instance._lightsStack.Contains(globalLight))
 				return;
