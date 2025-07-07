@@ -47,7 +47,7 @@
 }
 #MainButtons Button:hover
 {
-	background-color : rgba(255, 160, 0, 0.85);
+	background-color : rgb(255, 160, 0);
 }
 #Saves{
 	display: none;
@@ -58,7 +58,7 @@
 }
 #Back{
 	width : 150px;
-	background-color : rgb(255, 160, 0);
+	background-color : rgba(255, 255, 0, 0.5);
 	height : 75px;
 	font-size : 25px;
 	align-self: flex-start;
@@ -66,9 +66,7 @@
 	border-radius : 10px;
 }
 #Back:hover{
-	border-color : rgb(255, 160, 0);
-	background-color : rgb(255, 255, 32);
-	border-width : 10px;
+	background-color : rgb(255, 160, 0);
 }
 #Saves1, #Saves2{
 	flex-direction: row;
@@ -112,14 +110,12 @@
 }
 #Load1, #Load2, #Load3, #Load4, #Delete1, #Delete2, #Delete3, #Delete4{
 	width : 300px;
-	background-color : rgb(255, 160, 0);
+	background-color : rgba(255, 255, 0, 0.5);
 	height : 40px;
 	font-size : 25px;
 	-unity-text-align : middle-center;
 	border-radius : 15px;
 }
 #Load1:hover, #Load2:hover, #Load3:hover, #Load4:hover, #Delete1:hover, #Delete2:hover, #Delete3:hover, #Delete4:hover{
-	border-color : rgb(255, 160, 0);
-	background-color : rgb(255, 255, 32);
-	border-width : 5px;
+	background-color : rgb(255, 160, 0);
 }
