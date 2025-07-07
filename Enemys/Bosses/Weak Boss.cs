@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
+using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator), typeof(Transitioner))]
