@@ -28,5 +28,5 @@
 	display: none;
 }
 #Continue:hover, #OutLevel:hover, #GameOver:hover{
-	background-color : rgba(255, 160, 0, 0.85);
+	background-color : rgb(255, 160, 0);
 }
