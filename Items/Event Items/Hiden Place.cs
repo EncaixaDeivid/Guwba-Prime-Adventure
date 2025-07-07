@@ -28,9 +28,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private IEnumerator Fade(bool appear)
 		{
 			if (appear)
-				EffectsController.OffGlobalLight(ref this._selfLight);
+				EffectsController.OffGlobalLight(this._selfLight);
 			else
-				EffectsController.OnGlobalLight(ref this._selfLight);
+				EffectsController.OnGlobalLight(this._selfLight);
 			if (this._hasFollowLight && !appear)
 				this.StartCoroutine(FollowLight());
 			IEnumerator FollowLight()
