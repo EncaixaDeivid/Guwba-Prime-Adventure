@@ -134,7 +134,7 @@ Toggle VisualElement {
     justify-content: center;
     align-content: center;
     border-radius: 10px;
-    background-color: rgb(255, 255, 0);
+    background-color: rgba(255, 255, 0, 0.5);
 }
 
 Toggle #unity-checkmark {
@@ -164,16 +164,16 @@ Toggle #unity-checkmark:checked, Toggle VisualElement:checked {
     align-self: flex-start;
 }
 
-#Buttons Button {
+#Buttons Button, #ConfirmationButtons Button {
     width: 200px;
     height: 100px;
-    background-color: rgb(255, 255, 0);
+    background-color: rgba(255, 255, 0, 0.5);
     font-size: 40px;
     border-width: 0;
     border-radius: 10px;
 }
 
-#Buttons Button:hover {
+#Buttons Button:hover, #ConfirmationButtons Button:hover {
     background-color: rgb(255, 160, 0);
 }
 
