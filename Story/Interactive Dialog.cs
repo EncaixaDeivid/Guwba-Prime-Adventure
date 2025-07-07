@@ -6,7 +6,7 @@ using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class InteractableDialog : MonoBehaviour, IInteractable
+	internal sealed class InteractiveDialog : MonoBehaviour, IInteractable
     {
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
