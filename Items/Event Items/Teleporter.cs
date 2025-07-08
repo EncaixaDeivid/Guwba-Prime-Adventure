@@ -25,8 +25,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
 			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetAdditionalData(this.transform);
 			this._active = !this._isReceptor;
 		}
 		private IEnumerator Timer(bool activeValue)
@@ -37,6 +37,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Timer()
 		{
+			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToggle(false);
+			this._sender.Send();
 			yield return new WaitTime(this, this._timeToUse);
 			foreach (Collider2D collider in Physics2D.OverlapBoxAll(this.transform.position, this._collider.bounds.size, 0f))
 				if (this._everyone)
@@ -47,9 +50,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				else
 				{
 					GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+					this._sender.SetToWhereConnection(PathConnection.Guwba);
+					this._sender.SetToggle(false);
 					this._sender.Send();
 					break;
 				}
+			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToggle(true);
+			this._sender.Send();
 		}
 		public void Execute()
 		{
@@ -69,6 +77,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			else if (this._active && this._isInteractive)
 			{
 				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+				this._sender.SetToWhereConnection(PathConnection.Guwba);
+				this._sender.SetToggle(false);
 				this._sender.Send();
 			}
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
@@ -82,6 +92,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			else if (this._active && this._onCollision && GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
 			{
 				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+				this._sender.SetToWhereConnection(PathConnection.Guwba);
+				this._sender.SetToggle(false);
 				this._sender.Send();
 			}
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
