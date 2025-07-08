@@ -1,0 +1,17 @@
+using UnityEngine;
+namespace GuwbaPrimeAdventure.Item
+{
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
+	[RequireComponent(typeof(IInteractable))]
+	internal sealed class QuestionPuller : StateController
+	{
+		private SpriteRenderer _spriteRenderer;
+		private new void Awake()
+		{
+			base.Awake();
+			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
+		}
+		private void OnTriggerEnter2D(Collider2D collision) => this._spriteRenderer.enabled = true;
+		private void OnTriggerExit2D(Collider2D collision) => this._spriteRenderer.enabled = false;
+	};
+};
