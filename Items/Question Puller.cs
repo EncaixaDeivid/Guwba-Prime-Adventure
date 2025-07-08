@@ -10,8 +10,7 @@ namespace GuwbaPrimeAdventure.Item
 		private new void Awake()
 		{
 			base.Awake();
-			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-			this._spriteRenderer.enabled = false;
+			(this._spriteRenderer = this.GetComponent<SpriteRenderer>()).enabled = false;
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
