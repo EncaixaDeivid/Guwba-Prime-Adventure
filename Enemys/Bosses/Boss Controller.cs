@@ -1,7 +1,6 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Hud;
 namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
