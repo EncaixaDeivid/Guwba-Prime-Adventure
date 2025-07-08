@@ -38,9 +38,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._colliders = this.GetComponents<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
 			this._sender.SetStateForm(StateForm.Action);
-			this._sender.SetToggle(true);
+			this._sender.SetAdditionalData(this.transform);
 		}
 		private void OnEnable()
 		{
@@ -63,6 +62,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (isDamageable && damageable.Damage(this._throwDamage))
 				{
 					EffectsController.SetHitStop(this._throwHitStopTime, this._throwHitSlowTime);
+					this._sender.SetToWhereConnection(PathConnection.Guwba);
+					this._sender.SetToggle(true);
 					this._sender.Send();
 				}
 				if (isDamageable || collisionObject.TryGetComponent<Surface>(out _))
@@ -78,6 +79,12 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 					if (!this._isIndestructible && this._hitsToDestruct-- <= 0f)
 						Destroy(this.gameObject);
+					else
+					{
+						this._sender.SetToWhereConnection(PathConnection.Item);
+						this._sender.SetToggle(true);
+						this._sender.Send();
+					}
 				}
 			}
 		}
@@ -85,6 +92,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnTriggerEnter2D(Collider2D other) => this.OnCollision(other.gameObject);
 		internal void Stop(ushort objectLayer)
 		{
+			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToggle(false);
+			this._sender.Send();
 			this._parent = this.transform.parent;
 			this._layer = this.gameObject.layer;
 			this.GetComponent<IGrabtable>()?.Paralyze(true);
@@ -124,6 +134,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		internal void Drop()
 		{
+			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToggle(true);
+			this._sender.Send();
 			this.GetComponent<IGrabtable>()?.Paralyze(false);
 			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 			this.transform.parent = this._parent;
