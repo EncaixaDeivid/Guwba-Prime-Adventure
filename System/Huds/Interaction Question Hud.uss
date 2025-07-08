@@ -1,7 +1,0 @@
-#RootElement{
-	width: 40px;
-	height: 80px;
-	position: absolute;
-	background-image: url("project://database/Assets/System/Huds/Designs/Question Mark.png");
-	display: none;
-}
