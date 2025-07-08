@@ -3,7 +3,6 @@ using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System;
 using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Hud;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
