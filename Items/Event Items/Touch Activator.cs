@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("If this activator will destroy the object that activated the activator.")] private bool _destroyObject;
 		private void Activate(bool activationKey, GameObject objectKey)
 		{
-			if (activationKey)
+			if (activationKey && this.Usable)
 				if (this._objectsActivators != null)
 				{
 					foreach (GameObject activator in this._objectsActivators)
