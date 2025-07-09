@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[1].clicked += this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
-			this._sender.SetToWhereConnection(PathConnection.Controller);
+			this._sender.SetToWhereConnection(PathConnection.Hud);
 		}
 		private void OnDestroy()
 		{
