@@ -8,9 +8,7 @@ namespace GuwbaPrimeAdventure.Connection
 		Boss,
 		Item,
 		EventItem,
-		Hud,
-		Controller,
-		Dialog
+		Hud
 	};
 	public enum StateForm
 	{
