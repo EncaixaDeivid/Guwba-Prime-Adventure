@@ -2,8 +2,8 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
+	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 	public sealed class GrabBody : StateController
 	{
 		private Rigidbody2D _rigidbody;
@@ -39,7 +39,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._colliders = this.GetComponents<Collider2D>();
 			this._sender.SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(this.transform);
+			this._sender.SetAdditionalData(this.gameObject);
 		}
 		private void OnEnable()
 		{
