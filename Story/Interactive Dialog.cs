@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Story
 {
@@ -11,7 +10,6 @@ namespace GuwbaPrimeAdventure.Story
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
 		private Animator _animator;
-		private readonly Sender _sender = Sender.Create();
 		private string _text = "";
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
@@ -19,18 +17,10 @@ namespace GuwbaPrimeAdventure.Story
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
 		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
-		private void Awake()
-		{
-			this._sender.SetToWhereConnection(PathConnection.Item);
-			this._sender.SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(this.transform);
-		}
 		public void Interaction()
 		{
 			if (this._dialogObject && this._dialogHudObject)
 			{
-				this._sender.SetToggle(false);
-				this._sender.Send();
 				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
 				this._storyTeller = this.GetComponent<StoryTeller>();
@@ -90,8 +80,6 @@ namespace GuwbaPrimeAdventure.Story
 					StateController.SetState(true);
 					if (this._storyTeller)
 						this._storyTeller.CloseScene();
-					this._sender.SetToggle(true);
-					this._sender.Send();
 					SaveController.Load(out SaveFile saveFile);
 					if (this._dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
 					{
