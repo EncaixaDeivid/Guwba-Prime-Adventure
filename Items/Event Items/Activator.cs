@@ -7,12 +7,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		private Animator _animator;
 		private bool _useOneActivation = false;
+		private bool _usable = true;
 		[Header("Activator")]
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
-		[SerializeField, Tooltip("Animation parameter.")] private string _use;
-		[SerializeField, Tooltip("Animation parameter.")] private string _useOne;
 		[SerializeField, Tooltip("The activator only can be activeted one time.")] private bool _oneActivation;
 		[SerializeField, Tooltip("If this object have been activeted before it will always be activeted.")] private bool _saveObject;
+		[Header("Animation")]
+		[SerializeField, Tooltip("Animation parameter.")] private string _use;
+		[SerializeField, Tooltip("Animation parameter.")] private string _useOne;
+		protected bool Usable => this._usable;
 		private new void Awake()
 		{
 			base.Awake();
@@ -39,7 +42,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			{
 				this._animator.SetTrigger(this._use);
 				if (this._oneActivation)
+				{
 					this._animator.SetBool(this._useOne, true);
+					this._usable = false;
+				}
 			}
 			foreach (Receptor receptor in this._receptors)
 				if (receptor)
