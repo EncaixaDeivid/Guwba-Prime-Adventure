@@ -4,12 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase)), DefaultExecutionOrder(-1)]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
 		private List<Light2DBase> _lightsStack;
 		private bool _canHitStop = true;
+		[SerializeField, Tooltip("The renderer of the image.")] private ImageRenderer _imageRenderer;
 		private new void Awake()
 		{
 			if (_instance)
@@ -51,6 +52,16 @@ namespace GuwbaPrimeAdventure
 				light.enabled = false;
 			_instance._lightsStack.Remove(globalLight);
 			_instance._lightsStack[^1].enabled = true;
+		}
+		public static IImagePool CreateImageRenderer<Components>(Components components) where Components : class, IImageComponents
+		{
+			MonoBehaviour rendererObject = components as MonoBehaviour;
+			ImageRenderer image = Instantiate(_instance._imageRenderer);
+			image.transform.SetParent(rendererObject.transform, false);
+			image.transform.localPosition = components.ImageOffset;
+			SpriteRenderer spriteRenderer = image.GetComponent<SpriteRenderer>();
+			spriteRenderer.sprite = components.Image;
+			return image;
 		}
 	};
 };
