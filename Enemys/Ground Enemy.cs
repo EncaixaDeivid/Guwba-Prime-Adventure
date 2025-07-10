@@ -81,8 +81,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
-			Vector2 size = new(this._collider.bounds.size.x + this._blockDistance, this._collider.bounds.size.y - this._blockDistance);
-			bool blockPerception = Physics2D.OverlapBox(this.transform.position, size, this.transform.eulerAngles.z, this._groundLayer);
+			float xSize = (this._collider.bounds.size.x - this._blockDistance) + this._blockDistance * 2f * Mathf.Abs(this.transform.right.x);
+			float ySize = (this._collider.bounds.size.y - this._blockDistance) + this._blockDistance * 2f * Mathf.Abs(this.transform.right.y);
+			Vector2 size = new(xSize, ySize);
+			Vector2 direction = this.transform.right;
+			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._blockDistance, this._groundLayer);
 			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
 			{
 				this._timeRun = this._runOfTime;
@@ -91,7 +94,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					this._movementSide *= -1;
 			}
-			if (blockPerception)
+			if (blockPerception && this._rotate)
 				this._movementSide *= -1;
 			if (this._useCrawlMovement)
 			{
@@ -104,7 +107,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				if (rayValue)
 					this._rotate = true;
-				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.fixedDeltaTime * this.transform.up;
+				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.deltaTime * this.transform.up;
 				Vector2 normalSpeed = this._movementSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
 				Vector2 upedSpeed = speedIncreased * this._movementSide * (Vector2)this.transform.right + gravity;
 				this._rigidybody.linearVelocity = faceLook ? upedSpeed : normalSpeed;
