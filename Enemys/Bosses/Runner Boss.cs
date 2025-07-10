@@ -120,10 +120,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (GuwbaAstral<CommandGuwba>.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
-			float xPoint = (this._collider.bounds.extents.x + this._groundDistance / 2f) * this._movementSide;
-			Vector2 point = new(this.transform.position.x + xPoint, this.transform.position.y);
-			Vector2 size = new(this._groundDistance, this._collider.bounds.size.y - this._groundDistance);
-			this._blockPerception = Physics2D.OverlapBox(point, size, this.transform.eulerAngles.z, this._groundLayer);
+			float xSize = (this._collider.bounds.size.x - this._groundDistance) + this._groundDistance * 2f * Mathf.Abs(this.transform.right.x);
+			float ySize = (this._collider.bounds.size.y - this._groundDistance) + this._groundDistance * 2f * Mathf.Abs(this.transform.right.y);
+			Vector2 size = new(xSize, ySize);
+			Vector2 direction = this.transform.right;
+			this._blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._groundDistance, this._groundLayer);
 			if (this._blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
