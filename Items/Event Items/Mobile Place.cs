@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				{
 					yield return new WaitUntil(() =>
 					{
-						this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.fixedDeltaTime);
+						this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.deltaTime);
 						return (Vector2)this.transform.position == point && this.enabled;
 					});
 					yield return new WaitTime(this, this._waitWayTime);
@@ -79,7 +79,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			yield return new WaitTime(this, this._waitStartTime);
 			yield return new WaitUntil(() =>
 			{
-				this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.fixedDeltaTime);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, point, this._movementSpeed * Time.deltaTime);
 				return (Vector2)this.transform.position == point && this.enabled;
 			});
 			this._isMoving = false;
