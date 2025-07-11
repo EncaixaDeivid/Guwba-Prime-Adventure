@@ -362,9 +362,9 @@ namespace GuwbaPrimeAdventure.Guwba
 					Vector2 bottomSize = new(this._wallChecker, rootHeight - this._wallChecker);
 					LayerMask layerMask = this._groundLayerMask;
 					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._wallChecker, layerMask);
-					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._wallChecker, this._groundLayerMask);
+					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._wallChecker, layerMask);
 					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
-					this._animator.SetFloat(this._walkSpeed, topCast ? 1f : walkSpeed);
+					this._animator.SetFloat(this._walkSpeed, topCast ? walkSpeed : 1f);
 					if (bottomCast && topCast)
 					{
 						float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
