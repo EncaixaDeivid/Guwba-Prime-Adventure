@@ -353,19 +353,35 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			if (!this._dashActive)
 			{
-				if (this._movementAction != 0f)
+				if (this._movementAction != 0f && this._isOnGround)
 				{
-					float xPoint = this._collider.bounds.extents.x * this._movementAction;
-					Vector2 point = new(this.transform.position.x + xPoint, this.transform.position.y);
-					Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
-					bool wallTouch = Physics2D.BoxCast(point, size, angle, direction, this._wallChecker, this._groundLayerMask);
-					if (this._animator.GetBool(this._walk))
+					float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
+					Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
+					Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
+					Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - this._wallChecker);
+					Vector2 bottomSize = new(this._wallChecker, rootHeight - this._wallChecker);
+					LayerMask layerMask = this._groundLayerMask;
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._wallChecker, layerMask);
+					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._wallChecker, this._groundLayerMask);
+					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
+					this._animator.SetFloat(this._walkSpeed, topCast ? 1f : walkSpeed);
+					if (bottomCast && topCast)
 					{
-						float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
-						this._animator.SetFloat(this._walkSpeed, wallTouch ? 1f : walkSpeed);
+						float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
+						float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
+						Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
+						Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
+						RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayerMask);
+						if (lineWallStep && lineWallStep.collider == bottomCast.collider)
+						{
+							float xDistance = this.transform.position.x + this._wallChecker * movementValue;
+							float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
+							this.transform.position = new Vector2(xDistance, yDistance);
+							this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+						}
 					}
-					this._spriteRenderer.flipX = this._movementAction < 0f;
 				}
+				this._spriteRenderer.flipX = this._movementAction != 0f ? this._movementAction < 0f : this._spriteRenderer.flipX;
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
@@ -377,31 +393,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				float frictionAmount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
-			}
-			if (this._isOnGround && this._movementAction != 0f && !this._dashActive)
-			{
-				this._spriteRenderer.flipX = this._movementAction < 0f;
-				float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
-				Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
-				Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
-				Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - this._wallChecker);
-				Vector2 bottomSize = new(this._wallChecker, rootHeight - this._wallChecker);
-				RaycastHit2D raycast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._wallChecker, this._groundLayerMask);
-				if (raycast && !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._wallChecker, this._groundLayerMask))
-				{
-					float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
-					float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
-					Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
-					Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
-					RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayerMask);
-					if (lineWallStep && lineWallStep.collider == raycast.collider)
-					{
-						float xDistance = this.transform.position.x + this._wallChecker * movementValue;
-						float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
-						this.transform.position = new Vector2(xDistance, yDistance);
-						this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
-					}
-				}
 			}
 			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
 			{
