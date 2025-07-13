@@ -5,12 +5,10 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
-	[RequireComponent(typeof(SortingGroup), typeof(Rigidbody2D), typeof(BoxCollider2D))]
-	internal sealed class ManagerCamera : StateController, IConnector
+	[RequireComponent(typeof(SortingGroup))]
+	internal sealed class BackgroundManager : StateController, IConnector
 	{
-		private static ManagerCamera _instance;
-		private Camera _cameraGuwba;
-		private BoxCollider2D _cameraCollider;
+		private static BackgroundManager _instance;
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
@@ -34,8 +32,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			_instance = this;
 			base.Awake();
-			this._cameraGuwba = this.GetComponent<Camera>();
-			this._cameraCollider = this.GetComponent<BoxCollider2D>();
 			this._childrenTransforms = new Transform[this._backgroundImages.Length];
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
 			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
@@ -63,23 +59,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
 			}
-			float sizeY = this._cameraGuwba.orthographicSize * 2f;
-			float sizeX = sizeY * this._cameraGuwba.aspect;
-			this._cameraCollider.size = new Vector2(sizeX, sizeY);
-			foreach (Collider2D objects in Physics2D.OverlapBoxAll(this.transform.position, this._cameraCollider.size, 0f))
-				this.SetOtherChildren(objects.gameObject, true);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
-		}
-		private void SetOtherChildren(GameObject gameObject, bool activeValue)
-		{
-			if (gameObject.TryGetComponent<HiddenCamera>(out var hiddenCamera))
-				for (ushort i = 0; i < hiddenCamera.transform.childCount; i++)
-					hiddenCamera.transform.GetChild(i).gameObject.SetActive(activeValue);
 		}
 		private void FixedUpdate()
 		{
@@ -103,8 +88,6 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y - imageSize.y);
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other) => this.SetOtherChildren(other.gameObject, true);
-		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Action)
