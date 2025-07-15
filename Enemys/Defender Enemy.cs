@@ -28,12 +28,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (this._stopMovement || this.Paralyzed || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
-				this._timeOperation -= Time.fixedDeltaTime;
+				this._timeOperation -= Time.deltaTime;
 			if (this._timeOperation <= 0f)
 			{
 				if (this._invencible)
