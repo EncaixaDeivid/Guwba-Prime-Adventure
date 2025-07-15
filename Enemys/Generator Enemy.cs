@@ -30,14 +30,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(false);
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (this._stopGenerate)
 				return;
 			if (this._continueGeneration)
 			{
 				if (this._timeGeneration > 0f)
-					this._timeGeneration -= Time.fixedDeltaTime;
+					this._timeGeneration -= Time.deltaTime;
 				if (this._timeGeneration <= 0f)
 				{
 					this._timeGeneration = this._summonObject.SummonTime;
