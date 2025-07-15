@@ -91,14 +91,14 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 			}
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (this._stopMovement || this.Paralyzed)
 				return;
 			if (this._shootInterval > 0f)
-				this._shootInterval -= Time.fixedDeltaTime;
+				this._shootInterval -= Time.deltaTime;
 			if (this._timeStop > 0f)
-				this._timeStop -= Time.fixedDeltaTime;
+				this._timeStop -= Time.deltaTime;
 			else if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
