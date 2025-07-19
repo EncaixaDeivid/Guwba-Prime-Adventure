@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	internal sealed class DeathEnemy : EnemyController
@@ -6,6 +7,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Death Enemy")]
 		[SerializeField, Tooltip("The enemy that this enemy will spawn in death.")] private EnemyController _childEnemy;
 		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private Projectile _childProjectile;
+		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (this._onTouch && GuwbaAstral<VisualGuwba>.EqualObject(other.gameObject))
+				Destroy(this.gameObject);
+		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
