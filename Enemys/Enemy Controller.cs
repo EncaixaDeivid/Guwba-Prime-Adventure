@@ -23,7 +23,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopMovement;
 		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
-		[SerializeField, Tooltip("If this enemy do not deal damage at the contact.")] private bool _noContactDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
@@ -66,7 +65,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (!this._paralyzed && !this._noContactDamage && collisionObject.TryGetComponent<IDamageable>(out var damageable))
+			if (!this._paralyzed && collisionObject.TryGetComponent<IDamageable>(out var damageable))
 				damageable.Damage(this._damage);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
