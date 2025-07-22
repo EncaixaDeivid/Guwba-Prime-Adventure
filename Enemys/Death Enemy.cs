@@ -17,9 +17,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.OnDestroy();
 			if (this._childEnemy)
-				Instantiate(this._childEnemy, this.transform.position, this._childEnemy.transform.rotation);
+				Instantiate(this._childEnemy, this.transform.position, Quaternion.identity);
 			if (this._childProjectile)
-				Instantiate(this._childProjectile, this.transform.position, this._childEnemy.transform.rotation);
+				Instantiate(this._childProjectile, this.transform.position, Quaternion.identity);
 		}
 	};
 };
