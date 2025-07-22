@@ -86,7 +86,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._rigidybody.linearVelocityY = direction.y * this._movementSpeed;
 				else
 					this._rigidybody.linearVelocity = direction * this._movementSpeed;
-				if (Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance || this._stopOnTarget)
+				if (this._stopOnTarget && Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance)
 					this._rigidybody.linearVelocity = Vector2.zero;
 			}
 			else if ((Vector2)this.transform.position != this._pointOrigin)
