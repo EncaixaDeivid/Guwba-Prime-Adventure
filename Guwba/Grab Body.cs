@@ -97,7 +97,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._sender.Send();
 			this._parent = this.transform.parent;
 			this._layer = this.gameObject.layer;
-			this.GetComponent<IGrabtable>()?.Paralyze(true);
+			foreach (IGrabtable grabtable in this.GetComponents<IGrabtable>())
+				grabtable?.Paralyze(true);
 			this._rigidbody.bodyType = RigidbodyType2D.Kinematic;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this.gameObject.layer = objectLayer;
@@ -137,7 +138,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._sender.SetToWhereConnection(PathConnection.Item);
 			this._sender.SetToggle(true);
 			this._sender.Send();
-			this.GetComponent<IGrabtable>()?.Paralyze(false);
+			foreach (IGrabtable grabtable in this.GetComponents<IGrabtable>())
+				grabtable?.Paralyze(false);
 			this._rigidbody.bodyType = RigidbodyType2D.Dynamic;
 			this.transform.parent = this._parent;
 			if (this._gravityScale != 0f)
