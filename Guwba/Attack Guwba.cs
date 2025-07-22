@@ -13,7 +13,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private SpriteRenderer _spriteRenderer;
 		private Rigidbody2D _rigidbody;
 		private InputController _inputController;
-		private Vector2 _guardVelocity = new();
 		private Vector2 _attackAngle = new();
 		private bool _isAttacking = false;
 		[Header("World Interaction")]
@@ -62,7 +61,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.AttackRotationConsole.Enable();
 			this._inputController.Commands.AttackRotationKeyboard.Enable();
 			this._inputController.Commands.AttackUse.Enable();
-			this._rigidbody.linearVelocity = this._guardVelocity;
 		}
 		private void OnDisable()
 		{
@@ -75,7 +73,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.AttackRotationKeyboard.Disable();
 			this._inputController.Commands.AttackUse.Disable();
 			this._inputController.Dispose();
-			this._guardVelocity = this._rigidbody.linearVelocity;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
 		private UnityAction<bool> Movement => isAttacking =>
