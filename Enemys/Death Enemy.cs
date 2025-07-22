@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._childEnemy)
 				Instantiate(this._childEnemy, this.transform.position, this._childEnemy.transform.rotation);
 			if (this._childProjectile)
-				Instantiate(this._childEnemy, this.transform.position, this._childEnemy.transform.rotation);
+				Instantiate(this._childProjectile, this.transform.position, this._childEnemy.transform.rotation);
 		}
 	};
 };
