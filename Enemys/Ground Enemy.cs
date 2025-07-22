@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class GroundEnemy : EnemyController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
-		private bool _rotate = false;
+		private bool _rotate = true;
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
 		private float _timeRun = 0f;
@@ -81,11 +81,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
-			float xSize = (this._collider.bounds.size.x - this._blockDistance) + this._blockDistance * 2f * Mathf.Abs(this.transform.right.x);
-			float ySize = (this._collider.bounds.size.y - this._blockDistance) + this._blockDistance * 2f * Mathf.Abs(this.transform.right.y);
+			float xSize = this._collider.bounds.size.x - this._blockDistance + this._blockDistance * 2f * Mathf.Abs(this.transform.right.x);
+			float ySize = this._collider.bounds.size.y - this._blockDistance + this._blockDistance * 2f * Mathf.Abs(this.transform.right.y);
 			Vector2 size = new(xSize, ySize);
 			Vector2 direction = this.transform.right;
-			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._blockDistance, this._groundLayer);
+			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, angle, direction, this._blockDistance, this._groundLayer);
 			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
 			{
 				this._timeRun = this._runOfTime;
