@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
 		[Header("Summoner Boss")]
-		[SerializeField, Tooltip("The collection of the summon places.")] private SummonPlaces[] _summonPlaces;
+		[SerializeField, Tooltip("The collection of the summon point structure.")] private SummonPointStructure[] _summonPointStructures;
 		[SerializeField, Tooltip("The summons that will be activate on an event.")] private SummonObject[] _eventSummons;
 		[SerializeField, Tooltip("The summons that will be activate with time.")] private SummonObject[] _timedSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
@@ -54,11 +54,11 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._sender.SetStateForm(StateForm.State);
 			this._gravityScale = this._rigidybody.gravityScale;
-			foreach (SummonPlaces summonPlaces in this._summonPlaces)
+			foreach (SummonPointStructure summonPointStructure in this._summonPointStructures)
 			{
-				SummonPoint summonPoint = summonPlaces.SummonPointObject;
-				summonPoint = Instantiate(summonPoint, summonPlaces.Point, Quaternion.identity);
-				summonPoint.GetTouch(() => this.Summon(summonPlaces.Summon));
+				SummonPoint summonPoint = summonPointStructure.SummonPointObject;
+				summonPoint = Instantiate(summonPoint, summonPointStructure.Point, Quaternion.identity);
+				summonPoint.GetTouch(() => this.Summon(summonPointStructure.Summon));
 			}
 			if (this._randomTimedSummons)
 			{
@@ -110,7 +110,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					}
 		}
 		[System.Serializable]
-		private struct SummonPlaces
+		private struct SummonPointStructure
 		{
 			[SerializeField, Tooltip("The object to activate the summon.")] private SummonPoint _summonPointObject;
 			[SerializeField, Tooltip("Which summon event the summon point will activate.")] private SummonObject _objectToSummon;
