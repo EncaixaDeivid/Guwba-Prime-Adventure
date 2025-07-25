@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
 		[SerializeField, Tooltip("The speed of the boss while dashing.")] private ushort _dashSpeed;
 		[SerializeField, Tooltip("The distance of the dash ray.")] private float _rayDistance;
-		[SerializeField, Tooltip("The maount of time that before the dash start.")] private float _stopDashTime;
+		[SerializeField, Tooltip("The amount of time that before the dash start.")] private float _stopDashTime;
 		[SerializeField, Tooltip("The distance of dash will run.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of time to wait the timed dash to go.")] private float _timeToDash;
 		private IEnumerator Dash()
