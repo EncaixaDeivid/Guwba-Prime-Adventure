@@ -92,7 +92,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			Vector2 direction = this.transform.right;
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._blockDistance, this._groundLayer);
-			bool blockPerception = blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
+			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
 			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
 			{
 				this._timeRun = this._runOfTime;
