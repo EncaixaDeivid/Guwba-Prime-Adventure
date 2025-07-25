@@ -124,7 +124,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			float ySize = (this._collider.bounds.size.y - this._groundDistance) + this._groundDistance * 2f * Mathf.Abs(this.transform.right.y);
 			Vector2 size = new(xSize, ySize);
 			Vector2 direction = this.transform.right;
-			this._blockPerception = Physics2D.BoxCast(this.transform.position, size, 0f, direction, this._groundDistance, this._groundLayer);
+			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+			this._blockPerception = Physics2D.BoxCast(this.transform.position, size, angle, direction, this._groundDistance, this._groundLayer);
 			if (this._blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
