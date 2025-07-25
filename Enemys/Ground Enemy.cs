@@ -81,12 +81,18 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
-			float xSize = this._collider.bounds.size.x - this._blockDistance + this._blockDistance * 2f * Mathf.Abs(this.transform.right.x);
-			float ySize = this._collider.bounds.size.y - this._blockDistance + this._blockDistance * 2f * Mathf.Abs(this.transform.right.y);
+			float xAxisOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this._movementSide;
+			float yAxisOrigin = (this._collider.bounds.extents.y + this._blockDistance / 2f) * this._movementSide;
+			float xOrigin = this.transform.position.x + xAxisOrigin * Mathf.Abs(this.transform.right.x);
+			float yOrigin = this.transform.position.y + yAxisOrigin * Mathf.Abs(this.transform.right.y);
+			Vector2 origin = new(xOrigin, yOrigin);
+			float xSize = this._blockDistance + (this._collider.bounds.size.x - this._blockDistance * 2f) * Mathf.Abs(this.transform.right.y);
+			float ySize = this._blockDistance + (this._collider.bounds.size.y - this._blockDistance * 2f) * Mathf.Abs(this.transform.right.x);
 			Vector2 size = new(xSize, ySize);
 			Vector2 direction = this.transform.right;
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
-			bool blockPerception = Physics2D.BoxCast(this.transform.position, size, angle, direction, this._blockDistance, this._groundLayer);
+			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._blockDistance, this._groundLayer);
+			bool blockPerception = blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
 			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
 			{
 				this._timeRun = this._runOfTime;
