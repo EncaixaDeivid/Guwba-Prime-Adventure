@@ -131,7 +131,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			Vector2 direction = this.transform.right;
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._groundDistance, this._groundLayer);
-			this._blockPerception = blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
+			this._blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
 			if (this._blockPerception)
 				this._movementSide *= -1;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
