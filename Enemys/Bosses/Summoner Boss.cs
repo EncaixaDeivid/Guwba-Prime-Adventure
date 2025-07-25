@@ -34,19 +34,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			{
 				gameObject = summon.Summons[0];
 				if (summon.Self)
-					Instantiate(gameObject, this.transform.position, gameObject.transform.rotation, this.transform);
+					Instantiate(gameObject, this.transform.position, gameObject.transform.rotation);
 				else if (summon.Sequential)
 				{
 					gameObject = summon.Summons[i];
-					Instantiate(gameObject, summon.SummonPoints[i], gameObject.transform.rotation, this.transform);
+					Instantiate(gameObject, summon.SummonPoints[i], gameObject.transform.rotation);
 				}
 				else if (summon.Random)
 				{
 					ushort pointIndex = (ushort)Random.Range(0f, summon.SummonPoints.Length - 1f);
-					Instantiate(gameObject, summon.SummonPoints[pointIndex], gameObject.transform.rotation, this.transform);
+					Instantiate(gameObject, summon.SummonPoints[pointIndex], gameObject.transform.rotation);
 				}
 				else
-					Instantiate(gameObject, summon.SummonPoints[0], gameObject.transform.rotation, this.transform);
+					Instantiate(gameObject, summon.SummonPoints[0], gameObject.transform.rotation);
 			}
 		}
 		private new void Awake()
@@ -54,11 +54,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._sender.SetStateForm(StateForm.State);
 			this._gravityScale = this._rigidybody.gravityScale;
-			foreach (SummonPointStructure summonPointStructure in this._summonPointStructures)
+			foreach (SummonPointStructure summonStructure in this._summonPointStructures)
 			{
-				SummonPoint summonPoint = summonPointStructure.SummonPointObject;
-				summonPoint = Instantiate(summonPoint, summonPointStructure.Point, Quaternion.identity);
-				summonPoint.GetTouch(() => this.Summon(summonPointStructure.Summon));
+				SummonPoint summonPoint = summonStructure.SummonPointObject;
+				Instantiate(summonPoint, summonStructure.Point, Quaternion.identity).GetTouch(() => this.Summon(summonStructure.Summon));
 			}
 			if (this._randomTimedSummons)
 			{
