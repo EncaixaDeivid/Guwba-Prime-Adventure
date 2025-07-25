@@ -14,8 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			foreach (TeleportPointStructure teleportPointStructure in this._teleportPointStructures)
 			{
 				TeleportPoint teleportPoint = teleportPointStructure.TeleportPointObject;
-				teleportPoint = Instantiate(teleportPoint, teleportPointStructure.InstancePoint, Quaternion.identity);
-				teleportPoint.GetTouch(() =>
+				Instantiate(teleportPoint, teleportPointStructure.InstancePoint, Quaternion.identity).GetTouch(() =>
 				{
 					if (this._canTeleport)
 					{
