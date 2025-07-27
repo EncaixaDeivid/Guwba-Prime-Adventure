@@ -138,7 +138,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				for (ushort i = 0; i < this._guwbaHud.VitalityVisual.Length; i++)
 				{
@@ -148,7 +148,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._guwbaHud.VitalityVisual[i].style.borderRightColor = new StyleColor(this._guwbaHud.BorderColor);
 					this._guwbaHud.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHud.BorderColor);
 				}
-				this._invencibility = true;
+				this._isDamaged = true;
 				this._vitality = (short)this._guwbaHud.Vitality;
 				GuwbaAstral<CommandGuwba>._actualState.Invoke(true);
 				this.StartCoroutine(this.Invencibility());
