@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (this._isChecked && data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				GuwbaAstral<CommandGuwba>.Position = _checkpointIndex;
 				this._sender.Send();
