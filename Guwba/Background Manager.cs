@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
 	[RequireComponent(typeof(SortingGroup))]
-	internal sealed class BackgroundManager : StateController, IConnector
+	internal sealed class BackgroundManager : StateController
 	{
 		private static BackgroundManager _instance;
 		private Transform[] _childrenTransforms;
@@ -59,12 +59,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
 			}
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
 		}
 		private void FixedUpdate()
 		{
@@ -87,11 +81,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				else if (distanceAxisY < this._startPosition.y - imageSize.y)
 					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y - imageSize.y);
 			}
-		}
-		public void Receive(DataConnection data, object additionalData)
-		{
-			if (data.StateForm == StateForm.Action)
-				this.transform.position = GuwbaAstral<CommandGuwba>.Position + this._cameraOffset;
 		}
 	};
 };
