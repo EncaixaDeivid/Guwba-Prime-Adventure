@@ -98,14 +98,14 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 					else
 						targetPosition += (Vector2)this.transform.up * this._movementDistance;
-					float maxDistanceDelta = this._movementSpeed * Time.deltaTime;
+					float maxDistanceDelta = this._movementSpeed * Time.fixedDeltaTime;
 					this.transform.position = Vector2.MoveTowards(this.transform.position, targetPosition, maxDistanceDelta);
 					if ((ushort)Vector2.Distance(this.transform.position, targetPosition) <= 0f)
 					{
 						GuwbaAstral<CommandGuwba>._returnAttack = true;
 						_returnAttack = true;
 					}
-					yield return new WaitForEndOfFrame();
+					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => this.enabled);
 				}
 			}
