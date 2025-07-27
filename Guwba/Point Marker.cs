@@ -6,7 +6,6 @@ namespace GuwbaPrimeAdventure.Guwba
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	internal sealed class PointMarker : StateController, IConnector
 	{
-		private readonly Sender _sender = Sender.Create();
 		private static Vector2 _checkpointIndex = new();
 		private bool _isChecked = false;
 		[Header("Hubby World Interaction")]
@@ -16,8 +15,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
-			this._sender.SetStateForm(StateForm.Action);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -43,10 +40,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (this._isChecked && data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
-			{
 				GuwbaAstral<CommandGuwba>.Position = _checkpointIndex;
-				this._sender.Send();
-			}
 		}
 	};
 };
