@@ -81,6 +81,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._sender.SetToWhereConnection(PathConnection.Hud);
+			this._sender.SetStateForm(StateForm.Disable);
+			this._sender.SetToggle(true);
 			this._spriteRenderer.flipX = this._turnLeft;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
@@ -151,11 +153,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (isAlive)
 			{
 				this.OnEnable();
+				this._spriteRenderer.flipX = this._turnLeft;
 				this._animator.SetBool(this._death, !isAlive);
 				this._collider.size = this._normalSize;
-				this._sender.SetStateForm(StateForm.Enable);
-				this._sender.SetToggle(true);
-				this._sender.Send();
 			}
 			else
 			{
@@ -163,8 +163,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._animator.SetBool(this._death, !isAlive);
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = this._deadSize;
-				this._sender.SetStateForm(StateForm.Disable);
-				this._sender.SetToggle(true);
 				this._sender.Send();
 			}
 		};
