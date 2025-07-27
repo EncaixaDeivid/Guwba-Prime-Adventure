@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
-		[Header("Camera Stat")]
+		[Header("Camera Property")]
 		[SerializeField, Tooltip("The offset of the camera.")] private Vector2Int _cameraOffset;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
