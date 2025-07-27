@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[Header("Weak Boss")]
 		[SerializeField, Tooltip("The vitality of the main boss.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
-		[SerializeField, Tooltip("The amount of time to wait after damaging the prop again.")] private float _timeToDamage;
+		[SerializeField, Tooltip("The amount of time of wait to deal damage in the boss after damaging it.")] private float _timeToDamage;
 		[SerializeField, Tooltip("The index to a event to a boss make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will destroy the main boss after it's destruction.")] private bool _destructBoss;
