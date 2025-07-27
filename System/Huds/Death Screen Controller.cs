@@ -49,6 +49,13 @@ namespace GuwbaPrimeAdventure.Hud
 				this._sender.SetToWhereConnection(PathConnection.Enemy);
 				this._sender.SetStateForm(StateForm.Disable);
 				this._sender.Send();
+				if (this._deathScreenHud)
+				{
+					this._deathScreenHud.Continue.clicked -= this.Continue;
+					this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
+					this._deathScreenHud.GameOver.clicked -= this.GameOver;
+					Destroy(this._deathScreenHud.gameObject);
+				}
 			}
 		};
 		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
@@ -74,14 +81,6 @@ namespace GuwbaPrimeAdventure.Hud
 					this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
 				}
 			}
-			else if (data.StateForm == StateForm.Enable)
-				if (this._deathScreenHud)
-				{
-					this._deathScreenHud.Continue.clicked -= this.Continue;
-					this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
-					this._deathScreenHud.GameOver.clicked -= this.GameOver;
-					Destroy(this._deathScreenHud.gameObject);
-				}
 		}
 	};
 };
