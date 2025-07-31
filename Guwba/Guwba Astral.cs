@@ -24,6 +24,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Vector2 _normalSize = new();
 		private short _vitality;
 		private ushort _recoverVitality = 0;
+		private ushort _attackIndexValue = 1;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
@@ -58,15 +59,14 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlide;
 		[SerializeField, Tooltip("Animation parameter.")] private string _Jump;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
-		[SerializeField, Tooltip("Animation parameter.")] private string _groundAttack;
-		[SerializeField, Tooltip("Animation parameter.")] private string _airAttack;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackIndex;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[Header("Colliders Checkers")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, Tooltip("Lowing the offset of the grab.")] private float _lowHoldOffset;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
@@ -75,7 +75,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, Tooltip("The speed of the back dash's animation.")] private float _backDashSpeed;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
@@ -83,9 +82,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[Header("Attack")]
-		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _damage;
+		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTimeAttack;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTimeAttack;
+		[SerializeField, Tooltip("If Guwba have attacked during the dash.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
@@ -191,7 +191,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = -1f;
 			if (movementValue.y > 0.5f)
 				this._lastJumpTime = this._jumpBufferTime;
-			if (!this._dashActive && this._movementAction != 0f && movementValue.y < -0.5f && this._isOnGround)
+			if (!this._dashActive && this._movementAction != 0f && movementValue.y < -0.5f && this._isOnGround && !this._attackUsageBuffer)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
@@ -239,10 +239,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
-			if (this._isOnGround)
-				this._animator.SetTrigger(this._groundAttack);
-			else
-				this._animator.SetTrigger(this._airAttack);
+			if (this._attackUsageBuffer)
+			{
+				this._attackIndexValue = (ushort)(this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
+				this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
+			}
+			this._animator.SetTrigger(this._attack);
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
 		{
@@ -260,7 +262,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private UnityAction<IDamageable> Attack => damageable =>
 		{
-			if (damageable.Damage(this._damage))
+			if (damageable.Damage(this._attackDamage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
@@ -285,7 +287,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				{
 					this._recoverVitality += 1;
 					for (ushort i = 0; i < this._recoverVitality; i++)
-						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHudHandler.BorderColor);
+					{
+						Color borderColor = this._guwbaHudHandler.BorderColor;
+						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
+					}
 				}
 			}
 		};
@@ -427,11 +432,12 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaHudHandler.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
-				this._guwbaHudHandler.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
-				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
-				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
-				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
-				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
+				Color missingColor = this._guwbaHudHandler.MissingVitalityColor;
+				this._guwbaHudHandler.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(missingColor);
+				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(missingColor);
+				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(missingColor);
+				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(missingColor);
+				this._guwbaHudHandler.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(missingColor);
 			}
 			if (this._vitality <= 0f)
 			{
