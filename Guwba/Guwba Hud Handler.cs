@@ -3,9 +3,9 @@ using UnityEngine.UIElements;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	internal sealed class GuwbaHud : MonoBehaviour
+	internal sealed class GuwbaHudHandler : MonoBehaviour
 	{
-		private static GuwbaHud _instance;
+		private static GuwbaHudHandler _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
@@ -19,6 +19,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The color of Guwba's vitality bar border.")] private Color _borderColor;
 		[SerializeField, Tooltip("The color of Guwba's vitality bar missing vitality piece.")] private Color _missingVitalityColor;
 		[SerializeField, Tooltip("The total of vitality that Guwba have.")] private ushort _vitality;
+		[SerializeField, Tooltip("The total of recover vitality that Guwba have.")] private ushort _recoverVitality;
 		[SerializeField, Tooltip("The total width of Guwba's vitality bar.")] private float _totalWidth;
 		[SerializeField, Tooltip("The norder width of Guwba's vitality bar.")] private float _borderWidth;
 		internal VisualElement RootElement { get; private set; }
@@ -30,6 +31,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		internal Color BorderColor => this._borderColor;
 		internal Color MissingVitalityColor => this._missingVitalityColor;
 		internal ushort Vitality => (ushort)this._vitality;
+		internal ushort RecoverVitality => (ushort)this._recoverVitality;
 		private void Awake()
 		{
 			if (_instance)
@@ -66,12 +68,12 @@ namespace GuwbaPrimeAdventure.Guwba
 			VisualElement recoverVitality = root.Q<VisualElement>($"{this._recoverVitalityVisual}");
 			recoverVitality.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			VisualElement recoverVitalityPiece = root.Q<VisualElement>($"{this._recoverVitalityPieceVisual}");
-			this.RecoverVitalityVisual = new VisualElement[this._vitality];
-			for (ushort i = 0; i < this._vitality; i++)
+			this.RecoverVitalityVisual = new VisualElement[this._recoverVitality];
+			for (ushort i = 0; i < this._recoverVitality; i++)
 			{
 				VisualElement vitalityPieceClone = new() { name = recoverVitalityPiece.name };
 				vitalityPieceClone.style.backgroundColor = new StyleColor(this._missingVitalityColor);
-				float width = this._totalWidth / this._vitality - this._borderWidth * 2f;
+				float width = this._totalWidth / this._recoverVitality - this._borderWidth * 2f;
 				vitalityPieceClone.style.width = new StyleLength(new Length(width, LengthUnit.Pixel));
 				vitalityPieceClone.style.marginLeft = new StyleLength(new Length(this._borderWidth, LengthUnit.Pixel));
 				vitalityPieceClone.style.marginRight = new StyleLength(new Length(this._borderWidth, LengthUnit.Pixel));
