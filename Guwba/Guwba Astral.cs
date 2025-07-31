@@ -17,13 +17,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		private GuwbaHudHandler _guwbaHudHandler;
 		private GuwbaDamagerAttack[] _guwbaDamagerAttacks;
 		private Animator _animator;
-		private SpriteRenderer[] _spriteRenderers;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _normalSize = new();
-		private Vector2 _attackAngle = new();
 		private short _vitality;
 		private ushort _recoverVitality = 0;
 		private float _gravityScale = 0f;
@@ -40,7 +38,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _isJumping = false;
 		private bool _dashActive = false;
 		[Header("World Interaction")]
-		[SerializeField, Tooltip("The camera that is attached to Guwba.")] private Camera _mainCamera;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
 		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
@@ -61,7 +58,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlide;
 		[SerializeField, Tooltip("Animation parameter.")] private string _Jump;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
+		[SerializeField, Tooltip("Animation parameter.")] private string _groundAttack;
+		[SerializeField, Tooltip("Animation parameter.")] private string _airAttack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[Header("Colliders Checkers")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
@@ -99,12 +97,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				return;
 			}
 			_instance = this;
-			this._spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._guwbaHudHandler = Instantiate(this._guwbaHudHandlerObject, this.transform);
 			this._guwbaDamagerAttacks = this.GetComponentsInChildren<GuwbaDamagerAttack>(true);
+			this.transform.right = this._turnLeft ? Vector2.left : Vector2.right;
 			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
 				guwbaDamagerAttack.Attack += this.Attack;
 			this._sender.SetStateForm(StateForm.Disable);
@@ -112,7 +110,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
 			this._guwbaHudHandler.CoinText.text = $"X {saveFile.coins}";
 			this._vitality = (short)this._guwbaHudHandler.Vitality;
-			this.transform.right = this._turnLeft ? Vector2.left : Vector2.right;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
 			Sender.Include(this);
@@ -123,10 +120,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			this.StopAllCoroutines();
-			foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-				spriteRenderer.color -= new Color(1f, 1f, 1f, 1f);
 			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
-				guwbaDamagerAttack.Attack = this.Attack;
+			{
+				guwbaDamagerAttack.Alpha = 1f;
+				guwbaDamagerAttack.Attack -= this.Attack;
+			}
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
@@ -241,13 +239,15 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
-			if (this._attackAngle != Vector2.zero && !this._animator.GetBool(this._attack))
-				this._animator.SetBool(this._attack, true);
+			if (this._isOnGround)
+				this._animator.SetTrigger(this._groundAttack);
+			else
+				this._animator.SetTrigger(this._airAttack);
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
 		{
 			Vector2 point = this.transform.position;
-			if (this._isOnGround && this._movementAction == 0f && !this._animator.GetBool(this._attack))
+			if (this._isOnGround && this._movementAction == 0f)
 			{
 				float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._InteractionLayerMask))
@@ -263,11 +263,14 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (damageable.Damage(this._damage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
-				if (this._recoverVitality >= this._guwbaHudHandler.Vitality && this._vitality < this._guwbaHudHandler.Vitality)
+				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
 				{
 					this._recoverVitality = 0;
-					for (ushort i = 0; i < this._guwbaHudHandler.Vitality; i++)
-						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
+					for (ushort i = 0; i < this._guwbaHudHandler.RecoverVitality; i++)
+					{
+						Color missingColor = this._guwbaHudHandler.MissingVitalityColor;
+						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
+					}
 					this._vitality += 1;
 					for (ushort i = 0; i < this._vitality; i++)
 					{
@@ -278,7 +281,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._guwbaHudHandler.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHudHandler.BorderColor);
 					}
 				}
-				else if (this._recoverVitality < this._guwbaHudHandler.Vitality)
+				else if (this._recoverVitality < this._guwbaHudHandler.RecoverVitality)
 				{
 					this._recoverVitality += 1;
 					for (ushort i = 0; i < this._recoverVitality; i++)
@@ -356,8 +359,8 @@ namespace GuwbaPrimeAdventure.Guwba
 						}
 					}
 				}
-				Vector2 conditional = this._movementAction < 0f ? Vector2.left : Vector2.right;
-				this.transform.right = this._movementAction != 0f ? conditional : this.transform.right;
+				if (this._movementAction != 0f)
+					this.transform.right = this._movementAction < 0f ? Vector2.left : Vector2.right;
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
@@ -386,15 +389,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				while (this._isDamaged)
 				{
-					foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-						spriteRenderer.color = new Color(1f, 1f, 1f, spriteRenderer.color.a >= 1f ? this._invencibilityValue : 1f);
+					foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
+						guwbaDamagerAttack.Alpha = guwbaDamagerAttack.Alpha >= 1f ? this._invencibilityValue : 1f;
 					yield return new WaitTime(this, this._timeStep);
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
 			this._isDamaged = false;
-			foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-				spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
+				guwbaDamagerAttack.Alpha = 1f;
 		}
 		private void OnCollision()
 		{
@@ -438,8 +441,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
 				this.StopAllCoroutines();
-				foreach (SpriteRenderer spriteRenderer in this._spriteRenderers)
-					spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+				foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
+					guwbaDamagerAttack.Alpha = 1f;
 				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
@@ -471,7 +474,10 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._guwbaHudHandler.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaHudHandler.BorderColor);
 				}
 				for (ushort i = 0; i < this._guwbaHudHandler.VitalityVisual.Length; i++)
-					this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaHudHandler.MissingVitalityColor);
+				{
+					Color missingColor = this._guwbaHudHandler.MissingVitalityColor;
+					this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
+				}
 				this._isDamaged = true;
 				this._vitality = (short)this._guwbaHudHandler.Vitality;
 				this.StartCoroutine(this.Invencibility());
