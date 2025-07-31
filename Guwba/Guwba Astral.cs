@@ -196,11 +196,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
+					this._animator.SetBool(this._dashSlide, this._dashActive = true);
 					this._invencibility = true;
 					this._dashMovement = this._movementAction;
 					this.transform.right = this._dashMovement < 0f ? Vector2.left : Vector2.right;
 					float dashLocation = this.transform.position.x;
-					this._animator.SetBool(this._dashSlide, this._dashActive = true);
 					this._collider.size = this._dashSlideSize;
 					this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
@@ -239,11 +239,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
-			if (this._attackUsageBuffer)
-			{
-				this._attackIndexValue = (ushort)(this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
-				this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
-			}
+			if (this._dashActive)
+				return;
+			this._attackIndexValue = (ushort)(this._attackUsageBuffer && this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
+			this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
 			this._animator.SetTrigger(this._attack);
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
