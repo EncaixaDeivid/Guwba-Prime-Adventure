@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
+			if (!GuwbaDefaultTransform.EqualObject(other.gameObject))
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
