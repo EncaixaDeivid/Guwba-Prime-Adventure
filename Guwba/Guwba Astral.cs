@@ -24,7 +24,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Vector2 _normalSize = new();
 		private short _vitality;
 		private ushort _recoverVitality = 0;
-		private ushort _attackIndexValue = 1;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
@@ -61,7 +60,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _Jump;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackIndex;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackCombo;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[Header("Colliders Checkers")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
@@ -85,7 +84,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTimeAttack;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTimeAttack;
-		[SerializeField, Tooltip("The amount of time that Guwba gets invencible when hit something.")] private float _invencibilityHitTime;
 		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		public ushort Health => (ushort)this._vitality;
@@ -188,7 +186,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = -1f;
 			if (movementValue.y > 0.5f)
 				this._lastJumpTime = this._jumpBufferTime;
-			if (!this._dashActive && this._movementAction != 0f && movementValue.y < -0.5f && this._isOnGround && !this._attackUsageBuffer)
+			bool valid = !this._dashActive && this._isOnGround && !this._attackUsageBuffer;
+			if (this._movementAction != 0f && movementValue.y < -0.5f && valid)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
@@ -241,12 +240,14 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.StartCoroutine(AttackWaiter());
 			IEnumerator AttackWaiter()
 			{
-				this._attackIndexValue = (ushort)(this._attackUsageBuffer && this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
 				this._attackWaiter = true;
+				bool comboAttack = this._attackUsageBuffer;
+				if (comboAttack)
+					this._animator.SetTrigger(this._attackCombo);
 				yield return new WaitWhile(() => this._attackUsageBuffer);
 				this._attackWaiter = false;
-				this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
-				this._animator.SetTrigger(this._attack);
+				if (!comboAttack)
+					this._animator.SetTrigger(this._attack);
 			}
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
@@ -268,7 +269,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (damageable.Damage(damagerAttack.AttackDamage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
-				this.StartCoroutine(InvencibilityHit());
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
 				{
 					this._recoverVitality = 0;
@@ -295,12 +295,6 @@ namespace GuwbaPrimeAdventure.Guwba
 						Color borderColor = this._guwbaHudHandler.BorderColor;
 						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
 					}
-				}
-				IEnumerator InvencibilityHit()
-				{
-					this._invencibility = true;
-					yield return new WaitTime(this, this._invencibilityHitTime);
-					this._invencibility = false;
 				}
 			}
 		};
