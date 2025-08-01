@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time to waits to generation.")] private float _generationTime;
 		[SerializeField, Tooltip("If the quantity of the generation is limited.")] private bool _especifiedGeneration;
 		[SerializeField, Tooltip("If the items generated are to be keeped in existence.")] private bool _existentItems;
-		private void FixedUpdate()
+		private void Update()
 		{
 			if (this._stopGenerate)
 				return;
