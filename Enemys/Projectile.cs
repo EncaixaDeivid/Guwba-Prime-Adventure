@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal sealed class Projectile : StateController, IGrabtable
+	internal sealed class Projectile : StateController
 	{
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalBreakPoint = 0;
 		private ushort _pointToReturn = 0;
 		private ushort _internalReturnPoint = 0;
-		private bool _isParalyzed = false, _breakInUse = false;
+		private bool _breakInUse = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
@@ -119,7 +119,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void CellInstanceOnce()
 		{
-			if (this._useQuantity && this._quantityToSummon == this._projectiles.Count || this._stayInPlace || this._isParalyzed)
+			if (this._useQuantity && this._quantityToSummon == this._projectiles.Count || this._stayInPlace)
 				return;
 			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 			this.CellInstance();
@@ -180,8 +180,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._isParalyzed)
-				return;
 			if (this._secondProjectile && this._inCell && this._continuosSummon)
 				this.CellInstanceOnce();
 			this._rigidbody.rotation += this._rotationSpeed * this._movementSpeed * Time.fixedDeltaTime;
@@ -190,7 +188,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._isParalyzed && this._isInoffensive)
+			if (this._isInoffensive)
 				return;
 			if (other.TryGetComponent<IDamageable>(out var damageable))
 			{
@@ -210,6 +208,5 @@ namespace GuwbaPrimeAdventure.Enemy
 				Destroy(this.gameObject);
 			}
 		}
-		public void Paralyze(bool value) => this._isParalyzed = value;
 	};
 };
