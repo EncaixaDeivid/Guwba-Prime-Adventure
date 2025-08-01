@@ -10,7 +10,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._onTouch && GuwbaAstral<VisualGuwba>.EqualObject(other.gameObject) && !this.Paralyzed)
+			if (this._onTouch && GuwbaDefaultTransform.EqualObject(other.gameObject))
 				Destroy(this.gameObject);
 		}
 		private new void OnDestroy()
