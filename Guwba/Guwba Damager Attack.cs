@@ -9,7 +9,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Stat")]
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		internal UnityAction<IDamageable, ushort> Attack { get; set; }
-		internal ushort AttackDamage => this._attackDamage;
 		internal float Alpha { get => this._spriteRenderer.color.a; set => this._spriteRenderer.color = new(1f, 1f, 1f, value); }
 		private new void Awake()
 		{
