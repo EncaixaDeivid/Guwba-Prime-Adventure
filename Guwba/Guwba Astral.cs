@@ -141,8 +141,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.AttackUse.started += this.AttackUse;
 			this._inputController.Commands.Interaction.started += this.Interaction;
 			this._inputController.Commands.Movement.Enable();
-			this._inputController.Commands.AttackRotationConsole.Enable();
-			this._inputController.Commands.AttackRotationKeyboard.Enable();
 			this._inputController.Commands.AttackUse.Enable();
 			this._inputController.Commands.Interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
@@ -163,8 +161,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.AttackUse.started -= this.AttackUse;
 			this._inputController.Commands.Interaction.started -= this.Interaction;
 			this._inputController.Commands.Movement.Disable();
-			this._inputController.Commands.AttackRotationConsole.Disable();
-			this._inputController.Commands.AttackRotationKeyboard.Disable();
 			this._inputController.Commands.AttackUse.Disable();
 			this._inputController.Commands.Interaction.Disable();
 			this._inputController.Dispose();
