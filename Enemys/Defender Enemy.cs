@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopMovement || this.Paralyzed || !this._useAlternatedTime && !this._invencible)
+			if (this._stopMovement || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
 				this._timeOperation -= Time.deltaTime;
