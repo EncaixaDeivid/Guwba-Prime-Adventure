@@ -38,6 +38,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashActive = false;
+		private bool _attackWaiter = false;
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
@@ -139,7 +140,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.started += this.Movement;
 			this._inputController.Commands.Movement.performed += this.Movement;
 			this._inputController.Commands.Movement.canceled += this.Movement;
-			this._inputController.Commands.AttackUse.started += this.AttackUse;
+			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
 			this._inputController.Commands.Interaction.started += this.Interaction;
 			this._inputController.Commands.Movement.Enable();
 			this._inputController.Commands.AttackUse.Enable();
@@ -159,7 +160,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.started -= this.Movement;
 			this._inputController.Commands.Movement.performed -= this.Movement;
 			this._inputController.Commands.Movement.canceled -= this.Movement;
-			this._inputController.Commands.AttackUse.started -= this.AttackUse;
+			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
 			this._inputController.Commands.Interaction.started -= this.Interaction;
 			this._inputController.Commands.Movement.Disable();
 			this._inputController.Commands.AttackUse.Disable();
@@ -235,11 +236,18 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
-			if (this._dashActive)
+			if (this._dashActive || this._attackWaiter)
 				return;
-			this._attackIndexValue = (ushort)(this._attackUsageBuffer && this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
-			this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
-			this._animator.SetTrigger(this._attack);
+			this.StartCoroutine(AttackWaiter());
+			IEnumerator AttackWaiter()
+			{
+				this._attackIndexValue = (ushort)(this._attackUsageBuffer && this._attackIndexValue < 3f ? this._attackIndexValue + 1f : 1f);
+				this._attackWaiter = true;
+				yield return new WaitWhile(() => this._attackUsageBuffer);
+				this._attackWaiter = false;
+				this._animator.SetFloat(this._attackIndex, this._attackIndexValue);
+				this._animator.SetTrigger(this._attack);
+			}
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
 		{
