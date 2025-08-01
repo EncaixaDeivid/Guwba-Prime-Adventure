@@ -49,7 +49,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				}
 				else
 				{
-					GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+					GuwbaDefaultTransform.Position = this._locations[this._index];
 					this._sender.SetToWhereConnection(PathConnection.Guwba);
 					this._sender.SetToggle(false);
 					this._sender.Send();
@@ -76,7 +76,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._isInteractive)
 			{
-				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+				GuwbaDefaultTransform.Position = this._locations[this._index];
 				this._sender.SetToWhereConnection(PathConnection.Guwba);
 				this._sender.SetToggle(false);
 				this._sender.Send();
@@ -89,9 +89,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._onCollision && this._everyone)
 				other.transform.position = this._locations[this._index];
-			else if (this._active && this._onCollision && GuwbaAstral<CommandGuwba>.EqualObject(other.gameObject))
+			else if (this._active && this._onCollision && GuwbaDefaultTransform.EqualObject(other.gameObject))
 			{
-				GuwbaAstral<CommandGuwba>.Position = this._locations[this._index];
+				GuwbaDefaultTransform.Position = this._locations[this._index];
 				this._sender.SetToWhereConnection(PathConnection.Guwba);
 				this._sender.SetToggle(false);
 				this._sender.Send();
