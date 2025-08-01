@@ -3,7 +3,6 @@ namespace GuwbaPrimeAdventure
 {
 	public interface IDamageable
 	{
-		public ushort Health { get; }
 		public bool Damage(ushort damage);
 	};
 	public interface IInteractable
