@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IGrabtable, IDamageable, IConnector
+	internal abstract class EnemyController : StateController, IDamageable, IConnector
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
@@ -13,7 +13,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
-		private bool _paralyzed = false;
 		[Header("Enemy Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
@@ -26,7 +25,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
-		protected bool Paralyzed => this._paralyzed;
 		public ushort Health => (ushort)this._vitality;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		protected new void Awake()
@@ -65,15 +63,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (!this._paralyzed && collisionObject.TryGetComponent<IDamageable>(out var damageable))
+			if (collisionObject.TryGetComponent<IDamageable>(out var damageable))
 				damageable.Damage(this._damage);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
-		public void Paralyze(bool value) => this._paralyzed = value;
 		public bool Damage(ushort damage)
 		{
-			if (this._noDamage || this._paralyzed)
+			if (this._noDamage)
 				return false;
 			if ((this._vitality -= (short)damage) <= 0)
 				Destroy(this.gameObject);
