@@ -46,7 +46,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaHudHandler _guwbaHudHandlerObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
-		[SerializeField, Tooltip("The amount of time that Guwba stays invencible.")] private float _invencibilityTime;
+		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
@@ -84,7 +84,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTimeAttack;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTimeAttack;
-		[SerializeField, Tooltip("If Guwba have attacked during the dash.")] private bool _attackUsageBuffer;
+		[SerializeField, Tooltip("The amount of time that Guwba gets invencible when hit something.")] private float _invencibilityHitTime;
+		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		public ushort Health => (ushort)this._vitality;
 		private new void Awake()
@@ -259,6 +260,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (damageable.Damage(damagerAttack.AttackDamage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
+				this.StartCoroutine(InvencibilityHit());
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
 				{
 					this._recoverVitality = 0;
@@ -285,6 +287,12 @@ namespace GuwbaPrimeAdventure.Guwba
 						Color borderColor = this._guwbaHudHandler.BorderColor;
 						this._guwbaHudHandler.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
 					}
+				}
+				IEnumerator InvencibilityHit()
+				{
+					this._invencibility = true;
+					yield return new WaitTime(this, this._invencibilityHitTime);
+					this._invencibility = false;
 				}
 			}
 		};
