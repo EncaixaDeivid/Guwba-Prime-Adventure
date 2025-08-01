@@ -258,9 +258,9 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<IDamageable, ushort> Attack => (damageable, damage) =>
+		private UnityAction<GuwbaDamagerAttack, IDamageable> Attack => (damagerAttack, damageable) =>
 		{
-			if (damageable.Damage(damage))
+			if (damageable.Damage(damagerAttack.AttackDamage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
