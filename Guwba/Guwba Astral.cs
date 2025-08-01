@@ -82,7 +82,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[Header("Attack")]
-		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTimeAttack;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTimeAttack;
 		[SerializeField, Tooltip("If Guwba have attacked during the dash.")] private bool _attackUsageBuffer;
@@ -259,9 +258,9 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<IDamageable> Attack => damageable =>
+		private UnityAction<IDamageable, ushort> Attack => (damageable, damage) =>
 		{
-			if (damageable.Damage(this._attackDamage))
+			if (damageable.Damage(damage))
 			{
 				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
