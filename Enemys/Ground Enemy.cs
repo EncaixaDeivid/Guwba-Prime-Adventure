@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement || this.Paralyzed)
+			if (this._stopMovement)
 				return;
 			bool faceLook = false;
 			if (this._runFromTarget)
