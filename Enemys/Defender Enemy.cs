@@ -31,6 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private new void Update()
 		{
+			base.Update();
 			if (this._stopMovement || this.IsStunned || this.StopToMove || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
