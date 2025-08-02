@@ -30,7 +30,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(false);
 		}
-		private void Update()
+		private new void Update()
 		{
 			if (this._stopGenerate)
 				return;
