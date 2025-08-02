@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static GuwbaAstral _instance;
 		private GuwbaHudHandler _guwbaHudHandler;
-		private GuwbaAttackDamager[] _GuwbaAttackDamagers;
+		private GuwbaDamageAttacker[] _guwbaDamageAttackers;
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
@@ -98,10 +98,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._guwbaHudHandler = Instantiate(this._guwbaHudHandlerObject, this.transform);
-			this._GuwbaAttackDamagers = this.GetComponentsInChildren<GuwbaAttackDamager>(true);
+			this._guwbaDamageAttackers = this.GetComponentsInChildren<GuwbaDamageAttacker>(true);
 			this.transform.right = this._turnLeft ? Vector2.left : Vector2.right;
-			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
-				GuwbaAttackDamager.Attack += this.Attack;
+			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
+				GuwbaDamageAttacker.Attack += this.Attack;
 			this._sender.SetStateForm(StateForm.Disable);
 			SaveController.Load(out SaveFile saveFile);
 			this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
@@ -117,10 +117,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			this.StopAllCoroutines();
-			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
+			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
 			{
-				GuwbaAttackDamager.Alpha = 1f;
-				GuwbaAttackDamager.Attack -= this.Attack;
+				GuwbaDamageAttacker.Alpha = 1f;
+				GuwbaDamageAttacker.Attack -= this.Attack;
 			}
 			Sender.Exclude(this);
 		}
@@ -262,7 +262,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<GuwbaAttackDamager, IDamageable> Attack => (attackDamager, damageable) =>
+		private UnityAction<GuwbaDamageAttacker, IDamageable> Attack => (attackDamager, damageable) =>
 		{
 			if (damageable.Damage(attackDamager.AttackDamage))
 			{
@@ -397,15 +397,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				while (this._isDamaged)
 				{
-					foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
-						GuwbaAttackDamager.Alpha = GuwbaAttackDamager.Alpha >= 1f ? this._invencibilityValue : 1f;
+					foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
+						GuwbaDamageAttacker.Alpha = GuwbaDamageAttacker.Alpha >= 1f ? this._invencibilityValue : 1f;
 					yield return new WaitTime(this, this._timeStep);
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
 			this._isDamaged = false;
-			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
-				GuwbaAttackDamager.Alpha = 1f;
+			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
+				GuwbaDamageAttacker.Alpha = 1f;
 		}
 		private void OnCollision()
 		{
@@ -450,8 +450,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
 				this.StopAllCoroutines();
-				foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
-					GuwbaAttackDamager.Alpha = 1f;
+				foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
+					GuwbaDamageAttacker.Alpha = 1f;
 				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
