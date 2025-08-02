@@ -12,25 +12,31 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected Collider2D _collider;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
-		protected short _movementSide = 1;
+		private float _armorResistance = 0f;
 		private float _stunTimer = 0f;
+		protected short _movementSide = 1;
+		protected bool _stopMovement = false;
 		[Header("Enemy Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
-		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private float _stunResistance;
+		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private float _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
-		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopMovement;
+		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopToMove;
 		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
-		[SerializeField, Tooltip("The amount of time this enemy will be stunned after recover.")] private float _stunnedTime;
+		[SerializeField, Tooltip("The amount of strength this enemy have to stun.")] private float _stunStrength;
+		[SerializeField, Tooltip("The amount of time this enemy will stun.")] private float _stunTime;
+		[SerializeField, Tooltip("The amount of time this enemy will be stunned when armor be broken.")] private float _stunnedTime;
+		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
+		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
+		protected bool StopToMove => this._stopToMove;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
-		public float StunResistance => this._stunResistance;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -39,6 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
+			this._armorResistance = this._hitResistance;
 			this._movementSide = (short)(this._invertMovementSide ? -1 : 1);
 			if (this._fadeOverTime)
 				Destroy(this.gameObject, this._timeToFadeAway);
@@ -69,18 +76,18 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this.IsStunned)
 			{
-				this._stunTimer += Time.deltaTime;
-				if (this._stunTimer >= this._stunnedTime)
-				{
+				this._stunTimer -= Time.deltaTime;
+				if (this._stunTimer <= 0f)
 					this.IsStunned = false;
-					this._stunTimer = 0f;
-				}
 			}
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDamageable>(out var damageable))
-				damageable.Damage(this._damage);
+			if (collisionObject.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._damage))
+			{
+				damageable.Stun(this._stunStrength, this._stunTime);
+				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
+			}
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
@@ -90,8 +97,19 @@ namespace GuwbaPrimeAdventure.Enemy
 				return false;
 			if ((this._vitality -= (short)damage) <= 0f)
 				Destroy(this.gameObject);
-			this.IsStunned = true;
 			return true;
+		}
+		public void Stun(float stunStength, float stunTime)
+		{
+			if (this.IsStunned)
+				return;
+			this.IsStunned = true;
+			this._stunTimer = stunTime;
+			if ((this._armorResistance -= stunStength) <= 0f)
+			{
+				this._stunTimer = this._stunnedTime;
+				this._armorResistance = this._hitResistance;
+			}
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
