@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class FlyingEnemy : EnemyController, IConnector
 	{
+		private readonly Sender _sender = Sender.Create();
 		private Vector2 _pointOrigin = new();
 		private bool _normal = true;
 		private ushort _pointIndex = 0;
@@ -14,7 +15,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("How far this enemy detect any target.")] private float _radiusDetection;
 		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
 		[SerializeField, Tooltip("The time this enemy stay alive during the endless pursue.")] private float _fadeTime;
-		[SerializeField, Tooltip("If this enemy will stop when hit a distance from the target.")] private bool _stopOnTarget;
+		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
+		[SerializeField, Tooltip("Will become invencible while dashing upon the target.\nRequires: Defender Enemy")]
+		private bool _invencibleDash;
+		[SerializeField, Tooltip("If this enemy will dash upon the target.")] private bool _dashUponTarget;
+		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] private bool _stopToShoot;
 		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
 		[Header("Trail Stats")]
 		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
@@ -26,6 +31,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetStateForm(StateForm.Action);
 			Sender.Include(this);
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
@@ -37,8 +44,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement || this.IsStunned)
+			if (this._stopMovement || this.IsStunned || this.StopToMove)
+			{
+				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
+			}
 			if (this._target)
 			{
 				this._rigidybody.linearVelocity = (this._target.transform.position - this.transform.position).normalized * this._movementSpeed;
@@ -80,14 +90,18 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 direction = (targetPoint - (Vector2)this.transform.position).normalized;
 				float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90f;
 				direction = Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up;
+				float upedSpeed = this._movementSpeed + this._increasedSpeed;
 				if (this._justHorizontal)
-					this._rigidybody.linearVelocityX = direction.x * this._movementSpeed;
+					this._rigidybody.linearVelocityX = this._dashUponTarget ? direction.x * upedSpeed : direction.x * this._movementSpeed;
 				else if (this._justVertical)
-					this._rigidybody.linearVelocityY = direction.y * this._movementSpeed;
+					this._rigidybody.linearVelocityY = this._dashUponTarget ? direction.y * upedSpeed : direction.y * this._movementSpeed;
 				else
-					this._rigidybody.linearVelocity = direction * this._movementSpeed;
-				if (this._stopOnTarget && Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance)
-					this._rigidybody.linearVelocity = Vector2.zero;
+					this._rigidybody.linearVelocity = this._dashUponTarget ? direction * upedSpeed : direction * this._movementSpeed;
+				if (this._stopToShoot && Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance)
+				{
+					this._stopMovement = true;
+					this._sender.Send();
+				}
 			}
 			else if ((Vector2)this.transform.position != this._pointOrigin)
 			{
