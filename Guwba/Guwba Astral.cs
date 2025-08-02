@@ -43,6 +43,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
 		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
+		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
 		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaHudHandler _guwbaHudHandlerObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
@@ -84,7 +85,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
-		public ushort Health => (ushort)this._vitality;
+		public float Resistance => this._stunResistance;
 		private new void Awake()
 		{
 			base.Awake();
@@ -469,7 +470,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.StartCoroutine(this.Invencibility());
 			return true;
 		}
-		public void Stun(Vector2 direction, float strength) => this._rigidbody.AddForce(direction * strength, ForceMode2D.Impulse);
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
