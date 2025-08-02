@@ -10,21 +10,19 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 	{
 		private bool _blockDamage = false;
 		private bool _useDestructuion = false;
+		private bool _isStunned = false;
+		private float _armorResistance = 0f;
+		private float _stunTimer = 0f;
 		[Header("Weak Boss")]
 		[SerializeField, Tooltip("The vitality of the main boss.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
 		[SerializeField, Tooltip("The amount of time of wait to deal damage in the boss after damaging it.")] private float _timeToDamage;
-		[SerializeField, Tooltip("The amount of stun that this boss can resists.")] private float _stunResistance;
+		[SerializeField, Tooltip("The amount of stun that this boss can resists.")] private float _hitResistance;
+		[SerializeField, Tooltip("The amount of time this boss will be stunned when armor be broken.")] private float _stunnedTime;
 		[SerializeField, Tooltip("The index to a event to a boss make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will destroy the main boss after it's destruction.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this boss will be saved as already existent object.")] private bool _saveOnSpecifics;
-		public float StunResistance => this._stunResistance;
-		private new void Awake()
-		{
-			base.Awake();
-			this._sender.SetStateForm(StateForm.Action);
-		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
@@ -38,6 +36,20 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				this._sender.SetStateForm(StateForm.Disable);
 				this._sender.SetToggle(true);
 				this._sender.Send();
+			}
+		}
+		private void Update()
+		{
+			if (this._isStunned)
+			{
+				this._stunTimer -= Time.deltaTime;
+				if (this._stunTimer <= 0f)
+				{
+					this._isStunned = false;
+					this._sender.SetStateForm(StateForm.State);
+					this._sender.SetToggle(false);
+					this._sender.Send();
+				}
 			}
 		}
 		public bool Damage(ushort damage)
@@ -55,11 +67,15 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				if (this._reactToDamage)
 					if (this._hasIndex)
 					{
+						this._sender.SetStateForm(StateForm.Action);
 						this._sender.SetNumber(this._indexEvent);
 						this._sender.Send();
 					}
 					else
+					{
+						this._sender.SetStateForm(StateForm.Action);
 						this._sender.Send();
+					}
 				if (this._vitality <= 0)
 				{
 					this._useDestructuion = true;
@@ -68,6 +84,21 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				return true;
 			}
 			return false;
+		}
+		public void Stun(float stunStength, float stunTime)
+		{
+			if (this._isStunned)
+				return;
+			this._isStunned = true;
+			this._stunTimer = stunTime;
+			if ((this._armorResistance -= stunStength) <= 0f)
+			{
+				this._stunTimer = this._stunnedTime;
+				this._armorResistance = this._hitResistance;
+			}
+			this._sender.SetStateForm(StateForm.State);
+			this._sender.SetToggle(false);
+			this._sender.Send();
 		}
 	};
 };
