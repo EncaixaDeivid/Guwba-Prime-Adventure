@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IDamageable, IConnector
+	internal abstract class EnemyController : StateController, IConnector, IDamageable
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
@@ -13,10 +13,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		protected short _movementSide = 1;
+		private float _stunTimer = 0f;
 		[Header("Enemy Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
+		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private float _stunResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
 		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopMovement;
@@ -24,9 +26,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
+		[SerializeField, Tooltip("The amount of time this enemy will be stunned after recover.")] private float _stunnedTime;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
-		public ushort Health => (ushort)this._vitality;
+		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
+		public float StunResistance => this._stunResistance;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -61,6 +65,18 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.linearVelocity = Vector2.zero;
 		}
+		private void Update()
+		{
+			if (this.IsStunned)
+			{
+				this._stunTimer += Time.deltaTime;
+				if (this._stunTimer >= this._stunnedTime)
+				{
+					this.IsStunned = false;
+					this._stunTimer = 0f;
+				}
+			}
+		}
 		private void OnTrigger(GameObject collisionObject)
 		{
 			if (collisionObject.TryGetComponent<IDamageable>(out var damageable))
@@ -72,8 +88,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._noDamage)
 				return false;
-			if ((this._vitality -= (short)damage) <= 0)
+			if ((this._vitality -= (short)damage) <= 0f)
 				Destroy(this.gameObject);
+			this.IsStunned = true;
 			return true;
 		}
 		public void Receive(DataConnection data, object additionalData)
