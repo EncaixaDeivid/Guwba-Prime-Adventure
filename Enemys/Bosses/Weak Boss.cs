@@ -47,7 +47,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				{
 					this._isStunned = false;
 					this._sender.SetStateForm(StateForm.State);
-					this._sender.SetToggle(false);
+					this._sender.SetToggle(true);
 					this._sender.Send();
 				}
 			}
