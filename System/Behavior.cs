@@ -3,8 +3,8 @@ namespace GuwbaPrimeAdventure
 {
 	public interface IDamageable
 	{
-		public float StunResistance { get; }
 		public bool Damage(ushort damage);
+		public void Stun(float stunStength, float stunTime);
 	};
 	public interface IInteractable
 	{
