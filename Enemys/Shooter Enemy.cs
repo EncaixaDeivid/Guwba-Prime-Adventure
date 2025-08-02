@@ -93,7 +93,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopMovement)
+			if (this._stopMovement || this.IsStunned)
 				return;
 			if (this._shootInterval > 0f)
 				this._shootInterval -= Time.deltaTime;
