@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Guwba
 	{
 		private static GuwbaAstral _instance;
 		private GuwbaHudHandler _guwbaHudHandler;
-		private GuwbaDamagerAttack[] _guwbaDamagerAttacks;
+		private GuwbaAttackDamager[] _GuwbaAttackDamagers;
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
@@ -49,8 +49,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
-		[SerializeField, Tooltip("The amount of time to stop the game when hit is taken.")] private float _hitStopTime;
-		[SerializeField, Tooltip("The amount of time to slow the game when hit is taken.")] private float _hitStopSlow;
 		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
@@ -82,8 +80,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[Header("Attack")]
-		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTimeAttack;
-		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTimeAttack;
+		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
+		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		public ushort Health => (ushort)this._vitality;
@@ -100,10 +98,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._guwbaHudHandler = Instantiate(this._guwbaHudHandlerObject, this.transform);
-			this._guwbaDamagerAttacks = this.GetComponentsInChildren<GuwbaDamagerAttack>(true);
+			this._GuwbaAttackDamagers = this.GetComponentsInChildren<GuwbaAttackDamager>(true);
 			this.transform.right = this._turnLeft ? Vector2.left : Vector2.right;
-			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
-				guwbaDamagerAttack.Attack += this.Attack;
+			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
+				GuwbaAttackDamager.Attack += this.Attack;
 			this._sender.SetStateForm(StateForm.Disable);
 			SaveController.Load(out SaveFile saveFile);
 			this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
@@ -119,10 +117,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			this.StopAllCoroutines();
-			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
+			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
 			{
-				guwbaDamagerAttack.Alpha = 1f;
-				guwbaDamagerAttack.Attack -= this.Attack;
+				GuwbaAttackDamager.Alpha = 1f;
+				GuwbaAttackDamager.Attack -= this.Attack;
 			}
 			Sender.Exclude(this);
 		}
@@ -264,11 +262,12 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<GuwbaDamagerAttack, IDamageable> Attack => (damagerAttack, damageable) =>
+		private UnityAction<GuwbaAttackDamager, IDamageable> Attack => (attackDamager, damageable) =>
 		{
-			if (damageable.Damage(damagerAttack.AttackDamage))
+			if (damageable.Damage(attackDamager.AttackDamage))
 			{
-				EffectsController.SetHitStop(this._hitStopTimeAttack, this._hitSlowTimeAttack);
+				Vector2 stunDirection = ((damageable as StateController).transform.position - attackDamager.transform.position).normalized;
+				EffectsController.Stun(damageable, stunDirection, attackDamager.StunStrength, this._hitStopTime, this._hitSlowTime);
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
 				{
 					this._recoverVitality = 0;
@@ -398,15 +397,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				while (this._isDamaged)
 				{
-					foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
-						guwbaDamagerAttack.Alpha = guwbaDamagerAttack.Alpha >= 1f ? this._invencibilityValue : 1f;
+					foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
+						GuwbaAttackDamager.Alpha = GuwbaAttackDamager.Alpha >= 1f ? this._invencibilityValue : 1f;
 					yield return new WaitTime(this, this._timeStep);
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
 			this._isDamaged = false;
-			foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
-				guwbaDamagerAttack.Alpha = 1f;
+			foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
+				GuwbaAttackDamager.Alpha = 1f;
 		}
 		private void OnCollision()
 		{
@@ -451,8 +450,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
 				this.StopAllCoroutines();
-				foreach (GuwbaDamagerAttack guwbaDamagerAttack in this._guwbaDamagerAttacks)
-					guwbaDamagerAttack.Alpha = 1f;
+				foreach (GuwbaAttackDamager GuwbaAttackDamager in this._GuwbaAttackDamagers)
+					GuwbaAttackDamager.Alpha = 1f;
 				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
@@ -467,10 +466,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._sender.Send();
 				return true;
 			}
-			EffectsController.SetHitStop(this._hitStopTime, this._hitStopSlow);
 			this.StartCoroutine(this.Invencibility());
 			return true;
 		}
+		public void Stun(Vector2 direction, float strength) => this._rigidbody.AddForce(direction * strength, ForceMode2D.Impulse);
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
