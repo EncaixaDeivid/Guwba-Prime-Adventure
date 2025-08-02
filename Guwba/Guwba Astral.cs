@@ -43,7 +43,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
 		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
-		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
 		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaHudHandler _guwbaHudHandlerObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
@@ -61,11 +60,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attackCombo;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
-		[Header("Colliders Checkers")]
+		[Header("Physics Stats")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
@@ -85,7 +85,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
-		public float Resistance => this._stunResistance;
+		public float StunResistance => this._stunResistance;
 		private new void Awake()
 		{
 			base.Awake();
