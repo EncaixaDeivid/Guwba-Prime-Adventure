@@ -3,13 +3,15 @@ using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Collider2D))]
-	internal sealed class GuwbaDamagerAttack : StateController
+	internal sealed class GuwbaAttackDamager : StateController
 	{
 		private SpriteRenderer _spriteRenderer;
-		[Header("Stat")]
+		[Header("Stats")]
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
-		internal UnityAction<GuwbaDamagerAttack, IDamageable> Attack { get; set; }
+		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _stunStrength;
+		internal UnityAction<GuwbaAttackDamager, IDamageable> Attack { get; set; }
 		internal ushort AttackDamage => this._attackDamage;
+		internal ushort StunStrength => this._stunStrength;
 		internal float Alpha { get => this._spriteRenderer.color.a; set => this._spriteRenderer.color = new(1f, 1f, 1f, value); }
 		private new void Awake()
 		{
