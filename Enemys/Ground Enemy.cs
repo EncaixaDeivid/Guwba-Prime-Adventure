@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void Update()
+		private new void Update()
 		{
 			if (this._stopMovement || this.IsStunned || this.StopToMove)
 				return;
