@@ -37,7 +37,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashActive = false;
-		private bool _attackWaiter = false;
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
@@ -167,6 +166,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.started += this.Movement;
 			this._inputController.Commands.Movement.performed += this.Movement;
 			this._inputController.Commands.Movement.canceled += this.Movement;
+			this._inputController.Commands.AttackUse.started += this.AttackUse;
 			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
 			this._inputController.Commands.Interaction.started += this.Interaction;
 			this._inputController.Commands.Movement.Enable();
@@ -178,6 +178,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Movement.started -= this.Movement;
 			this._inputController.Commands.Movement.performed -= this.Movement;
 			this._inputController.Commands.Movement.canceled -= this.Movement;
+			this._inputController.Commands.AttackUse.started -= this.AttackUse;
 			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
 			this._inputController.Commands.Interaction.started -= this.Interaction;
 			this._inputController.Commands.Movement.Disable();
@@ -245,25 +246,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
-			this._attackUsage = true;
-			if (this._dashActive || this._attackWaiter)
-			{
-				this._attackUsage = false;
+			if (this._dashActive)
 				return;
-			}
-			this.StartCoroutine(AttackWaiter());
-			IEnumerator AttackWaiter()
-			{
-				this._attackWaiter = true;
-				bool comboAttack = this._comboAttackBuffer;
-				yield return new WaitWhile(() => this._comboAttackBuffer);
-				this._attackWaiter = false;
-				this._attackUsage = false;
-				if (comboAttack)
-					this._animator.SetTrigger(this._attackCombo);
-				else
-					this._animator.SetTrigger(this._attack);
-			}
+			this._attackUsage = true;
+			if (attackAction.started && !this._attackUsage)
+				this._animator.SetTrigger(this._attack);
+			if (attackAction.canceled && this._comboAttackBuffer)
+				this._animator.SetTrigger(this._attackCombo);
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
 		{
