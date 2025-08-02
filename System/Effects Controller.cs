@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure
 	{
 		private static EffectsController _instance;
 		private List<Light2DBase> _lightsStack;
-		private bool _canHitStop = true;
+		private bool _canStun = true;
 		[SerializeField, Tooltip("The renderer of the image.")] private ImageRenderer _imageRenderer;
 		private new void Awake()
 		{
@@ -22,46 +22,56 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			this._lightsStack = new List<Light2DBase>() { this.GetComponent<Light2DBase>() };
 		}
-		public static void SetHitStop(float stopTime, float slowTime)
+		private void PrivateStun(IDamageable damageable, Vector2 stunDirection, float stunStrength, float stopTime, float slowTime)
 		{
-			if (_instance._canHitStop)
-				_instance.StartCoroutine(HitStop());
+			if (this._canStun)
+			{
+				this.StartCoroutine(HitStop());
+				if (damageable != null && (damageable as StateController).TryGetComponent<Rigidbody2D>(out var rigidbody))
+					rigidbody.AddForce(stunDirection * stunStrength, ForceMode2D.Impulse);
+			}
 			IEnumerator HitStop()
 			{
-				_instance._canHitStop = false;
+				this._canStun = false;
 				Time.timeScale = slowTime;
 				yield return new WaitForSecondsRealtime(stopTime);
-				_instance._canHitStop = true;
+				this._canStun = true;
 				Time.timeScale = 1f;
 			}
 		}
-		public static void OnGlobalLight(Light2DBase globalLight)
+		private void PrivateOnGlobalLight(Light2DBase globalLight)
 		{
-			if (_instance._lightsStack.Contains(globalLight))
+			if (this._lightsStack.Contains(globalLight))
 				return;
-			foreach (Light2DBase light in _instance._lightsStack)
+			foreach (Light2DBase light in this._lightsStack)
 				light.enabled = false;
 			globalLight.enabled = true;
-			_instance._lightsStack.Add(globalLight);
+			this._lightsStack.Add(globalLight);
 		}
-		public static void OffGlobalLight(Light2DBase globalLight)
+		private void PrivateOffGlobalLight(Light2DBase globalLight)
 		{
-			if (!_instance._lightsStack.Contains(globalLight))
+			if (!this._lightsStack.Contains(globalLight))
 				return;
-			foreach (Light2DBase light in _instance._lightsStack)
+			foreach (Light2DBase light in this._lightsStack)
 				light.enabled = false;
-			_instance._lightsStack.Remove(globalLight);
-			_instance._lightsStack[^1].enabled = true;
+			this._lightsStack.Remove(globalLight);
+			this._lightsStack[^1].enabled = true;
 		}
-		public static IImagePool CreateImageRenderer<Components>(Components components) where Components : class, IImageComponents
+		private IImagePool PrivateCreateImageRenderer<Components>(Components components) where Components : class, IImageComponents
 		{
 			MonoBehaviour rendererObject = components as MonoBehaviour;
-			ImageRenderer image = Instantiate(_instance._imageRenderer);
+			ImageRenderer image = Instantiate(this._imageRenderer);
 			image.transform.SetParent(rendererObject.transform, false);
 			image.transform.localPosition = components.ImageOffset;
 			SpriteRenderer spriteRenderer = image.GetComponent<SpriteRenderer>();
 			spriteRenderer.sprite = components.Image;
 			return image;
 		}
+		public static void Stun(IDamageable damageable, Vector2 stunDirection, float stunStrength, float stopTime, float slowTime) =>
+			_instance.PrivateStun(damageable, stunDirection, stunStrength, stopTime, slowTime);
+		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateOnGlobalLight(globalLight);
+		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateOffGlobalLight(globalLight);
+		public static IImagePool CreateImageRenderer<Components>(Components components) where Components : class, IImageComponents =>
+			_instance.PrivateCreateImageRenderer(components);
 	};
 };
