@@ -6,12 +6,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		[Header("Hit Activator")]
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
-		public float StunResistance => 0f;
 		public bool Damage(ushort damage)
 		{
 			if (damage >= this._biggerDamage && this.Usable)
 				this.Activation();
 			return damage >= this._biggerDamage && this.Usable;
 		}
+		public void Stun(float stunStength, float stunTime) { }
 	};
 };
