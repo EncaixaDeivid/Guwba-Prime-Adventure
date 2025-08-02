@@ -13,7 +13,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
 		[SerializeField, Tooltip("If this object will saved on destruction or not.")] private bool _saveOnDestruction;
-		public float StunResistance => 0f;
 		private new void Awake()
 		{
 			base.Awake();
@@ -47,6 +46,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				Destroy(this.gameObject);
 			}
 		}
+		private void OnCollisionEnter2D(Collision2D collision) => this.DestroyOnCollision();
+		private void OnTriggerEnter2D(Collider2D collision) => this.DestroyOnCollision();
 		public bool Damage(ushort damage)
 		{
 			if (this._vitality <= 0f)
@@ -54,16 +55,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (damage < this._biggerDamage)
 				return false;
 			this._vitality -= (short)damage;
-			if(this._vitality <= 0f)
+			if (this._vitality <= 0f)
 			{
-				if(this._hiddenObject)
+				if (this._hiddenObject)
 					Instantiate(this._hiddenObject, this.transform.position, this._hiddenObject.transform.rotation);
 				this.SaveObject();
 				Destroy(this.gameObject);
 			}
 			return true;
 		}
-		private void OnCollisionEnter2D(Collision2D collision) => this.DestroyOnCollision();
-		private void OnTriggerEnter2D(Collider2D collision) => this.DestroyOnCollision();
+		public void Stun(float stunStength, float stunTime) { }
 	};
 };
