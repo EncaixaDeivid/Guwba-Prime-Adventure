@@ -37,7 +37,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement)
+			if (this._stopMovement || this.IsStunned)
 				return;
 			if (this._target)
 			{
