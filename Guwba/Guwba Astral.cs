@@ -1,8 +1,8 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
-using UnityEngine.Events;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -49,6 +49,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
+		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
+		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
 		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
@@ -59,13 +61,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attackCombo;
+		[SerializeField, Tooltip("Animation parameter.")] private string _stun;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[Header("Physics Stats")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
@@ -83,9 +85,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, Tooltip("If Guwba have is attacking during in the moment.")] private bool _attackUsageBuffer;
+		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
+		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
-		public float StunResistance => this._stunResistance;
 		private new void Awake()
 		{
 			base.Awake();
@@ -101,8 +103,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._guwbaHudHandler = Instantiate(this._guwbaHudHandlerObject, this.transform);
 			this._guwbaDamageAttackers = this.GetComponentsInChildren<GuwbaDamageAttacker>(true);
 			this.transform.right = this._turnLeft ? Vector2.left : Vector2.right;
-			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
-				GuwbaDamageAttacker.Attack += this.Attack;
+			foreach (GuwbaDamageAttacker guwbaDamageAttacker in this._guwbaDamageAttackers)
+				guwbaDamageAttacker.SetAttack(this.Attack);
 			this._sender.SetStateForm(StateForm.Disable);
 			SaveController.Load(out SaveFile saveFile);
 			this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
@@ -118,10 +120,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			this.StopAllCoroutines();
-			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
+			foreach (GuwbaDamageAttacker guwbaDamageAttacker in this._guwbaDamageAttackers)
 			{
-				GuwbaDamageAttacker.Alpha = 1f;
-				GuwbaDamageAttacker.Attack -= this.Attack;
+				guwbaDamageAttacker.Alpha = 1f;
+				guwbaDamageAttacker.UnsetAttack(this.Attack);
 			}
 			Sender.Exclude(this);
 		}
@@ -133,17 +135,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._guwbaHudHandler.RootElement.style.display = DisplayStyle.None;
 			else
 				this._guwbaHudHandler.RootElement.style.display = DisplayStyle.Flex;
-			this._inputController = new InputController();
-			this._inputController.Commands.Movement.started += this.Movement;
-			this._inputController.Commands.Movement.performed += this.Movement;
-			this._inputController.Commands.Movement.canceled += this.Movement;
-			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
-			this._inputController.Commands.Interaction.started += this.Interaction;
-			this._inputController.Commands.Movement.Enable();
-			this._inputController.Commands.AttackUse.Enable();
-			this._inputController.Commands.Interaction.Enable();
 			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._walkSpeed, this._dashActive ? -1f : 1f);
+			this._animator.SetFloat(this._walkSpeed, 1f);
+			this.EnableCommands();
 			if (this._dashActive)
 				this._dashMovement = this._guardDashMovement;
 			this._rigidbody.gravityScale = this._gravityScale;
@@ -154,17 +148,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!_instance || _instance != this)
 				return;
 			this._guwbaHudHandler.RootElement.style.display = DisplayStyle.None;
-			this._inputController.Commands.Movement.started -= this.Movement;
-			this._inputController.Commands.Movement.performed -= this.Movement;
-			this._inputController.Commands.Movement.canceled -= this.Movement;
-			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
-			this._inputController.Commands.Interaction.started -= this.Interaction;
-			this._inputController.Commands.Movement.Disable();
-			this._inputController.Commands.AttackUse.Disable();
-			this._inputController.Commands.Interaction.Disable();
-			this._inputController.Dispose();
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
+			this.DisableCommands();
 			this._movementAction = 0f;
 			if (this._dashActive)
 			{
@@ -174,6 +160,30 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._yMovement = this._rigidbody.linearVelocityY;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
+		}
+		private void EnableCommands()
+		{
+			this._inputController = new InputController();
+			this._inputController.Commands.Movement.started += this.Movement;
+			this._inputController.Commands.Movement.performed += this.Movement;
+			this._inputController.Commands.Movement.canceled += this.Movement;
+			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
+			this._inputController.Commands.Interaction.started += this.Interaction;
+			this._inputController.Commands.Movement.Enable();
+			this._inputController.Commands.AttackUse.Enable();
+			this._inputController.Commands.Interaction.Enable();
+		}
+		private void DisableCommands()
+		{
+			this._inputController.Commands.Movement.started -= this.Movement;
+			this._inputController.Commands.Movement.performed -= this.Movement;
+			this._inputController.Commands.Movement.canceled -= this.Movement;
+			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
+			this._inputController.Commands.Interaction.started -= this.Interaction;
+			this._inputController.Commands.Movement.Disable();
+			this._inputController.Commands.AttackUse.Disable();
+			this._inputController.Commands.Interaction.Disable();
+			this._inputController.Dispose();
 		}
 		private Action<InputAction.CallbackContext> Movement => movementAction =>
 		{
@@ -185,7 +195,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = -1f;
 			if (movementValue.y > 0.5f)
 				this._lastJumpTime = this._jumpBufferTime;
-			bool valid = !this._dashActive && this._isOnGround && !this._attackUsageBuffer;
+			bool valid = !this._dashActive && this._isOnGround && !this._attackUsage;
 			if (this._movementAction != 0f && movementValue.y < -0.5f && valid)
 			{
 				this.StartCoroutine(Dash());
@@ -199,8 +209,9 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._collider.size = this._dashSlideSize;
 					this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
+					bool isActive = true;
 					bool onWall = false;
-					while (this._dashActive || onWall)
+					while (isActive || onWall)
 					{
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovement;
 						Vector2 origin = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
@@ -214,10 +225,10 @@ namespace GuwbaPrimeAdventure.Guwba
 						Vector2 wallOrigin = new(this.transform.position.x, this.transform.position.y + yAxisPoint);
 						Vector2 wallSize = new(this._normalSize.x, this._normalSize.y - this._groundChecker);
 						onWall = Physics2D.BoxCast(wallOrigin, wallSize, angle, this.transform.up, this._groundChecker, this._groundLayerMask);
-						if ((valid || collision || !this._isOnGround) && !onWall)
+						if ((valid || collision || !this._isOnGround || !this._dashActive) && !onWall)
 						{
 							this._invencibility = false;
-							this._animator.SetBool(this._dashSlide, this._dashActive = false);
+							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
 							this._collider.size = this._normalSize;
 							this._collider.offset = Vector2.zero;
 							if (this._isOnGround)
@@ -234,18 +245,23 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
 		{
+			this._attackUsage = true;
 			if (this._dashActive || this._attackWaiter)
+			{
+				this._attackUsage = false;
 				return;
+			}
 			this.StartCoroutine(AttackWaiter());
 			IEnumerator AttackWaiter()
 			{
 				this._attackWaiter = true;
-				bool comboAttack = this._attackUsageBuffer;
+				bool comboAttack = this._comboAttackBuffer;
+				yield return new WaitWhile(() => this._comboAttackBuffer);
+				this._attackWaiter = false;
+				this._attackUsage = false;
 				if (comboAttack)
 					this._animator.SetTrigger(this._attackCombo);
-				yield return new WaitWhile(() => this._attackUsageBuffer);
-				this._attackWaiter = false;
-				if (!comboAttack)
+				else
 					this._animator.SetTrigger(this._attack);
 			}
 		};
@@ -263,12 +279,12 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<GuwbaDamageAttacker, IDamageable> Attack => (attackDamager, damageable) =>
+		private UnityAction<GuwbaDamageAttacker, IDamageable> Attack => (damageAttacker, damageable) =>
 		{
-			if (damageable.Damage(attackDamager.AttackDamage))
+			if (damageable.Damage(damageAttacker.AttackDamage))
 			{
-				Vector2 stunDirection = ((damageable as StateController).transform.position - attackDamager.transform.position).normalized;
-				EffectsController.Stun(damageable, stunDirection, attackDamager.StunStrength, this._hitStopTime, this._hitSlowTime);
+				damageable.Stun(damageAttacker.AttackDamage, damageAttacker.StunTime);
+				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
 				if (this._recoverVitality >= this._guwbaHudHandler.RecoverVitality && this._vitality < this._guwbaHudHandler.Vitality)
 				{
 					this._recoverVitality = 0;
@@ -370,6 +386,11 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 				if (this._movementAction != 0f)
 					this.transform.right = this._movementAction < 0f ? Vector2.left : Vector2.right;
+				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
+				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
+				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
+				bool wallBlock = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayerMask);
+				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
@@ -398,15 +419,15 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				while (this._isDamaged)
 				{
-					foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
-						GuwbaDamageAttacker.Alpha = GuwbaDamageAttacker.Alpha >= 1f ? this._invencibilityValue : 1f;
+					foreach (GuwbaDamageAttacker guwbaDamageAttacker in this._guwbaDamageAttackers)
+						guwbaDamageAttacker.Alpha = guwbaDamageAttacker.Alpha >= 1f ? this._invencibilityValue : 1f;
 					yield return new WaitTime(this, this._timeStep);
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
 			this._isDamaged = false;
-			foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
-				GuwbaDamageAttacker.Alpha = 1f;
+			foreach (GuwbaDamageAttacker guwbaDamageAttacker in this._guwbaDamageAttackers)
+				guwbaDamageAttacker.Alpha = 1f;
 		}
 		private void OnCollision()
 		{
@@ -451,8 +472,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._guwbaHudHandler.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
 				this.StopAllCoroutines();
-				foreach (GuwbaDamageAttacker GuwbaDamageAttacker in this._guwbaDamageAttackers)
-					GuwbaDamageAttacker.Alpha = 1f;
+				foreach (GuwbaDamageAttacker guwbaDamageAttacker in this._guwbaDamageAttackers)
+					guwbaDamageAttacker.Alpha = 1f;
 				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
@@ -469,6 +490,18 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			this.StartCoroutine(this.Invencibility());
 			return true;
+		}
+		public void Stun(float stunStrength, float stunTime)
+		{
+			if (this._stunResistance - stunStrength < 0f)
+				this.StartCoroutine(StunTimer());
+			IEnumerator StunTimer()
+			{
+				this.DisableCommands();
+				this._dashActive = false;
+				yield return new WaitTime(this, stunTime);
+				this.EnableCommands();
+			}
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
