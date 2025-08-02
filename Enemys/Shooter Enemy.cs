@@ -98,6 +98,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private new void Update()
 		{
+			base.Update();
 			if (this._stopMovement || this.IsStunned || this.StopToMove)
 				return;
 			if (this._shootInterval > 0f)
