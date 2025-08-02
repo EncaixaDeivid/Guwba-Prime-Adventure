@@ -248,7 +248,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (this._dashActive)
 				return;
-			this._attackUsage = true;
 			if (attackAction.started && !this._attackUsage)
 				this._animator.SetTrigger(this._attack);
 			if (attackAction.canceled && this._comboAttackBuffer)
