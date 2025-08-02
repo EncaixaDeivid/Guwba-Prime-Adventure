@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class GroundEnemy : EnemyController, IConnector
 	{
 		private readonly Sender _sender = Sender.Create();
+		private bool _faceLook = false;
 		private bool _rotate = true;
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
@@ -16,11 +17,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runTowardsAfter;
-		[SerializeField, Tooltip("Will become invencible while pursuing a target.\nRequires: Defender Enemy")] private bool _invenciblePursue;
+		[SerializeField, Tooltip("Will become invencible while pursuing the target.\nRequires: Defender Enemy")]
+		private bool _invencibleDash;
 		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
 		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
+		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] private bool _stopToShoot;
 		[Header("Crawl Movement")]
 		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
@@ -39,19 +42,18 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
-			if (this._stopMovement || this.IsStunned)
+			if (this._stopMovement || this.IsStunned || this.StopToMove)
 				return;
-			bool faceLook = false;
 			if (this._runFromTarget)
 			{
 				if (this._timeRun > 0f)
 				{
-					this._timeRun -= Time.fixedDeltaTime;
-					faceLook = true;
+					this._timeRun -= Time.deltaTime;
+					this._faceLook = true;
 				}
-				if (this._timeRun <= 0f && faceLook)
+				if (this._timeRun <= 0f && this._faceLook)
 				{
 					if (this._runTowardsAfter && this._runnedTimes >= this._timesToRun)
 					{
@@ -60,9 +62,18 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 					else if (this._runTowardsAfter)
 						this._runnedTimes++;
-					faceLook = false;
+					this._faceLook = false;
 				}
 			}
+		}
+		private void FixedUpdate()
+		{
+			if (this._stopMovement || this.IsStunned || this.StopToMove)
+			{
+				this._rigidybody.linearVelocity = Vector2.zero;
+				return;
+			}
+			this._faceLook = false;
 			if (this._useFaceLook)
 			{
 				Vector2 rayDirection = this._useCrawlMovement ? this.transform.right * this._movementSide : Vector2.right * this._movementSide;
@@ -70,12 +81,12 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDamageable>(out _))
 					{
-						faceLook = true;
+						this._faceLook = true;
 						break;
 					}
-				if (this._invenciblePursue)
+				if (this._invencibleDash)
 				{
-					this._sender.SetToggle(faceLook);
+					this._sender.SetToggle(this._faceLook);
 					this._sender.Send();
 				}
 			}
@@ -93,7 +104,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._blockDistance, this._groundLayer);
 			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
-			if (this._runFromTarget && this._timeRun <= 0f && faceLook)
+			if (this._runFromTarget && this._timeRun <= 0f && this._faceLook)
 			{
 				this._timeRun = this._runOfTime;
 				if (this._runTowards)
@@ -117,14 +128,19 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.deltaTime * this.transform.up;
 				Vector2 normalSpeed = this._movementSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
 				Vector2 upedSpeed = speedIncreased * this._movementSide * (Vector2)this.transform.right + gravity;
-				this._rigidybody.linearVelocity = faceLook ? upedSpeed : normalSpeed;
+				this._rigidybody.linearVelocity = this._faceLook ? upedSpeed : normalSpeed;
 				return;
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer))
 				this._movementSide *= -1;
-			this._rigidybody.linearVelocityX = faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
+			this._rigidybody.linearVelocityX = this._faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
+			if (this._stopToShoot && this._faceLook)
+			{
+				this._stopMovement = true;
+				this._sender.Send();
+			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
