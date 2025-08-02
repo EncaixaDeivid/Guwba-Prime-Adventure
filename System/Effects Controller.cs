@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure
 	{
 		private static EffectsController _instance;
 		private List<Light2DBase> _lightsStack;
-		private bool _canStun = true;
+		private bool _canHitStop = true;
 		[SerializeField, Tooltip("The renderer of the image.")] private ImageRenderer _imageRenderer;
 		private new void Awake()
 		{
@@ -22,25 +22,16 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			this._lightsStack = new List<Light2DBase>() { this.GetComponent<Light2DBase>() };
 		}
-		private void PrivateStun(IDamageable damageable, Vector2 stunDirection, float stunStrength, float stopTime, float slowTime)
+		private void PrvateHitStop(float stopTime, float slowTime)
 		{
-			if (this._canStun)
-			{
+			if (this._canHitStop)
 				this.StartCoroutine(HitStop());
-				if (damageable != null && (damageable as StateController).TryGetComponent<Rigidbody2D>(out var rigidbody))
-				{
-					float strength = stunStrength - damageable.StunResistance * rigidbody.mass;
-					if (strength < 0f)
-						strength = 0f;
-					rigidbody.AddForce(stunDirection * strength, ForceMode2D.Impulse);
-				}
-			}
 			IEnumerator HitStop()
 			{
-				this._canStun = false;
+				this._canHitStop = false;
 				Time.timeScale = slowTime;
 				yield return new WaitForSecondsRealtime(stopTime);
-				this._canStun = true;
+				this._canHitStop = true;
 				Time.timeScale = 1f;
 			}
 		}
@@ -72,8 +63,7 @@ namespace GuwbaPrimeAdventure
 			spriteRenderer.sprite = components.Image;
 			return image;
 		}
-		public static void Stun(IDamageable damageable, Vector2 stunDirection, float stunStrength, float stopTime, float slowTime) =>
-			_instance.PrivateStun(damageable, stunDirection, stunStrength, stopTime, slowTime);
+		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
 		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateOnGlobalLight(globalLight);
 		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateOffGlobalLight(globalLight);
 		public static IImagePool CreateImageRenderer<Components>(Components components) where Components : class, IImageComponents =>
