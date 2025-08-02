@@ -72,7 +72,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.linearVelocity = Vector2.zero;
 		}
-		private void Update()
+		protected void Update()
 		{
 			if (this.IsStunned)
 			{
