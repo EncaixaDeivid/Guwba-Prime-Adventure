@@ -28,7 +28,10 @@ namespace GuwbaPrimeAdventure
 			{
 				this.StartCoroutine(HitStop());
 				if (damageable != null && (damageable as StateController).TryGetComponent<Rigidbody2D>(out var rigidbody))
-					rigidbody.AddForce(stunStrength * rigidbody.mass * stunDirection, ForceMode2D.Impulse);
+				{
+					float strength = stunStrength - damageable.Resistance * rigidbody.mass;
+					rigidbody.AddForce(stunDirection * strength, ForceMode2D.Impulse);
+				}
 			}
 			IEnumerator HitStop()
 			{
