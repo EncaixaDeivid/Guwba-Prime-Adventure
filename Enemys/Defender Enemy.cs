@@ -9,7 +9,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _timeOperation = 0f;
 		[Header("Defender Enemy")]
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
-		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.")] private bool _invencibleStop;
+		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Ground/Flying Enemy")]
+		private bool _invencibleStop;
 		[SerializeField, Tooltip("If this enemy will become invencible when damaged.")] private bool _invencibleDamaged;
 		[SerializeField, Tooltip("If this enemy will use time to become invencible/damageable.")] private bool _useAlternatedTime;
 		[SerializeField, Tooltip("The amount of time the enemy have to become damageable.")] private float _timeToDamageable;
@@ -30,7 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopMovement || this.IsStunned || !this._useAlternatedTime && !this._invencible)
+			if (this._stopMovement || this.IsStunned || this.StopToMove || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
 				this._timeOperation -= Time.deltaTime;
@@ -42,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._timeOperation = this._timeToInvencible;
 					if (this._invencibleStop)
 					{
-						this._sender.SetToggle(false);
+						this._sender.SetToggle(true);
 						this._sender.Send();
 					}
 				}
@@ -50,6 +51,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					this._invencible = true;
 					this._timeOperation = this._timeToDamageable;
+					if (this._invencibleStop)
+					{
+						this._sender.SetToggle(false);
+						this._sender.Send();
+					}
 				}
 			}
 		}
