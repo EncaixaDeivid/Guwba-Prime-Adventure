@@ -45,7 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Update()
 		{
 			base.Update();
-			if (this._stopMovement || this.IsStunned || this.StopToMove)
+			if (this._stopMovement || this.IsStunned || this.DoNotWork)
 				return;
 			if (this._runFromTarget)
 			{
@@ -69,7 +69,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement || this.IsStunned || this.StopToMove)
+			if (this._stopMovement || this.IsStunned || this.DoNotWork)
 			{
 				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
