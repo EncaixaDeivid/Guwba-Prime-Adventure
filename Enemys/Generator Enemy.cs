@@ -33,7 +33,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Update()
 		{
 			base.Update();
-			if (this._stopGenerate)
+			if (this._stopGenerate || this.DoNotWork)
 				return;
 			if (this._continueGeneration)
 			{
