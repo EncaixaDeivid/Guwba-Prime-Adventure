@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Cinemachine;
-using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
@@ -20,7 +19,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of speed that the background will move vertically.")] private float _verticalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount to slow horizontally for each layer that is after the first.")] private float _slowHorizontal;
 		[SerializeField, Tooltip("The amount to slow vertically for each layer that is after the first.")] private float _slowVertical;
-		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
 			if (_instance)
@@ -58,7 +56,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
 			}
 		}
-		private void FixedUpdate()
+		private void Update()
 		{
 			for (ushort i = 0; i < this._backgroundImages.Length; i++)
 			{
