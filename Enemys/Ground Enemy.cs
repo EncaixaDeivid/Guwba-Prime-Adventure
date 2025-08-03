@@ -80,7 +80,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 rayDirection = this._useCrawlMovement ? this.transform.right * this._movementSide : Vector2.right * this._movementSide;
 				float rayDistance = this._faceLookDistance;
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
-					if (ray.collider.TryGetComponent<IDamageable>(out _))
+					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
 						this._faceLook = true;
 						break;
