@@ -3,9 +3,9 @@ using UnityEngine.UIElements;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	internal sealed class GuwbaHudHandler : MonoBehaviour
+	internal sealed class VisualizableGuwba : MonoBehaviour
 	{
-		private static GuwbaHudHandler _instance;
+		private static VisualizableGuwba _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
