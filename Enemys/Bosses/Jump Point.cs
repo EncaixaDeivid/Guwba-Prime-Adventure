@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		{
 			if (this._hasTarget)
 			{
-				if (GuwbaAstral<VisualGuwba>.EqualObject(other.gameObject))
+				if (GuwbaBaseTransform.EqualObject(other.gameObject))
 					this._getTouch.Invoke(this._touchIndex);
 				return;
 			}
