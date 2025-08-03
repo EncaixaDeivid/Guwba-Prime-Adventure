@@ -23,18 +23,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private float _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
-		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _stopToMove;
+		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _doNotWork;
 		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
-		[SerializeField, Tooltip("The amount of strength this enemy have to stun.")] private float _stunStrength;
 		[SerializeField, Tooltip("The amount of time this enemy will stun.")] private float _stunTime;
 		[SerializeField, Tooltip("The amount of time this enemy will be stunned when armor be broken.")] private float _stunnedTime;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
-		protected bool StopToMove => this._stopToMove;
+		protected bool DoNotWork => this._doNotWork;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
 		protected new void Awake()
@@ -85,7 +84,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (collisionObject.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._damage))
 			{
-				damageable.Stun(this._stunStrength, this._stunTime);
+				damageable.Stun(this._damage, this._stunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
 			}
 		}
