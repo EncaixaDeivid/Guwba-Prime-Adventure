@@ -29,12 +29,12 @@ namespace GuwbaPrimeAdventure.Item
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if ((this._isOnCollision = GuwbaDefaultTransform.EqualObject(collision.gameObject)) && this._isActive)
+			if ((this._isOnCollision = GuwbaBaseTransform.EqualObject(collision.gameObject)) && this._isActive)
 				this._imagePool.Pull();
 		}
 		private void OnTriggerExit2D(Collider2D collision)
 		{
-			if (!(this._isOnCollision = !GuwbaDefaultTransform.EqualObject(collision.gameObject)))
+			if (!(this._isOnCollision = !GuwbaBaseTransform.EqualObject(collision.gameObject)))
 				this._imagePool.Push();
 		}
 		public void Receive(DataConnection data, object additionalData)
