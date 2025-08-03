@@ -4,9 +4,9 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	public sealed class GuwbaDefaultTransform : StateController
+	public sealed class GuwbaBaseTransform : StateController
 	{
-		private static GuwbaDefaultTransform _instance;
+		private static GuwbaBaseTransform _instance;
 		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
 		private new void Awake()
 		{
