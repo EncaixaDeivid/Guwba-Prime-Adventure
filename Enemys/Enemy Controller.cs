@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IConnector, IDamageable
+	internal abstract class EnemyController : StateController, IConnector, IDestructible
     {
 		protected SpriteRenderer _spriteRenderer;
 		protected Animator _animator;
@@ -82,7 +82,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDamageable>(out var damageable) && damageable.Damage(this._damage))
+			if (collisionObject.TryGetComponent<IDestructible>(out var damageable) && damageable.Damage(this._damage))
 			{
 				damageable.Stun(this._damage, this._stunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
