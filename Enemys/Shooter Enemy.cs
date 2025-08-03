@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class ShooterEnemy : EnemyController, IConnector, IDamageable
+	internal sealed class ShooterEnemy : EnemyController, IConnector, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _targetDirection;
@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, this._perceptionDistance, this._targetLayerMask);
 				foreach (Collider2D collider in colliders)
-					if (collider.TryGetComponent<IDamageable>(out _))
+					if (collider.TryGetComponent<IDestructible>(out _))
 					{
 						if (Physics2D.Linecast(this.transform.position, collider.transform.position, this._groundLayer))
 							continue;
@@ -58,7 +58,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			else
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, this._perceptionDistance, this._targetLayerMask))
-					if (ray.collider.TryGetComponent<IDamageable>(out _))
+					if (ray.collider.TryGetComponent<IDestructible>(out _))
 						hasTarget = true;
 			if ((hasTarget || this._shootInfinity) && this._shootInterval <= 0f)
 			{
