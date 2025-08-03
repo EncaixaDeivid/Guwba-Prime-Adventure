@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator), typeof(Transitioner))]
 	[RequireComponent(typeof(IInteractable))]
-	internal sealed class WeakBoss : BossController, IDamageable
+	internal sealed class WeakBoss : BossController, IDestructible
 	{
 		private bool _blockDamage = false;
 		private bool _useDestructuion = false;
