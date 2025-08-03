@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	internal sealed class GuwbaAstralMaker : StateController, IConnector, IDamageable
+	internal sealed class GuwbaAstralMaker : StateController, IConnector, IDestructible
 	{
 		private static GuwbaAstralMaker _instance;
 		private VisualizableGuwba _visualizableGuwba;
@@ -267,7 +267,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<DamageableGuwba, IDamageable> Attack => (damageAttacker, damageable) =>
+		private UnityAction<DamageableGuwba, IDestructible> Attack => (damageAttacker, damageable) =>
 		{
 			if (damageable.Damage(damageAttacker.AttackDamage))
 			{
