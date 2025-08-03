@@ -42,13 +42,13 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					randomDirection = Random.Range(-1f, 1f);
 				while (!this.SurfacePerception())
 				{
-					float targetPosition = GuwbaDefaultTransform.Position.x;
+					float targetPosition = GuwbaBaseTransform.Position.x;
 					if (useTarget)
 						targetPosition = otherTarget.x;
 					if (this._randomFollow)
 					{
 						if (randomDirection >= 0f)
-							targetPosition = GuwbaDefaultTransform.Position.x;
+							targetPosition = GuwbaBaseTransform.Position.x;
 						else if (randomDirection < 0f)
 							targetPosition = otherTarget.x;
 					}
