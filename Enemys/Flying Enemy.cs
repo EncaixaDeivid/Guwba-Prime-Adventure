@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement || this.IsStunned || this.StopToMove)
+			if (this._stopMovement || this.IsStunned || this.DoNotWork)
 			{
 				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
@@ -56,7 +56,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (this._endlessPursue)
 			{
-				Vector2 direction = (GuwbaBaseTransform.Position - (Vector2)this.transform.position).normalized;
+				Vector2 direction = (CentralizableGuwba.Position - (Vector2)this.transform.position).normalized;
 				this._rigidybody.linearVelocity = direction * this._movementSpeed;
 				return;
 			}
@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			bool followTarget = false;
 			if (this._targetLayerMask > -1f)
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._radiusDetection, this._targetLayerMask))
-					if (GuwbaBaseTransform.EqualObject(collider.gameObject))
+					if (CentralizableGuwba.EqualObject(collider.gameObject))
 					{
 						targetPoint = collider.transform.position;
 						Vector2 topRight = new(this._collider.bounds.extents.x, this._collider.bounds.extents.y);
