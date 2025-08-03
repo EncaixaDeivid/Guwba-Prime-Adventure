@@ -117,7 +117,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				Vector2 dashOrigin = this.transform.position;
 				Vector2 dashDirection = this.transform.right * this._movementSide;
 				RaycastHit2D[] raycastHits = Physics2D.RaycastAll(dashOrigin, dashDirection, this._rayDistance, this._targetLayerMask);
-				if (GuwbaBaseTransform.EqualObject(raycastHits))
+				if (CentralizableGuwba.EqualObject(raycastHits))
 					this.StartCoroutine(this.Dash());
 			}
 			float xAxisOrigin = (this._collider.bounds.extents.x + this._groundDistance / 2f) * this._movementSide;
@@ -159,7 +159,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 							if (this._useOtherTarget)
 								targetPosition = this._otherTarget;
 							else
-								targetPosition = GuwbaBaseTransform.Position;
+								targetPosition = CentralizableGuwba.Position;
 							this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
 							this.StartCoroutine(this.Dash());
 						}
