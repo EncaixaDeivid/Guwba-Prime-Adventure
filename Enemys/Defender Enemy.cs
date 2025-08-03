@@ -2,7 +2,7 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	internal sealed class DefenderEnemy : EnemyController, IConnector, IDamageable
+	internal sealed class DefenderEnemy : EnemyController, IConnector, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		private bool _invencible = false;
