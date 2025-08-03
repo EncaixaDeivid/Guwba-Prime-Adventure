@@ -3,15 +3,15 @@ using UnityEngine.Events;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Collider2D))]
-	internal sealed class GuwbaDamageAttacker : StateController
+	internal sealed class DamageableGuwba : StateController
 	{
 		private SpriteRenderer _spriteRenderer;
-		private UnityAction<GuwbaDamageAttacker, IDamageable> _attack;
+		private UnityAction<DamageableGuwba, IDamageable> _attack;
 		[Header("Stats")]
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		[SerializeField, Tooltip("The amount of time that this Guwba's attack stun does.")] private float _stunTime;
-		internal void SetAttack(UnityAction<GuwbaDamageAttacker, IDamageable> attack) => this._attack += attack;
-		internal void UnsetAttack(UnityAction<GuwbaDamageAttacker, IDamageable> attack) => this._attack -= attack;
+		internal void SetAttack(UnityAction<DamageableGuwba, IDamageable> attack) => this._attack += attack;
+		internal void UnsetAttack(UnityAction<DamageableGuwba, IDamageable> attack) => this._attack -= attack;
 		internal ushort AttackDamage => this._attackDamage;
 		internal float StunTime => this._stunTime;
 		internal float Alpha { get => this._spriteRenderer.color.a; set => this._spriteRenderer.color = new(1f, 1f, 1f, value); }
