@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace GuwbaPrimeAdventure
 {
-	public interface IDamageable
+	public interface IDestructible
 	{
 		public bool Damage(ushort damage);
 		public void Stun(float stunStength, float stunTime);
