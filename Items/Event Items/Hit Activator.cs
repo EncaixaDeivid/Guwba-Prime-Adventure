@@ -2,7 +2,7 @@ using UnityEngine;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent]
-	internal sealed class HitActivator : Activator, IDamageable
+	internal sealed class HitActivator : Activator, IDestructible
 	{
 		[Header("Hit Activator")]
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
