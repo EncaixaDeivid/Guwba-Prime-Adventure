@@ -80,6 +80,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
 		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
@@ -194,8 +195,14 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (movementValue.y > 0.5f)
+			if (movementValue.y > 0.5f && movementAction.started)
 				this._lastJumpTime = this._jumpBufferTime;
+			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementAction.canceled)
+			{
+				this._isJumping = false;
+				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
+				this._lastJumpTime = 0f;
+			}
 			bool valid = !this._dashActive && this._isOnGround && !this._attackUsage;
 			if (this._movementAction != 0f && movementValue.y < -0.5f && valid)
 			{
