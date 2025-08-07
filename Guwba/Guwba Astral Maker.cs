@@ -85,6 +85,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
+		[SerializeField, Tooltip("The amount of time the recover's charge of the attack will recover.")] private float _recoverRate;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
@@ -195,9 +196,9 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._movementAction = 1f;
 			else if (movementValue.x < 0f)
 				this._movementAction = -1f;
-			if (movementValue.y > 0.5f && movementAction.started)
+			if (movementValue.y > 0.5f)
 				this._lastJumpTime = this._jumpBufferTime;
-			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementAction.canceled)
+			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.5f)
 			{
 				this._isJumping = false;
 				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
@@ -274,38 +275,43 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
-		private UnityAction<DamageableGuwba, IDestructible> Attack => (damageAttacker, damageable) =>
+		private UnityAction<DamageableGuwba, IDestructible> Attack => (damageableGuwba, destructible) =>
 		{
-			if (damageable.Damage(damageAttacker.AttackDamage))
+			if (destructible.Damage(damageableGuwba.AttackDamage))
 			{
-				damageable.Stun(damageAttacker.AttackDamage, damageAttacker.StunTime);
+				destructible.Stun(damageableGuwba.AttackDamage, damageableGuwba.StunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
-				if (this._recoverVitality >= this._visualizableGuwba.RecoverVitality && this._vitality < this._visualizableGuwba.Vitality)
+				this.StartCoroutine(RecoverVitality());
+				IEnumerator RecoverVitality()
 				{
-					this._recoverVitality = 0;
-					for (ushort i = 0; i < this._visualizableGuwba.RecoverVitality; i++)
+					Color backgroundColor = this._visualizableGuwba.BackgroundColor;
+					Color borderColor = this._visualizableGuwba.BorderColor;
+					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
+					for (ushort amount = 0; amount < damageableGuwba.AttackDamage; amount++)
 					{
-						Color missingColor = this._visualizableGuwba.MissingVitalityColor;
-						this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
-					}
-					this._vitality += 1;
-					for (ushort i = 0; i < this._vitality; i++)
-					{
-						Color backgroundColor = this._visualizableGuwba.BackgroundColor;
-						this._visualizableGuwba.VitalityVisual[i].style.backgroundColor = new StyleColor(backgroundColor);
-						this._visualizableGuwba.VitalityVisual[i].style.borderBottomColor = new StyleColor(this._visualizableGuwba.BorderColor);
-						this._visualizableGuwba.VitalityVisual[i].style.borderLeftColor = new StyleColor(this._visualizableGuwba.BorderColor);
-						this._visualizableGuwba.VitalityVisual[i].style.borderRightColor = new StyleColor(this._visualizableGuwba.BorderColor);
-						this._visualizableGuwba.VitalityVisual[i].style.borderTopColor = new StyleColor(this._visualizableGuwba.BorderColor);
-					}
-				}
-				else if (this._recoverVitality < this._visualizableGuwba.RecoverVitality)
-				{
-					this._recoverVitality += 1;
-					for (ushort i = 0; i < this._recoverVitality; i++)
-					{
-						Color borderColor = this._visualizableGuwba.BorderColor;
-						this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
+						if (this._recoverVitality >= this._visualizableGuwba.RecoverVitality && this._vitality < this._visualizableGuwba.Vitality)
+						{
+							this._recoverVitality = 0;
+							for (ushort i = 0; i < this._visualizableGuwba.RecoverVitality; i++)
+								this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
+							this._vitality += 1;
+							for (ushort i = 0; i < this._vitality; i++)
+							{
+
+								this._visualizableGuwba.VitalityVisual[i].style.backgroundColor = new StyleColor(backgroundColor);
+								this._visualizableGuwba.VitalityVisual[i].style.borderBottomColor = new StyleColor(borderColor);
+								this._visualizableGuwba.VitalityVisual[i].style.borderLeftColor = new StyleColor(borderColor);
+								this._visualizableGuwba.VitalityVisual[i].style.borderRightColor = new StyleColor(borderColor);
+								this._visualizableGuwba.VitalityVisual[i].style.borderTopColor = new StyleColor(borderColor);
+							}
+						}
+						else if (this._recoverVitality < this._visualizableGuwba.RecoverVitality)
+						{
+							this._recoverVitality += 1;
+							for (ushort i = 0; i < this._recoverVitality; i++)
+								this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
+						}
+						yield return new WaitTime(this, this._recoverRate);
 					}
 				}
 			}
