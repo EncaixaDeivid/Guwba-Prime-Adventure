@@ -12,15 +12,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected Collider2D _collider;
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
-		private float _armorResistance = 0f;
 		private float _stunTimer = 0f;
 		protected short _movementSide = 1;
+		private short _armorResistance = 0;
 		protected bool _stopMovement = false;
 		[Header("Enemy Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
-		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private float _hitResistance;
+		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private ushort _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
 		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _doNotWork;
@@ -45,7 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
 			this._guardGravityScale = this._rigidybody.gravityScale;
-			this._armorResistance = this._hitResistance;
+			this._armorResistance = (short)this._hitResistance;
 			this._movementSide = (short)(this._invertMovementSide ? -1 : 1);
 			if (this._fadeOverTime)
 				Destroy(this.gameObject, this._timeToFadeAway);
@@ -99,16 +99,16 @@ namespace GuwbaPrimeAdventure.Enemy
 				Destroy(this.gameObject);
 			return true;
 		}
-		public void Stun(float stunStength, float stunTime)
+		public void Stun(ushort stunStength, float stunTime)
 		{
 			if (this.IsStunned)
 				return;
 			this.IsStunned = true;
 			this._stunTimer = stunTime;
-			if ((this._armorResistance -= stunStength) <= 0f)
+			if ((this._armorResistance -= (short)stunStength) <= 0f)
 			{
 				this._stunTimer = this._stunnedTime;
-				this._armorResistance = this._hitResistance;
+				this._armorResistance = (short)this._hitResistance;
 			}
 		}
 		public void Receive(DataConnection data, object additionalData)
