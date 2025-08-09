@@ -3,27 +3,23 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : EnemyController, IConnector
+	internal sealed class GroundEnemy : MovingEnemy, IConnector
 	{
-		private readonly Sender _sender = Sender.Create();
-		private bool _faceLook = false;
 		private bool _rotate = true;
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
 		private float _timeRun = 0f;
+		private float _dashedTime = 0f;
 		[Header("Ground Enemy")]
 		[SerializeField, Tooltip("The distance to check for the block perception.")] private float _blockDistance;
 		[SerializeField, Tooltip("If this enemy will do some action when look to a target.")] private bool _useFaceLook;
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runTowardsAfter;
-		[SerializeField, Tooltip("Will become invencible while pursuing the target.\nRequires: Defender Enemy")]
-		private bool _invencibleDash;
-		[SerializeField, Tooltip("The distance of the face look.")] private ushort _faceLookDistance;
-		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
+		[SerializeField, Tooltip("The distance of the detection of target.")] private ushort _faceLookDistance;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
-		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] private bool _stopToShoot;
+		[SerializeField, Tooltip("The amount of time this enemy will be dashing upon the target.")] private float _timeDashing;
 		[Header("Crawl Movement")]
 		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
 		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
@@ -32,9 +28,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._timeRun = this._timesToRun;
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
-			this._sender.SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(this.gameObject);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -45,6 +38,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Update()
 		{
 			base.Update();
+			if (this._detectionStop && this._stopMovement)
+			{
+				this._stoppedTime += Time.deltaTime;
+				if (this._stoppedTime >= this._stopTime)
+				{
+					this._stoppedTime = 0f;
+					this._stopMovement = false;
+					this._isDashing = true;
+				}
+				return;
+			}
 			if (this._stopMovement || this.IsStunned || this.DoNotWork)
 				return;
 			if (this._runFromTarget)
@@ -52,9 +56,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._timeRun > 0f)
 				{
 					this._timeRun -= Time.deltaTime;
-					this._faceLook = true;
+					this._isDashing = true;
 				}
-				if (this._timeRun <= 0f && this._faceLook)
+				if (this._timeRun <= 0f && this._isDashing)
 				{
 					if (this._runTowardsAfter && this._runnedTimes >= this._timesToRun)
 					{
@@ -63,7 +67,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 					else if (this._runTowardsAfter)
 						this._runnedTimes++;
-					this._faceLook = false;
+					this._isDashing = false;
 				}
 			}
 		}
@@ -74,7 +78,17 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
 			}
-			this._faceLook = false;
+			if (this._isDashing)
+			{
+				this._dashedTime += Time.deltaTime;
+				if (this._dashedTime >= this._timeDashing)
+				{
+					this._dashedTime = 0f;
+					this._isDashing = false;
+				}
+			}
+			else
+				this._detected = false;
 			if (this._useFaceLook)
 			{
 				Vector2 rayDirection = this._useCrawlMovement ? this.transform.right * this._movementSide : Vector2.right * this._movementSide;
@@ -82,16 +96,10 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
-						this._faceLook = true;
+						this._detected = true;
 						break;
 					}
-				if (this._invencibleDash)
-				{
-					this._sender.SetToggle(this._faceLook);
-					this._sender.Send();
-				}
 			}
-			float speedIncreased = this._movementSpeed + this._increasedSpeed;
 			this._spriteRenderer.flipX = this._movementSide < 0f;
 			float xAxisOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this._movementSide;
 			float yAxisOrigin = (this._collider.bounds.extents.y + this._blockDistance / 2f) * this._movementSide;
@@ -105,7 +113,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._blockDistance, this._groundLayer);
 			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
-			if (this._runFromTarget && this._timeRun <= 0f && this._faceLook)
+			if (this._runFromTarget && this._timeRun <= 0f && this._detected)
 			{
 				this._timeRun = this._runOfTime;
 				if (this._runTowards)
@@ -126,22 +134,37 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				if (rayValue)
 					this._rotate = true;
+				if (this._detected && !this._isDashing)
+					if (this._detectionStop)
+					{
+						this._stopMovement = true;
+						if (this._stopToShoot)
+							this._sender.Send();
+						return;
+					}
+					else if (this._shootDetection)
+						this._sender.Send();
 				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.deltaTime * this.transform.up;
 				Vector2 normalSpeed = this._movementSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
-				Vector2 upedSpeed = speedIncreased * this._movementSide * (Vector2)this.transform.right + gravity;
-				this._rigidybody.linearVelocity = this._faceLook ? upedSpeed : normalSpeed;
+				Vector2 upedSpeed = this._dashSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
+				this._rigidybody.linearVelocity = this._detected ? upedSpeed : normalSpeed;
 				return;
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer))
 				this._movementSide *= -1;
-			this._rigidybody.linearVelocityX = this._faceLook ? this._movementSide * speedIncreased : this._movementSpeed * this._movementSide;
-			if (this._stopToShoot && this._faceLook)
-			{
-				this._stopMovement = true;
-				this._sender.Send();
-			}
+			if (this._detected && !this._isDashing)
+				if (this._detectionStop)
+				{
+					this._stopMovement = true;
+					if (this._stopToShoot)
+						this._sender.Send();
+					return;
+				}
+				else if (this._shootDetection)
+					this._sender.Send();
+			this._rigidybody.linearVelocityX = this._detected ? this._movementSide * this._dashSpeed : this._movementSpeed * this._movementSide;
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
