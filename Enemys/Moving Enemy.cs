@@ -1,0 +1,26 @@
+using UnityEngine;
+using GuwbaPrimeAdventure.Connection;
+namespace GuwbaPrimeAdventure.Enemy
+{
+	[DisallowMultipleComponent]
+	internal abstract class MovingEnemy : EnemyController
+	{
+		protected readonly Sender _sender = Sender.Create();
+		protected bool _detected = false;
+		protected bool _isDashing = false;
+		protected float _stoppedTime = 0f;
+		[Header("Moving Enemy")]
+		[SerializeField, Tooltip("If this enemy will stop on detection of the target.")] protected bool _detectionStop;
+		[SerializeField, Tooltip("If this enemy will shoot a projectile on detection.\nRequires: Shooter Enemy")] protected bool _shootDetection;
+		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] protected bool _stopToShoot;
+		[SerializeField, Tooltip("The amount of time this enemy will stop on detection.")] protected float _stopTime;
+		[SerializeField, Tooltip("The amount of speed of the dash.")] protected ushort _dashSpeed;
+		protected new void Awake()
+		{
+			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetAdditionalData(this.gameObject);
+		}
+	};
+};
