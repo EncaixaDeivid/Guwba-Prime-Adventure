@@ -36,6 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected bool DoNotWork => this._doNotWork;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
+		public short Health => this._vitality;
 		protected new void Awake()
 		{
 			base.Awake();
