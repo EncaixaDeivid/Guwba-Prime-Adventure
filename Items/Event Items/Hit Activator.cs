@@ -13,6 +13,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.Activation();
 			return damage >= this._biggerDamage && this.Usable;
 		}
-		public void Stun(float stunStength, float stunTime) { }
+		public void Stun(ushort stunStength, float stunTime) { }
 	};
 };
