@@ -89,6 +89,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public PathConnection PathConnection => PathConnection.Guwba;
+		public short Health => this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
@@ -287,9 +288,10 @@ namespace GuwbaPrimeAdventure.Guwba
 					Color backgroundColor = this._visualizableGuwba.BackgroundColor;
 					Color borderColor = this._visualizableGuwba.BorderColor;
 					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
-					for (ushort amount = 0; amount < damageableGuwba.AttackDamage; amount++)
+					for (ushort amount = 0; amount < damageableGuwba.AttackDamage - Mathf.Abs(destructible.Health); amount++)
 					{
-						if (this._recoverVitality >= this._visualizableGuwba.RecoverVitality && this._vitality < this._visualizableGuwba.Vitality)
+						bool valid = this._vitality < this._visualizableGuwba.Vitality;
+						if (this._recoverVitality >= this._visualizableGuwba.RecoverVitality && valid)
 						{
 							this._recoverVitality = 0;
 							for (ushort i = 0; i < this._visualizableGuwba.RecoverVitality; i++)
@@ -468,7 +470,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			if (this._vitality <= 0f)
 			{
-				this._vitality = 0;
 				SaveController.Load(out SaveFile saveFile);
 				saveFile.lifes -= 1;
 				this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
