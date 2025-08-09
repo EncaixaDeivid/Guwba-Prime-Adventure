@@ -23,6 +23,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will destroy the main boss after it's destruction.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this boss will be saved as already existent object.")] private bool _saveOnSpecifics;
+		public short Health => this._vitality;
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
