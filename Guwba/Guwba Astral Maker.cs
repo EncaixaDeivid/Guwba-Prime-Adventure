@@ -48,8 +48,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
-		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private float _stunResistance;
 		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
+		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private ushort _stunResistance;
 		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
 		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
@@ -493,7 +493,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.StartCoroutine(this.Invencibility());
 			return true;
 		}
-		public void Stun(float stunStrength, float stunTime)
+		public void Stun(ushort stunStrength, float stunTime)
 		{
 			if (this._stunResistance - stunStrength < 0f)
 				this.StartCoroutine(StunTimer());
@@ -519,7 +519,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._visualizableGuwba.VitalityVisual[i].style.borderRightColor = new StyleColor(this._visualizableGuwba.BorderColor);
 					this._visualizableGuwba.VitalityVisual[i].style.borderTopColor = new StyleColor(this._visualizableGuwba.BorderColor);
 				}
-				for (ushort i = 0; i < this._visualizableGuwba.VitalityVisual.Length; i++)
+				for (ushort i = 0; i < this._visualizableGuwba.RecoverVitalityVisual.Length; i++)
 				{
 					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
 					this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
