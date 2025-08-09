@@ -36,20 +36,22 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Update()
 		{
 			base.Update();
-			if (this._detectionStop && this._stopMovement)
+			if (this.IsStunned)
+				return;
+			if (this._detectionStop && this._stopWorking)
 			{
 				this._stoppedTime += Time.deltaTime;
 				if (this._stoppedTime >= this._stopTime)
 				{
 					this._stoppedTime = 0f;
-					this._stopMovement = false;
+					this._stopWorking = false;
 					this._isDashing = true;
 				}
 			}
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopMovement || this.IsStunned || this.DoNotWork)
+			if (this._stopWorking || this.IsStunned)
 				return;
 			if (this._target)
 			{
@@ -81,7 +83,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (!this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= this._targetDistance)
 					if (this._detectionStop)
 					{
-						this._stopMovement = true;
+						this._stopWorking = true;
 						if (this._stopToShoot)
 							this._sender.Send();
 						return;
@@ -130,7 +132,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (additionalData as GameObject != this.gameObject)
 				return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this._stopMovement = !data.ToggleValue.Value;
+				this._stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
