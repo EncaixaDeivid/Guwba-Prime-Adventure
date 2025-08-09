@@ -4,10 +4,10 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class FlyingEnemy : EnemyController, IConnector
+	internal sealed class FlyingEnemy : MovingEnemy, IConnector
 	{
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _pointOrigin = new();
+		private Vector2 _targetPoint = new();
 		private bool _normal = true;
 		private ushort _pointIndex = 0;
 		[Header("Flying Enemy")]
@@ -15,24 +15,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("How far this enemy detect any target.")] private float _radiusDetection;
 		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
 		[SerializeField, Tooltip("The time this enemy stay alive during the endless pursue.")] private float _fadeTime;
-		[SerializeField, Tooltip("The amount of speed to increase.")] private ushort _increasedSpeed;
-		[SerializeField, Tooltip("Will become invencible while dashing upon the target.\nRequires: Defender Enemy")]
-		private bool _invencibleDash;
-		[SerializeField, Tooltip("If this enemy will dash upon the target.")] private bool _dashUponTarget;
-		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] private bool _stopToShoot;
 		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
 		[Header("Trail Stats")]
 		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
-		[SerializeField, Tooltip("The speed that this enemy moves to go back to the original point.")] private float _speedReturn;
-		[SerializeField, Tooltip("If this enemy pursue only in the horizontal.")] private bool _justHorizontal;
-		[SerializeField, Tooltip("If this enemy pursue only in the vertical.")] private bool _justVertical;
+		[SerializeField, Tooltip("The amount of speed that this enemy moves to go back to the original point.")] private float _returnSpeed;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
 		private new void Awake()
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
-			this._sender.SetStateForm(StateForm.Action);
 			Sender.Include(this);
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
@@ -42,75 +33,73 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
+		private new void Update()
+		{
+			base.Update();
+			if (this._detectionStop && this._stopMovement)
+			{
+				this._stoppedTime += Time.deltaTime;
+				if (this._stoppedTime >= this._stopTime)
+				{
+					this._stoppedTime = 0f;
+					this._stopMovement = false;
+					this._isDashing = true;
+				}
+			}
+		}
 		private void FixedUpdate()
 		{
 			if (this._stopMovement || this.IsStunned || this.DoNotWork)
-			{
-				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
-			}
 			if (this._target)
 			{
-				this._rigidybody.linearVelocity = (this._target.transform.position - this.transform.position).normalized * this._movementSpeed;
+				this._targetPoint = this._target.transform.position;
+				float maxDistanceDelta = Time.fixedDeltaTime * this._movementSpeed;
+				this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
 				return;
 			}
 			if (this._endlessPursue)
 			{
-				Vector2 direction = (CentralizableGuwba.Position - (Vector2)this.transform.position).normalized;
-				this._rigidybody.linearVelocity = direction * this._movementSpeed;
+				float maxDistanceDelta = Time.fixedDeltaTime * this._movementSpeed;
+				this.transform.position = Vector2.MoveTowards(this.transform.position, CentralizableGuwba.Position, maxDistanceDelta);
 				return;
 			}
-			Vector2 targetPoint = new();
-			bool followTarget = false;
-			if (this._targetLayerMask > -1f)
+			if (!this._isDashing)
+				this._detected = false;
+			if (this._targetLayerMask > -1f && !this._isDashing)
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._radiusDetection, this._targetLayerMask))
 					if (CentralizableGuwba.EqualObject(collider.gameObject))
 					{
-						targetPoint = collider.transform.position;
-						Vector2 topRight = new(this._collider.bounds.extents.x, this._collider.bounds.extents.y);
-						Vector2 topLeft = new(-this._collider.bounds.extents.x, this._collider.bounds.extents.y);
-						Vector2 bottomRight = new(this._collider.bounds.extents.x, -this._collider.bounds.extents.y);
-						Vector2 bottomLeft = new(-this._collider.bounds.extents.x, -this._collider.bounds.extents.y);
-						Vector2 topRighPosition = (Vector2)this.transform.position + topRight;
-						Vector2 topLeftPosition = (Vector2)this.transform.position + topLeft;
-						Vector2 bottomRightPosition = (Vector2)this.transform.position + bottomRight;
-						Vector2 bottomLeftPosition = (Vector2)this.transform.position + bottomLeft;
-						bool topRightCorner = Physics2D.Linecast(topRighPosition, targetPoint + topRight, this._groundLayer);
-						bool topLeftCorner = Physics2D.Linecast(topLeftPosition, targetPoint + topLeft, this._groundLayer);
-						bool bottomRightCorner = Physics2D.Linecast(bottomRightPosition, targetPoint + bottomRight, this._groundLayer);
-						bool bottomLeftCorner = Physics2D.Linecast(bottomLeftPosition, targetPoint + bottomLeft, this._groundLayer);
-						bool center = Physics2D.Linecast(this.transform.position, targetPoint, this._groundLayer);
-						followTarget = !center && !topRightCorner && !topLeftCorner && !bottomRightCorner && !bottomLeftCorner;
-						if (followTarget)
+						this._targetPoint = collider.transform.position;
+						this._detected = !Physics2D.Linecast(this.transform.position, this._targetPoint, this._groundLayer);
+						if (this._detected)
 							this._spriteRenderer.flipX = collider.transform.position.x < this.transform.position.x;
 						break;
 					}
-			if (followTarget)
+			if (this._detected)
 			{
-				Vector2 direction = (targetPoint - (Vector2)this.transform.position).normalized;
-				float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90f;
-				direction = Quaternion.AngleAxis(angle, Vector3.forward) * Vector2.up;
-				float upedSpeed = this._movementSpeed + this._increasedSpeed;
-				if (this._justHorizontal)
-					this._rigidybody.linearVelocityX = this._dashUponTarget ? direction.x * upedSpeed : direction.x * this._movementSpeed;
-				else if (this._justVertical)
-					this._rigidybody.linearVelocityY = this._dashUponTarget ? direction.y * upedSpeed : direction.y * this._movementSpeed;
-				else
-					this._rigidybody.linearVelocity = this._dashUponTarget ? direction * upedSpeed : direction * this._movementSpeed;
-				if (this._stopToShoot && Vector2.Distance(this.transform.position, targetPoint) <= this._targetDistance)
-				{
-					this._stopMovement = true;
-					this._sender.Send();
-				}
+				if (!this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= this._targetDistance)
+					if (this._detectionStop)
+					{
+						this._stopMovement = true;
+						if (this._stopToShoot)
+							this._sender.Send();
+						return;
+					}
+					else if (this._shootDetection)
+						this._sender.Send();
+				float maxDistanceDelta = this._isDashing ? Time.fixedDeltaTime * this._dashSpeed : Time.fixedDeltaTime * this._movementSpeed;
+				this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
+				if (this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= 0f)
+					this._isDashing = false;
 			}
 			else if ((Vector2)this.transform.position != this._pointOrigin)
 			{
 				this._spriteRenderer.flipX = this._pointOrigin.x < this.transform.position.x;
-				this._rigidybody.linearVelocity = Vector2.zero;
-				float maxDistanceDelta = this._speedReturn * Time.fixedDeltaTime;
+				float maxDistanceDelta = this._returnSpeed * Time.fixedDeltaTime;
 				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, maxDistanceDelta);
 			}
-			else if (this._trail.Length > 0f && !followTarget)
+			else if (this._trail.Length > 0f && !this._detected)
 			{
 				Vector2 target = this._trail[this._pointIndex];
 				if (this._repeatWay)
