@@ -32,7 +32,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Update()
 		{
 			base.Update();
-			if (this._stopMovement || this.IsStunned || this.DoNotWork || !this._useAlternatedTime && !this._invencible)
+			if (this._stopWorking || this.IsStunned || !this._useAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
 				this._timeOperation -= Time.deltaTime;
