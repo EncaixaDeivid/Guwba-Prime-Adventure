@@ -65,6 +65,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			}
 			return true;
 		}
-		public void Stun(float stunStength, float stunTime) { }
+		public void Stun(ushort stunStength, float stunTime) { }
 	};
 };
