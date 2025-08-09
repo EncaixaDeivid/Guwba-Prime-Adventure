@@ -11,19 +11,24 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		private bool _blockDamage = false;
 		private bool _useDestructuion = false;
 		private bool _isStunned = false;
-		private float _armorResistance = 0f;
+		private short _armorResistance = 0;
 		private float _stunTimer = 0f;
 		[Header("Weak Boss")]
 		[SerializeField, Tooltip("The vitality of the main boss.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
 		[SerializeField, Tooltip("The amount of time of wait to deal damage in the boss after damaging it.")] private float _timeToDamage;
-		[SerializeField, Tooltip("The amount of stun that this boss can resists.")] private float _hitResistance;
 		[SerializeField, Tooltip("The amount of time this boss will be stunned when armor be broken.")] private float _stunnedTime;
+		[SerializeField, Tooltip("The amount of stun that this boss can resists.")] private ushort _hitResistance;
 		[SerializeField, Tooltip("The index to a event to a boss make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("If this boss will destroy the main boss after it's destruction.")] private bool _destructBoss;
 		[SerializeField, Tooltip("If this boss will be saved as already existent object.")] private bool _saveOnSpecifics;
 		public short Health => this._vitality;
+		private new void Awake()
+		{
+			base.Awake();
+			this._armorResistance = (short)this._hitResistance;
+		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
@@ -86,16 +91,16 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			}
 			return false;
 		}
-		public void Stun(float stunStength, float stunTime)
+		public void Stun(ushort stunStength, float stunTime)
 		{
 			if (this._isStunned)
 				return;
 			this._isStunned = true;
 			this._stunTimer = stunTime;
-			if ((this._armorResistance -= stunStength) <= 0f)
+			if ((this._armorResistance -= (short)stunStength) <= 0f)
 			{
 				this._stunTimer = this._stunnedTime;
-				this._armorResistance = this._hitResistance;
+				this._armorResistance = (short)this._hitResistance;
 			}
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetToggle(false);
