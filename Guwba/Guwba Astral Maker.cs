@@ -394,7 +394,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
 				bool wallBlock = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayerMask);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
-				float targetSpeed = this._movementSpeed * this._movementAction;
+				float targetSpeed = this._movementSpeed / 2f * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
