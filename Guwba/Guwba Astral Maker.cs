@@ -299,7 +299,6 @@ namespace GuwbaPrimeAdventure.Guwba
 							this._vitality += 1;
 							for (ushort i = 0; i < this._vitality; i++)
 							{
-
 								this._visualizableGuwba.VitalityVisual[i].style.backgroundColor = new StyleColor(backgroundColor);
 								this._visualizableGuwba.VitalityVisual[i].style.borderBottomColor = new StyleColor(borderColor);
 								this._visualizableGuwba.VitalityVisual[i].style.borderLeftColor = new StyleColor(borderColor);
