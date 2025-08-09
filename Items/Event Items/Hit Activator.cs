@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	{
 		[Header("Hit Activator")]
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private ushort _biggerDamage;
+		public short Health => 0;
 		public bool Damage(ushort damage)
 		{
 			if (damage >= this._biggerDamage && this.Usable)
