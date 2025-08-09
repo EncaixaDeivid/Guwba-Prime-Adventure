@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _stunTimer = 0f;
 		protected short _movementSide = 1;
 		private short _armorResistance = 0;
-		protected bool _stopMovement = false;
+		protected bool _stopWorking = false;
 		[Header("Enemy Controller")]
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
@@ -23,7 +23,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private ushort _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
-		[SerializeField, Tooltip("If this enemy will not move.")] protected bool _doNotWork;
 		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
@@ -33,7 +32,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
-		protected bool DoNotWork => this._doNotWork;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
 		public short Health => this._vitality;
