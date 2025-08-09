@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure
 	{
 		public short Health { get; }
 		public bool Damage(ushort damage);
-		public void Stun(float stunStength, float stunTime);
+		public void Stun(ushort stunStength, float stunTime);
 	};
 	public interface IInteractable
 	{
