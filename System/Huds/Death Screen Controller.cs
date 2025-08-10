@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Hud
@@ -43,18 +44,40 @@ namespace GuwbaPrimeAdventure.Hud
 				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
 			else
 			{
-				this._sender.SetToWhereConnection(PathConnection.Guwba);
-				this._sender.SetStateForm(StateForm.Enable);
-				this._sender.Send();
-				this._sender.SetToWhereConnection(PathConnection.Enemy);
-				this._sender.SetStateForm(StateForm.Disable);
-				this._sender.Send();
-				if (this._deathScreenHud)
+				this.StartCoroutine(Curtain());
+				IEnumerator Curtain()
 				{
-					this._deathScreenHud.Continue.clicked -= this.Continue;
-					this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
-					this._deathScreenHud.GameOver.clicked -= this.GameOver;
-					Destroy(this._deathScreenHud.gameObject);
+					this._deathScreenHud.Text.style.display = DisplayStyle.None;
+					this._deathScreenHud.Continue.style.display = DisplayStyle.None;
+					this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+					this._deathScreenHud.GameOver.style.display = DisplayStyle.None;
+					this._deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
+					for (float i = 0f; this._deathScreenHud.Curtain.style.opacity.value < 1f; i += 0.05f)
+					{
+						this._deathScreenHud.Curtain.style.opacity = i;
+						yield return new WaitForEndOfFrame();
+					}
+					this._sender.SetToWhereConnection(PathConnection.Guwba);
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.Send();
+					this._sender.SetToWhereConnection(PathConnection.Enemy);
+					this._sender.SetStateForm(StateForm.Disable);
+					this._sender.Send();
+					for (float i = 1f; this._deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
+					{
+						this._deathScreenHud.Curtain.style.opacity = i;
+						yield return new WaitForEndOfFrame();
+					}
+					this._sender.SetToWhereConnection(PathConnection.Guwba);
+					this._sender.SetStateForm(StateForm.Enable);
+					this._sender.Send();
+					if (this._deathScreenHud)
+					{
+						this._deathScreenHud.Continue.clicked -= this.Continue;
+						this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
+						this._deathScreenHud.GameOver.clicked -= this.GameOver;
+						Destroy(this._deathScreenHud.gameObject);
+					}
 				}
 			}
 		};
