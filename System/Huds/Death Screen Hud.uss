@@ -1,32 +1,73 @@
-*{
-	margin: 0px;
-	padding: 0px;
+* {
+    margin: 0;
+    padding: 0;
 }
-#RootElement{
-	width: 100%;
-	height: 100%;
-	align-items: center;
-	justify-content: center;
+
+#RootElement {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
-#Text{
-	width: 750px;
-	height: 200px;
-	font-size: 100px;
-	-unity-text-align: middle-center;
-	align-self: center;
+
+#Curtain {
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    background-color: rgb(0, 0, 0);
 }
-#Continue, #OutLevel, #GameOver{
-	width : 500px;
-	height : 62.5px;
-	font-size : 30px;
-	margin-top: 60px;
-	background-color : rgba(255, 255, 0, 0.5);
-	border-width : 0px;
-	border-radius : 35px;
+
+#Text {
+    width: 750px;
+    height: 200px;
+    font-size: 100px;
+    -unity-text-align: middle-center;
+    align-self: center;
 }
-#GameOver{
-	display: none;
+
+#Continue {
+    width: 500px;
+    height: 62.5px;
+    font-size: 30px;
+    margin-top: 60px;
+    background-color: rgba(255, 255, 0, 0.5);
+    border-width: 0;
+    border-radius: 35px;
 }
-#Continue:hover, #OutLevel:hover, #GameOver:hover{
-	background-color : rgb(255, 160, 0);
+
+#OutLevel {
+    width: 500px;
+    height: 62.5px;
+    font-size: 30px;
+    margin-top: 60px;
+    background-color: rgba(255, 255, 0, 0.5);
+    border-width: 0;
+    border-radius: 35px;
+}
+
+#GameOver {
+    width: 500px;
+    height: 62.5px;
+    font-size: 30px;
+    margin-top: 60px;
+    background-color: rgba(255, 255, 0, 0.5);
+    border-width: 0;
+    border-radius: 35px;
+}
+
+#GameOver {
+    display: none;
+}
+
+#Continue:hover {
+    background-color: rgb(255, 160, 0);
+}
+
+#OutLevel:hover {
+    background-color: rgb(255, 160, 0);
+}
+
+#GameOver:hover {
+    background-color: rgb(255, 160, 0);
 }
