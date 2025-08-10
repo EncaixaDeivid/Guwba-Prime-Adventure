@@ -39,7 +39,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (this._isChecked && data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (this._isChecked && data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
 				CentralizableGuwba.Position = _checkpointIndex;
 		}
 	};
