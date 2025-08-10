@@ -95,7 +95,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				this._cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
 				this.StartCoroutine(RestoreDamping());
