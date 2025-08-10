@@ -512,7 +512,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				for (ushort i = 0; i < this._visualizableGuwba.VitalityVisual.Length; i++)
 				{
@@ -527,13 +527,16 @@ namespace GuwbaPrimeAdventure.Guwba
 					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
 					this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
 				}
-				this._isDamaged = true;
 				this._vitality = (short)this._visualizableGuwba.Vitality;
-				this.StartCoroutine(this.Invencibility());
-				this.OnEnable();
 				this.transform.right = this._turnLeft ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 				this._animator.SetBool(this._death, false);
 				this._collider.size = this._normalSize;
+			}
+			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			{
+				this._isDamaged = true;
+				this.StartCoroutine(this.Invencibility());
+				this.OnEnable();
 			}
 		}
 	};
