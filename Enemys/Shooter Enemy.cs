@@ -16,16 +16,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The distance this enemy can detect the target.")] private float _perceptionDistance;
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
-		[SerializeField, Tooltip("The amount of time to stop this enemy to move.\nRequires: Ground/Flying Enemy")]
+		[SerializeField, Tooltip("The amount of time to stop this enemy to move.\nRequires: Moving Enemy")]
 		private float _stopTime;
 		[SerializeField, Tooltip("If this enemy will become invencible while shooting.\nRequires: Defender Enemy")]
 		private bool _invencibleShoot;
 		[SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] private bool _shootDamaged;
-		[SerializeField, Tooltip("If this enemy will stop moving when shoot.\nRequires: Ground/Flying Enemy")]
+		[SerializeField, Tooltip("If this enemy will stop moving when shoot.\nRequires: Moving Enemy")]
 		private bool _stop;
-		[SerializeField, Tooltip("If this enemy will paralyze moving.\nRequires: Ground/Flying Enemy")]
+		[SerializeField, Tooltip("If this enemy will paralyze moving.\nRequires: Moving Enemy")]
 		private bool _paralyze;
-		[SerializeField, Tooltip("If this enemy will return the gravity after paralyze.\nRequires: Ground/Flying Enemy")]
+		[SerializeField, Tooltip("If this enemy will return the gravity after paralyze.\nRequires: Moving Enemy")]
 		private bool _returnGravity;
 		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circulateDetection;
 		[SerializeField, Tooltip("Will shoot to infinity without any detection.")] private bool _shootInfinity;
