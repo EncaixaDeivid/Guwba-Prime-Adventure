@@ -219,8 +219,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this.transform.right = this._dashMovement < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 					float dashLocation = this.transform.position.x;
 					this._collider.size = this._dashSlideSize;
-					this._collider.offset = new Vector2(this._collider.offset.x, (this._normalSize.y - this._collider.size.y) / 2f);
-					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - this._normalSize.y / 2f);
+					this._collider.offset = new Vector2(this._collider.offset.x, -((this._normalSize.y - this._collider.size.y) / 2f));
 					bool isActive = true;
 					bool onWall = false;
 					while (isActive || onWall)
@@ -243,11 +242,6 @@ namespace GuwbaPrimeAdventure.Guwba
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
 							this._collider.size = this._normalSize;
 							this._collider.offset = Vector2.zero;
-							if (this._isOnGround)
-							{
-								float amountToMove = this.transform.position.y + this._normalSize.y / 2f;
-								this.transform.position = new Vector2(this.transform.position.x, amountToMove);
-							}
 						}
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.enabled);
