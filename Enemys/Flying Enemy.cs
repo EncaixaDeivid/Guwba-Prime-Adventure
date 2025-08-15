@@ -106,23 +106,24 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 target = this._trail[this._pointIndex];
 				if (this._repeatWay)
 				{
-					if ((ushort)Vector2.Distance(this.transform.position, target) <= 0f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
 						this._pointIndex = (ushort)(this._pointIndex < this._trail.Length - 1f ? this._pointIndex + 1f : 0f);
 				}
 				else if (this._normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.position, target) <= 0f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
 						this._pointIndex += 1;
 					this._normal = this._pointIndex != this._trail.Length - 1f;
 				}
 				else if (!this._normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.position, target) <= 0f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
 						this._pointIndex -= 1;
 					this._normal = this._pointIndex == 0f;
 				}
-				this._spriteRenderer.flipX = target.x < this.transform.position.x;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, target, this._movementSpeed * Time.fixedDeltaTime);
+				float maxDistanceDelta = Time.fixedDeltaTime * this._movementSpeed;
+				this._spriteRenderer.flipX = target.x < this.transform.localPosition.x;
+				this.transform.localPosition = Vector2.MoveTowards(this.transform.localPosition, target, maxDistanceDelta);
 				this._pointOrigin = this.transform.position;
 			}
 		}
