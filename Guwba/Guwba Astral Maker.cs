@@ -32,7 +32,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
-		private bool _invencibility = false;
 		private bool _isDamaged = false;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
@@ -61,6 +60,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attackCombo;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackJump;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackSlide;
 		[SerializeField, Tooltip("Animation parameter.")] private string _stun;
 		[SerializeField, Tooltip("Animation parameter.")] private string _death;
 		[Header("Physics Stats")]
@@ -89,6 +90,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time the recover's charge of the attack will recover.")] private float _recoverRate;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
+		[SerializeField, Tooltip("If Guwba is invencible at the moment.")] private bool _invencibility;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		public short Health => this._vitality;
 		private new void Awake()
@@ -207,14 +209,15 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
 				this._lastJumpTime = 0f;
 			}
-			bool valid = !this._dashActive && this._isOnGround && !this._attackUsage;
+			bool valid = !this._dashActive && this._isOnGround && (!this._attackUsage || this._comboAttackBuffer);
 			if (this._movementAction != 0f && movementValue.y < -0.5f && valid)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
+					if (this._comboAttackBuffer)
+						this._animator.SetBool(this._attackSlide, true);
 					this._animator.SetBool(this._dashSlide, this._dashActive = true);
-					this._invencibility = true;
 					this._dashMovement = this._movementAction;
 					this.transform.right = this._dashMovement < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 					float dashLocation = this.transform.position.x;
@@ -238,7 +241,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						onWall = Physics2D.BoxCast(wallOrigin, wallSize, angle, this.transform.up, this._groundChecker, this._groundLayerMask);
 						if ((valid || collision || !this._isOnGround || !this._dashActive) && !onWall)
 						{
-							this._invencibility = false;
+							this._animator.SetBool(this._attackSlide, false);
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
 							this._collider.size = this._normalSize;
 							this._collider.offset = Vector2.zero;
@@ -348,6 +351,8 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._animator.SetBool(this._walk, false);
 					this._animator.SetBool(this._Jump, this._rigidbody.linearVelocityY > 0f);
 					this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
+					if (this._animator.GetBool(this._attackJump))
+						this._animator.SetBool(this._attackJump, this._rigidbody.linearVelocityY > 0f);
 					float fallGravity = this._fallGravityMultiply * this._gravityScale;
 					this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? fallGravity : this._gravityScale;
 					this._lastGroundedTime -= Time.fixedDeltaTime;
@@ -405,6 +410,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
 			{
+				if (this._comboAttackBuffer)
+					this._animator.SetBool(this._attackJump, true);
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
