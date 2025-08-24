@@ -57,6 +57,9 @@ namespace GuwbaPrimeAdventure.Hud
 						this._deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
 					}
+					this._sender.SetToWhereConnection(PathConnection.Item);
+					this._sender.SetStateForm(StateForm.Enable);
+					this._sender.Send();
 					this._sender.SetToWhereConnection(PathConnection.Guwba);
 					this._sender.SetStateForm(StateForm.Action);
 					this._sender.Send();
