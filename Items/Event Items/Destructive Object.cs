@@ -9,7 +9,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
 		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
-		[SerializeField, Tooltip("The amount of stun that this object can resists.")] private float _stunResistance;
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
 		[SerializeField, Tooltip("If this object will saved on destruction or not.")] private bool _saveOnDestruction;
