@@ -10,6 +10,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
+		protected readonly Sender _sender = Sender.Create();
 		private Vector2 _guardVelocity = new();
 		private float _guardGravityScale = 0f;
 		private float _stunTimer = 0f;
@@ -42,11 +43,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._animator = this.GetComponent<Animator>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
+			this._sender.SetToWhereConnection(PathConnection.Enemy);
+			this._sender.SetAdditionalData(this.gameObject);
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._armorResistance = (short)this._hitResistance;
 			this._movementSide = (short)(this._invertMovementSide ? -1 : 1);
 			if (this._fadeOverTime)
 				Destroy(this.gameObject, this._timeToFadeAway);
+			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
@@ -57,6 +61,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
