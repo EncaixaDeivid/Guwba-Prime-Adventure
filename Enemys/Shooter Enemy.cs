@@ -119,11 +119,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			this.Shoot();
 		}
-		public new bool Damage(ushort damage)
+		public new bool Hurt(ushort damage)
 		{
 			if (this._shootDamaged)
 				this.Shoot();
-			return base.Damage(damage);
+			return base.Hurt(damage);
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
