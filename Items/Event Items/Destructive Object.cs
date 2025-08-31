@@ -48,7 +48,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => this.DestroyOnCollision();
 		private void OnTriggerEnter2D(Collider2D collision) => this.DestroyOnCollision();
-		public bool Damage(ushort damage)
+		public bool Hurt(ushort damage)
 		{
 			if (this._vitality <= 0f)
 				return false;
