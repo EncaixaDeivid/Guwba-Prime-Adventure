@@ -1,10 +1,8 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent]
-	internal sealed class FlyingEnemy : MovingEnemy, IConnector
+	internal sealed class FlyingEnemy : MovingEnemy
 	{
 		private Vector2 _pointOrigin = new();
 		private Vector2 _targetPoint = new();
@@ -24,14 +22,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._pointOrigin = this.transform.position;
-			Sender.Include(this);
 			if (this._endlessPursue)
 				Destroy(this.gameObject, this._fadeTime);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
 		}
 		private new void Update()
 		{
@@ -126,14 +118,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.transform.localPosition = Vector2.MoveTowards(this.transform.localPosition, target, maxDistanceDelta);
 				this._pointOrigin = this.transform.position;
 			}
-		}
-		public new void Receive(DataConnection data, object additionalData)
-		{
-			base.Receive(data, additionalData);
-			if (additionalData as GameObject != this.gameObject)
-				return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this._stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
