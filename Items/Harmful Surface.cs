@@ -12,9 +12,9 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			if (collisionObject.TryGetComponent<IDestructible>(out var damageable))
 				if (this._everyone)
-					damageable.Damage(this._damage);
+					damageable.Hurt(this._damage);
 				else if (CentralizableGuwba.EqualObject(collisionObject))
-					damageable.Damage(this._damage);
+					damageable.Hurt(this._damage);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision(other.gameObject);
