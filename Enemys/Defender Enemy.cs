@@ -2,9 +2,9 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
+	[DisallowMultipleComponent]
 	internal sealed class DefenderEnemy : EnemyController, IConnector, IDestructible
 	{
-		private readonly Sender _sender = Sender.Create();
 		private bool _invencible = false;
 		private float _timeOperation = 0f;
 		[Header("Defender Enemy")]
@@ -18,16 +18,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
 			this._sender.SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(this.gameObject);
 			this._timeOperation = this._timeToInvencible;
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
 		}
 		private new void Update()
 		{
