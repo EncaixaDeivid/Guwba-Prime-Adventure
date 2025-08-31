@@ -58,7 +58,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				}
 			}
 		}
-		public bool Damage(ushort damage)
+		public bool Hurt(ushort damage)
 		{
 			if (!this._blockDamage && damage >= this._biggerDamage)
 			{
