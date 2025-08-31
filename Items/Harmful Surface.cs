@@ -10,11 +10,11 @@ namespace GuwbaPrimeAdventure.Item
 		[SerializeField, Tooltip("If anything can be damaged")] private bool _everyone;
 		private void OnCollision(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var damageable))
+			if (collisionObject.TryGetComponent<IDestructible>(out var destructible))
 				if (this._everyone)
-					damageable.Hurt(this._damage);
+					destructible.Hurt(this._damage);
 				else if (CentralizableGuwba.EqualObject(collisionObject))
-					damageable.Hurt(this._damage);
+					destructible.Hurt(this._damage);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision(other.gameObject);
