@@ -32,14 +32,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._onTouch && CentralizableGuwba.EqualObject(other.gameObject))
 				this.StartCoroutine(Death());
 		}
-		public new bool Damage(ushort damage)
+		public new bool Hurt(ushort damage)
 		{
 			if (this.Health - (short)damage <= 0f)
 			{
 				this.StartCoroutine(Death());
 				return true;
 			}
-			return base.Damage(damage);
+			return base.Hurt(damage);
 		}
 	};
 };
