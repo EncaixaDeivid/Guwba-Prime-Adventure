@@ -86,9 +86,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var damageable) && damageable.Hurt(this._damage))
+			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._damage))
 			{
-				damageable.Stun(this._damage, this._stunTime);
+				destructible.Stun(this._damage, this._stunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
 			}
 		}
