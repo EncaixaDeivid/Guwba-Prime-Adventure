@@ -11,9 +11,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
 		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy")]
 		private bool _invencibleStop;
-		[SerializeField, Tooltip("If this enemy will become invencible when damaged.")] private bool _invencibleDamaged;
-		[SerializeField, Tooltip("If this enemy will use time to become invencible/damageable.")] private bool _useAlternatedTime;
-		[SerializeField, Tooltip("The amount of time the enemy have to become damageable.")] private float _timeToDamageable;
+		[SerializeField, Tooltip("If this enemy will become invencible when hurted.")] private bool _invencibleHurted;
+		[SerializeField, Tooltip("If this enemy will use time to become invencible/destructible.")] private bool _useAlternatedTime;
+		[SerializeField, Tooltip("The amount of time the enemy have to become destructible.")] private float _timeToDestructible;
 		[SerializeField, Tooltip("The amount of time the enemy have to become invencible.")] private float _timeToInvencible;
 		private new void Awake()
 		{
@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 				{
 					this._invencible = true;
-					this._timeOperation = this._timeToDamageable;
+					this._timeOperation = this._timeToDestructible;
 					if (this._invencibleStop)
 					{
 						this._sender.SetToggle(false);
@@ -54,12 +54,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public new bool Hurt(ushort damage)
 		{
-			bool isDamaged = false;
+			bool isHurted = false;
 			if (!this._invencible && damage >= this._biggerDamage)
-				isDamaged = base.Hurt(damage);
-			if (this._invencibleDamaged && isDamaged)
+				isHurted = base.Hurt(damage);
+			if (this._invencibleHurted && isHurted)
 			{
-				this._timeOperation = this._timeToDamageable;
+				this._timeOperation = this._timeToDestructible;
 				this._invencible = true;
 				if (this._invencibleStop)
 				{
@@ -67,7 +67,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._sender.Send();
 				}
 			}
-			return isDamaged;
+			return isHurted;
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
