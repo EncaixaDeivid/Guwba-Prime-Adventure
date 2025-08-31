@@ -5,7 +5,6 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class ShooterEnemy : EnemyController, IConnector, IDestructible
 	{
-		private readonly Sender _sender = Sender.Create();
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
@@ -34,8 +33,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
-			this._sender.SetAdditionalData(this.gameObject);
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
 		private void Shoot()
