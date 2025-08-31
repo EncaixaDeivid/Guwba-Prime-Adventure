@@ -52,11 +52,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 			}
 		}
-		public new bool Damage(ushort damage)
+		public new bool Hurt(ushort damage)
 		{
 			bool isDamaged = false;
 			if (!this._invencible && damage >= this._biggerDamage)
-				isDamaged = base.Damage(damage);
+				isDamaged = base.Hurt(damage);
 			if (this._invencibleDamaged && isDamaged)
 			{
 				this._timeOperation = this._timeToDamageable;
