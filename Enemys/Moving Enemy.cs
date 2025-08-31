@@ -3,9 +3,8 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal abstract class MovingEnemy : EnemyController
+	internal abstract class MovingEnemy : EnemyController, IConnector
 	{
-		protected readonly Sender _sender = Sender.Create();
 		protected bool _detected = false;
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
@@ -18,9 +17,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
 			this._sender.SetStateForm(StateForm.Action);
-			this._sender.SetAdditionalData(this.gameObject);
+		}
+		public new void Receive(DataConnection data, object additionalData)
+		{
+			base.Receive(data, additionalData);
+			if (additionalData as GameObject != this.gameObject)
+				return;
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+				this._stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
