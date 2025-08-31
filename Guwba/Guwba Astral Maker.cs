@@ -277,7 +277,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private UnityAction<DamageableGuwba, IDestructible> Attack => (damageableGuwba, destructible) =>
 		{
-			if (destructible.Damage(damageableGuwba.AttackDamage))
+			if (destructible.Hurt(damageableGuwba.AttackDamage))
 			{
 				destructible.Stun(damageableGuwba.AttackDamage, damageableGuwba.StunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
@@ -456,7 +456,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._visualizableGuwba.CoinText.text = $"X {saveFile.coins}";
 			}
 		}
-		public bool Damage(ushort damage)
+		public bool Hurt(ushort damage)
 		{
 			if (this._invencibility || this._isDamaged || damage < 1f)
 				return false;
