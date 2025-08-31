@@ -22,8 +22,8 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (other.TryGetComponent<IDestructible>(out var damageable))
-				this._attack.Invoke(this, damageable);
+			if (other.TryGetComponent<IDestructible>(out var destructible))
+				this._attack.Invoke(this, destructible);
 		}
 	};
 };
