@@ -190,9 +190,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._isInoffensive)
 				return;
-			if (other.TryGetComponent<IDestructible>(out var damageable))
+			if (other.TryGetComponent<IDestructible>(out var destructible))
 			{
-				if (damageable.Damage(this._damage))
+				if (destructible.Hurt(this._damage))
 					Destroy(this.gameObject);
 			}
 			else
