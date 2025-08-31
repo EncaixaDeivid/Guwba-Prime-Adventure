@@ -86,7 +86,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var damageable) && damageable.Damage(this._damage))
+			if (collisionObject.TryGetComponent<IDestructible>(out var damageable) && damageable.Hurt(this._damage))
 			{
 				damageable.Stun(this._damage, this._stunTime);
 				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
@@ -94,7 +94,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
-		public bool Damage(ushort damage)
+		public bool Hurt(ushort damage)
 		{
 			if (this._noDamage)
 				return false;
