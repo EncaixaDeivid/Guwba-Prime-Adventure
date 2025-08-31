@@ -49,8 +49,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if (!this._noDealDamage && collision.TryGetComponent<IDestructible>(out var damageable))
-				damageable.Damage(this._damage);
+			if (!this._noDealDamage && collision.TryGetComponent<IDestructible>(out var destructible))
+				destructible.Hurt(this._damage);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
