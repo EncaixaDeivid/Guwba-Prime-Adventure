@@ -1,9 +1,7 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent]
-	internal sealed class GroundEnemy : MovingEnemy, IConnector
+	internal sealed class GroundEnemy : MovingEnemy
 	{
 		private bool _rotate = true;
 		private bool _runTowards = false;
@@ -28,12 +26,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._timeRun = this._timesToRun;
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
 		}
 		private new void Update()
 		{
@@ -167,14 +159,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				else if (this._shootDetection)
 					this._sender.Send();
 			this._rigidybody.linearVelocityX = this._detected ? this._movementSide * this._dashSpeed : this._movementSpeed * this._movementSide;
-		}
-		public new void Receive(DataConnection data, object additionalData)
-		{
-			base.Receive(data, additionalData);
-			if (additionalData as GameObject != this.gameObject)
-				return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this._stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
