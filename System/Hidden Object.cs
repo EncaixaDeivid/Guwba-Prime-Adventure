@@ -3,19 +3,23 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
-	internal sealed class HiddenObject : MonoBehaviour, IConnector
+	public sealed class HiddenObject : MonoBehaviour, IConnector
 	{
+		[SerializeField, Tooltip("If this object will activate the children.")] private bool _initialActive;
+		[SerializeField, Tooltip("If this object will turn off the collisions.")] private bool _offCollision;
 		public PathConnection PathConnection => PathConnection.System;
 		private void Awake()
 		{
 			for (ushort i = 0; i < this.transform.childCount; i++)
-				this.transform.GetChild(i).gameObject.SetActive(false);
+				this.transform.GetChild(i).gameObject.SetActive(this._initialActive);
+			this.GetComponent<BoxCollider2D>().enabled = !this._offCollision;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData as GameObject == this.gameObject && data.StateForm == StateForm.Action)
-				for (ushort i = 0; i < this.transform.childCount; i++)
-					this.transform.GetChild(i).gameObject.SetActive(true);
+			foreach (HiddenObject hiddenObject in additionalData as HiddenObject[])
+				if (hiddenObject == this.gameObject && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+					for (ushort i = 0; i < this.transform.childCount; i++)
+						this.transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
 	};
 };
