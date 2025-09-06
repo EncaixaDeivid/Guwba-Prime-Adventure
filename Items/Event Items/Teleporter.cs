@@ -16,7 +16,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[Header("Teleporter")]
 		[SerializeField, Tooltip("The locations that Guwba can teleport to.")] private Vector2[] _locations;
 		[SerializeField, Tooltip("If it have to interact to teleport.")] private bool _isInteractive;
-		[SerializeField, Tooltip("Everyone can use the teleporter.")] private bool _everyone;
 		[SerializeField, Tooltip("If it teleports at the touch.")] private bool _onCollision;
 		[SerializeField, Tooltip("If it have to receive a signal to work.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If it have to waits to teleport.")] private bool _useTimer;
@@ -41,20 +40,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetToggle(false);
 			this._sender.Send();
 			yield return new WaitTime(this, this._timeToUse);
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(this.transform.position, this._collider.bounds.size, 0f))
-				if (this._everyone)
-				{
-					collider.transform.position = this._locations[this._index];
-					break;
-				}
-				else
-				{
-					CentralizableGuwba.Position = this._locations[this._index];
-					this._sender.SetToWhereConnection(PathConnection.Guwba);
-					this._sender.SetToggle(false);
-					this._sender.Send();
-					break;
-				}
+			CentralizableGuwba.Position = this._locations[this._index];
+			this._sender.SetToWhereConnection(PathConnection.Guwba);
+			this._sender.SetToggle(false);
+			this._sender.Send();
 			this._sender.SetToWhereConnection(PathConnection.Item);
 			this._sender.SetToggle(true);
 			this._sender.Send();
@@ -63,11 +52,16 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			this._active = !this._active;
 			if (this._useTimer)
-			{
 				if (this._timerCoroutine == null)
 					this._timerCoroutine = this.StartCoroutine(this.Timer(this._active));
 				else
 					this.StopCoroutine(this._timerCoroutine);
+			else
+			{
+				CentralizableGuwba.Position = this._locations[this._index];
+				this._sender.SetToWhereConnection(PathConnection.Guwba);
+				this._sender.SetToggle(false);
+				this._sender.Send();
 			}
 		}
 		public void Interaction()
@@ -87,8 +81,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (this._active && this._onCollision && this._useTimer)
 				this.StartCoroutine(this.Timer());
-			else if (this._active && this._onCollision && this._everyone)
-				other.transform.position = this._locations[this._index];
 			else if (this._active && this._onCollision && CentralizableGuwba.EqualObject(other.gameObject))
 			{
 				CentralizableGuwba.Position = this._locations[this._index];
