@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Collections;
+using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
@@ -11,11 +12,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
 		private Light2DBase _selfLight;
+		private readonly Sender _sender = Sender.Create();
 		[Header("Hidden Place")]
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
+		[SerializeField, Tooltip("The hidden object to reveal.")] private GameObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
-		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _hasColliders;
+		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
+		[SerializeField, Tooltip("If the place has any hidden objects.")] private bool _haveHidden;
 		[SerializeField, Tooltip("If theres a follow light.")] private bool _hasFollowLight;
 		[SerializeField, Tooltip("The amount o time to fade/appear again after the activation.")] private float _timeToFadeAppearAgain;
 		private new void Awake()
@@ -24,6 +28,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._tilemap = this.GetComponentInParent<Tilemap>();
 			this._collider = this.transform.parent.GetComponent<TilemapCollider2D>();
 			this._selfLight = this.GetComponent<Light2DBase>();
+			this._sender.SetToWhereConnection(PathConnection.System);
+			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetAdditionalData(this._hiddenObject);
 		}
 		private IEnumerator Fade(bool appear)
 		{
@@ -42,6 +49,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					yield return new WaitUntil(() => this.enabled);
 				}
 			}
+			if (this._haveHidden)
+				this._sender.Send();
 			if (appear)
 				for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 					yield return OpacityLevel(i);
@@ -56,7 +65,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				color.a = alpha;
 				this._tilemap.color = color;
 			}
-			if (this._hasColliders)
+			if (this._haveColliders)
 				this._collider.enabled = appear;
 		}
 		public void Execute()
