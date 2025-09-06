@@ -1,22 +1,16 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Cinemachine;
-using System.Collections;
-using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
 	[RequireComponent(typeof(SortingGroup))]
-	internal sealed class BackgroundManager : StateController, IConnector
+	internal sealed class BackgroundManager : StateController
 	{
 		private static BackgroundManager _instance;
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
-		private Vector2 _positionDamping = new();
-		[Header("Camera Objects")]
-		[SerializeField, Tooltip("The object that handles the follow of the camera.")] private CinemachineFollow _cinemachineFollow;
-		[SerializeField, Tooltip("The amount of time to wait to start restoring.")] private float _waitTime;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The images that are placed in each background.")] private Sprite[] _backgroundImages;
@@ -25,7 +19,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of speed that the background will move vertically.")] private float _verticalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount to slow horizontally for each layer that is after the first.")] private float _slowHorizontal;
 		[SerializeField, Tooltip("The amount to slow vertically for each layer that is after the first.")] private float _slowVertical;
-		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
 			if (_instance)
@@ -37,7 +30,6 @@ namespace GuwbaPrimeAdventure.Guwba
 			base.Awake();
 			this._childrenTransforms = new Transform[this._backgroundImages.Length];
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
-			this._positionDamping = this._cinemachineFollow.TrackerSettings.PositionDamping;
 			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
 			{
 				this._childrenTransforms[ia] = Instantiate(this._backgroundTransform, this.transform);
@@ -63,13 +55,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
 			}
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			if (!_instance || _instance != this)
-				return;
-			Sender.Exclude(this);
 		}
 		private void Update()
 		{
@@ -91,26 +76,6 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y + imageSize.y);
 				else if (distanceAxisY < this._startPosition.y - imageSize.y)
 					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y - imageSize.y);
-			}
-		}
-		public void Receive(DataConnection data, object additionalData)
-		{
-			if (data.StateForm == StateForm.Action)
-			{
-				this._cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
-				this.StartCoroutine(RestoreDamping());
-				IEnumerator RestoreDamping()
-				{
-					yield return new WaitTime(this, this._waitTime);
-					float time = 0f;
-					while ((Vector2)this._cinemachineFollow.TrackerSettings.PositionDamping != this._positionDamping)
-					{
-						this._cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, this._positionDamping, time);
-						time += Time.deltaTime;
-						yield return new WaitUntil(() => this.enabled);
-						yield return new WaitForEndOfFrame();
-					}
-				}
 			}
 		}
 	};
