@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[RequireComponent(typeof(Collider2D), typeof(Receptor))]
 	internal sealed class Teleporter : StateController, Receptor.IReceptor, IInteractable
 	{
-		private Collider2D _collider;
 		private Coroutine _timerCoroutine;
 		private readonly Sender _sender = Sender.Create();
 		private ushort _index = 0;
@@ -23,10 +22,17 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._collider = this.GetComponent<Collider2D>();
 			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(this.gameObject);
 			this._active = !this._isReceptor;
+		}
+		private void Teleport()
+		{
+			this._sender.SetToWhereConnection(PathConnection.Guwba);
+			this._sender.SetToggle(false);
+			this._sender.Send();
+			CentralizableGuwba.Position = this._locations[this._index];
+			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
 		}
 		private IEnumerator Timer(bool activeValue)
 		{
@@ -40,10 +46,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetToggle(false);
 			this._sender.Send();
 			yield return new WaitTime(this, this._timeToUse);
-			CentralizableGuwba.Position = this._locations[this._index];
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
-			this._sender.SetToggle(false);
-			this._sender.Send();
+			this.Teleport();
 			this._sender.SetToWhereConnection(PathConnection.Item);
 			this._sender.SetToggle(true);
 			this._sender.Send();
@@ -57,38 +60,21 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				else
 					this.StopCoroutine(this._timerCoroutine);
 			else
-			{
-				CentralizableGuwba.Position = this._locations[this._index];
-				this._sender.SetToWhereConnection(PathConnection.Guwba);
-				this._sender.SetToggle(false);
-				this._sender.Send();
-			}
+				this.Teleport();
 		}
 		public void Interaction()
 		{
 			if (this._active && this._isInteractive && this._useTimer)
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._isInteractive)
-			{
-				CentralizableGuwba.Position = this._locations[this._index];
-				this._sender.SetToWhereConnection(PathConnection.Guwba);
-				this._sender.SetToggle(false);
-				this._sender.Send();
-			}
-			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
+				this.Teleport();
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (this._active && this._onCollision && this._useTimer)
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._onCollision && CentralizableGuwba.EqualObject(other.gameObject))
-			{
-				CentralizableGuwba.Position = this._locations[this._index];
-				this._sender.SetToWhereConnection(PathConnection.Guwba);
-				this._sender.SetToggle(false);
-				this._sender.Send();
-			}
-			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
+				this.Teleport();
 		}
 	};
 };
