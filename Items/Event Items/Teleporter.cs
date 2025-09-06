@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void Teleport()
 		{
-			this._sender.SetToWhereConnection(PathConnection.Guwba);
+			this._sender.SetToWhereConnection(PathConnection.System);
 			this._sender.SetToggle(false);
 			this._sender.Send();
 			CentralizableGuwba.Position = this._locations[this._index];
