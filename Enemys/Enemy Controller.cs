@@ -96,7 +96,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		public bool Hurt(ushort damage)
 		{
-			if (this._noDamage)
+			if (this._noDamage || damage <= 0)
 				return false;
 			if ((this._vitality -= (short)damage) <= 0f)
 				Destroy(this.gameObject);
