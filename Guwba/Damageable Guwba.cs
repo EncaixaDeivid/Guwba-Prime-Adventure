@@ -31,7 +31,16 @@ namespace GuwbaPrimeAdventure.Guwba
 			if (!this._takeDamage && other.TryGetComponent<IDestructible>(out var destructible))
 				this._damageableAttack.Invoke(this, destructible);
 		}
-		public bool Hurt(ushort damage) => this._damageableHurt.Invoke(damage);
-		public void Stun(ushort stunStength, float stunTime) => this._damageableStun.Invoke(stunStength, stunTime);
+		public bool Hurt(ushort damage)
+		{
+			if (this._takeDamage)
+				return this._damageableHurt.Invoke(damage);
+			return false;
+		}
+		public void Stun(ushort stunStength, float stunTime)
+		{
+			if (this._takeDamage)
+				this._damageableStun.Invoke(stunStength, stunTime);
+		}
 	};
 };
