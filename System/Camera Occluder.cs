@@ -28,9 +28,9 @@ namespace GuwbaPrimeAdventure
 		}
 		private void SetOtherChildren(GameObject gameObject, bool activeValue)
 		{
-			if (gameObject.TryGetComponent<HiddenCamera>(out var hiddenCamera))
-				for (ushort i = 0; i < hiddenCamera.transform.childCount; i++)
-					hiddenCamera.transform.GetChild(i).gameObject.SetActive(activeValue);
+			if (gameObject.TryGetComponent<HiddenObject>(out var hiddenObject))
+				for (ushort i = 0; i < hiddenObject.transform.childCount; i++)
+					hiddenObject.transform.GetChild(i).gameObject.SetActive(activeValue);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
