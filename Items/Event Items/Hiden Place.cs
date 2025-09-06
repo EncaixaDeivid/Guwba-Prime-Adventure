@@ -13,9 +13,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private TilemapCollider2D _collider;
 		private Light2DBase _selfLight;
 		private readonly Sender _sender = Sender.Create();
+		private bool _activation = false;
 		[Header("Hidden Place")]
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
-		[SerializeField, Tooltip("The hidden object to reveal.")] private GameObject _hiddenObject;
+		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
@@ -26,14 +27,17 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			this._tilemap = this.GetComponentInParent<Tilemap>();
-			this._collider = this.transform.parent.GetComponent<TilemapCollider2D>();
+			this._collider = this.GetComponentInParent<TilemapCollider2D>();
 			this._selfLight = this.GetComponent<Light2DBase>();
 			this._sender.SetToWhereConnection(PathConnection.System);
 			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetAdditionalData(this._hiddenObject);
+			this._activation = !this._fadeActivation;
 		}
 		private IEnumerator Fade(bool appear)
 		{
+			if (this._isReceptor)
+				this._activation = !this._activation;
 			if (appear)
 				EffectsController.OffGlobalLight(this._selfLight);
 			else
@@ -50,7 +54,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				}
 			}
 			if (this._haveHidden)
+			{
+				this._sender.SetToggle(appear);
 				this._sender.Send();
+			}
 			if (appear)
 				for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 					yield return OpacityLevel(i);
@@ -71,9 +78,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public void Execute()
 		{
 			if (this._timeToFadeAppearAgain > 0f)
-				this.StartCoroutine(FadeTimed(!this._fadeActivation));
+				this.StartCoroutine(FadeTimed(this._activation));
 			else
-				this.StartCoroutine(this.Fade(!this._fadeActivation));
+				this.StartCoroutine(this.Fade(this._activation));
 			IEnumerator FadeTimed(bool appear)
 			{
 				yield return this.Fade(appear);
