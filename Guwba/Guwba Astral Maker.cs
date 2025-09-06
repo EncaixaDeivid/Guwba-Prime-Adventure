@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	internal sealed class GuwbaAstralMaker : StateController, IConnector, IDestructible
+	internal sealed class GuwbaAstralMaker : StateController, IConnector
 	{
 		private static GuwbaAstralMaker _instance;
 		private VisualizableGuwba _visualizableGuwba;
@@ -92,7 +92,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		[SerializeField, Tooltip("If Guwba is invencible at the moment.")] private bool _invencibility;
 		public PathConnection PathConnection => PathConnection.Guwba;
-		public short Health => this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
@@ -110,7 +109,11 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._redAxis = new(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
 			this.transform.right = this._turnLeft ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 			foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
-				damageableGuwba.SetAttack(this.Attack);
+			{
+				damageableGuwba.DamageableHurt += this.Hurt;
+				damageableGuwba.DamageableStun += this.Stun;
+				damageableGuwba.DamageableAttack += this.Attack;
+			}
 			this._sender.SetStateForm(StateForm.Disable);
 			SaveController.Load(out SaveFile saveFile);
 			this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
@@ -128,8 +131,10 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.StopAllCoroutines();
 			foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
 			{
+				damageableGuwba.DamageableHurt -= this.Hurt;
+				damageableGuwba.DamageableStun -= this.Stun;
+				damageableGuwba.DamageableAttack -= this.Attack;
 				damageableGuwba.Alpha = 1f;
-				damageableGuwba.UnsetAttack(this.Attack);
 			}
 			Sender.Exclude(this);
 		}
@@ -275,6 +280,61 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 			}
 		};
+		public Predicate<ushort> Hurt => damage =>
+		{
+			if (this._invencibility || this._isDamaged || damage < 1f)
+				return false;
+			this._isDamaged = true;
+			this._vitality -= (short)damage;
+			for (ushort i = (ushort)this._visualizableGuwba.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
+			{
+				Color missingColor = this._visualizableGuwba.MissingVitalityColor;
+				this._visualizableGuwba.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(missingColor);
+				this._visualizableGuwba.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(missingColor);
+				this._visualizableGuwba.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(missingColor);
+				this._visualizableGuwba.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(missingColor);
+				this._visualizableGuwba.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(missingColor);
+			}
+			if (this._vitality <= 0f)
+			{
+				SaveController.Load(out SaveFile saveFile);
+				saveFile.lifes -= 1;
+				this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
+				SaveController.WriteSave(saveFile);
+				this.StopAllCoroutines();
+				foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
+					damageableGuwba.Alpha = 1f;
+				this.OnDisable();
+				this._animator.SetBool(this._death, true);
+				this._rigidbody.gravityScale = this._gravityScale;
+				this._collider.size = this._deadSize;
+				this._sender.SetToWhereConnection(PathConnection.Hud);
+				this._sender.SetToggle(true);
+				this._sender.Send();
+				this._sender.SetToggle(false);
+				this._sender.SetToWhereConnection(PathConnection.Boss);
+				this._sender.Send();
+				this._sender.SetToWhereConnection(PathConnection.Enemy);
+				this._sender.Send();
+				return true;
+			}
+			this.StartCoroutine(this.Invencibility());
+			return true;
+		};
+		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
+		{
+			if (this._stunResistance - stunStrength < 0f)
+				this.StartCoroutine(StunTimer());
+			IEnumerator StunTimer()
+			{
+				this._animator.SetBool(this._stun, true);
+				this.DisableCommands();
+				this._dashActive = false;
+				yield return new WaitTime(this, stunTime);
+				this._animator.SetBool(this._stun, false);
+				this.EnableCommands();
+			}
+		};
 		private UnityAction<DamageableGuwba, IDestructible> Attack => (damageableGuwba, destructible) =>
 		{
 			if (destructible.Hurt(damageableGuwba.AttackDamage))
@@ -287,7 +347,8 @@ namespace GuwbaPrimeAdventure.Guwba
 					Color backgroundColor = this._visualizableGuwba.BackgroundColor;
 					Color borderColor = this._visualizableGuwba.BorderColor;
 					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
-					for (ushort amount = 0; amount < damageableGuwba.AttackDamage - Mathf.Abs(destructible.Health); amount++)
+					ushort damageDifference = (ushort)(damageableGuwba.AttackDamage - Mathf.Abs(destructible.Health));
+					for (ushort amount = 0; amount < (destructible.Health >= 0f ? damageableGuwba.AttackDamage : damageDifference); amount++)
 					{
 						bool valid = this._vitality < this._visualizableGuwba.Vitality;
 						if (this._recoverVitality >= this._visualizableGuwba.RecoverVitality && valid)
@@ -454,61 +515,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				SaveController.Load(out SaveFile saveFile);
 				this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
 				this._visualizableGuwba.CoinText.text = $"X {saveFile.coins}";
-			}
-		}
-		public bool Hurt(ushort damage)
-		{
-			if (this._invencibility || this._isDamaged || damage < 1f)
-				return false;
-			this._isDamaged = true;
-			this._vitality -= (short)damage;
-			for (ushort i = (ushort)this._visualizableGuwba.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
-			{
-				Color missingColor = this._visualizableGuwba.MissingVitalityColor;
-				this._visualizableGuwba.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(missingColor);
-				this._visualizableGuwba.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(missingColor);
-				this._visualizableGuwba.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(missingColor);
-				this._visualizableGuwba.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(missingColor);
-				this._visualizableGuwba.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(missingColor);
-			}
-			if (this._vitality <= 0f)
-			{
-				SaveController.Load(out SaveFile saveFile);
-				saveFile.lifes -= 1;
-				this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
-				SaveController.WriteSave(saveFile);
-				this.StopAllCoroutines();
-				foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
-					damageableGuwba.Alpha = 1f;
-				this.OnDisable();
-				this._animator.SetBool(this._death, true);
-				this._rigidbody.gravityScale = this._gravityScale;
-				this._collider.size = this._deadSize;
-				this._sender.SetToWhereConnection(PathConnection.Hud);
-				this._sender.SetToggle(true);
-				this._sender.Send();
-				this._sender.SetToggle(false);
-				this._sender.SetToWhereConnection(PathConnection.Boss);
-				this._sender.Send();
-				this._sender.SetToWhereConnection(PathConnection.Enemy);
-				this._sender.Send();
-				return true;
-			}
-			this.StartCoroutine(this.Invencibility());
-			return true;
-		}
-		public void Stun(ushort stunStrength, float stunTime)
-		{
-			if (this._stunResistance - stunStrength < 0f)
-				this.StartCoroutine(StunTimer());
-			IEnumerator StunTimer()
-			{
-				this._animator.SetBool(this._stun, true);
-				this.DisableCommands();
-				this._dashActive = false;
-				yield return new WaitTime(this, stunTime);
-				this._animator.SetBool(this._stun, false);
-				this.EnableCommands();
 			}
 		}
 		public void Receive(DataConnection data, object additionalData)
