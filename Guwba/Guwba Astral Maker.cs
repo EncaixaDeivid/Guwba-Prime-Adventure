@@ -347,7 +347,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					Color backgroundColor = this._visualizableGuwba.BackgroundColor;
 					Color borderColor = this._visualizableGuwba.BorderColor;
 					Color missingColor = this._visualizableGuwba.MissingVitalityColor;
-					ushort damageDifference = (ushort)(damageableGuwba.AttackDamage - Mathf.Abs(destructible.Health));
+					short damageDifference = (short)(damageableGuwba.AttackDamage - Mathf.Abs(destructible.Health));
 					for (ushort amount = 0; amount < (destructible.Health >= 0f ? damageableGuwba.AttackDamage : damageDifference); amount++)
 					{
 						bool valid = this._vitality < this._visualizableGuwba.Vitality;
