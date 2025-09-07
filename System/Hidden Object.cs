@@ -13,10 +13,12 @@ namespace GuwbaPrimeAdventure
 			for (ushort i = 0; i < this.transform.childCount; i++)
 				this.transform.GetChild(i).gameObject.SetActive(this._initialActive);
 			this.GetComponent<BoxCollider2D>().enabled = !this._offCollision;
+			Sender.Include(this);
 		}
+		private void OnDestroy() => Sender.Exclude(this);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData as HiddenObject == this && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (this == (HiddenObject)additionalData && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 					for (ushort i = 0; i < this.transform.childCount; i++)
 						this.transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
