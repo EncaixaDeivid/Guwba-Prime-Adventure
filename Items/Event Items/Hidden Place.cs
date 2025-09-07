@@ -41,9 +41,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private IEnumerator Fade(bool appear)
 		{
 			if (this._otherPlace != null)
-				if (this._appearFirst && appear)
+				if (this._otherPlace._appearFirst && appear)
 					yield return this._otherPlace.Fade(this._otherPlace._activation);
-				else if (this._fadeFirst)
+				else if (this._otherPlace._fadeFirst)
 					yield return this._otherPlace.Fade(this._otherPlace._activation);
 			if (this._isReceptor)
 				this._activation = !this._activation;
@@ -93,10 +93,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._haveColliders)
 				this._collider.enabled = appear;
 			if (this._otherPlace != null)
-				if (appear)
-					yield return this._otherPlace.Fade(this._otherPlace._activation);
-				else
-					yield return this._otherPlace.Fade(this._otherPlace._activation);
+				yield return this._otherPlace.Fade(this._otherPlace._activation);
 		}
 		public void Execute()
 		{
