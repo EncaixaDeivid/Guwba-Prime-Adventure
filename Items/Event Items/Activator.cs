@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal abstract class Activator : StateController
 	{
 		private Animator _animator;
-		private bool _useOneActivation = false;
+		private bool _usedOne = false;
 		private bool _usable = true;
 		[Header("Activator")]
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		protected void Activation()
 		{
-			if (this._oneActivation && this._useOneActivation)
+			if (this._oneActivation && this._usedOne)
 				return;
 			if (this._animator)
 			{
@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			foreach (Receptor receptor in this._receptors)
 				if (receptor)
 					receptor.ReceiveSignal(this);
-			this._useOneActivation = true;
+			this._usedOne = true;
 			SaveController.Load(out SaveFile saveFile);
 			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
