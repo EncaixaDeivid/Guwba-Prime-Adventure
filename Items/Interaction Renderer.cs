@@ -4,6 +4,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
+	[RequireComponent(typeof(IInteractable))]
 	internal sealed class InteractionRenderer : StateController, IImageComponents, IConnector
 	{
 		private IImagePool _imagePool;
