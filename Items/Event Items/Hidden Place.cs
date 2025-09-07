@@ -15,12 +15,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private readonly Sender _sender = Sender.Create();
 		private bool _activation = false;
 		[Header("Hidden Place")]
-		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
+		[SerializeField, Tooltip("The light that will follow Guwba when he enter this place.")] private Light2DBase _followLight;
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
-		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
-		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
+		[SerializeField, Tooltip("If the other hidden place will appear/fade first.\nOnly it is connected to other hidden place.")]
+		private bool _goFirst;
 		[SerializeField, Tooltip("If this object will appear-fade instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
@@ -40,11 +40,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Fade(bool appear)
 		{
-			if (this._otherPlace != null)
-				if (this._otherPlace._appearFirst && appear)
-					this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
-				else if (this._otherPlace._fadeFirst)
-					this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
+			if (this._otherPlace && this._otherPlace._goFirst)
+				yield return this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
 			if (this._isReceptor)
 				this._activation = !this._activation;
 			if (appear)
@@ -92,7 +89,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			}
 			if (this._haveColliders)
 				this._collider.enabled = appear;
-			if (this._otherPlace != null)
+			if (this._otherPlace && !this._otherPlace._goFirst)
 				this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
 		}
 		public void Execute()
