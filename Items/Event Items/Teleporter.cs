@@ -41,12 +41,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Timer()
 		{
-			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToWhereConnection(PathConnection.Hud);
 			this._sender.SetToggle(false);
 			this._sender.Send();
 			yield return new WaitTime(this, this._timeToUse);
 			this.Teleport();
-			this._sender.SetToWhereConnection(PathConnection.Item);
+			this._sender.SetToWhereConnection(PathConnection.Hud);
 			this._sender.SetToggle(true);
 			this._sender.Send();
 		}
