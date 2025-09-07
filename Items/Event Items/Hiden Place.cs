@@ -18,6 +18,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
+		[SerializeField, Tooltip("If the appearance/fade will be instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
 		[SerializeField, Tooltip("If the place has any hidden objects.")] private bool _haveHidden;
@@ -58,12 +59,21 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this._sender.SetToggle(appear);
 				this._sender.Send();
 			}
-			if (appear)
-				for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
-					yield return OpacityLevel(i);
+			if (this._instantly)
+			{
+				Color color = this._tilemap.color;
+				color.a = appear ? 1f : 0f;
+				this._tilemap.color = color;
+			}
 			else
-				for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
-					yield return OpacityLevel(i);
+			{
+				if (appear)
+					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
+						yield return OpacityLevel(i);
+				else
+					for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
+						yield return OpacityLevel(i);
+			}
 			IEnumerator OpacityLevel(float alpha)
 			{
 				yield return new WaitForEndOfFrame();
