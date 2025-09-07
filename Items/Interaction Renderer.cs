@@ -1,25 +1,25 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
-	[RequireComponent(typeof(IInteractable))]
-	internal sealed class InteractionRenderer : StateController, IImageComponents, IConnector
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CircleCollider2D), typeof(IInteractable))]
+	internal sealed class InteractionRenderer : StateController, IConnector
 	{
-		private IImagePool _imagePool;
+		private UIDocument _document;
 		private bool _isActive = true;
 		private bool _isOnCollision = false;
-		[Header("Image Components")]
-		[SerializeField, Tooltip("The image it will show.")] private Sprite _image;
-		[SerializeField, Tooltip("The offset of the image.")] private Vector2 _imageOffset;
-		public Sprite Image => this._image;
-		public Vector2 ImageOffset => this._imageOffset;
-		public PathConnection PathConnection => PathConnection.Item;
+		[Header("Interaction Components")]
+		[SerializeField, Tooltip("The UI document of the interaction.")] private UIDocument _documentObject;
+		[SerializeField, Tooltip("The offset of the document of interaction.")] private Vector2 _imageOffset;
+		public PathConnection PathConnection => PathConnection.Hud;
 		private new void Awake()
 		{
 			base.Awake();
-			this._imagePool = EffectsController.CreateImageRenderer(this);
+			this._document = Instantiate(this._documentObject, this.transform);
+			this._document.enabled = false;
+			this._document.transform.position = this._imageOffset;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -30,12 +30,12 @@ namespace GuwbaPrimeAdventure.Item
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
 			if ((this._isOnCollision = CentralizableGuwba.EqualObject(collision.gameObject)) && this._isActive)
-				this._imagePool.Pull();
+				this._document.enabled = true;
 		}
 		private void OnTriggerExit2D(Collider2D collision)
 		{
 			if (!(this._isOnCollision = !CentralizableGuwba.EqualObject(collision.gameObject)))
-				this._imagePool.Push();
+				this._document.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
@@ -45,12 +45,12 @@ namespace GuwbaPrimeAdventure.Item
 				{
 					this._isActive = true;
 					if (this._isOnCollision)
-						this._imagePool.Pull();
+						this._document.enabled = true;
 				}
 				else
 				{
 					this._isActive = false;
-					this._imagePool.Push();
+					this._document.enabled = false;
 				}
 		}
 	};
