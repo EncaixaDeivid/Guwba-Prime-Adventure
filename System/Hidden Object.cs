@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure
 		private void OnDestroy() => Sender.Exclude(this);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (this == additionalData as HiddenObject && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (this == additionalData as HiddenObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 					for (ushort i = 0; i < this.transform.childCount; i++)
 						this.transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
