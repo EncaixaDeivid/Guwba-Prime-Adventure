@@ -4,13 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase)), DefaultExecutionOrder(-1)]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
 		private List<Light2DBase> _lightsStack;
 		private bool _canHitStop = true;
-		[SerializeField, Tooltip("The renderer of the image.")] private ImageRenderer _imageRenderer;
 		private new void Awake()
 		{
 			if (_instance)
@@ -53,20 +52,8 @@ namespace GuwbaPrimeAdventure
 			this._lightsStack.Remove(globalLight);
 			this._lightsStack[^1].enabled = true;
 		}
-		private IImagePool PrivateCreateImageRenderer<Components>(Components components) where Components : class, IImageComponents
-		{
-			MonoBehaviour rendererObject = components as MonoBehaviour;
-			ImageRenderer image = Instantiate(this._imageRenderer);
-			image.transform.SetParent(rendererObject.transform, false);
-			image.transform.localPosition = components.ImageOffset;
-			SpriteRenderer spriteRenderer = image.GetComponent<SpriteRenderer>();
-			spriteRenderer.sprite = components.Image;
-			return image;
-		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
 		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateOnGlobalLight(globalLight);
 		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateOffGlobalLight(globalLight);
-		public static IImagePool CreateImageRenderer<Components>(Components components) where Components : class, IImageComponents =>
-			_instance.PrivateCreateImageRenderer(components);
 	};
 };
