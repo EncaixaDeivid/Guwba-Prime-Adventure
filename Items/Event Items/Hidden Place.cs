@@ -7,7 +7,7 @@ using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(PolygonCollider2D), typeof(Receptor))]
-	internal sealed class HidenPlace : StateController, Receptor.IReceptor
+	internal sealed class HiddenPlace : StateController, Receptor.IReceptor
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
@@ -16,9 +16,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private bool _activation = false;
 		[Header("Hidden Place")]
 		[SerializeField, Tooltip("The light that will follow Guwba when he enter.")] private Light2DBase _followLight;
+		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
-		[SerializeField, Tooltip("If the appearance/fade will be instantly.")] private bool _instantly;
+		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
+		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
+		[SerializeField, Tooltip("If this object will appear-fade instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
 		[SerializeField, Tooltip("If the place has any hidden objects.")] private bool _haveHidden;
@@ -37,6 +40,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Fade(bool appear)
 		{
+			if (this._otherPlace != null)
+				if (this._appearFirst && appear)
+					yield return this._otherPlace.Fade(this._otherPlace._activation);
+				else if (this._fadeFirst)
+					yield return this._otherPlace.Fade(this._otherPlace._activation);
 			if (this._isReceptor)
 				this._activation = !this._activation;
 			if (appear)
@@ -84,6 +92,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			}
 			if (this._haveColliders)
 				this._collider.enabled = appear;
+			if (this._otherPlace != null)
+				if (appear)
+					yield return this._otherPlace.Fade(this._otherPlace._activation);
+				else
+					yield return this._otherPlace.Fade(this._otherPlace._activation);
 		}
 		public void Execute()
 		{
