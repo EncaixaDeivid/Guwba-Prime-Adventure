@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData as HiddenObject == this.gameObject && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (additionalData as HiddenObject == this && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 					for (ushort i = 0; i < this.transform.childCount; i++)
 						this.transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
