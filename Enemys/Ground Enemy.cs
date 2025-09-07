@@ -3,7 +3,6 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	internal sealed class GroundEnemy : MovingEnemy
 	{
-		private bool _rotate = true;
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
 		private float _timeRun = 0f;
@@ -18,10 +17,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
 		[SerializeField, Tooltip("The amount of time this enemy will be dashing upon the target.")] private float _timeDashing;
-		[Header("Crawl Movement")]
-		[SerializeField, Tooltip("If this enemy will crawl on the walls.")] private bool _useCrawlMovement;
-		[SerializeField, Tooltip("The gravity applied when crawling.")] private float _crawlGravity;
-		[SerializeField, Tooltip("The distance of the ray when crawling.")] private float _crawlRayDistance;
 		private new void Awake()
 		{
 			base.Awake();
@@ -85,7 +80,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._detected = false;
 			if (this._useFaceLook)
 			{
-				Vector2 rayDirection = this._useCrawlMovement ? this.transform.right * this._movementSide : Vector2.right * this._movementSide;
+				Vector2 rayDirection = Vector2.right * this._movementSide;
 				float rayDistance = this._faceLookDistance;
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
@@ -115,38 +110,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					this._movementSide *= -1;
 			}
-			if (blockPerception && this._rotate)
-				this._movementSide *= -1;
-			if (this._useCrawlMovement)
-			{
-				float crawlRayDistance = this._collider.bounds.extents.y + this._crawlRayDistance;
-				bool rayValue = Physics2D.Raycast(this.transform.position, -this.transform.up, crawlRayDistance, this._groundLayer);
-				if (this._rotate && !rayValue)
-				{
-					this._rotate = false;
-					this.transform.eulerAngles += new Vector3(0f, 0f, this._movementSide * -90f);
-				}
-				if (rayValue)
-					this._rotate = true;
-				if (this._detected && !this._isDashing)
-					if (this._detectionStop)
-					{
-						this._stopWorking = true;
-						if (this._stopToShoot)
-							this._sender.Send();
-						return;
-					}
-					else if (this._shootDetection)
-						this._sender.Send();
-				Vector2 gravity = Physics2D.gravity.y * this._crawlGravity * Time.deltaTime * this.transform.up;
-				Vector2 normalSpeed = this._movementSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
-				Vector2 upedSpeed = this._dashSpeed * this._movementSide * (Vector2)this.transform.right + gravity;
-				this._rigidybody.linearVelocity = this._detected ? upedSpeed : normalSpeed;
-				return;
-			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
-			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer))
+			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer) || blockPerception)
 				this._movementSide *= -1;
 			if (this._detected && !this._isDashing)
 				if (this._detectionStop)
