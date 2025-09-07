@@ -19,8 +19,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
-		[SerializeField, Tooltip("If the other hidden place will appear/fade first.\nOnly it is connected to other hidden place.")]
-		private bool _goFirst;
+		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
+		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
 		[SerializeField, Tooltip("If this object will appear-fade instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
@@ -40,8 +40,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Fade(bool appear)
 		{
-			if (this._otherPlace && this._otherPlace._goFirst)
-				yield return this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
+			bool onFirst = false;
+			if (this._otherPlace)
+				if (onFirst = this._otherPlace._appearFirst && this._otherPlace._activation)
+					yield return this.StartCoroutine(this._otherPlace.Fade(true));
+				else if (onFirst = this._otherPlace._fadeFirst && !this._otherPlace._activation)
+					yield return this.StartCoroutine(this._otherPlace.Fade(false));
 			if (this._isReceptor)
 				this._activation = !this._activation;
 			if (appear)
@@ -89,8 +93,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			}
 			if (this._haveColliders)
 				this._collider.enabled = appear;
-			if (this._otherPlace && !this._otherPlace._goFirst)
-				this.StartCoroutine(this._otherPlace.Fade(this._otherPlace._activation));
+			if (this._otherPlace && !onFirst)
+				if (!this._otherPlace._appearFirst && this._otherPlace._activation)
+					this.StartCoroutine(this._otherPlace.Fade(true));
+				else if (!this._otherPlace._fadeFirst && !this._otherPlace._activation)
+					this.StartCoroutine(this._otherPlace.Fade(false));
 		}
 		public void Execute()
 		{
