@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Story
 		{
 			if (this._dialogObject && this._dialogHudObject)
 			{
-				this._sender.SetToWhereConnection(PathConnection.Item);
+				this._sender.SetToWhereConnection(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.Action);
 				this._sender.SetAdditionalData(this.gameObject);
 				this._sender.SetToggle(false);
