@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Item
 			base.Awake();
 			this._document = Instantiate(this._documentObject, this.transform);
 			this._document.enabled = false;
-			this._document.transform.position = this._imageOffset;
+			this._document.transform.localPosition = this._imageOffset;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
