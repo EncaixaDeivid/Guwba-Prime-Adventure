@@ -32,11 +32,14 @@ namespace GuwbaPrimeAdventure.Guwba
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
+		private float _fallStart = 0f;
+		private float _fallDamage = 0f;
 		private bool _isDamaged = false;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashActive = false;
+		private bool _fallStarted = false;
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
@@ -83,7 +86,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
-		[SerializeField, Tooltip("The amount of gravity to increase the fall.")] private float _fallGravityMultiply;
+		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
+		[SerializeField, Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
+		[SerializeField, Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")]
+		private float _fallDamageShowMultiply;
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
@@ -405,6 +412,25 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._lastGroundedTime = this._jumpCoyoteTime;
 					this._downStairs = true;
 					this._isJumping = false;
+					if (this._fallDamage > 0f)
+					{
+						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
+						this._fallStarted = false;
+						this._fallDamage = 0f;
+						if (this._isDamaged)
+							this.StartCoroutine(KeepShow());
+						else
+						{
+							this._visualizableGuwba.FallDamageText.style.opacity = 0f;
+							this._visualizableGuwba.FallDamageText.text = $"X 0";
+						}
+						IEnumerator KeepShow()
+						{
+							yield return new WaitTime(this, this._timeToFadeShow);
+							this._visualizableGuwba.FallDamageText.style.opacity = 0f;
+							this._visualizableGuwba.FallDamageText.text = $"X 0";
+						}
+					}
 				}
 				else if (this._rigidbody.linearVelocityY != 0f && !downStairs)
 				{
@@ -414,16 +440,49 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
 					if (this._animator.GetBool(this._attackJump))
 						this._animator.SetBool(this._attackJump, this._rigidbody.linearVelocityY > 0f);
-					float fallGravity = this._fallGravityMultiply * this._gravityScale;
-					this._rigidbody.gravityScale = this._animator.GetBool(this._fall) ? fallGravity : this._gravityScale;
+					if (this._animator.GetBool(this._fall))
+					{
+						this._rigidbody.gravityScale = this._fallGravityMultiply * this._gravityScale;
+						if (this._fallStarted)
+						{
+							this._fallDamage = Mathf.Abs(this.transform.position.y - this._fallStart);
+							if (this._fallDamage >= this._fallDamageDistance * this._fallDamageShowMultiply)
+							{
+								this._visualizableGuwba.FallDamageText.style.opacity = 1f;
+								this._visualizableGuwba.FallDamageText.text = $"X {this._fallDamage / this._fallDamageDistance}";
+							}
+							else if (!this._isDamaged)
+							{
+								this._visualizableGuwba.FallDamageText.style.opacity = 0f;
+								this._visualizableGuwba.FallDamageText.text = $"X 0";
+							}
+						}
+						else
+						{
+							this._fallStarted = true;
+							this._fallStart = this.transform.position.y;
+							this._fallDamage = 0f;
+						}
+					}
+					else
+					{
+						if (!this._isDamaged)
+						{
+							this._visualizableGuwba.FallDamageText.style.opacity = 0f;
+							this._visualizableGuwba.FallDamageText.text = $"X 0";
+						}
+						this._rigidbody.gravityScale = this._gravityScale;
+						this._fallDamage = 0f;
+					}
 					this._lastGroundedTime -= Time.fixedDeltaTime;
 					this._lastJumpTime -= Time.fixedDeltaTime;
 					this._downStairs = false;
 				}
 			if (!this._dashActive)
 			{
-				if (this._movementAction != 0f && this._isOnGround)
+				if (this._movementAction != 0f)
 				{
+					this.transform.right = this._movementAction < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 					float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 					Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
 					Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
@@ -450,8 +509,6 @@ namespace GuwbaPrimeAdventure.Guwba
 						}
 					}
 				}
-				if (this._movementAction != 0f)
-					this.transform.right = this._movementAction < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
 				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
