@@ -8,10 +8,13 @@ namespace GuwbaPrimeAdventure.Guwba
 		private static VisualizableGuwba _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
+		[SerializeField, Tooltip("User interface element.")] private string _vitalityGroupObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _recoverVitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _recoverVitalityPieceVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _fallDamageTextObject;
+		[SerializeField, Tooltip("User interface element.")] private string _subTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
 		[Header("Vitality Visual")]
@@ -25,6 +28,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement[] VitalityVisual { get; private set; }
 		internal VisualElement[] RecoverVitalityVisual { get; private set; }
+		internal Label FallDamageText { get; private set; }
 		internal Label LifeText { get; private set; }
 		internal Label CoinText { get; private set; }
 		internal Color BackgroundColor => this._backgroundColor;
@@ -42,6 +46,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.RootElement = root.Q<VisualElement>(this._rootElementObject);
+			root.Q<GroupBox>(this._vitalityGroupObject).style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
+			this.FallDamageText = root.Q<Label>(this._fallDamageTextObject);
+			root.Q<GroupBox>(this._subTextObject).style.width = new StyleLength(new Length(this._totalWidth / 2f, LengthUnit.Pixel));
 			this.LifeText = root.Q<Label>(this._lifeTextObject);
 			this.CoinText = root.Q<Label>(this._coinTextObject);
 			VisualElement vitality = root.Q<VisualElement>($"{this._vitalityVisual}");
