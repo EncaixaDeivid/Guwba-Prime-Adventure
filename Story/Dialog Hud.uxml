@@ -1,13 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Dialog/Scripts/Dialog%20Hud.uss?fileID=7433441132597879392&amp;guid=9f2eb5b6cdc88fc449612df3a1e01507&amp;type=3#Dialog Hud" />
+    <Style src="project://database/Assets/Story/Designs/Dialog%20Hud.uss?fileID=7433441132597879392&amp;guid=9f2eb5b6cdc88fc449612df3a1e01507&amp;type=3#Dialog Hud" />
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="DialogBox">
-            <ui:VisualElement name="CharacterIcon" class="Padrao" />
+            <ui:VisualElement name="CharacterIcon" />
             <ui:GroupBox name="Texts">
-                <ui:Label name="CharacterName" text="Character Name" parse-escape-sequences="true" class="Texto" />
-                <ui:Label text="Character Speach" name="CharacterSpeach" parse-escape-sequences="true" class="Texto" />
+                <ui:Label name="CharacterName" text="Character Name" parse-escape-sequences="true" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
+                <ui:Label name="CharacterSpeach" text="Character Speach" parse-escape-sequences="true" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
             </ui:GroupBox>
-            <ui:Button text="&gt;&gt;" name="AdvanceDialog" class="Texto" />
+            <ui:Button text="&gt;&gt;" name="AdvanceDialog" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
