@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private BoxCollider2D _collider;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
-		private Vector2 _redAxis = new();
+		private Vector2 _rightLeftAxis = new();
 		private Vector2 _normalSize = new();
 		private short _vitality;
 		private ushort _recoverVitality = 0;
@@ -113,8 +113,8 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._visualizableGuwba = Instantiate(this._visualizableGuwbaObject, this.transform);
 			this._damageableGuwbas = this.GetComponentsInChildren<DamageableGuwba>(true);
-			this._redAxis = new(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
-			this.transform.right = this._turnLeft ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
+			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
+			this.transform.right = this._turnLeft ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 			foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
 			{
 				damageableGuwba.DamageableHurt += this.Hurt;
@@ -231,7 +231,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetBool(this._attackSlide, true);
 					this._animator.SetBool(this._dashSlide, this._dashActive = true);
 					this._dashMovement = this._movementAction;
-					this.transform.right = this._dashMovement < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
+					this.transform.right = this._dashMovement < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 					float dashLocation = this.transform.position.x;
 					this._collider.size = this._dashSlideSize;
 					this._collider.offset = new Vector2(this._collider.offset.x, -((this._normalSize.y - this._collider.size.y) / 2f));
@@ -386,7 +386,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void FixedUpdate()
 		{
-			this._redAxis = new(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
+			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			Vector2 direction = this.transform.right * movementValue;
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
@@ -482,7 +482,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				if (this._movementAction != 0f)
 				{
-					this.transform.right = this._movementAction < 0f ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
+					this.transform.right = this._movementAction < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 					float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 					Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
 					Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
@@ -592,7 +592,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
 				}
 				this._vitality = (short)this._visualizableGuwba.Vitality;
-				this.transform.right = this._turnLeft ? this._redAxis * Vector2.left : this._redAxis * Vector2.right;
+				this.transform.right = this._turnLeft ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 				this._animator.SetBool(this._death, false);
 				this._collider.size = this._normalSize;
 			}
