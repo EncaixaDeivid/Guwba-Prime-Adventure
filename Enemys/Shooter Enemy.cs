@@ -38,7 +38,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Shoot()
 		{
 			bool hasTarget = false;
-			float originDirection = this._collider.bounds.extents.x * this._movementSide;
+			float originDirection = this._collider.bounds.extents.x * (this.transform.right.x < 0f ? -1f : 1f);
 			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
 			Vector2 direction = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward) * Vector2.up;
 			if (this._circulateDetection)
