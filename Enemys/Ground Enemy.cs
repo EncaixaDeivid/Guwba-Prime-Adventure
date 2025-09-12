@@ -67,6 +67,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
 			}
+			Vector2 right = this.transform.right;
 			if (this._isDashing)
 			{
 				this._dashedTime += Time.deltaTime;
@@ -80,26 +81,18 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._detected = false;
 			if (this._useFaceLook)
 			{
-				Vector2 rayDirection = this.transform.right;
 				float rayDistance = this._faceLookDistance;
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, rayDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
 						this._detected = true;
 						break;
 					}
 			}
-			float xAxisOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this.transform.right.x;
-			float yAxisOrigin = (this._collider.bounds.extents.y + this._blockDistance / 2f) * this.transform.right.y;
-			float xOrigin = this.transform.position.x + xAxisOrigin * Mathf.Abs(this.transform.right.x);
-			float yOrigin = this.transform.position.y + yAxisOrigin * Mathf.Abs(this.transform.right.y);
-			Vector2 origin = new(xOrigin, yOrigin);
-			float xSize = this._blockDistance + (this._collider.bounds.size.x - this._blockDistance * 2f) * Mathf.Abs(this.transform.right.y);
-			float ySize = this._blockDistance + (this._collider.bounds.size.y - this._blockDistance * 2f) * Mathf.Abs(this.transform.right.x);
-			Vector2 size = new(xSize, ySize);
-			Vector2 direction = this.transform.right;
-			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
-			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, angle, direction, this._blockDistance, this._groundLayer);
+			float xOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this.transform.right.x;
+			Vector2 origin = new(this.transform.position.x + xOrigin, this.transform.position.y);
+			Vector2 size = new(this._blockDistance, this._collider.bounds.size.y - this._blockDistance);
+			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, right, this._blockDistance, this._groundLayer);
 			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
 			if (this._runFromTarget && this._timeRun <= 0f && this._detected)
 			{
@@ -107,12 +100,12 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._runTowards)
 					this._runTowards = false;
 				else
-					this.transform.right *= Vector2.left + Vector2.up;
+					this.transform.right *= -1f;
 			}
-			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this.transform.right.x;
+			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
-			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer) || blockPerception)
-				this.transform.right *= Vector2.left + Vector2.up;
+			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, this._blockDistance, this._groundLayer) || blockPerception)
+				this.transform.right *= -1f;
 			if (this._detected && !this._isDashing)
 				if (this._detectionStop)
 				{
@@ -123,7 +116,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else if (this._shootDetection)
 					this._sender.Send();
-			Vector2 right = this.transform.right;
 			this._rigidybody.linearVelocity = this._detected ? right * this._dashSpeed : right * this._movementSpeed;
 		}
 	};
