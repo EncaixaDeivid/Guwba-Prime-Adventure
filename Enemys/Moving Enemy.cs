@@ -10,15 +10,18 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
 		[Header("Moving Enemy")]
+		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
+		[SerializeField, Tooltip("The amount of speed of the dash.")] protected ushort _dashSpeed;
+		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy will stop on detection of the target.")] protected bool _detectionStop;
 		[SerializeField, Tooltip("If this enemy will shoot a projectile on detection.\nRequires: Shooter Enemy")] protected bool _shootDetection;
 		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] protected bool _stopToShoot;
 		[SerializeField, Tooltip("The amount of time this enemy will stop on detection.")] protected float _stopTime;
-		[SerializeField, Tooltip("The amount of speed of the dash.")] protected ushort _dashSpeed;
 		protected new void Awake()
 		{
 			base.Awake();
 			this._sender.SetStateForm(StateForm.Action);
+			this.transform.right = this._invertMovementSide ? -Vector2.right : Vector2.right;
 		}
 		private new void OnEnable()
 		{
