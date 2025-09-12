@@ -20,13 +20,15 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
-		private void OnEnable()
+		private new void OnEnable()
 		{
+			base.OnEnable();
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(true);
 		}
-		private void OnDisable()
+		private new void OnDisable()
 		{
+			base.OnDisable();
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(false);
 		}
