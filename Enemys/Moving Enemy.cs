@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal abstract class MovingEnemy : EnemyController, IConnector
 	{
+		private Vector2 _guardVelocity = new();
 		protected bool _detected = false;
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
@@ -18,6 +19,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._sender.SetStateForm(StateForm.Action);
+		}
+		private new void OnEnable()
+		{
+			base.OnEnable();
+			this._rigidybody.linearVelocity = this._guardVelocity;
+		}
+		private new void OnDisable()
+		{
+			base.OnDisable();
+			this._guardVelocity = this._rigidybody.linearVelocity;
+			this._rigidybody.linearVelocity = Vector2.zero;
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
