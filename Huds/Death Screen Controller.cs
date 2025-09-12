@@ -57,14 +57,16 @@ namespace GuwbaPrimeAdventure.Hud
 						this._deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
 					}
-					this._sender.SetToWhereConnection(PathConnection.Item);
-					this._sender.SetStateForm(StateForm.Enable);
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.SetToWhereConnection(PathConnection.System);
 					this._sender.Send();
 					this._sender.SetToWhereConnection(PathConnection.Guwba);
-					this._sender.SetStateForm(StateForm.Action);
 					this._sender.Send();
-					this._sender.SetToWhereConnection(PathConnection.Enemy);
 					this._sender.SetStateForm(StateForm.Disable);
+					this._sender.SetToWhereConnection(PathConnection.Enemy);
+					this._sender.Send();
+					this._sender.SetStateForm(StateForm.Enable);
+					this._sender.SetToWhereConnection(PathConnection.Item);
 					this._sender.Send();
 					for (float i = 1f; this._deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
 					{
@@ -72,7 +74,6 @@ namespace GuwbaPrimeAdventure.Hud
 						yield return new WaitForEndOfFrame();
 					}
 					this._sender.SetToWhereConnection(PathConnection.Guwba);
-					this._sender.SetStateForm(StateForm.Enable);
 					this._sender.Send();
 					if (this._deathScreenHud)
 					{
