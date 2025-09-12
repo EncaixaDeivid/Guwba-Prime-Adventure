@@ -21,8 +21,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private ushort _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
-		[SerializeField, Tooltip("The speed of the enemy to moves.")] protected ushort _movementSpeed;
-		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
