@@ -38,7 +38,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				return;
 			}
-			if (this._stopWorking || this.IsStunned)
+			if (this._stopWorking)
 				return;
 			if (this._runFromTarget)
 			{
@@ -80,7 +80,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._detected = false;
 			if (this._useFaceLook)
 			{
-				Vector2 rayDirection = Vector2.right * this._movementSide;
+				Vector2 rayDirection = this.transform.right;
 				float rayDistance = this._faceLookDistance;
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, rayDirection, rayDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
@@ -89,9 +89,8 @@ namespace GuwbaPrimeAdventure.Enemy
 						break;
 					}
 			}
-			this._spriteRenderer.flipX = this._movementSide < 0f;
-			float xAxisOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this._movementSide;
-			float yAxisOrigin = (this._collider.bounds.extents.y + this._blockDistance / 2f) * this._movementSide;
+			float xAxisOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this.transform.right.x;
+			float yAxisOrigin = (this._collider.bounds.extents.y + this._blockDistance / 2f) * this.transform.right.y;
 			float xOrigin = this.transform.position.x + xAxisOrigin * Mathf.Abs(this.transform.right.x);
 			float yOrigin = this.transform.position.y + yAxisOrigin * Mathf.Abs(this.transform.right.y);
 			Vector2 origin = new(xOrigin, yOrigin);
@@ -108,12 +107,12 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._runTowards)
 					this._runTowards = false;
 				else
-					this._movementSide *= -1;
+					this.transform.right *= Vector2.left + Vector2.up;
 			}
-			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this._movementSide;
+			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * this.transform.right.x;
 			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, .05f, this._groundLayer) || blockPerception)
-				this._movementSide *= -1;
+				this.transform.right *= Vector2.left + Vector2.up;
 			if (this._detected && !this._isDashing)
 				if (this._detectionStop)
 				{
@@ -124,7 +123,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else if (this._shootDetection)
 					this._sender.Send();
-			this._rigidybody.linearVelocityX = this._detected ? this._movementSide * this._dashSpeed : this._movementSpeed * this._movementSide;
+			Vector2 right = this.transform.right;
+			this._rigidybody.linearVelocity = this._detected ? right * this._dashSpeed : right * this._movementSpeed;
 		}
 	};
 };
