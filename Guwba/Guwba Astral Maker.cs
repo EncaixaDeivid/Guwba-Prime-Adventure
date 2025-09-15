@@ -480,9 +480,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			if (!this._dashActive)
 			{
-				if (this._movementAction != 0f)
+				if (this._isOnGround && this._movementAction != 0f)
 				{
-					this.transform.right = this._movementAction < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 					float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
 					Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
 					Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
@@ -509,6 +508,8 @@ namespace GuwbaPrimeAdventure.Guwba
 						}
 					}
 				}
+				if (this._movementAction != 0f)
+					this.transform.right = this._movementAction < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
 				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
