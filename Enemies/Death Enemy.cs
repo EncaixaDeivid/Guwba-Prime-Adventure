@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		[Header("Death Enemy")]
 		[SerializeField, Tooltip("The enemy that this enemy will spawn in death.")] private EnemyController _childEnemy;
-		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private Projectile _childProjectile;
+		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private EnemyProjectile _childProjectile;
 		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private float _deathTime;
 		private new void Awake()
