@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _gravityScale = 0f;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy")]
-		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private Projectile[] _projectiles;
+		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private EnemyProjectile[] _projectiles;
 		[SerializeField, Tooltip("The distance this enemy can detect the target.")] private float _perceptionDistance;
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
@@ -77,7 +77,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
-				foreach (Projectile projectile in this._projectiles)
+				foreach (EnemyProjectile projectile in this._projectiles)
 					if (this._pureInstance)
 						Instantiate(projectile, this.transform.position, projectile.transform.rotation, this.transform);
 					else
