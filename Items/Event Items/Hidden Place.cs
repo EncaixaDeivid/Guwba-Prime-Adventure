@@ -63,25 +63,35 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					yield return new WaitUntil(() => this.enabled);
 				}
 			}
-			if (this._haveHidden)
+			void HaveHidden()
 			{
-				this._sender.SetToggle(appear);
-				this._sender.Send();
+				if (this._haveHidden)
+				{
+					this._sender.SetToggle(appear);
+					this._sender.Send();
+				}
 			}
 			if (this._instantly)
 			{
 				Color color = this._tilemap.color;
 				color.a = appear ? 1f : 0f;
 				this._tilemap.color = color;
+				HaveHidden();
 			}
 			else
 			{
 				if (appear)
+				{
+					HaveHidden();
 					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 						yield return OpacityLevel(i);
+				}
 				else
+				{
+					HaveHidden();
 					for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
 						yield return OpacityLevel(i);
+				}
 			}
 			IEnumerator OpacityLevel(float alpha)
 			{
