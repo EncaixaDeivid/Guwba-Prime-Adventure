@@ -4,11 +4,11 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal sealed class Projectile : StateController
+	internal sealed class EnemyProjectile : StateController
 	{
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
-		private readonly List<Projectile> _projectiles = new();
+		private readonly List<EnemyProjectile> _projectiles = new();
 		private Vector2 _guardVelocity = new();
 		private Vector2Int _oldCellPosition = new();
 		private Vector2Int _cellPosition = new();
@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalReturnPoint = 0;
 		private bool _breakInUse = false;
 		[Header("Projectile")]
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
