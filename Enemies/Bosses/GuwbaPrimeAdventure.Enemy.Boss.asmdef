@@ -1,0 +1,20 @@
+{
+    "name": "GuwbaPrimeAdventure.Enemy.Boss",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c5fb3f71187e39a44a05216e6e758570",
+        "GUID:a891cefdf21b4414abaef245e9237a1d",
+        "GUID:7b4b5b9c6b84b13438e2b4880db5d7d6",
+        "GUID:bf4adeaf926423d44b217adbe90d9c00",
+        "GUID:a85275ba20cdce041969ba5a8a05d34e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
