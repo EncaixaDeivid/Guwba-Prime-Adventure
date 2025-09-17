@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time this enemy will be stunned when armor be broken.")] private float _stunnedTime;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
+		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
 		public short Health => this._vitality;
@@ -51,7 +51,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.OnDestroy();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
