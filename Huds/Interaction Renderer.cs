@@ -7,16 +7,19 @@ namespace GuwbaPrimeAdventure.Item
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CircleCollider2D), typeof(IInteractable))]
 	internal sealed class InteractionRenderer : StateController, IConnector
 	{
+		private Animator _animator;
 		private UIDocument _document;
 		private bool _isActive = true;
 		private bool _isOnCollision = false;
 		[Header("Interaction Components")]
 		[SerializeField, Tooltip("The UI document of the interaction.")] private UIDocument _documentObject;
 		[SerializeField, Tooltip("The offset of the document of interaction.")] private Vector2 _imageOffset;
+		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private new void Awake()
 		{
 			base.Awake();
+			this._animator = this.GetComponent<Animator>();
 			this._document = Instantiate(this._documentObject, this.transform);
 			this._document.enabled = false;
 			this._document.transform.localPosition = this._imageOffset;
@@ -26,6 +29,16 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
+		}
+		private void OnEnable()
+		{
+			if (this._animator)
+				this._animator.SetFloat(this._isOn, 1f);
+		}
+		private void OnDisable()
+		{
+			if (this._animator)
+				this._animator.SetFloat(this._isOn, 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
