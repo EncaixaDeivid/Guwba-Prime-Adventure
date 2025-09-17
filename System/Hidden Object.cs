@@ -10,8 +10,9 @@ namespace GuwbaPrimeAdventure
 		public PathConnection PathConnection => PathConnection.System;
 		private void Awake()
 		{
-			for (ushort i = 0; i < this.transform.childCount; i++)
-				this.transform.GetChild(i).gameObject.SetActive(this._initialActive);
+			if (!this._initialActive)
+				for (ushort i = 0; i < this.transform.childCount; i++)
+					this.transform.GetChild(i).gameObject.SetActive(false);
 			this.GetComponent<BoxCollider2D>().enabled = !this._offCollision;
 			Sender.Include(this);
 		}
