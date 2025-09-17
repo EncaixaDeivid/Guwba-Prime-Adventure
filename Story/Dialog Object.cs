@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("If the interaction have to be inactivated after the speach.")] private bool _desactiveInteraction;
 		[SerializeField, Tooltip("If the animation will play.")] private bool _activateAnimation;
 		[SerializeField, Tooltip("If the object will destruct.")] private bool _activateDestroy;
-		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnEspecific;
+		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		[SerializeField, Tooltip("The amount of time to wait to destroy after the speach.")] private float _timeToDestroy;
 		internal Speach[] Speachs => this._speach;
 		internal string SceneToTransition => this._sceneToTransition;
@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Story
 		internal bool DesactiveInteraction => this._desactiveInteraction;
 		internal bool ActivateAnimation => this._activateAnimation;
 		internal bool ActivateDestroy => this._activateDestroy;
-		internal bool SaveOnEspecific => this._saveOnEspecific;
+		internal bool SaveOnEspecific => this._saveOnSpecifics;
 		internal float TimeToDestroy => this._timeToDestroy;
 		[Serializable]
 		internal struct Speach
