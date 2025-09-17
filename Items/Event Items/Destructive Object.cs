@@ -14,7 +14,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
-		[SerializeField, Tooltip("If this object will saved on destruction or not.")] private bool _saveOnDestruction;
 		public short Health => this._vitality;
 		private new void Awake()
 		{
