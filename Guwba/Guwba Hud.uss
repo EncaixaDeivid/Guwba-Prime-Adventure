@@ -35,9 +35,6 @@
     width: 125px;
     height: 100%;
 }
-#LifeIcon{
-    background-image: url("project://database/Assets/Guwba/Designs/Guwba Heart.png");
-}
 #CoinIcon {
     background-image: url("project://database/Assets/Items/Designs/Coin Frame.png");
 }
