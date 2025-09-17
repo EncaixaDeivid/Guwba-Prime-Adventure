@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[Header("Activator")]
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
 		[SerializeField, Tooltip("The activator only can be activeted one time.")] private bool _oneActivation;
-		[SerializeField, Tooltip("If this object have been activeted before it will always be activeted.")] private bool _saveObject;
+		[SerializeField, Tooltip("If this object have been activeted before it will always be activeted.")] private bool _saveOnSpecifics;
 		[Header("Animation")]
 		[SerializeField, Tooltip("Animation parameter.")] private string _use;
 		[SerializeField, Tooltip("Animation parameter.")] private string _useOne;
@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._saveOnSpecifics && saveFile.generalObjects.Contains(this.gameObject.name))
 				this.Activation();
 		}
 		private void OnEnable()
@@ -52,7 +52,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 					receptor.ReceiveSignal(this);
 			this._usedOne = true;
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
