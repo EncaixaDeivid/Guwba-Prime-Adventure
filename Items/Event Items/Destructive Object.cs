@@ -1,12 +1,15 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDestructible
 	{
+		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
-		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")] private GameObject _hiddenObject;
+		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of this.")]
+		private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
@@ -16,6 +19,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
+			this._sender.SetToWhereConnection(PathConnection.System);
+			this._sender.SetStateForm(StateForm.State);
+			this._sender.SetAdditionalData(this._hiddenObject);
+			this._sender.SetToggle(true);
 			SaveController.Load(out SaveFile saveFile);
 			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
@@ -23,7 +30,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public void Execute()
 		{
 			if (this._hiddenObject)
-				Instantiate(this._hiddenObject, this.transform.position, this._hiddenObject.transform.rotation);
+				this._sender.Send();
 			this.SaveObject();
 			Destroy(this.gameObject);
 		}
@@ -41,7 +48,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._destroyOnCollision)
 			{
 				if (this._hiddenObject)
-					Instantiate(this._hiddenObject, this.transform.position, this._hiddenObject.transform.rotation);
+					this._sender.Send();
 				this.SaveObject();
 				Destroy(this.gameObject);
 			}
@@ -58,7 +65,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._vitality <= 0f)
 			{
 				if (this._hiddenObject)
-					Instantiate(this._hiddenObject, this.transform.position, this._hiddenObject.transform.rotation);
+					this._sender.Send();
 				this.SaveObject();
 				Destroy(this.gameObject);
 			}
