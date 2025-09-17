@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
-		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveObject;
+		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		public short Health => this._vitality;
 		private new void Awake()
 		{
@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetAdditionalData(this._hiddenObject);
 			this._sender.SetToggle(true);
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveObject && saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._saveOnSpecifics && saveFile.generalObjects.Contains(this.gameObject.name))
 				Destroy(this.gameObject, 0.001f);
 		}
 		public void Execute()
@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void SaveObject()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveObject && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
