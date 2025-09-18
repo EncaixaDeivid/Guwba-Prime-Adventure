@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	internal sealed class GeneratorItem : StateController
 	{
 		private readonly List<GameObject> _itemsGenerated = new();
