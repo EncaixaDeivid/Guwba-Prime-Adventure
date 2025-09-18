@@ -4,8 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Collider2D), typeof(Receptor))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class Teleporter : StateController, Receptor.IReceptor, IInteractable
 	{
 		private Coroutine _timerCoroutine;
