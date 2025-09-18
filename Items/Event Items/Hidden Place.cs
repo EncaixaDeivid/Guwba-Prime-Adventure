@@ -6,16 +6,18 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(PolygonCollider2D), typeof(Receptor))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
+	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface))]
+	[RequireComponent(typeof(Light2DBase), typeof(Receptor))]
 	internal sealed class HiddenPlace : StateController, Receptor.IReceptor
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
 		private Light2DBase _selfLight;
+		private Light2DBase _followLight;
 		private readonly Sender _sender = Sender.Create();
 		private bool _activation = false;
 		[Header("Hidden Place")]
-		[SerializeField, Tooltip("The light that will follow Guwba when he enter this place.")] private Light2DBase _followLight;
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
@@ -30,9 +32,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._tilemap = this.GetComponentInParent<Tilemap>();
-			this._collider = this.GetComponentInParent<TilemapCollider2D>();
+			this._tilemap = this.GetComponent<Tilemap>();
+			this._collider = this.GetComponent<TilemapCollider2D>();
 			this._selfLight = this.GetComponent<Light2DBase>();
+			this._followLight = this.GetComponentInChildren<Light2DBase>();
 			this._sender.SetToWhereConnection(PathConnection.System);
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this._hiddenObject);
