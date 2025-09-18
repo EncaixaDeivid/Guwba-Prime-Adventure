@@ -3,8 +3,8 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(CircleCollider2D), typeof(Transitioner), typeof(IInteractable))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
+	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGoal : StateController
 	{
 		[Header("Scene Interactions")]
