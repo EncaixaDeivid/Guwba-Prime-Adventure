@@ -18,7 +18,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetToWhereConnection(PathConnection.System);
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this._hiddenObject);
 			this._sender.SetToggle(true);
@@ -29,7 +28,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public void Execute()
 		{
 			if (this._hiddenObject)
-				this._sender.Send();
+				this._sender.Send(PathConnection.System);
 			this.SaveObject();
 			Destroy(this.gameObject);
 		}
@@ -47,7 +46,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._destroyOnCollision)
 			{
 				if (this._hiddenObject)
-					this._sender.Send();
+					this._sender.Send(PathConnection.System);
 				this.SaveObject();
 				Destroy(this.gameObject);
 			}
@@ -64,7 +63,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._vitality <= 0f)
 			{
 				if (this._hiddenObject)
-					this._sender.Send();
+					this._sender.Send(PathConnection.System);
 				this.SaveObject();
 				Destroy(this.gameObject);
 			}
