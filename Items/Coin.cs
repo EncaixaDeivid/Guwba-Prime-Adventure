@@ -42,7 +42,7 @@ namespace GuwbaPrimeAdventure.Item
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Enable && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				this._spriteRenderer.enabled = true;
 				this._collider.enabled = true;
