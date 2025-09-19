@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	internal sealed class GroundEnemy : MovingEnemy
@@ -111,11 +112,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					this._stopWorking = true;
 					if (this._stopToShoot)
-						this._sender.Send();
+						this._sender.Send(PathConnection.Enemy);
 					return;
 				}
 				else if (this._shootDetection)
-					this._sender.Send();
+					this._sender.Send(PathConnection.Enemy);
 			this._rigidybody.linearVelocity = this._detected ? right * this._dashSpeed : right * this._movementSpeed;
 		}
 	};
