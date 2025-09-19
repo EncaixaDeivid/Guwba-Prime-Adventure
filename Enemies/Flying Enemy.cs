@@ -1,4 +1,5 @@
 using UnityEngine;
+using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -59,11 +60,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					this._stopWorking = true;
 					if (this._stopToShoot)
-						this._sender.Send();
+						this._sender.Send(PathConnection.Enemy);
 					return;
 				}
 				else if (this._shootDetection)
-					this._sender.Send();
+					this._sender.Send(PathConnection.Enemy);
 			}
 			else if (!this._isDashing && this._returnDash)
 				this._returnDash = false;
