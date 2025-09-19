@@ -36,7 +36,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._collider = this.GetComponent<TilemapCollider2D>();
 			this._selfLight = this.GetComponent<Light2DBase>();
 			this._followLight = this.GetComponentInChildren<Light2DBase>();
-			this._sender.SetToWhereConnection(PathConnection.System);
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this._hiddenObject);
 			this._activation = !this._fadeActivation;
@@ -71,7 +70,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (this._haveHidden)
 				{
 					this._sender.SetToggle(appear);
-					this._sender.Send();
+					this._sender.Send(PathConnection.System);
 				}
 			}
 			if (this._instantly)
