@@ -37,7 +37,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (this._invencibleStop)
 					{
 						this._sender.SetToggle(true);
-						this._sender.Send();
+						this._sender.Send(PathConnection.Enemy);
 					}
 				}
 				else
@@ -47,7 +47,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (this._invencibleStop)
 					{
 						this._sender.SetToggle(false);
-						this._sender.Send();
+						this._sender.Send(PathConnection.Enemy);
 					}
 				}
 			}
@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._invencibleStop)
 				{
 					this._sender.SetToggle(true);
-					this._sender.Send();
+					this._sender.Send(PathConnection.Enemy);
 				}
 			}
 			return isHurted;
@@ -82,7 +82,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._invencibleStop)
 			{
 				this._sender.SetToggle(!this._invencible);
-				this._sender.Send();
+				this._sender.Send(PathConnection.Enemy);
 			}
 		}
 	};
