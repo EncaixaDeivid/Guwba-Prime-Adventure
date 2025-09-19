@@ -39,9 +39,10 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
 			{
-				this._sender.SetStateForm(StateForm.Disable);
-				this._sender.SetToggle(true);
-				this._sender.Send();
+				this._sender.SetStateForm(StateForm.State);
+				this._sender.SetAdditionalData(this);
+				this._sender.SetToggle(false);
+				this._sender.Send(PathConnection.Boss);
 			}
 		}
 		private void Update()
@@ -54,7 +55,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					this._isStunned = false;
 					this._sender.SetStateForm(StateForm.State);
 					this._sender.SetToggle(true);
-					this._sender.Send();
+					this._sender.Send(PathConnection.Boss);
 				}
 			}
 		}
@@ -75,12 +76,12 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 					{
 						this._sender.SetStateForm(StateForm.Action);
 						this._sender.SetNumber(this._indexEvent);
-						this._sender.Send();
+						this._sender.Send(PathConnection.Boss);
 					}
 					else
 					{
 						this._sender.SetStateForm(StateForm.Action);
-						this._sender.Send();
+						this._sender.Send(PathConnection.Boss);
 					}
 				if (this._vitality <= 0)
 				{
@@ -104,7 +105,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			}
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetToggle(false);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Boss);
 		}
 	};
 };
