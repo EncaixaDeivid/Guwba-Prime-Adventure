@@ -6,7 +6,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class InteractiveDialog : MonoBehaviour, IInteractable
+	internal sealed class InteractiveDialog : MonoBehaviour, IInteractable, IConnector
     {
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
@@ -19,15 +19,15 @@ namespace GuwbaPrimeAdventure.Story
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
 		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
+		public PathConnection PathConnection => PathConnection.Story;
 		public void Interaction()
 		{
 			if (this._dialogObject && this._dialogHudObject)
 			{
-				this._sender.SetToWhereConnection(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.Action);
 				this._sender.SetAdditionalData(this.gameObject);
 				this._sender.SetToggle(false);
-				this._sender.Send();
+				this._sender.Send(PathConnection.Hud);
 				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
 				this._storyTeller = this.GetComponent<StoryTeller>();
@@ -88,7 +88,7 @@ namespace GuwbaPrimeAdventure.Story
 					if (this._storyTeller)
 						this._storyTeller.CloseScene();
 					this._sender.SetToggle(true);
-					this._sender.Send();
+					this._sender.Send(PathConnection.Hud);
 					SaveController.Load(out SaveFile saveFile);
 					if (this._dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
 					{
@@ -107,6 +107,11 @@ namespace GuwbaPrimeAdventure.Story
 			}
 			else
 				this._dialogTime = 0f;
+		}
+		public void Receive(DataConnection data, object additionalData)
+		{
+			if (data.StateForm == StateForm.Action && additionalData as GameObject == this.gameObject)
+				this.Interaction();
 		}
 	};
 };
