@@ -27,8 +27,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void Teleport()
 		{
-			this._sender.SetToWhereConnection(PathConnection.System);
-			this._sender.Send();
+			this._sender.Send(PathConnection.System);
 			CentralizableGuwba.Position = this._locations[this._index];
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
 		}
@@ -40,14 +39,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Timer()
 		{
-			this._sender.SetToWhereConnection(PathConnection.Hud);
 			this._sender.SetToggle(false);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Hud);
 			yield return new WaitTime(this, this._timeToUse);
 			this.Teleport();
-			this._sender.SetToWhereConnection(PathConnection.Hud);
 			this._sender.SetToggle(true);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Hud);
 		}
 		public void Execute()
 		{
