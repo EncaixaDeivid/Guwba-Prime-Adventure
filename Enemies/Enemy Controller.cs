@@ -39,7 +39,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._animator = this.GetComponent<Animator>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Enemy);
 			this._sender.SetAdditionalData(this.gameObject);
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._armorResistance = (short)this._hitResistance;
@@ -105,7 +104,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this.enabled = data.ToggleValue.Value;
 		}
 	};
