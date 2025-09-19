@@ -4,7 +4,6 @@ using Unity.Cinemachine;
 using System;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
@@ -19,14 +18,15 @@ namespace GuwbaPrimeAdventure.Item
 		private short _defaultPriority;
 		[Header("Scene Status")]
 		[SerializeField, Tooltip("The object that handles the hud of the level gate.")] private LevelGateHud _levelGateObject;
-		[SerializeField, Tooltip("The name of the level scene.")] private Vector2 _offsetPosition;
+		[SerializeField, Tooltip("The offset that the hud will be.")] private Vector2 _offsetPosition;
 		[SerializeField, Tooltip("The name of the level scene.")] private string _levelScene;
 		[SerializeField, Tooltip("The name of the boss scene.")] private string _bossScene;
 		[SerializeField, Tooltip("Where the this camera have to be in the hierarchy.")] private short _overlayPriority;
 		private void Awake()
 		{
 			this._showCamera = this.GetComponentInChildren<CinemachineCamera>();
-			this._levelGate = Instantiate(this._levelGateObject, this._offsetPosition, Quaternion.identity, this.transform);
+			this._levelGate = Instantiate(this._levelGateObject, this.transform);
+			this._levelGate.transform.localPosition = this._offsetPosition;
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHud;
 			this._inputController.Commands.HideHud.Enable();
