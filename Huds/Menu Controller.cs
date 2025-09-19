@@ -23,6 +23,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
+			this._sender.SetStateForm(StateForm.State);
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
 			this._menuHud.SaveName[0].value = FilesController.Select(1);
 			this._menuHud.SaveName[1].value = FilesController.Select(2);
@@ -44,7 +45,6 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[1].clicked += this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
-			this._sender.SetToWhereConnection(PathConnection.Hud);
 		}
 		private void OnDestroy()
 		{
@@ -75,15 +75,13 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
 			this._inputController.Commands.HideHud.Enable();
-			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetToggle(false);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Hud);
 		};
 		private Action OpenConfigurations => () =>
 		{
-			this._sender.SetStateForm(StateForm.Enable);
 			this._sender.SetToggle(true);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Hud);
 		};
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
@@ -93,9 +91,8 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
-			this._sender.SetStateForm(StateForm.Action);
 			this._sender.SetToggle(true);
-			this._sender.Send();
+			this._sender.Send(PathConnection.Hud);
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
