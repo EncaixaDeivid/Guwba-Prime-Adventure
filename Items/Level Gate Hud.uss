@@ -11,8 +11,8 @@
 	align-content: center;
 }
 #Level, #Boss, #Scenes{
-	width: 400px;
-	height: 225px;
+	width: 25%;
+	height: 39.0625%;
 	background-color : rgb(255, 160, 0);
 }
 #Level:hover, #Boss:hover, #Scenes:hover{
