@@ -4,12 +4,13 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		None,
 		System,
+		Hud,
 		Guwba,
 		Enemy,
 		Boss,
 		Item,
 		EventItem,
-		Hud
+		Story
 	};
 	public enum StateForm
 	{
