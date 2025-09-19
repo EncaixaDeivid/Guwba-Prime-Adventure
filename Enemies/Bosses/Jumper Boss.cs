@@ -35,7 +35,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.enabled);
-				this._sender.Send();
+				this._sender.Send(PathConnection.Boss);
 				this._rigidybody.linearVelocityX = 0f;
 				float randomDirection = 0f;
 				if (this._randomFollow)
@@ -88,7 +88,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						{
 							if (this._jumpPointStructures[index].JumpStats.StopMove)
 							{
-								this._sender.Send();
+								this._sender.Send(PathConnection.Boss);
 								this._rigidybody.linearVelocityX = 0f;
 							}
 							this._rigidybody.AddForceY(this._jumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass);
@@ -122,7 +122,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
 				{
-					this._sender.Send();
+					this._sender.Send(PathConnection.Boss);
 					this._rigidybody.linearVelocityX = 0f;
 				}
 				this._rigidybody.AddForceY(stats.Strength * this._rigidybody.mass);
@@ -165,7 +165,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						{
 							if (this._stopMoveReact)
 							{
-								this._sender.Send();
+								this._sender.Send(PathConnection.Boss);
 								this._rigidybody.linearVelocityX = 0f;
 							}
 							this._rigidybody.AddForceY(this._strenghtReact * this._rigidybody.mass);
