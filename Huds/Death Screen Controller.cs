@@ -93,7 +93,7 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Disable)
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
