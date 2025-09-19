@@ -47,6 +47,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
 		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private VisualizableGuwba _visualizableGuwbaObject;
+		[SerializeField, Tooltip("The name of the scene that contains the hubby world.")] private string _hubbyWorldScene;
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
@@ -127,6 +128,14 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._vitality = (short)this._visualizableGuwba.Vitality;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
+			if (this.gameObject.scene.name == this._hubbyWorldScene)
+			{
+				foreach (VisualElement vitality in this._visualizableGuwba.VitalityVisual)
+					vitality.style.display = DisplayStyle.None;
+				foreach (VisualElement recoverVitality in this._visualizableGuwba.RecoverVitalityVisual)
+					recoverVitality.style.display = DisplayStyle.None;
+				this._visualizableGuwba.FallDamageText.style.display = DisplayStyle.None;
+			}
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
