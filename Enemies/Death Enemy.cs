@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private IEnumerator Death()
 		{
-			this._sender.Send();
+			this._sender.Send(PathConnection.Enemy);
 			yield return new WaitTime(this, this._deathTime);
 			if (this._childEnemy)
 				Instantiate(this._childEnemy, this.transform.position, Quaternion.identity);
