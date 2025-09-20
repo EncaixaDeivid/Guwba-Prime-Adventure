@@ -39,9 +39,8 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 				saveFile.generalObjects.Add(this.gameObject.name);
 			if (this._destructBoss)
 			{
-				this._sender.SetStateForm(StateForm.State);
+				this._sender.SetStateForm(StateForm.None);
 				this._sender.SetAdditionalData(this);
-				this._sender.SetToggle(false);
 				this._sender.Send(PathConnection.Boss);
 			}
 		}
