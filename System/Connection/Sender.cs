@@ -29,11 +29,7 @@ namespace GuwbaPrimeAdventure.Connection
 		public void SetAdditionalData(object additionalData) => this._additionalData = additionalData;
 		public void SetStateForm(StateForm stateForm) => this._stateForm = stateForm;
 		public void SetToggle(bool value) => this._toggleValue = value;
-		public void SetNumber(int value)
-		{
-			uint indexValue = (uint)(value < 0f ? -value : value);
-			this._numberValue = indexValue;
-		}
+		public void SetNumber(int value) => this._numberValue = (uint)(value < 0f ? -value : value);
 		public void Send(PathConnection path)
 		{
 			DataConnection dataConnection = new(this._stateForm, this._toggleValue, this._numberValue);
