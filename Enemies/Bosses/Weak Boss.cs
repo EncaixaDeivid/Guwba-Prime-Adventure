@@ -60,7 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (!this._blockDamage && damage >= this._biggerDamage)
+			if ((!this._blockDamage || this._isStunned) && damage >= this._biggerDamage)
 			{
 				this.StartCoroutine(Timer());
 				IEnumerator Timer()
