@@ -31,7 +31,6 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 			base.Awake();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetToWhereConnection(PathConnection.Boss);
 			this._sender.SetAdditionalData(this._bossesToSend);
 			this._movementSide = (short)(this._invertMovementSide ? -1f : 1f);
 			Sender.Include(this);
@@ -54,9 +53,9 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Disable && data.ToggleValue.HasValue && !_isDeafeted)
+			if (data.StateForm == StateForm.None && !_isDeafeted)
 			{
-				if (data.ToggleValue.Value)
+				if (additionalData is WeakBoss)
 				{
 					_isDeafeted = true;
 					SaveController.Load(out SaveFile saveFile);
