@@ -283,8 +283,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			{
 				float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._InteractionLayerMask))
-					if (collider.TryGetComponent<IInteractable>(out var interactable))
-						interactable.Interaction();
+					if (collider.TryGetComponent<IInteractable>(out _))
+						foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
+							interactable.Interaction();
 			}
 		};
 		public Predicate<ushort> Hurt => damage =>
