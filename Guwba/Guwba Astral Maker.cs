@@ -72,6 +72,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
+		[SerializeField, Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
+		[SerializeField, Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")]
+		private float _fallDamageShowMultiply;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
@@ -86,11 +92,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
-		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
-		[SerializeField, Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
-		[SerializeField, Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")]
-		private float _fallDamageShowMultiply;
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
@@ -473,6 +474,8 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._rigidbody.gravityScale = this._gravityScale;
 						this._fallDamage = 0f;
 					}
+					if (this._attackUsage)
+						this._rigidbody.linearVelocityY *= this._attackVelocityCut;
 					this._lastGroundedTime -= Time.fixedDeltaTime;
 					this._lastJumpTime -= Time.fixedDeltaTime;
 					this._downStairs = false;
