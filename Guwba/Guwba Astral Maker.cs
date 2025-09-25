@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Guwba
@@ -283,14 +282,13 @@ namespace GuwbaPrimeAdventure.Guwba
 			Vector2 point = this.transform.position;
 			if (this._isOnGround && this._movementAction == 0f)
 			{
-				List<GameObject> interactables = new();
 				float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._InteractionLayerMask))
-					if (collider.TryGetComponent<IInteractable>(out _) && !interactables.Contains(collider.gameObject))
+					if (collider.TryGetComponent<IInteractable>(out _))
 					{
-						interactables.Add(collider.gameObject);
 						foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
 							interactable.Interaction();
+						return;
 					}
 			}
 		};
