@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
-namespace GuwbaPrimeAdventure.Item
+namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CircleCollider2D), typeof(IInteractable))]
 	internal sealed class InteractionRenderer : StateController, IConnector
