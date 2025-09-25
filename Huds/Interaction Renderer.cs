@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Hud
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CircleCollider2D), typeof(IInteractable))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(IInteractable))]
 	internal sealed class InteractionRenderer : StateController, IConnector
 	{
 		private Animator _animator;
