@@ -323,6 +323,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._collider.size = this._deadSize;
 				this._sender.SetToggle(false);
+				this._sender.SetStateForm(StateForm.Action);
+				this._sender.Send(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.State);
 				this._sender.Send(PathConnection.Hud);
 				this._sender.Send(PathConnection.Enemy);
