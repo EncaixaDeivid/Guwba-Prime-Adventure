@@ -32,7 +32,7 @@ namespace GuwbaPrimeAdventure.Story
 				StateController.SetState(false);
 				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
-				this._dialogHud = Instantiate(this._dialogHudObject);
+				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
 				this._dialogTime = settings.dialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this.StartCoroutine(this.TextDigitation());
