@@ -34,12 +34,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		private float _lastJumpTime = 0f;
 		private float _fallStart = 0f;
 		private float _fallDamage = 0f;
-		private bool _isDamaged = false;
 		private bool _isOnGround = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _dashActive = false;
 		private bool _fallStarted = false;
+		private bool _invencibility = false;
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayerMask;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayerMask;
@@ -98,7 +98,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time the recover's charge of the attack will recover.")] private float _recoverRate;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
-		[SerializeField, Tooltip("If Guwba is invencible at the moment.")] private bool _invencibility;
 		public PathConnection PathConnection => PathConnection.Guwba;
 		private new void Awake()
 		{
@@ -294,9 +293,9 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		public Predicate<ushort> Hurt => damage =>
 		{
-			if (this._invencibility || this._isDamaged || damage < 1f)
+			if (this._invencibility || damage < 1f)
 				return false;
-			this._isDamaged = true;
+			this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._visualizableGuwba.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
@@ -422,7 +421,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
 						this._fallStarted = false;
 						this._fallDamage = 0f;
-						if (this._isDamaged)
+						if (this._invencibility)
 							this.StartCoroutine(KeepShow());
 						else
 						{
@@ -456,7 +455,7 @@ namespace GuwbaPrimeAdventure.Guwba
 								this._visualizableGuwba.FallDamageText.style.opacity = 1f;
 								this._visualizableGuwba.FallDamageText.text = $"X {this._fallDamage / this._fallDamageDistance}";
 							}
-							else if (!this._isDamaged)
+							else if (!this._invencibility)
 							{
 								this._visualizableGuwba.FallDamageText.style.opacity = 0f;
 								this._visualizableGuwba.FallDamageText.text = $"X 0";
@@ -471,7 +470,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 					else
 					{
-						if (!this._isDamaged)
+						if (!this._invencibility)
 						{
 							this._visualizableGuwba.FallDamageText.style.opacity = 0f;
 							this._visualizableGuwba.FallDamageText.text = $"X 0";
@@ -552,7 +551,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this.StartCoroutine(VisualEffect());
 			IEnumerator VisualEffect()
 			{
-				while (this._isDamaged)
+				while (this._invencibility)
 				{
 					foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
 						damageableGuwba.Alpha = damageableGuwba.Alpha >= 1f ? this._invencibilityValue : 1f;
@@ -560,7 +559,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 			yield return new WaitTime(this, this._invencibilityTime);
-			this._isDamaged = false;
+			this._invencibility = false;
 			foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
 				damageableGuwba.Alpha = 1f;
 		}
@@ -608,7 +607,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			}
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				this._isDamaged = true;
+				this._invencibility = true;
 				this.StartCoroutine(this.Invencibility());
 				this.OnEnable();
 			}
