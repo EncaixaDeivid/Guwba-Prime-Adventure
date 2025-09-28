@@ -56,7 +56,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
 			}
 		}
-		private void Update()
+		private void FixedUpdate()
 		{
 			for (ushort i = 0; i < this._backgroundImages.Length; i++)
 			{
