@@ -9,8 +9,6 @@ namespace GuwbaPrimeAdventure
 	internal sealed class CameraOccluder : StateController, IConnector
 	{
 		private static CameraOccluder _instance;
-		private Camera _mainCamera;
-		private BoxCollider2D _cameraCollider;
 		private Vector2 _positionDamping = new();
 		[Header("Camera Objects")]
 		[SerializeField, Tooltip("The object that handles the follow of the camera.")] private CinemachineFollow _cinemachineFollow;
@@ -25,13 +23,13 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			base.Awake();
-			this._mainCamera = this.GetComponent<Camera>();
-			this._cameraCollider = this.GetComponent<BoxCollider2D>();
+			Camera camera = this.GetComponent<Camera>();
+			BoxCollider2D boxCollider = this.GetComponent<BoxCollider2D>();
 			this._positionDamping = this._cinemachineFollow.TrackerSettings.PositionDamping;
-			float sizeY = this._mainCamera.orthographicSize * 2f;
-			float sizeX = sizeY * this._mainCamera.aspect;
-			this._cameraCollider.size = new Vector2(sizeX, sizeY);
-			foreach (Collider2D objects in Physics2D.OverlapBoxAll(this.transform.position, this._cameraCollider.size, 0f))
+			float sizeY = camera.orthographicSize * 2f;
+			float sizeX = sizeY * camera.aspect;
+			boxCollider.size = new Vector2(sizeX, sizeY);
+			foreach (Collider2D objects in Physics2D.OverlapBoxAll(this.transform.position, boxCollider.size, 0f))
 				this.SetOtherChildren(objects.gameObject, true);
 			Sender.Include(this);
 		}
