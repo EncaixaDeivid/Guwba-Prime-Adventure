@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
 using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
@@ -12,7 +11,6 @@ namespace GuwbaPrimeAdventure.Hud
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		private InputController _inputController;
-		private readonly Sender _sender = Sender.Create();
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the menu.")] private MenuHud _menuHudObject;
 		private void Awake()
@@ -23,7 +21,6 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._sender.SetStateForm(StateForm.State);
 			this._menuHud = Instantiate(this._menuHudObject, this.transform);
 			this._menuHud.SaveName[0].value = FilesController.Select(1);
 			this._menuHud.SaveName[1].value = FilesController.Select(2);
@@ -75,14 +72,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
 			this._inputController.Commands.HideHud.Enable();
-			this._sender.SetToggle(false);
-			this._sender.Send(PathConnection.Hud);
+			ConfigurationController.instance.SetActive(false);
 		};
-		private Action OpenConfigurations => () =>
-		{
-			this._sender.SetToggle(true);
-			this._sender.Send(PathConnection.Hud);
-		};
+		private Action OpenConfigurations => () => ConfigurationController.instance.OpenCloseConfigurations();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -91,8 +83,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
-			this._sender.SetToggle(true);
-			this._sender.Send(PathConnection.Hud);
+			ConfigurationController.instance.SetActive(true);
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
