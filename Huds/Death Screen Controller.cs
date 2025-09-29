@@ -23,7 +23,6 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			this._sender.SetToggle(true);
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -58,6 +57,7 @@ namespace GuwbaPrimeAdventure.Hud
 						yield return new WaitForEndOfFrame();
 					}
 					this._sender.SetStateForm(StateForm.Action);
+					this._sender.SetToggle(true);
 					this._sender.Send(PathConnection.System);
 					this._sender.Send(PathConnection.Guwba);
 					this._sender.SetStateForm(StateForm.State);
