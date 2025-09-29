@@ -9,9 +9,10 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class ConfigurationController : MonoBehaviour, IConnector
 	{
-		private static ConfigurationController _instance;
+		internal static ConfigurationController instance;
 		private ConfigurationHud _configurationHud;
 		private InputController _inputController;
+		private bool _isActive = true;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
@@ -19,23 +20,23 @@ namespace GuwbaPrimeAdventure.Hud
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
-			if (_instance)
+			if (instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			instance = this;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
-			if (!_instance || _instance != this)
+			if (!instance || instance != this)
 				return;
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
-			if (!_instance || _instance != this)
+			if (!instance || instance != this)
 				return;
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
@@ -43,15 +44,129 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnDisable()
 		{
-			if (!_instance || _instance != this)
+			if (!instance || instance != this)
 				return;
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
 		}
 		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.OpenCloseConfigurations();
-		private void OpenCloseConfigurations()
+		private Action CloseConfigurations => () =>
 		{
+			this._configurationHud.Close.clicked -= this.CloseConfigurations;
+			this._configurationHud.OutLevel.clicked -= this.OutLevel;
+			this._configurationHud.SaveGame.clicked -= this.SaveGame;
+			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
+			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
+			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
+			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
+			this._configurationHud.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
+			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
+			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
+			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
+			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
+			this._configurationHud.Yes.clicked -= this.YesBackLevel;
+			this._configurationHud.No.clicked -= this.NoBackLevel;
+			Destroy(this._configurationHud.gameObject);
+			StateController.SetState(true);
+			SettingsController.SaveSettings();
+		};
+		private Action OutLevel => () =>
+		{
+			this._configurationHud.Settings.style.display = DisplayStyle.None;
+			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
+		};
+		private Action SaveGame => () => SaveController.SaveData();
+		private EventCallback<ChangeEvent<Resolution>> Resolution => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			Resolution resolution = settings.resolution = value.newValue;
+			Screen.SetResolution(resolution.width, resolution.height, settings.fullScreenMode, resolution.refreshRateRatio);
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<FullScreenMode>> FullScreenMode => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			Screen.fullScreenMode = settings.fullScreenMode = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<bool>> FullScreen => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			Screen.fullScreen = settings.fullScreen = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.generalVolumeToggle = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.effectsVolumeToggle = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.musicVolumeToggle = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<bool>> DialogToggle => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.dialogToggle = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.dialogSpeed = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> ScreenBrightness => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			Screen.brightness = settings.screenBrightness = value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> GeneralVolume => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.generalVolume = (ushort)value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> EffectsVolume => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.effectsVolume = (ushort)value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> MusicVolume => value =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.musicVolume = (ushort)value.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private Action YesBackLevel => () =>
+		{
+			SettingsController.SaveSettings();
+			if (this.gameObject.scene.name != this._levelSelectorScene)
+				this.GetComponent<Transitioner>().Transicion();
+			else
+				this.GetComponent<Transitioner>().Transicion(this._menuScene);
+		};
+		private Action NoBackLevel => () =>
+		{
+			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
+			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
+		};
+		internal void OpenCloseConfigurations()
+		{
+			if (!this._isActive)
+				return;
 			if (this._configurationHud)
 				this.CloseConfigurations.Invoke();
 			else
@@ -86,109 +201,11 @@ namespace GuwbaPrimeAdventure.Hud
 				this._configurationHud.No.clicked += this.NoBackLevel;
 			}
 		}
-		private Action CloseConfigurations => () =>
-		{
-			this._configurationHud.Close.clicked -= this.CloseConfigurations;
-			this._configurationHud.OutLevel.clicked -= this.OutLevel;
-			this._configurationHud.SaveGame.clicked -= this.SaveGame;
-			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
-			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
-			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
-			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
-			this._configurationHud.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
-			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
-			this._configurationHud.Yes.clicked -= this.YesBackLevel;
-			this._configurationHud.No.clicked -= this.NoBackLevel;
-			Destroy(this._configurationHud.gameObject);
-			StateController.SetState(true);
-			SettingsController.SaveSettings();
-		};
-		private Action OutLevel => () =>
-		{
-			this._configurationHud.Settings.style.display = DisplayStyle.None;
-			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
-		};
-		private Action SaveGame => () => SaveController.SaveData();
-		private EventCallback<ChangeEvent<float>> GeneralVolume => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.generalVolume = (ushort)value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> EffectsVolume => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.effectsVolume = (ushort)value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> MusicVolume => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.musicVolume = (ushort)value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.dialogSpeed = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> FullScreen => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.fullScreen = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.generalVolumeToggle = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.effectsVolumeToggle = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.musicVolumeToggle = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> DialogToggle => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			settings.dialogToggle = value.newValue;
-			SettingsController.WriteSave(settings);
-		};
-		private Action YesBackLevel => () =>
-		{
-			SettingsController.SaveSettings();
-			if (this.gameObject.scene.name != this._levelSelectorScene)
-				this.GetComponent<Transitioner>().Transicion();
-			else
-				this.GetComponent<Transitioner>().Transicion(this._menuScene);
-		};
-		private Action NoBackLevel => () =>
-		{
-			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
-			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
-		};
+		internal void SetActive(bool isActive) => this._isActive = isActive;
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				if (data.ToggleValue.Value)
-					if (this.gameObject.scene.name == this._menuScene)
-						this.OpenCloseConfigurations();
-					else
-						this._inputController.Commands.HideHud.Enable();
-				else
-					this._inputController.Commands.HideHud.Disable();
+				this._isActive = data.ToggleValue.Value;
 		}
 	};
 };
