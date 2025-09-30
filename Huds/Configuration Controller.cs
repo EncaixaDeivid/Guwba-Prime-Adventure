@@ -59,7 +59,6 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.ScreenResolution.UnregisterValueChangedCallback<string>(this.ScreenResolution);
 			this._configurationHud.FullScreenModes.UnregisterValueChangedCallback<string>(this.FullScreenModes);
 			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
-			this._configurationHud.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
 			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
 			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
 			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
@@ -84,26 +83,14 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			SettingsController.Load(out Settings settings);
 			string[] dimensions = value.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			RefreshRate refreshRate = Screen.currentResolution.refreshRateRatio;
-			settings.screenResolution = new Resolution()
-			{
-				width = ushort.Parse(dimensions[0]),
-				height = ushort.Parse(dimensions[1]),
-				refreshRateRatio = refreshRate
-			};
-			Screen.SetResolution(settings.screenResolution.width, settings.screenResolution.height, settings.fullScreenMode);
+			settings.screenResolution = new Vector2Int(ushort.Parse(dimensions[0]), ushort.Parse(dimensions[1]));
+			Screen.SetResolution(settings.screenResolution.x, settings.screenResolution.y, settings.fullScreenMode);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<string>> FullScreenModes => value =>
 		{
 			SettingsController.Load(out Settings settings);
 			Screen.fullScreenMode = settings.fullScreenMode = Enum.Parse<FullScreenMode>(value.newValue);
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> FullScreen => value =>
-		{
-			SettingsController.Load(out Settings settings);
-			Screen.fullScreen = settings.fullScreen = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => value =>
@@ -200,7 +187,6 @@ namespace GuwbaPrimeAdventure.Hud
 				this._configurationHud.SaveGame.clicked += this.SaveGame;
 				this._configurationHud.ScreenResolution.RegisterValueChangedCallback<string>(this.ScreenResolution);
 				this._configurationHud.FullScreenModes.RegisterValueChangedCallback<string>(this.FullScreenModes);
-				this._configurationHud.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
 				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
 				this._configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
 				this._configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
