@@ -85,7 +85,6 @@ namespace GuwbaPrimeAdventure.Hud
 			SettingsController.Load(out Settings settings);
 			string[] dimensions = value.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			RefreshRate refreshRate = Screen.currentResolution.refreshRateRatio;
-			Debug.Log(dimensions[0] + "/" + dimensions[1]);
 			settings.screenResolution = new Resolution()
 			{
 				width = ushort.Parse(dimensions[0]),
@@ -93,8 +92,6 @@ namespace GuwbaPrimeAdventure.Hud
 				refreshRateRatio = refreshRate
 			};
 			Screen.SetResolution(settings.screenResolution.width, settings.screenResolution.height, settings.fullScreenMode);
-			Debug.Log(settings.screenResolution);
-			Debug.Log(Screen.currentResolution);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<string>> FullScreenModes => value =>
