@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Cinemachine;
-namespace GuwbaPrimeAdventure.Guwba
+namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
 	[RequireComponent(typeof(SortingGroup))]
