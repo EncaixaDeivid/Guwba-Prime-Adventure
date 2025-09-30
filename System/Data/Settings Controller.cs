@@ -4,9 +4,8 @@ namespace GuwbaPrimeAdventure.Data
 {
 	public struct Settings
 	{
-		public Resolution screenResolution;
+		public Vector2Int screenResolution;
 		public FullScreenMode fullScreenMode;
-		public bool fullScreen;
 		public bool dialogToggle;
 		public float dialogSpeed;
 		public float screenBrightness;
@@ -31,9 +30,8 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			settings = new Settings()
 			{
-				screenResolution = Screen.currentResolution,
+				screenResolution = new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height),
 				fullScreenMode = FullScreenMode.MaximizedWindow,
-				fullScreen = true,
 				dialogToggle = true,
 				dialogSpeed = .05f,
 				screenBrightness = 1f,
@@ -53,7 +51,6 @@ namespace GuwbaPrimeAdventure.Data
 			{
 				screenResolution = _settings.screenResolution,
 				fullScreenMode = _settings.fullScreenMode,
-				fullScreen = _settings.fullScreen,
 				dialogToggle = _settings.dialogToggle,
 				dialogSpeed = _settings.dialogSpeed,
 				screenBrightness = _settings.screenBrightness,
