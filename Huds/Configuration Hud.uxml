@@ -1,42 +1,42 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/System/Huds/Scripts/Configuration%20Hud.uss?fileID=7433441132597879392&amp;guid=4f8e5fb2134b126419f920e8afca4538&amp;type=3" />
+    <Style src="project://database/Assets/Huds/Designs/Configuration%20Hud.uss?fileID=7433441132597879392&amp;guid=4f8e5fb2134b126419f920e8afca4538&amp;type=3#Configuration Hud" />
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Confirmation">
-            <ui:Label text="Deseja ir para o sair da fase?" name="Text" style="font-size: 60px;" />
+            <ui:Label text="Do you desire to get out of the level?" name="Text" style="font-size: 60px;" />
             <ui:GroupBox name="ConfirmationButtons" style="display: flex; overflow: visible;">
-                <ui:Button text="Sim" name="Yes" class="Button" />
-                <ui:Button text="Não" name="No" class="Button" />
+                <ui:Button text="Yes" name="Yes" class="Button" />
+                <ui:Button text="No" name="No" class="Button" />
             </ui:GroupBox>
         </ui:GroupBox>
-        <ui:GroupBox name="Settings" >
+        <ui:GroupBox name="Settings">
             <ui:GroupBox name="LeftPage">
                 <ui:GroupBox name="Buttons">
-                    <ui:Button text="Fechar" name="Close" class="Button" />
-                    <ui:Button text="Sair" name="OutLevel" class="Button" />
-                    <ui:Button text="Salvar" name="SaveGame" class="Button" />
+                    <ui:Button text="Close" name="Close" class="Button" />
+                    <ui:Button text="Out" name="OutLevel" class="Button" />
+                    <ui:Button text="Save" name="SaveGame" class="Button" />
                 </ui:GroupBox>
-                <ui:GroupBox name="Sounds">
-                    <ui:GroupBox name="Slider1">
+                <ui:GroupBox name="DropsDown">
+                    <ui:DropdownField label="Screen Resolution" name="ScreenResolution" />
+                    <ui:DropdownField label="Full Screen Modes" name="FullScreenModes" />
+                    <ui:Toggle name="FullScreen" />
+                </ui:GroupBox>
+                <ui:GroupBox name="Output">
+                    <ui:GroupBox name="Sliders">
                         <ui:Slider label="General Volume" name="GeneralVolume" />
-                        <ui:Toggle name="GeneralVolumeToggle" />
-                    </ui:GroupBox>
-                    <ui:GroupBox name="Slider2">
                         <ui:Slider label="Effects Volume" name="EffectsVolume" />
-                        <ui:Toggle name="EffectsVolumeToggle" />
-                    </ui:GroupBox>
-                    <ui:GroupBox name="Slider3">
                         <ui:Slider label="Music Volume" name="MusicVolume" />
-                        <ui:Toggle name="MusicVolumeToggle" />
-                    </ui:GroupBox>
-                    <ui:GroupBox name="Slider4">
                         <ui:Slider label="Dialog Speed" name="DialogSpeed" />
+                    </ui:GroupBox>
+                    <ui:GroupBox name="Toggles">
+                        <ui:Toggle name="GeneralVolumeToggle" />
+                        <ui:Toggle name="EffectsVolumeToggle" />
+                        <ui:Toggle name="MusicVolumeToggle" />
                         <ui:Toggle name="DialogToggle" />
                     </ui:GroupBox>
                 </ui:GroupBox>
+                <ui:Slider label="Screen Brightness" name="ScreenBrightness" />
             </ui:GroupBox>
-            <ui:GroupBox name="RightPage">
-                <ui:Toggle name="FullScreen" />
-            </ui:GroupBox >
+            <ui:GroupBox name="RightPage" />
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
