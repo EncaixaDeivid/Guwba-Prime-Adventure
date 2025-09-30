@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using Unity.Cinemachine;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -11,6 +12,7 @@ namespace GuwbaPrimeAdventure.Guwba
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
+	[RequireComponent(typeof(CinemachineImpulseSource))]
 	internal sealed class GuwbaManageableData : StateController, IConnector
 	{
 		private static GuwbaManageableData _instance;
@@ -19,6 +21,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
+		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _rightLeftAxis = new();
@@ -111,6 +114,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
+			this._screenShaker = this.GetComponent<CinemachineImpulseSource>();
 			this._visualizableGuwba = Instantiate(this._visualizableGuwbaObject, this.transform);
 			this._damageableGuwbas = this.GetComponentsInChildren<DamageableGuwba>(true);
 			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
@@ -156,6 +160,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (!_instance || _instance != this)
 				return;
+			this._visualizableGuwba.RootElement.style.display = DisplayStyle.Flex;
 			this._animator.SetFloat(this._isOn, 1f);
 			this._animator.SetFloat(this._walkSpeed, 1f);
 			this.EnableCommands();
@@ -418,6 +423,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._isJumping = false;
 					if (this._fallDamage > 0f)
 					{
+						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
 						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
 						this._fallStarted = false;
 						this._fallDamage = 0f;
