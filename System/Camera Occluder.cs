@@ -16,13 +16,13 @@ namespace GuwbaPrimeAdventure
 		public PathConnection PathConnection => PathConnection.System;
 		private new void Awake()
 		{
+			base.Awake();
 			if (_instance)
 			{
 				Destroy(this.gameObject);
 				return;
 			}
 			_instance = this;
-			base.Awake();
 			Camera camera = this.GetComponent<Camera>();
 			BoxCollider2D boxCollider = this.GetComponent<BoxCollider2D>();
 			this._positionDamping = this._cinemachineFollow.TrackerSettings.PositionDamping;
@@ -35,6 +35,7 @@ namespace GuwbaPrimeAdventure
 		}
 		private new void OnDestroy()
 		{
+			base.OnDestroy();
 			if (!_instance || _instance != this)
 				return;
 			Sender.Exclude(this);
