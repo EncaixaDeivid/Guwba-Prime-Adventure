@@ -29,8 +29,6 @@ namespace GuwbaPrimeAdventure
 			float sizeY = camera.orthographicSize * 2f;
 			float sizeX = sizeY * camera.aspect;
 			boxCollider.size = new Vector2(sizeX, sizeY);
-			foreach (Collider2D objects in Physics2D.OverlapBoxAll(this.transform.position, boxCollider.size, 0f))
-				this.SetOtherChildren(objects.gameObject, true);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
