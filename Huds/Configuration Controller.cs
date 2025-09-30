@@ -56,15 +56,18 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Close.clicked -= this.CloseConfigurations;
 			this._configurationHud.OutLevel.clicked -= this.OutLevel;
 			this._configurationHud.SaveGame.clicked -= this.SaveGame;
-			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
-			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
-			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
-			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
+			this._configurationHud.ScreenResolution.UnregisterValueChangedCallback<string>(this.ScreenResolution);
+			this._configurationHud.FullScreenModes.UnregisterValueChangedCallback<string>(this.FullScreenModes);
+			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
 			this._configurationHud.FullScreen.UnregisterValueChangedCallback<bool>(this.FullScreen);
 			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
 			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
 			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
+			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
+			this._configurationHud.ScreenBrightness.UnregisterValueChangedCallback<float>(this.ScreenBrightness);
+			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
+			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
+			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
 			this._configurationHud.Yes.clicked -= this.YesBackLevel;
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
@@ -77,17 +80,24 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
-		private EventCallback<ChangeEvent<Resolution>> Resolution => value =>
+		private EventCallback<ChangeEvent<string>> ScreenResolution => value =>
 		{
 			SettingsController.Load(out Settings settings);
-			Resolution resolution = settings.resolution = value.newValue;
-			Screen.SetResolution(resolution.width, resolution.height, settings.fullScreenMode, resolution.refreshRateRatio);
+			string[] dimensions = value.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			RefreshRate refreshRate = Screen.currentResolution.refreshRateRatio;
+			settings.screenResolution = new Resolution()
+			{
+				width = ushort.Parse(dimensions[0]),
+				height = ushort.Parse(dimensions[1]),
+				refreshRateRatio = refreshRate
+			};
+			Screen.SetResolution(settings.screenResolution.width, settings.screenResolution.height, settings.fullScreenMode);
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<FullScreenMode>> FullScreenMode => value =>
+		private EventCallback<ChangeEvent<string>> FullScreenModes => value =>
 		{
 			SettingsController.Load(out Settings settings);
-			Screen.fullScreenMode = settings.fullScreenMode = value.newValue;
+			Screen.fullScreenMode = settings.fullScreenMode = Enum.Parse<FullScreenMode>(value.newValue);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<bool>> FullScreen => value =>
@@ -188,15 +198,18 @@ namespace GuwbaPrimeAdventure.Hud
 				this._configurationHud.Close.clicked += this.CloseConfigurations;
 				this._configurationHud.OutLevel.clicked += this.OutLevel;
 				this._configurationHud.SaveGame.clicked += this.SaveGame;
-				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
-				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
-				this._configurationHud.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
-				this._configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
+				this._configurationHud.ScreenResolution.RegisterValueChangedCallback<string>(this.ScreenResolution);
+				this._configurationHud.FullScreenModes.RegisterValueChangedCallback<string>(this.FullScreenModes);
 				this._configurationHud.FullScreen.RegisterValueChangedCallback<bool>(this.FullScreen);
+				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
 				this._configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
 				this._configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
 				this._configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
+				this._configurationHud.ScreenBrightness.RegisterValueChangedCallback<float>(this.ScreenBrightness);
+				this._configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
+				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
+				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
+				this._configurationHud.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
 				this._configurationHud.Yes.clicked += this.YesBackLevel;
 				this._configurationHud.No.clicked += this.NoBackLevel;
 			}
