@@ -11,7 +11,6 @@ namespace GuwbaPrimeAdventure.Hud
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _screenResolution;
 		[SerializeField, Tooltip("User interface element.")] private string _fullScreenModes;
-		[SerializeField, Tooltip("User interface element.")] private string _fullScreen;
 		[SerializeField, Tooltip("User interface element.")] private string _generalVolumeToggle;
 		[SerializeField, Tooltip("User interface element.")] private string _effectsVolumeToggle;
 		[SerializeField, Tooltip("User interface element.")] private string _musicVolumeToggle;
@@ -39,7 +38,6 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Slider MusicVolume { get; private set; }
 		internal Slider DialogSpeed { get; private set; }
 		internal Slider ScreenBrightness { get; private set; }
-		internal Toggle FullScreen { get; private set; }
 		internal Toggle GeneralVolumeToggle { get; private set; }
 		internal Toggle EffectsVolumeToggle { get; private set; }
 		internal Toggle MusicVolumeToggle { get; private set; }
@@ -67,7 +65,6 @@ namespace GuwbaPrimeAdventure.Hud
 			this.MusicVolume = root.Q<Slider>(this._musicVolume);
 			this.DialogSpeed = root.Q<Slider>(this._dialogSpeed);
 			this.ScreenBrightness = root.Q<Slider>(this._screenBrightness);
-			this.FullScreen = root.Q<Toggle>(this._fullScreen);
 			this.GeneralVolumeToggle = root.Q<Toggle>(this._generalVolumeToggle);
 			this.EffectsVolumeToggle = root.Q<Toggle>(this._effectsVolumeToggle);
 			this.MusicVolumeToggle = root.Q<Toggle>(this._musicVolumeToggle);
@@ -92,14 +89,13 @@ namespace GuwbaPrimeAdventure.Hud
 				this.ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
 				this.FullScreenModes.choices.Add(mode.ToString());
-			this.ScreenResolution.value = $@"{settings.screenResolution.width} x {settings.screenResolution.height}";
+			this.ScreenResolution.value = $@"{settings.screenResolution.x} x {settings.screenResolution.y}";
 			this.FullScreenModes.value = settings.fullScreenMode.ToString();
 			this.GeneralVolume.value = settings.generalVolume;
 			this.EffectsVolume.value = settings.effectsVolume;
 			this.MusicVolume.value = settings.musicVolume;
 			this.DialogSpeed.value = settings.dialogSpeed;
 			this.ScreenBrightness.value = settings.screenBrightness;
-			this.FullScreen.value = settings.fullScreen;
 			this.GeneralVolumeToggle.value = settings.generalVolumeToggle;
 			this.EffectsVolumeToggle.value = settings.effectsVolumeToggle;
 			this.MusicVolumeToggle.value = settings.musicVolumeToggle;
