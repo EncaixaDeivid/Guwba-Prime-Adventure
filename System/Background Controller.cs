@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
 		[Header("Background Objects")]
+		[SerializeField, Tooltip("The object that the camera track after.")] private Transform _trackingObject;
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The images that are placed in each background.")] private Sprite[] _backgroundImages;
 		[Header("Background Stats")]
@@ -32,7 +33,7 @@ namespace GuwbaPrimeAdventure
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
 			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
 			{
-				this._childrenTransforms[ia] = Instantiate(this._backgroundTransform, this.transform);
+				this._childrenTransforms[ia] = Instantiate(this._backgroundTransform, this._trackingObject);
 				this._childrenRenderers[ia] = this._childrenTransforms[ia].GetComponent<SpriteRenderer>();
 				this._childrenRenderers[ia].sprite = this._backgroundImages[ia];
 				this._childrenRenderers[ia].sortingOrder = this._backgroundImages.Length - 1 - ia;
@@ -62,12 +63,12 @@ namespace GuwbaPrimeAdventure
 			{
 				float axisX = 1f - (this._horizontalBackgroundSpeed - (i * this._slowHorizontal));
 				float axisY = 1f - (this._verticalBackgroundSpeed - (i * this._slowVertical));
-				float movementAxisX = this.transform.position.x * axisX;
-				float movementAxisY = this.transform.position.y * axisY;
+				float movementAxisX = this._trackingObject.position.x * axisX;
+				float movementAxisY = this._trackingObject.position.y * axisY;
 				this._childrenTransforms[i].position = new Vector2(this._startPosition.x + movementAxisX, this._startPosition.y + movementAxisY);
 				Vector2 imageSize = this._childrenRenderers[i].sprite.bounds.size;
-				float distanceAxisX = this.transform.position.x * (1f - axisX);
-				float distanceAxisY = this.transform.position.y * (1f - axisY);
+				float distanceAxisX = this._trackingObject.position.x * (1f - axisX);
+				float distanceAxisY = this._trackingObject.position.y * (1f - axisY);
 				if (distanceAxisX > this._startPosition.x + imageSize.x)
 					this._startPosition = new Vector2(this._startPosition.x + imageSize.x, this._startPosition.y);
 				else if (distanceAxisX < this._startPosition.x - imageSize.x)
