@@ -31,7 +31,7 @@ namespace GuwbaPrimeAdventure.Data
 			settings = new Settings()
 			{
 				screenResolution = new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height),
-				fullScreenMode = FullScreenMode.MaximizedWindow,
+				fullScreenMode = Screen.fullScreenMode,
 				dialogToggle = true,
 				dialogSpeed = .05f,
 				screenBrightness = 1f,
