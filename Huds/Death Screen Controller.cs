@@ -56,14 +56,11 @@ namespace GuwbaPrimeAdventure.Hud
 						this._deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
 					}
-					this._sender.SetStateForm(StateForm.Action);
 					this._sender.SetToggle(true);
+					this._sender.SetStateForm(StateForm.Action);
 					this._sender.Send(PathConnection.System);
 					this._sender.Send(PathConnection.Guwba);
 					this._sender.SetStateForm(StateForm.State);
-					this._sender.SetToggle(false);
-					this._sender.Send(PathConnection.Enemy);
-					this._sender.SetToggle(true);
 					this._sender.Send(PathConnection.Item);
 					for (float i = 1f; this._deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
 					{
@@ -71,6 +68,8 @@ namespace GuwbaPrimeAdventure.Hud
 						yield return new WaitForEndOfFrame();
 					}
 					this._sender.Send(PathConnection.Guwba);
+					this._sender.SetStateForm(StateForm.None);
+					this._sender.Send(PathConnection.Enemy);
 					if (this._deathScreenHud)
 					{
 						this._deathScreenHud.Continue.clicked -= this.Continue;
