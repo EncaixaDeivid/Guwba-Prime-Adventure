@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Data
 {
 	public struct Settings
 	{
-		public Resolution resolution;
+		public Resolution screenResolution;
 		public FullScreenMode fullScreenMode;
 		public bool fullScreen;
 		public bool dialogToggle;
@@ -31,7 +31,7 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			settings = new Settings()
 			{
-				resolution = Screen.currentResolution,
+				screenResolution = Screen.currentResolution,
 				fullScreenMode = FullScreenMode.MaximizedWindow,
 				fullScreen = true,
 				dialogToggle = true,
@@ -51,7 +51,7 @@ namespace GuwbaPrimeAdventure.Data
 		public static void SaveSettings() =>
 			ArchiveEncoder.WriteData(new Settings()
 			{
-				resolution = _settings.resolution,
+				screenResolution = _settings.screenResolution,
 				fullScreenMode = _settings.fullScreenMode,
 				fullScreen = _settings.fullScreen,
 				dialogToggle = _settings.dialogToggle,
