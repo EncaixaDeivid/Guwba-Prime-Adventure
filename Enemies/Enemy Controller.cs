@@ -104,7 +104,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
 				this.enabled = data.ToggleValue.Value;
 		}
 	};
