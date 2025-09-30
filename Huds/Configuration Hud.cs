@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Hud
 {
@@ -8,8 +9,18 @@ namespace GuwbaPrimeAdventure.Hud
 	{
 		private static ConfigurationHud _instance;
 		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string[] _volumes;
-		[SerializeField, Tooltip("User interface element.")] private string[] _toggles;
+		[SerializeField, Tooltip("User interface element.")] private string _screenResolution;
+		[SerializeField, Tooltip("User interface element.")] private string _fullScreenModes;
+		[SerializeField, Tooltip("User interface element.")] private string _fullScreen;
+		[SerializeField, Tooltip("User interface element.")] private string _generalVolumeToggle;
+		[SerializeField, Tooltip("User interface element.")] private string _effectsVolumeToggle;
+		[SerializeField, Tooltip("User interface element.")] private string _musicVolumeToggle;
+		[SerializeField, Tooltip("User interface element.")] private string _dialogToggle;
+		[SerializeField, Tooltip("User interface element.")] private string _dialogSpeed;
+		[SerializeField, Tooltip("User interface element.")] private string _screenBrightness;
+		[SerializeField, Tooltip("User interface element.")] private string _generalVolume;
+		[SerializeField, Tooltip("User interface element.")] private string _effectsVolume;
+		[SerializeField, Tooltip("User interface element.")] private string _musicVolume;
 		[SerializeField, Tooltip("User interface element.")] private string _confirmationGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
 		[SerializeField, Tooltip("User interface element.")] private string _yesButton;
@@ -18,6 +29,8 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("User interface element.")] private string _saveGameButton;
 		[SerializeField, Tooltip("User interface element.")] private string _closeButton;
 		internal GroupBox Settings { get; private set; }
+		internal DropdownField ScreenResolution { get; private set; }
+		internal DropdownField FullScreenModes { get; private set; }
 		internal Button Close { get; private set; }
 		internal Button OutLevel { get; private set; }
 		internal Button SaveGame { get; private set; }
@@ -25,6 +38,7 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Slider EffectsVolume { get; private set; }
 		internal Slider MusicVolume { get; private set; }
 		internal Slider DialogSpeed { get; private set; }
+		internal Slider ScreenBrightness { get; private set; }
 		internal Toggle FullScreen { get; private set; }
 		internal Toggle GeneralVolumeToggle { get; private set; }
 		internal Toggle EffectsVolumeToggle { get; private set; }
@@ -43,18 +57,21 @@ namespace GuwbaPrimeAdventure.Hud
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.Settings = root.Q<GroupBox>(this._settingsGroup);
+			this.ScreenResolution = root.Q<DropdownField>(this._screenResolution);
+			this.FullScreenModes = root.Q<DropdownField>(this._fullScreenModes);
 			this.Close = root.Q<Button>(this._closeButton);
 			this.OutLevel = root.Q<Button>(this._outLevelButton);
 			this.SaveGame = root.Q<Button>(this._saveGameButton);
-			this.GeneralVolume = root.Q<Slider>(this._volumes[0]);
-			this.EffectsVolume = root.Q<Slider>(this._volumes[1]);
-			this.MusicVolume = root.Q<Slider>(this._volumes[2]);
-			this.DialogSpeed = root.Q<Slider>(this._volumes[3]);
-			this.FullScreen = root.Q<Toggle>(this._toggles[0]);
-			this.GeneralVolumeToggle = root.Q<Toggle>(this._toggles[1]);
-			this.EffectsVolumeToggle = root.Q<Toggle>(this._toggles[2]);
-			this.MusicVolumeToggle = root.Q<Toggle>(this._toggles[3]);
-			this.DialogToggle = root.Q<Toggle>(this._toggles[4]);
+			this.GeneralVolume = root.Q<Slider>(this._generalVolume);
+			this.EffectsVolume = root.Q<Slider>(this._effectsVolume);
+			this.MusicVolume = root.Q<Slider>(this._musicVolume);
+			this.DialogSpeed = root.Q<Slider>(this._dialogSpeed);
+			this.ScreenBrightness = root.Q<Slider>(this._screenBrightness);
+			this.FullScreen = root.Q<Toggle>(this._fullScreen);
+			this.GeneralVolumeToggle = root.Q<Toggle>(this._generalVolumeToggle);
+			this.EffectsVolumeToggle = root.Q<Toggle>(this._effectsVolumeToggle);
+			this.MusicVolumeToggle = root.Q<Toggle>(this._musicVolumeToggle);
+			this.DialogToggle = root.Q<Toggle>(this._dialogToggle);
 			this.Confirmation = root.Q<GroupBox>(this._confirmationGroup);
 			this.Yes = root.Q<Button>(this._yesButton);
 			this.No = root.Q<Button>(this._noButton);
@@ -65,14 +82,23 @@ namespace GuwbaPrimeAdventure.Hud
 			this.EffectsVolume.highValue = 100;
 			this.MusicVolume.highValue = 100;
 			this.DialogSpeed.highValue = .1f;
+			this.ScreenBrightness.highValue = 1f;
 			this.GeneralVolume.lowValue = 0;
 			this.EffectsVolume.lowValue = 0;
 			this.MusicVolume.lowValue = 0;
 			this.DialogSpeed.lowValue = 0f;
+			this.ScreenBrightness.lowValue = 0f;
+			foreach (Resolution resolution in Screen.resolutions)
+				this.ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
+			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
+				this.FullScreenModes.choices.Add(mode.ToString());
+			this.ScreenResolution.value = $@"{settings.screenResolution.width} x {settings.screenResolution.height}";
+			this.FullScreenModes.value = settings.fullScreenMode.ToString();
 			this.GeneralVolume.value = settings.generalVolume;
 			this.EffectsVolume.value = settings.effectsVolume;
 			this.MusicVolume.value = settings.musicVolume;
 			this.DialogSpeed.value = settings.dialogSpeed;
+			this.ScreenBrightness.value = settings.screenBrightness;
 			this.FullScreen.value = settings.fullScreen;
 			this.GeneralVolumeToggle.value = settings.generalVolumeToggle;
 			this.EffectsVolumeToggle.value = settings.effectsVolumeToggle;
