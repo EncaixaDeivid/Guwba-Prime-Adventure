@@ -22,13 +22,13 @@ namespace GuwbaPrimeAdventure.Story
 		public PathConnection PathConnection => PathConnection.Story;
 		public void Interaction()
 		{
-			if (this._dialogObject && this._dialogHudObject)
+			SettingsController.Load(out Settings settings);
+			if (settings.dialogToggle && this._dialogObject && this._dialogHudObject)
 			{
 				this._sender.SetStateForm(StateForm.State);
 				this._sender.SetAdditionalData(this.gameObject);
 				this._sender.SetToggle(false);
 				this._sender.Send(PathConnection.Hud);
-				SettingsController.Load(out Settings settings);
 				StateController.SetState(false);
 				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
