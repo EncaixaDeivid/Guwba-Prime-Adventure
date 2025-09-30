@@ -18,7 +18,6 @@
                 <ui:GroupBox name="DropsDown">
                     <ui:DropdownField label="Screen Resolution" name="ScreenResolution" />
                     <ui:DropdownField label="Full Screen Modes" name="FullScreenModes" />
-                    <ui:Toggle name="FullScreen" />
                 </ui:GroupBox>
                 <ui:GroupBox name="Output">
                     <ui:GroupBox name="Sliders">
