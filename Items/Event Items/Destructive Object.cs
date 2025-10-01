@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, Receptor.IReceptor, IDestructible
+	internal sealed class DestructiveObject : StateController, Receptor.IReceptorSignal, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
@@ -55,12 +55,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void OnTriggerEnter2D(Collider2D collision) => this.DestroyOnCollision();
 		public bool Hurt(ushort damage)
 		{
-			if (this._vitality <= 0f)
+			if (damage < this._biggerDamage || this._vitality <= 0f)
 				return false;
-			if (damage < this._biggerDamage)
-				return false;
-			this._vitality -= (short)damage;
-			if (this._vitality <= 0f)
+			if ((this._vitality -= (short)damage) <= 0f)
 			{
 				if (this._hiddenObject)
 					this._sender.Send(PathConnection.System);
