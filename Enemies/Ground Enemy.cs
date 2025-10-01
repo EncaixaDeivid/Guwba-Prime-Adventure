@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will do some action when look to a target.")] private bool _useFaceLook;
 		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
-		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runTowardsAfter;
+		[SerializeField, Tooltip("If this enemy will run toward the target after the run.")] private bool _runTowardsAfter;
 		[SerializeField, Tooltip("The distance of the detection of target.")] private ushort _faceLookDistance;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
@@ -104,7 +104,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.transform.right *= -1f;
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
-			float yAxis = this.transform.position.y - this._collider.bounds.extents.y * this.transform.up.y;
+			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, this._blockDistance, this._groundLayer) || blockPerception)
 				this.transform.right *= -1f;
 			if (this._detected && !this._isDashing)
