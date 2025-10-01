@@ -1,10 +1,12 @@
 using UnityEngine;
+using System;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	internal sealed class GroundEnemy : MovingEnemy
 	{
 		private bool _runTowards = false;
+		private short _movementSide = 1;
 		private ushort _runnedTimes = 0;
 		private float _timeRun = 0f;
 		private float _dashedTime = 0f;
@@ -68,7 +70,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._rigidybody.linearVelocity = Vector2.zero;
 				return;
 			}
-			Vector2 right = this.transform.right;
+			Vector2 right = this.transform.right * this._movementSide;
 			if (this._isDashing)
 			{
 				this._dashedTime += Time.deltaTime;
@@ -90,7 +92,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						break;
 					}
 			}
-			float xOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * this.transform.right.x;
+			float xOrigin = (this._collider.bounds.extents.x + this._blockDistance / 2f) * right.x;
 			Vector2 origin = new(this.transform.position.x + xOrigin, this.transform.position.y);
 			Vector2 size = new(this._blockDistance, this._collider.bounds.size.y - this._blockDistance);
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, right, this._blockDistance, this._groundLayer);
@@ -101,12 +103,22 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._runTowards)
 					this._runTowards = false;
 				else
-					this.transform.right *= -1f;
+					this.transform.localScale = new Vector3()
+					{
+						x = (this._movementSide *= -1) < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+						y = this.transform.localScale.y,
+						z = this.transform.localScale.z
+					};
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
 			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, this._blockDistance, this._groundLayer) || blockPerception)
-				this.transform.right *= -1f;
+				this.transform.localScale = new Vector3()
+				{
+					x = (this._movementSide *= -1) < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					y = this.transform.localScale.y,
+					z = this.transform.localScale.z
+				};
 			if (this._detected && !this._isDashing)
 				if (this._detectionStop)
 				{
