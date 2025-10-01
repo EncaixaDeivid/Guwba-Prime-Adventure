@@ -13,9 +13,9 @@ namespace GuwbaPrimeAdventure.Guwba
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
 	[RequireComponent(typeof(CinemachineImpulseSource))]
-	internal sealed class GuwbaManageableData : StateController, IConnector
+	internal sealed class ManageableGuwba : StateController, IConnector
 	{
-		private static GuwbaManageableData _instance;
+		private static ManageableGuwba _instance;
 		private VisualizableGuwba _visualizableGuwba;
 		private DamageableGuwba[] _damageableGuwbas;
 		private Animator _animator;
@@ -24,7 +24,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
-		private Vector2 _rightLeftAxis = new();
 		private Vector2 _normalSize = new();
 		private short _vitality;
 		private ushort _recoverVitality = 0;
@@ -117,18 +116,17 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._screenShaker = this.GetComponent<CinemachineImpulseSource>();
 			this._visualizableGuwba = Instantiate(this._visualizableGuwbaObject, this.transform);
 			this._damageableGuwbas = this.GetComponentsInChildren<DamageableGuwba>(true);
-			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
-			this.transform.right = this._turnLeft ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
+			SaveController.Load(out SaveFile saveFile);
+			this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
+			this._visualizableGuwba.CoinText.text = $"X {saveFile.coins}";
+			this._vitality = (short)this._visualizableGuwba.Vitality;
 			foreach (DamageableGuwba damageableGuwba in this._damageableGuwbas)
 			{
 				damageableGuwba.DamageableHurt += this.Hurt;
 				damageableGuwba.DamageableStun += this.Stun;
 				damageableGuwba.DamageableAttack += this.Attack;
 			}
-			SaveController.Load(out SaveFile saveFile);
-			this._visualizableGuwba.LifeText.text = $"X {saveFile.lifes}";
-			this._visualizableGuwba.CoinText.text = $"X {saveFile.coins}";
-			this._vitality = (short)this._visualizableGuwba.Vitality;
+			this.transform.localScale = this._turnLeft ? Vector3.one + Vector3.left * 2f : Vector3.one;
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
 			if (this.gameObject.scene.name == this._hubbyWorldScene)
@@ -239,7 +237,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetBool(this._attackSlide, true);
 					this._animator.SetBool(this._dashSlide, this._dashActive = true);
 					this._dashMovement = this._movementAction;
-					this.transform.right = this._dashMovement < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
+					this.transform.localScale = this._dashMovement < 0f ? Vector3.one + Vector3.left * 2f : Vector3.one;
 					float dashLocation = this.transform.position.x;
 					this._collider.size = this._dashSlideSize;
 					this._collider.offset = new Vector2(this._collider.offset.x, -((this._normalSize.y - this._collider.size.y) / 2f));
@@ -250,7 +248,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovement;
 						Vector2 origin = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
-						Vector2 direction = this.transform.right * this._dashMovement;
+						Vector2 direction = this.transform.localScale * this._dashMovement;
 						float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 						bool collision = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayerMask);
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
@@ -329,8 +327,8 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._sender.Send(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.State);
 				this._sender.Send(PathConnection.Hud);
-				this._sender.Send(PathConnection.Enemy);
 				this._sender.SetStateForm(StateForm.None);
+				this._sender.Send(PathConnection.Enemy);
 				this._sender.Send(PathConnection.Boss);
 				return true;
 			}
@@ -395,7 +393,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void FixedUpdate()
 		{
-			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			Vector2 direction = this.transform.right * movementValue;
 			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
@@ -521,7 +518,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 				}
 				if (this._movementAction != 0f)
-					this.transform.right = this._movementAction < 0f ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
+					this.transform.localScale = this._movementAction < 0f ? Vector3.one + Vector3.left * 2f : Vector3.one;
 				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
@@ -607,7 +604,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
 				}
 				this._vitality = (short)this._visualizableGuwba.Vitality;
-				this.transform.right = this._turnLeft ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
+				this.transform.localScale = this._turnLeft ? Vector3.one + Vector3.left * 2f : Vector3.one;
 				this._animator.SetBool(this._death, false);
 				this._collider.size = this._normalSize;
 			}
