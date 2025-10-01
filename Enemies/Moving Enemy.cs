@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -21,7 +22,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._sender.SetStateForm(StateForm.Action);
-			this.transform.right = this._invertMovementSide ? -Vector2.right : Vector2.right;
+			this.transform.localScale = new Vector3()
+			{
+				x = this._invertMovementSide ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+				y = this.transform.localScale.y,
+				z = this.transform.localScale.z
+			};
 		}
 		private new void OnEnable()
 		{
