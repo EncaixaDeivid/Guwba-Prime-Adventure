@@ -1,11 +1,11 @@
 using UnityEngine;
+using System;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
-		private Vector2 _rightLeftAxis = new();
 		private Vector2 _pointOrigin = new();
 		private Vector2 _targetPoint = new();
 		private bool _normal = true;
@@ -77,10 +77,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._trail.Length <= 0f)
 				return;
-			Vector2 right = this._rightLeftAxis;
 			if ((Vector2)this.transform.position != this._pointOrigin)
 			{
-				this.transform.right = this._pointOrigin.x < this.transform.position.x ? right * Vector2.left : right * Vector2.right;
+				bool valid = this._pointOrigin.x < this.transform.position.x;
+				this.transform.localScale = new Vector3()
+				{
+					x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					y = this.transform.localScale.y,
+					z = this.transform.localScale.z
+				};
 				float maxDistanceDelta = this._returnSpeed * Time.fixedDeltaTime;
 				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, maxDistanceDelta);
 			}
@@ -105,7 +110,13 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._normal = this._pointIndex == 0f;
 				}
 				float maxDistanceDelta = Time.fixedDeltaTime * this._movementSpeed;
-				this.transform.right = target.x < this.transform.localPosition.x ? right * Vector2.left : right * Vector2.right;
+				bool valid = target.x < this.transform.localPosition.x;
+				this.transform.localScale = new Vector3()
+				{
+					x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					y = this.transform.localScale.y,
+					z = this.transform.localScale.z
+				};
 				this.transform.localPosition = Vector2.MoveTowards(this.transform.localPosition, target, maxDistanceDelta);
 				this._pointOrigin = this.transform.position;
 			}
@@ -114,7 +125,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._stopWorking || this.IsStunned)
 				return;
-			this._rightLeftAxis = new Vector2(Mathf.Abs(this.transform.right.x), Mathf.Abs(this.transform.right.y));
 			if (this._target)
 			{
 				this._targetPoint = this._target.transform.position;
@@ -142,7 +152,12 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (this._detected)
 						{
 							bool valid = collider.transform.position.x < this.transform.position.x;
-							this.transform.right = valid ? this._rightLeftAxis * Vector2.left : this._rightLeftAxis * Vector2.right;
+							this.transform.localScale = new Vector3()
+							{
+								x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+								y = this.transform.localScale.y,
+								z = this.transform.localScale.z
+							};
 						}
 						break;
 					}
