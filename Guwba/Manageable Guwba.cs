@@ -126,7 +126,12 @@ namespace GuwbaPrimeAdventure.Guwba
 				damageableGuwba.DamageableStun += this.Stun;
 				damageableGuwba.DamageableAttack += this.Attack;
 			}
-			this.transform.localScale = this._turnLeft ? Vector3.one + Vector3.left * 2f : Vector3.one;
+			this.transform.localScale = new Vector3()
+			{
+				x = this._turnLeft ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+				y = this.transform.localScale.y,
+				z = this.transform.localScale.z
+			};
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalSize = this._collider.size;
 			if (this.gameObject.scene.name == this._hubbyWorldScene)
@@ -237,7 +242,12 @@ namespace GuwbaPrimeAdventure.Guwba
 						this._animator.SetBool(this._attackSlide, true);
 					this._animator.SetBool(this._dashSlide, this._dashActive = true);
 					this._dashMovement = this._movementAction;
-					this.transform.localScale = this._dashMovement < 0f ? Vector3.one + Vector3.left * 2f : Vector3.one;
+					this.transform.localScale = new Vector3()
+					{
+						x = this._dashMovement < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+						y = this.transform.localScale.y,
+						z = this.transform.localScale.z
+					};
 					float dashLocation = this.transform.position.x;
 					this._collider.size = this._dashSlideSize;
 					this._collider.offset = new Vector2(this._collider.offset.x, -((this._normalSize.y - this._collider.size.y) / 2f));
@@ -248,7 +258,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovement;
 						Vector2 origin = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
-						Vector2 direction = this.transform.localScale * this._dashMovement;
+						Vector2 direction = this.transform.right * this._dashMovement;
 						float angle = this.transform.rotation.z * Mathf.Rad2Deg;
 						bool collision = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayerMask);
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
@@ -518,7 +528,12 @@ namespace GuwbaPrimeAdventure.Guwba
 					}
 				}
 				if (this._movementAction != 0f)
-					this.transform.localScale = this._movementAction < 0f ? Vector3.one + Vector3.left * 2f : Vector3.one;
+					this.transform.localScale = new Vector3()
+					{
+						x = this._movementAction < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+						y = this.transform.localScale.y,
+						z = this.transform.localScale.z
+					};
 				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
 				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
@@ -604,7 +619,12 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._visualizableGuwba.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
 				}
 				this._vitality = (short)this._visualizableGuwba.Vitality;
-				this.transform.localScale = this._turnLeft ? Vector3.one + Vector3.left * 2f : Vector3.one;
+				this.transform.localScale = new Vector3()
+				{
+					x = this._turnLeft ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					y = this.transform.localScale.y,
+					z = this.transform.localScale.z
+				};
 				this._animator.SetBool(this._death, false);
 				this._collider.size = this._normalSize;
 			}
