@@ -2,7 +2,7 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(Collider2D))]
 	internal sealed class InteractiveActivator : Activator, IInteractable
 	{
 		public void Interaction()
