@@ -85,7 +85,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this.MusicVolume.lowValue = 0;
 			this.DialogSpeed.lowValue = 0f;
 			this.ScreenBrightness.lowValue = 0f;
-			foreach (Resolution resolution in Screen.resolutions)
+			foreach (Resolution resolution in SettingsController.PixelPerfectResolutions())
 				this.ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
 				this.FullScreenModes.choices.Add(mode.ToString());
