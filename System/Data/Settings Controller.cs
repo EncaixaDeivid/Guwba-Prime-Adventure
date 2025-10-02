@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Data
 {
 	public struct Settings
@@ -25,12 +26,20 @@ namespace GuwbaPrimeAdventure.Data
 			Load(out Settings settings);
 			return settings;
 		}
+		public static Resolution[] PixelPerfectResolutions()
+		{
+			List<Resolution> resolutions = new();
+			foreach (Resolution resolution in Screen.resolutions)
+				if (resolution.width % 320 == 0f && resolution.height % 180 == 0f)
+					resolutions.Add(resolution);
+			return resolutions.ToArray();
+		}
 		public static bool FileExists() => File.Exists(SettingsPath);
 		public static void Load(out Settings settings)
 		{
 			settings = new Settings()
 			{
-				screenResolution = new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height),
+				screenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
 				fullScreenMode = Screen.fullScreenMode,
 				dialogToggle = true,
 				dialogSpeed = .05f,
