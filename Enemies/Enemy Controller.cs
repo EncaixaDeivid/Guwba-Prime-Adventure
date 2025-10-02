@@ -3,11 +3,10 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator)), RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+	[RequireComponent(typeof(Transform), typeof(Rigidbody2D)), RequireComponent(typeof(Collider2D))]
 	internal abstract class EnemyController : StateController, IConnector, IDestructible
     {
 		protected SpriteRenderer _spriteRenderer;
-		protected Animator _animator;
 		protected Rigidbody2D _rigidybody;
 		protected Collider2D _collider;
 		protected readonly Sender _sender = Sender.Create();
@@ -16,6 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private short _armorResistance = 0;
 		protected bool _stopWorking = false;
 		[Header("Enemy Controller")]
+		[SerializeField, Tooltip("The bosses to send messages.")] private EnemyController[] _enemiesToSend;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] protected LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] protected LayerMask _targetLayerMask;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private short _vitality;
@@ -28,6 +28,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time this enemy will be stunned when armor be broken.")] private float _stunnedTime;
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
+		[SerializeField, Tooltip("If this boss will react to any damage taken.")] protected bool _reactToDamage;
+		[SerializeField, Tooltip("If this boss has a index atribute to use.")] private bool _hasIndex;
+		[SerializeField, Tooltip("The index to a event to a boss make.")] private ushort _indexEvent;
+		[SerializeField, Tooltip("If this boss will start a trancision.")] private bool _isTransitioner;
+		[SerializeField, Tooltip("If this boss have any dialog to start after his death.")] private bool _haveDialog;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		protected bool IsStunned { get; private set; }
 		public PathConnection PathConnection => PathConnection.Enemy;
@@ -36,10 +41,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-			this._animator = this.GetComponent<Animator>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetAdditionalData(this.gameObject);
+			this._sender.SetAdditionalData(this._enemiesToSend);
 			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._armorResistance = (short)this._hitResistance;
 			if (this._fadeOverTime)
@@ -57,12 +61,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		protected void OnEnable()
-		{
-			this._animator.enabled = true;
-			this._rigidybody.gravityScale = this._guardGravityScale;
-		}
-		protected void OnDisable() => this._animator.enabled = false;
+		protected void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
 		protected void Update()
 		{
 			if (this.IsStunned)
@@ -86,6 +85,18 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._noDamage || damage <= 0)
 				return false;
+			if (this._reactToDamage)
+				if (this._hasIndex)
+				{
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.SetNumber(this._indexEvent);
+					this._sender.Send(PathConnection.Enemy);
+				}
+				else
+				{
+					this._sender.SetStateForm(StateForm.Action);
+					this._sender.Send(PathConnection.Enemy);
+				}
 			if ((this._vitality -= (short)damage) <= 0f)
 				Destroy(this.gameObject);
 			return true;
