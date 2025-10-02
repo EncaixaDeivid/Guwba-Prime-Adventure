@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
 		private float _gravityScale = 0f;
+		private bool _hasTarget = false;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy")]
 		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private EnemyProjectile[] _projectiles;
@@ -35,9 +36,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
 		}
-		private void Shoot()
+		private void Verify()
 		{
-			bool hasTarget = false;
+			this._hasTarget = false;
 			float originDirection = this._collider.bounds.extents.x * (this.transform.right.x < 0f ? -1f : 1f);
 			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
 			Vector2 direction = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward) * Vector2.up;
@@ -50,14 +51,14 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (Physics2D.Linecast(this.transform.position, collider.transform.position, this._groundLayer))
 							continue;
 						this._targetDirection = (collider.transform.position - this.transform.position).normalized;
-						hasTarget = true;
+						this._hasTarget = true;
 					}
 			}
 			else
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, this._perceptionDistance, this._targetLayerMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
-						hasTarget = true;
-			if ((hasTarget || this._shootInfinity) && this._shootInterval <= 0f)
+						this._hasTarget = true;
+			if ((this._hasTarget || this._shootInfinity) && this._shootInterval <= 0f)
 			{
 				this._shootInterval = this._intervalToShoot;
 				if (this._invencibleShoot)
@@ -77,21 +78,24 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (this._paralyze)
 						this._rigidybody.gravityScale = 0f;
 				}
-				foreach (EnemyProjectile projectile in this._projectiles)
-					if (this._pureInstance)
-						Instantiate(projectile, this.transform.position, projectile.transform.rotation, this.transform);
-					else
-					{
-						Vector2 position = this.transform.position;
-						float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
-						Quaternion rotation = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward);
-						if (this._circulateDetection)
-							rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-						if (!this._instanceOnSelf)
-							position += (Vector2)(rotation * Vector2.up);
-						Instantiate(projectile, position, rotation, this.transform);
-					}
 			}
+		}
+		private void Shoot()
+		{
+			foreach (EnemyProjectile projectile in this._projectiles)
+				if (this._pureInstance)
+					Instantiate(projectile, this.transform.position, projectile.transform.rotation, this.transform);
+				else
+				{
+					Vector2 position = this.transform.position;
+					float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
+					Quaternion rotation = Quaternion.AngleAxis(this._rayAngleDirection, Vector3.forward);
+					if (this._circulateDetection)
+						rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+					if (!this._instanceOnSelf)
+						position += (Vector2)(rotation * Vector2.up);
+					Instantiate(projectile, position, rotation, this.transform);
+				}
 		}
 		private new void Update()
 		{
@@ -102,7 +106,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._shootInterval -= Time.deltaTime;
 			if (this._timeStop > 0f)
 				this._timeStop -= Time.deltaTime;
-			else if (this._timeStop <= 0f && this._isStopped)
+			if (this._hasTarget && this._timeStop <= this._stopTime / 2f)
+				this.Shoot();
+			if (this._timeStop <= 0f && this._isStopped)
 			{
 				this._isStopped = false;
 				this._sender.SetStateForm(StateForm.State);
@@ -117,21 +123,22 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._returnGravity)
 					this._rigidybody.gravityScale = this._gravityScale;
 			}
-			this.Shoot();
+			this.Verify();
 		}
 		public new bool Hurt(ushort damage)
 		{
 			if (this._shootDamaged)
-				this.Shoot();
+				this.Verify();
 			return base.Hurt(damage);
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			if (additionalData as GameObject != this.gameObject)
-				return;
-			if (data.StateForm == StateForm.Action)
-				this.Shoot();
+			EnemyController[] enemies = (EnemyController[])additionalData;
+			if (enemies != null)
+				foreach (EnemyController enemy in enemies)
+					if (enemy == this && data.StateForm == StateForm.Action && this._reactToDamage)
+						this.Verify();
 		}
 	};
 };
