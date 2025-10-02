@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Story
 		public void Interaction()
 		{
 			SettingsController.Load(out Settings settings);
-			if (settings.dialogToggle && this._dialogObject && this._dialogHudObject)
+			if (settings.DialogToggle && this._dialogObject && this._dialogHudObject)
 			{
 				this._sender.SetStateForm(StateForm.State);
 				this._sender.SetAdditionalData(this.gameObject);
@@ -33,7 +33,7 @@ namespace GuwbaPrimeAdventure.Story
 				this._storyTeller = this.GetComponent<StoryTeller>();
 				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
-				this._dialogTime = settings.dialogSpeed;
+				this._dialogTime = settings.DialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
 				this.StartCoroutine(this.TextDigitation());
 				if (this._storyTeller)
@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Story
 			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
 			{
 				SettingsController.Load(out Settings settings);
-				this._dialogTime = settings.dialogSpeed;
+				this._dialogTime = settings.DialogSpeed;
 				if (this._speachIndex < this._dialogObject.Speachs.Length - 1f)
 				{
 					if (this._storyTeller && this._dialogObject.Speachs[this._speachIndex].NextSlide)
