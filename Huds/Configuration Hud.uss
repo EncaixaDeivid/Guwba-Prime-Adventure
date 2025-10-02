@@ -37,13 +37,32 @@
     align-self: center;
 }
 
-#Sliders {
+#OutputSliders {
     width: 90%;
     height: 100%;
     align-items: center;
     justify-content: space-evenly;
     align-self: center;
     flex-direction: column;
+}
+
+#Sliders {
+    width: 90%;
+    height: 20%;
+    align-items: center;
+    justify-content: space-evenly;
+    align-self: center;
+    flex-direction: column;
+}
+
+#Sliders Slider, #Sliders SliderInt {
+    width: 90%;
+    height: 50%;
+    padding-bottom: 55px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: center;
 }
 
 #Output #Toggles {
@@ -55,7 +74,7 @@
     flex-direction: column;
 }
 
-Slider {
+Slider, SliderInt {
     width: 90%;
     height: 25%;
     padding-bottom: 55px;
@@ -65,11 +84,11 @@ Slider {
     align-self: center;
 }
 
-Slider Label {
+Slider Label, SliderInt Label {
     font-size: 25px;
 }
 
-Slider VisualElement {
+Slider VisualElement, SliderInt VisualElement {
     width: 100%;
     height: 80%;
     flex-direction: column;
@@ -77,7 +96,7 @@ Slider VisualElement {
     align-self: center;
 }
 
-Slider #unity-drag-container {
+Slider #unity-drag-container, SliderInt #unity-drag-container{
     width: 100%;
     height: 100%;
     flex-direction: row;
@@ -87,7 +106,7 @@ Slider #unity-drag-container {
     align-items: center;
 }
 
-Slider #unity-tracker {
+Slider #unity-tracker, SliderInt #unity-tracker{
     height: 75%;
     background-color: rgb(192, 192, 192);
     flex-direction: row;
@@ -95,7 +114,7 @@ Slider #unity-tracker {
     border-radius: 10px;
 }
 
-Slider #unity-dragger {
+Slider #unity-dragger, SliderInt #unity-dragger{
     width: 2.5%;
     height: 75%;
     background-color: rgb(255, 160, 0);
