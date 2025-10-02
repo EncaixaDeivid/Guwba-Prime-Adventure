@@ -26,9 +26,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(true);
 		}
-		private new void OnDisable()
+		private void OnDisable()
 		{
-			base.OnDisable();
 			foreach (GameObject gameObject in this._enemysGenerated.FindAll(gameObject => gameObject))
 				gameObject.SetActive(false);
 		}
