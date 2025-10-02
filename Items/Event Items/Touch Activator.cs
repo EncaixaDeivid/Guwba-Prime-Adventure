@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(Collider2D))]
 	internal sealed class TouchActivator : Activator
 	{
 		[Header("Touch Activator")]
