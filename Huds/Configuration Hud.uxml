@@ -20,10 +20,10 @@
                     <ui:DropdownField label="Full Screen Modes" name="FullScreenModes" />
                 </ui:GroupBox>
                 <ui:GroupBox name="Output">
-                    <ui:GroupBox name="Sliders">
-                        <ui:Slider label="General Volume" name="GeneralVolume" />
-                        <ui:Slider label="Effects Volume" name="EffectsVolume" />
-                        <ui:Slider label="Music Volume" name="MusicVolume" />
+                    <ui:GroupBox name="OutputSliders">
+                        <ui:SliderInt label="General Volume" name="GeneralVolume" />
+                        <ui:SliderInt label="Effects Volume" name="EffectsVolume" />
+                        <ui:SliderInt label="Music Volume" name="MusicVolume" />
                         <ui:Slider label="Dialog Speed" name="DialogSpeed" />
                     </ui:GroupBox>
                     <ui:GroupBox name="Toggles">
@@ -33,7 +33,10 @@
                         <ui:Toggle name="DialogToggle" />
                     </ui:GroupBox>
                 </ui:GroupBox>
-                <ui:Slider label="Screen Brightness" name="ScreenBrightness" />
+                <ui:GroupBox name="Sliders">
+                    <ui:SliderInt label="Frame Rate" name="FrameRate" />
+                    <ui:Slider label="Screen Brightness" name="ScreenBrightness" />
+                </ui:GroupBox>
             </ui:GroupBox>
             <ui:GroupBox name="RightPage" />
         </ui:GroupBox>
