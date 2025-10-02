@@ -64,9 +64,10 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
 			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
 			this._configurationHud.ScreenBrightness.UnregisterValueChangedCallback<float>(this.ScreenBrightness);
-			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<float>(this.GeneralVolume);
-			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<float>(this.EffectsVolume);
-			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<float>(this.MusicVolume);
+			this._configurationHud.FrameRate.UnregisterValueChangedCallback<int>(this.FrameRate);
+			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<int>(this.GeneralVolume);
+			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<int>(this.EffectsVolume);
+			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<int>(this.MusicVolume);
 			this._configurationHud.Yes.clicked -= this.YesBackLevel;
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
@@ -79,72 +80,78 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
-		private EventCallback<ChangeEvent<string>> ScreenResolution => value =>
+		private EventCallback<ChangeEvent<string>> ScreenResolution => resolution =>
 		{
 			SettingsController.Load(out Settings settings);
-			string[] dimensions = value.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			settings.screenResolution = new Vector2Int(ushort.Parse(dimensions[0]), ushort.Parse(dimensions[1]));
-			Screen.SetResolution(settings.screenResolution.x, settings.screenResolution.y, settings.fullScreenMode);
+			string[] dimensions = resolution.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			settings.ScreenResolution = new Vector2Int(ushort.Parse(dimensions[0]), ushort.Parse(dimensions[1]));
+			Screen.SetResolution(settings.ScreenResolution.x, settings.ScreenResolution.y, settings.FullScreenMode);
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<string>> FullScreenModes => value =>
+		private EventCallback<ChangeEvent<string>> FullScreenModes => screenMode =>
 		{
 			SettingsController.Load(out Settings settings);
-			Screen.fullScreenMode = settings.fullScreenMode = Enum.Parse<FullScreenMode>(value.newValue);
+			Screen.fullScreenMode = settings.FullScreenMode = Enum.Parse<FullScreenMode>(screenMode.newValue);
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => value =>
+		private EventCallback<ChangeEvent<bool>> DialogToggle => toggle =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.generalVolumeToggle = value.newValue;
+			settings.DialogToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => value =>
+		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => toggle =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.effectsVolumeToggle = value.newValue;
+			settings.GeneralVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => value =>
+		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => toggle =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.musicVolumeToggle = value.newValue;
+			settings.EffectsVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<bool>> DialogToggle => value =>
+		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => toggle =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.dialogToggle = value.newValue;
+			settings.MusicVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.dialogSpeed = value.newValue;
+			settings.DialogSpeed = value.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> ScreenBrightness => value =>
+		private EventCallback<ChangeEvent<float>> ScreenBrightness => brightness =>
 		{
 			SettingsController.Load(out Settings settings);
-			Screen.brightness = settings.screenBrightness = value.newValue;
+			Screen.brightness = settings.ScreenBrightness = brightness.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> GeneralVolume => value =>
+		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.generalVolume = (ushort)value.newValue;
+			Application.targetFrameRate = settings.FrameRate = (ushort)frameRate.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> EffectsVolume => value =>
+		private EventCallback<ChangeEvent<int>> GeneralVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.effectsVolume = (ushort)value.newValue;
+			settings.GeneralVolume = (ushort)volume.newValue;
 			SettingsController.WriteSave(settings);
 		};
-		private EventCallback<ChangeEvent<float>> MusicVolume => value =>
+		private EventCallback<ChangeEvent<int>> EffectsVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.musicVolume = (ushort)value.newValue;
+			settings.EffectsVolume = (ushort)volume.newValue;
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<int>> MusicVolume => volume =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.MusicVolume = (ushort)volume.newValue;
 			SettingsController.WriteSave(settings);
 		};
 		private Action YesBackLevel => () =>
@@ -193,9 +200,10 @@ namespace GuwbaPrimeAdventure.Hud
 				this._configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
 				this._configurationHud.ScreenBrightness.RegisterValueChangedCallback<float>(this.ScreenBrightness);
 				this._configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
-				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<float>(this.GeneralVolume);
-				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<float>(this.EffectsVolume);
-				this._configurationHud.MusicVolume.RegisterValueChangedCallback<float>(this.MusicVolume);
+				this._configurationHud.FrameRate.RegisterValueChangedCallback<int>(this.FrameRate);
+				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<int>(this.GeneralVolume);
+				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<int>(this.EffectsVolume);
+				this._configurationHud.MusicVolume.RegisterValueChangedCallback<int>(this.MusicVolume);
 				this._configurationHud.Yes.clicked += this.YesBackLevel;
 				this._configurationHud.No.clicked += this.NoBackLevel;
 			}
