@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Item
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
-			if (this._enterInDialog && settings.dialogToggle)
+			if (this._enterInDialog && settings.DialogToggle)
 				this.GetComponent<IInteractable>().Interaction();
 			else if (sceneIndex - 1 >= 0f && !saveFile.deafetedBosses[sceneIndex - 1])
 				this.GetComponent<Transitioner>().Transicion(this._goToBoss);
