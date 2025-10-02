@@ -5,17 +5,18 @@ namespace GuwbaPrimeAdventure.Data
 {
 	public struct Settings
 	{
-		public Vector2Int screenResolution;
-		public FullScreenMode fullScreenMode;
-		public bool dialogToggle;
-		public float dialogSpeed;
-		public float screenBrightness;
-		public bool generalVolumeToggle;
-		public ushort generalVolume;
-		public bool effectsVolumeToggle;
-		public ushort effectsVolume;
-		public bool musicVolumeToggle;
-		public ushort musicVolume;
+		public Vector2Int ScreenResolution;
+		public FullScreenMode FullScreenMode;
+		public bool DialogToggle;
+		public bool GeneralVolumeToggle;
+		public bool EffectsVolumeToggle;
+		public bool MusicVolumeToggle;
+		public float DialogSpeed;
+		public float ScreenBrightness;
+		public ushort FrameRate;
+		public ushort GeneralVolume;
+		public ushort EffectsVolume;
+		public ushort MusicVolume;
 	};
 	public static class SettingsController
 	{
@@ -39,17 +40,18 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			settings = new Settings()
 			{
-				screenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
-				fullScreenMode = Screen.fullScreenMode,
-				dialogToggle = true,
-				dialogSpeed = .05f,
-				screenBrightness = 1f,
-				generalVolumeToggle = true,
-				generalVolume = 100,
-				effectsVolumeToggle = true,
-				effectsVolume = 100,
-				musicVolumeToggle = true,
-				musicVolume = 100
+				ScreenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
+				FullScreenMode = Screen.fullScreenMode,
+				DialogToggle = true,
+				GeneralVolumeToggle = true,
+				EffectsVolumeToggle = true,
+				MusicVolumeToggle = true,
+				DialogSpeed = .05f,
+				ScreenBrightness = 1f,
+				FrameRate = 60,
+				GeneralVolume = 100,
+				EffectsVolume = 100,
+				MusicVolume = 100
 			};
 			if (File.Exists(SettingsPath))
 				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
@@ -58,17 +60,18 @@ namespace GuwbaPrimeAdventure.Data
 		public static void SaveSettings() =>
 			ArchiveEncoder.WriteData(new Settings()
 			{
-				screenResolution = _settings.screenResolution,
-				fullScreenMode = _settings.fullScreenMode,
-				dialogToggle = _settings.dialogToggle,
-				dialogSpeed = _settings.dialogSpeed,
-				screenBrightness = _settings.screenBrightness,
-				generalVolumeToggle = _settings.generalVolumeToggle,
-				generalVolume = _settings.generalVolume,
-				effectsVolumeToggle = _settings.effectsVolumeToggle,
-				effectsVolume = _settings.effectsVolume,
-				musicVolumeToggle = _settings.musicVolumeToggle,
-				musicVolume = _settings.musicVolume
+				ScreenResolution = _settings.ScreenResolution,
+				FullScreenMode = _settings.FullScreenMode,
+				DialogToggle = _settings.DialogToggle,
+				GeneralVolumeToggle = _settings.GeneralVolumeToggle,
+				EffectsVolumeToggle = _settings.EffectsVolumeToggle,
+				MusicVolumeToggle = _settings.MusicVolumeToggle,
+				DialogSpeed = _settings.DialogSpeed,
+				ScreenBrightness = _settings.ScreenBrightness,
+				FrameRate = _settings.FrameRate,
+				GeneralVolume = _settings.GeneralVolume,
+				EffectsVolume = _settings.EffectsVolume,
+				MusicVolume = _settings.MusicVolume
 			}, SettingsPath);
 	};
 };
