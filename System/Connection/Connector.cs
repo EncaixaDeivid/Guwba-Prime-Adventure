@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure.Connection
 		Hud,
 		Guwba,
 		Enemy,
-		Boss,
 		Item,
 		EventItem,
 		Story
