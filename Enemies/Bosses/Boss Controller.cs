@@ -66,7 +66,7 @@ namespace GuwbaPrimeAdventure.Enemy.Boss
 						saveFile.deafetedBosses[sceneIndex] = true;
 						SaveController.WriteSave(saveFile);
 					}
-					if (settings.dialogToggle && this._haveDialog)
+					if (settings.DialogToggle && this._haveDialog)
 						this.GetComponent<IInteractable>().Interaction();
 					else if (this._isTransitioner)
 						this.GetComponent<Transitioner>().Transicion();
