@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _tilemapCollider2D;
+		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
 		private new void Awake()
 		{
 			base.Awake();
