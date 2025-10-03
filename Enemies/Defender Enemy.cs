@@ -8,23 +8,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _invencible = false;
 		private float _timeOperation = 0f;
 		[Header("Defender Enemy")]
-		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
-		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy")]
-		private bool _invencibleStop;
-		[SerializeField, Tooltip("If this enemy will become invencible when hurted.")] private bool _invencibleHurted;
-		[SerializeField, Tooltip("If this enemy will use time to become invencible/destructible.")] private bool _useAlternatedTime;
-		[SerializeField, Tooltip("The amount of time the enemy have to become destructible.")] private float _timeToDestructible;
-		[SerializeField, Tooltip("The amount of time the enemy have to become invencible.")] private float _timeToInvencible;
+		[SerializeField, Tooltip("The defender statitics of this enemy.")] private DefenderStatistics _statistics;
 		private new void Awake()
 		{
 			base.Awake();
 			this._sender.SetStateForm(StateForm.State);
-			this._timeOperation = this._timeToInvencible;
+			this._timeOperation = this._statistics.TimeToInvencible;
 		}
 		private new void Update()
 		{
 			base.Update();
-			if (this._stopWorking || this.IsStunned || !this._useAlternatedTime && !this._invencible)
+			if (this._stopWorking || this.IsStunned || !this._statistics.UseAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
 				this._timeOperation -= Time.deltaTime;
@@ -33,8 +27,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._invencible)
 				{
 					this._invencible = false;
-					this._timeOperation = this._timeToInvencible;
-					if (this._invencibleStop)
+					this._timeOperation = this._statistics.TimeToInvencible;
+					if (this._statistics.InvencibleStop)
 					{
 						this._sender.SetToggle(true);
 						this._sender.Send(PathConnection.Enemy);
@@ -43,8 +37,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 				{
 					this._invencible = true;
-					this._timeOperation = this._timeToDestructible;
-					if (this._invencibleStop)
+					this._timeOperation = this._statistics.TimeToDestructible;
+					if (this._statistics.InvencibleStop)
 					{
 						this._sender.SetToggle(false);
 						this._sender.Send(PathConnection.Enemy);
@@ -55,13 +49,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new bool Hurt(ushort damage)
 		{
 			bool isHurted = false;
-			if (!this._invencible && damage >= this._biggerDamage)
+			if (!this._invencible && damage >= this._statistics.BiggerDamage)
 				isHurted = base.Hurt(damage);
-			if (this._invencibleHurted && isHurted)
+			if (this._statistics.InvencibleHurted && isHurted)
 			{
-				this._timeOperation = this._timeToDestructible;
+				this._timeOperation = this._statistics.TimeToDestructible;
 				this._invencible = true;
-				if (this._invencibleStop)
+				if (this._statistics.InvencibleStop)
 				{
 					this._sender.SetToggle(true);
 					this._sender.Send(PathConnection.Enemy);
@@ -78,11 +72,11 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (enemy != this)
 						return;
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
-				if (this._useAlternatedTime && data.ToggleValue.Value)
+				if (this._statistics.UseAlternatedTime && data.ToggleValue.Value)
 					this._invencible = true;
 				else
 					this._invencible = data.ToggleValue.Value;
-			if (this._invencibleStop)
+			if (this._statistics.InvencibleStop)
 			{
 				this._sender.SetToggle(!this._invencible);
 				this._sender.Send(PathConnection.Enemy);
