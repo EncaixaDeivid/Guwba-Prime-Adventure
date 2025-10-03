@@ -20,51 +20,20 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalReturnPoint = 0;
 		private bool _breakInUse = false;
 		[Header("Projectile")]
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
-		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayerMask;
-		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
-		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
-		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
-		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
-		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
-		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
-		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
-		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
-		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
-		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
-		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
-		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
-		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
-		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
-		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
-		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
-		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
-		[Header("Cell Projectile")]
-		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
-		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
-		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
-		[SerializeField, Tooltip("If the instantiation of the second projectile will always break after the first.")] private bool _alwaysBreak;
-		[SerializeField, Tooltip("If the points of break are randomized between the maximum and minimum.")] private bool _randomBreak;
-		[SerializeField, Tooltip("If the break point is restricted at a specific break point.")] private bool _extrictRandom;
-		[SerializeField, Tooltip("The amount of cell points to jump the instantiation.")] private ushort _jumpPoints;
-		[SerializeField, Tooltip("The exact point where the break of the instantiantion start.")] private ushort _breakPoint;
-		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
-		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
-		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
+		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
 		private void CommonInstance()
 		{
-			for (ushort i = 0; i < this._quantityToSummon; i++)
+			for (ushort i = 0; i < this._statistics.QuantityToSummon; i++)
 			{
 				Quaternion rotation;
-				if (this._useSelfRotation)
+				if (this._statistics.UseSelfRotation)
 				{
-					float selfRotation = this.transform.eulerAngles.z;
-					rotation = Quaternion.AngleAxis(selfRotation + this._baseAngle + this._spreadAngle * i, Vector3.forward);
+					float selfRotation = this.transform.eulerAngles.z + this._statistics.BaseAngle + this._statistics.SpreadAngle * i;
+					rotation = Quaternion.AngleAxis(selfRotation, Vector3.forward);
 				}
 				else
-					rotation = Quaternion.AngleAxis(this._baseAngle + this._spreadAngle * i, Vector3.forward);
-				Instantiate(this._secondProjectile, this.transform.position, rotation);
+					rotation = Quaternion.AngleAxis(this._statistics.BaseAngle + this._statistics.SpreadAngle * i, Vector3.forward);
+				Instantiate(this._statistics.SecondProjectile, this.transform.position, rotation);
 			}
 		}
 		private void CellInstance()
@@ -78,7 +47,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (this._pointToReturn++ >= this._internalReturnPoint)
 						{
 							this._pointToBreak = 0;
-							this._breakInUse = this._alwaysBreak;
+							this._breakInUse = this._statistics.AlwaysBreak;
 						}
 					if (!this._breakInUse || this._pointToBreak < this._internalBreakPoint)
 					{
@@ -87,14 +56,14 @@ namespace GuwbaPrimeAdventure.Enemy
 							this._pointToBreak++;
 							this._pointToReturn = 0;
 						}
-						this._pointToJump = this._jumpPoints;
-						float angle = this._baseAngle + this._spreadAngle * this._angleMulti;
+						this._pointToJump = this._statistics.JumpPoints;
+						float angle = this._statistics.BaseAngle + this._statistics.SpreadAngle * this._angleMulti;
 						Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 						Vector2 position = new(this._cellPosition.x + .5f, this._cellPosition.y + .5f);
-						if (this._useQuantity)
-							this._projectiles.Add(Instantiate(this._secondProjectile, position, rotation));
+						if (this._statistics.UseQuantity)
+							this._projectiles.Add(Instantiate(this._statistics.SecondProjectile, position, rotation));
 						else
-							Instantiate(this._secondProjectile, position, rotation);
+							Instantiate(this._statistics.SecondProjectile, position, rotation);
 						this._angleMulti++;
 					}
 				}
@@ -104,9 +73,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void CellInstanceRange()
 		{
-			float distance = Physics2D.Raycast(this.transform.position, this.transform.up, this._distanceRay, this._groundLayerMask).distance;
-			if (this._useQuantity)
-				distance = this._quantityToSummon;
+			LayerMask groundLayer = this._statistics.GroundLayer;
+			float distanceRay = this._statistics.DistanceRay;
+			float distance = Physics2D.Raycast(this.transform.position, this.transform.up, distanceRay, groundLayer).distance;
+			if (this._statistics.UseQuantity)
+				distance = this._statistics.QuantityToSummon;
 			short xAxis = (short)this._cellPosition.x;
 			short yAxis = (short)this._cellPosition.y;
 			for (ushort i = 0; i < distance; i++)
@@ -119,7 +90,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void CellInstanceOnce()
 		{
-			if (this._useQuantity && this._quantityToSummon == this._projectiles.Count || this._stayInPlace)
+			if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
 				return;
 			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 			this.CellInstance();
@@ -129,35 +100,37 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
-			this._pointToJump = this._jumpPoints;
-			this._breakInUse = this._useBreak;
-			this._internalBreakPoint = this._breakPoint;
-			this._internalReturnPoint = this._returnPoint;
-			if (this._randomBreak)
+			this._pointToJump = this._statistics.JumpPoints;
+			this._breakInUse = this._statistics.UseBreak;
+			this._internalBreakPoint = this._statistics.BreakPoint;
+			this._internalReturnPoint = this._statistics.ReturnPoint;
+			if (this._statistics.RandomBreak)
 			{
-				this._internalBreakPoint = (ushort)Random.Range(this._breakPoint, this._returnPoint - this._minimumRandomValue);
-				if (this._internalReturnPoint - this._internalBreakPoint < this._minimumRandomValue)
-					for (ushort i = 0; i < this._minimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
-						if (this._internalBreakPoint <= this._minimumRandomValue)
+				float rangeMax = this._statistics.ReturnPoint - this._statistics.MinimumRandomValue;
+				bool valid = this._statistics.ExtrictRandom;
+				this._internalBreakPoint = (ushort)Random.Range(this._statistics.BreakPoint, rangeMax);
+				if (this._internalReturnPoint - this._internalBreakPoint < this._statistics.MinimumRandomValue)
+					for (ushort i = 0; i < this._statistics.MinimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
+						if (this._internalBreakPoint <= this._statistics.MinimumRandomValue)
 							this._internalReturnPoint++;
 						else
 							this._internalBreakPoint--;
-				else if (this._extrictRandom && this._internalReturnPoint - this._internalBreakPoint > this._minimumRandomValue)
-					for (ushort i = 0; i < this._minimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
-						if (this._internalBreakPoint <= this._minimumRandomValue)
+				else if (valid && this._internalReturnPoint - this._internalBreakPoint > this._statistics.MinimumRandomValue)
+					for (ushort i = 0; i < this._statistics.MinimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
+						if (this._internalBreakPoint <= this._statistics.MinimumRandomValue)
 							this._internalBreakPoint++;
 						else
 							this._internalReturnPoint--;
 			}
 			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
 			this._oldCellPosition = this._cellPosition;
-			if (this._sideMovement)
-				this.transform.rotation = Quaternion.AngleAxis(this._invertSide ? 90f : -90f, Vector3.forward);
-			if (this._secondProjectile && this._inCell && !this._continuosSummon)
+			if (this._statistics.SideMovement)
+				this.transform.rotation = Quaternion.AngleAxis(this._statistics.InvertSide ? 90f : -90f, Vector3.forward);
+			if (this._statistics.SecondProjectile && this._statistics.InCell && !this._statistics.ContinuosSummon)
 				this.CellInstanceRange();
-			else if (this._secondProjectile && !this._inCell)
+			else if (this._statistics.SecondProjectile && !this._statistics.InCell)
 				this.CommonInstance();
-			Destroy(this.gameObject, this._timeToFade);
+			Destroy(this.gameObject, this._statistics.TimeToFade);
 		}
 		private void OnEnable()
 		{
@@ -172,36 +145,41 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Start()
 		{
-			if (!this._stayInPlace)
-				if (this._useForce)
-					this._rigidbody.AddForce((this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed, this._forceMode);
+			float movementSpeed = this._statistics.MovementSpeed;
+			if (!this._statistics.StayInPlace)
+				if (this._statistics.UseForce)
+				{
+					Vector2 force = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
+					this._rigidbody.AddForce(force, this._statistics.ForceMode);
+				}
 				else
-					this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
+					this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
 		}
 		private void FixedUpdate()
 		{
-			if (this._secondProjectile && this._inCell && this._continuosSummon)
+			float movementSpeed = this._statistics.MovementSpeed;
+			if (this._statistics.SecondProjectile && this._statistics.InCell && this._statistics.ContinuosSummon)
 				this.CellInstanceOnce();
-			this._rigidbody.rotation += this._rotationSpeed * this._movementSpeed * Time.fixedDeltaTime;
-			if (!this._stayInPlace && this._rotationMatter)
-				this._rigidbody.linearVelocity = (this._invertSide ? -this.transform.up : this.transform.up) * this._movementSpeed;
+			this._rigidbody.rotation += this._statistics.RotationSpeed * movementSpeed * Time.fixedDeltaTime;
+			if (!this._statistics.StayInPlace && this._statistics.RotationMatter)
+				this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._isInoffensive)
+			if (this._statistics.IsInoffensive)
 				return;
 			if (other.TryGetComponent<IDestructible>(out var destructible))
 			{
-				if (destructible.Hurt(this._damage))
+				if (destructible.Hurt(this._statistics.Damage))
 					Destroy(this.gameObject);
 			}
 			else
 			{
-				if (this._inDeath)
-					if (this._enemyOnDeath)
-						Instantiate(this._enemyOnDeath, this.transform.position, this._enemyOnDeath.transform.rotation);
-					else if (this._secondProjectile)
-						if (this._inCell)
+				if (this._statistics.InDeath)
+					if (this._statistics.EnemyOnDeath)
+						Instantiate(this._statistics.EnemyOnDeath, this.transform.position, this._statistics.EnemyOnDeath.transform.rotation);
+					else if (this._statistics.SecondProjectile)
+						if (this._statistics.InCell)
 							this.CellInstanceRange();
 						else
 							this.CommonInstance();
