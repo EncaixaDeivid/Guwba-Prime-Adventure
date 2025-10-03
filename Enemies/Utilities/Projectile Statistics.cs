@@ -1,0 +1,72 @@
+using UnityEngine;
+namespace GuwbaPrimeAdventure.Enemy
+{
+	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
+	internal sealed class ProjectileStatistics : ScriptableObject
+	{
+		[Header("Projectile Statistics")]
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
+		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayer;
+		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
+		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
+		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
+		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
+		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
+		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
+		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
+		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
+		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
+		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
+		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
+		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
+		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
+		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
+		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
+		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
+		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
+		[Header("Cell Statistics")]
+		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
+		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
+		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
+		[SerializeField, Tooltip("If the instantiation of the second projectile will always break after the first.")] private bool _alwaysBreak;
+		[SerializeField, Tooltip("If the points of break are randomized between the maximum and minimum.")] private bool _randomBreak;
+		[SerializeField, Tooltip("If the break point is restricted at a specific break point.")] private bool _extrictRandom;
+		[SerializeField, Tooltip("The amount of cell points to jump the instantiation.")] private ushort _jumpPoints;
+		[SerializeField, Tooltip("The exact point where the break of the instantiantion start.")] private ushort _breakPoint;
+		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
+		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
+		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
+		internal EnemyProjectile SecondProjectile => this._secondProjectile;
+		internal EnemyController EnemyOnDeath => this._enemyOnDeath;
+		internal LayerMask GroundLayer => this._groundLayer;
+		internal ForceMode2D ForceMode => this._forceMode;
+		internal bool UseForce => this._useForce;
+		internal bool StayInPlace => this._stayInPlace;
+		internal bool SideMovement => this._sideMovement;
+		internal bool InvertSide => this._invertSide;
+		internal bool UseSelfRotation => this._useSelfRotation;
+		internal bool RotationMatter => this._rotationMatter;
+		internal bool UseQuantity => this._useQuantity;
+		internal bool InDeath => this._inDeath;
+		internal bool IsInoffensive => this._isInoffensive;
+		internal ushort MovementSpeed => this._movementSpeed;
+		internal ushort Damage => this._damage;
+		internal ushort QuantityToSummon => this._quantityToSummon;
+		internal float RotationSpeed => this._rotationSpeed;
+		internal float BaseAngle => this._baseAngle;
+		internal float SpreadAngle => this._spreadAngle;
+		internal float TimeToFade => this._timeToFade;
+		internal bool InCell => this._inCell;
+		internal bool ContinuosSummon => this._continuosSummon;
+		internal bool UseBreak => this._useBreak;
+		internal bool AlwaysBreak => this._alwaysBreak;
+		internal bool RandomBreak => this._randomBreak;
+		internal bool ExtrictRandom => this._extrictRandom;
+		internal ushort JumpPoints => this._jumpPoints;
+		internal ushort BreakPoint => this._breakPoint;
+		internal ushort ReturnPoint => this._returnPoint;
+		internal ushort MinimumRandomValue => this._minimumRandomValue;
+		internal float DistanceRay => this._distanceRay;
+	};
+};
