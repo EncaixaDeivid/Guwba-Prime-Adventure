@@ -10,10 +10,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _cancelSend = false;
 		private float _deathTime = 0;
 		[Header("Death Enemy")]
-		[SerializeField, Tooltip("The enemy that this enemy will spawn in death.")] private EnemyController _childEnemy;
-		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private EnemyProjectile _childProjectile;
-		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
-		[SerializeField, Tooltip("THe time to this enemy die.")] private float _timeToDie;
+		[SerializeField, Tooltip("The death statitics of this enemy.")] private DeathStatistics _statistics;
 		private new void Awake()
 		{
 			base.Awake();
@@ -32,19 +29,19 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				this._sender.Send(PathConnection.Enemy);
 				this._deathTime += Time.deltaTime;
-				if (this._deathTime >= this._timeToDie)
+				if (this._deathTime >= this._statistics.TimeToDie)
 				{
 					this._isDead = false;
-					if (this._childEnemy)
-						Instantiate(this._childEnemy, this.transform.position, Quaternion.identity);
-					if (this._childProjectile)
-						Instantiate(this._childProjectile, this.transform.position, Quaternion.identity);
+					if (this._statistics.ChildEnemy)
+						Instantiate(this._statistics.ChildEnemy, this.transform.position, Quaternion.identity);
+					if (this._statistics.ChildProjectile)
+						Instantiate(this._statistics.ChildProjectile, this.transform.position, Quaternion.identity);
 				}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._onTouch && CentralizableGuwba.EqualObject(other.gameObject))
+			if (this._statistics.OnTouch&& CentralizableGuwba.EqualObject(other.gameObject))
 				this._isDead = this._cancelSend = true;
 		}
 		public new bool Hurt(ushort damage)
