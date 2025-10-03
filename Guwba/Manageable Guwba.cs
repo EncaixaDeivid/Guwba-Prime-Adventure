@@ -258,7 +258,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						Vector2 origin = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
 						Vector2 direction = this.transform.right * this._dashMovement;
-						float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+						float angle = this.transform.eulerAngles.z;
 						bool collision = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayer);
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = MathF.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
@@ -293,7 +293,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			Vector2 point = this.transform.position;
 			if (this._isOnGround && this._movementAction == 0f)
 			{
-				float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+				float angle = this.transform.eulerAngles.z;
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._InteractionLayer))
 					if (collider.TryGetComponent<IInteractable>(out _))
 					{
@@ -403,7 +403,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			Vector2 direction = this.transform.right * movementValue;
-			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+			float angle = this.transform.eulerAngles.z;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
@@ -584,7 +584,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float yPoint = this.transform.position.y - this._collider.bounds.extents.y + this._collider.offset.y - this._groundChecker / 2f;
 			Vector2 origin = new(this.transform.position.x, yPoint);
 			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
-			float angle = this.transform.rotation.z * Mathf.Rad2Deg;
+			float angle = this.transform.eulerAngles.z;
 			this._isOnGround = Physics2D.BoxCast(origin, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
