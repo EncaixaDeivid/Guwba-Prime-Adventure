@@ -25,12 +25,5 @@ namespace GuwbaPrimeAdventure.Guwba
 					return true;
 			return false;
 		}
-		public static bool EqualObject(params RaycastHit2D[] othersObjects)
-		{
-			foreach (RaycastHit2D other in othersObjects)
-				if (other.collider.gameObject == _instance.gameObject)
-					return true;
-			return false;
-		}
 	};
 };
