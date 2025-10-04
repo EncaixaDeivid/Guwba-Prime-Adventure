@@ -4,6 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
+	[DisallowMultipleComponent]
 	internal sealed class RunnerEnemy : MovingEnemy
 	{
 		private bool _runTowards = false;
@@ -104,7 +105,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			Vector2 size = new(groundChecker, this._collider.bounds.size.y - groundChecker);
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, right, groundChecker, groundLayer);
 			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
-			if (this._statistics.RunFromTarget&& this._timeRun <= 0f && this._detected)
+			if (this._statistics.RunFromTarget && this._timeRun <= 0f && this._detected)
 			{
 				this._timeRun = this._statistics.RunOfTime;
 				if (this._runTowards)
@@ -116,18 +117,13 @@ namespace GuwbaPrimeAdventure.Enemy
 			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
 			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer) || blockPerception)
 				this._movementSide *= -1;
-			if (this._detected && !this._isDashing)
-				if (this._statistics.DetectionStop)
-				{
-					this._stopWorking = true;
-					this._sender.SetToggle(this._statistics.JumpDash);
-					this._sender.Send(PathConnection.Enemy);
-					if (this._statistics.StopToShoot)
-						this._sender.Send(PathConnection.Enemy);
-					return;
-				}
-				else if (this._statistics.ShootDetection)
-					this._sender.Send(PathConnection.Enemy);
+			if (this._detected && !this._isDashing && this._statistics.DetectionStop)
+			{
+				this._stopWorking = true;
+				this._sender.SetToggle(this._statistics.JumpDash);
+				this._sender.Send(PathConnection.Enemy);
+				return;
+			}
 			this.transform.localScale = new Vector3()
 			{
 				x = this._movementSide < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
@@ -159,8 +155,6 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._stopWorking = true;
 					this._sender.SetToggle(this._statistics.JumpDash);
 					this._sender.Send(PathConnection.Enemy);
-					if (this._statistics.StopToShoot)
-						this._sender.Send(PathConnection.Enemy);
 				}
 			}
 		}
