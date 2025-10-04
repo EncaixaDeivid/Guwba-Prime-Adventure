@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure
 			{
 				get
 				{
-					if (this._time > 0f && _instance.enabled)
+					if (this._time > 0f && this._instance.isActiveAndEnabled)
 						this._time -= Time.deltaTime;
 					return this._time > 0f;
 				}
