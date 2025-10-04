@@ -3,7 +3,7 @@ using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
+	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer))]
 	internal sealed class SummonerEnemy : EnemyController, IConnector
 	{
 		private float _gravityScale = 0f;
@@ -26,23 +26,19 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._rigidybody.gravityScale = this._gravityScale;
 			}
 			GameObject gameObject;
+			Vector2 position;
+			ushort summonIndex = 0;
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
-			{
-				gameObject = summon.Summons[0];
+			{ 
 				if (summon.Self)
-					Instantiate(gameObject, this.transform.position, gameObject.transform.rotation);
-				else if (summon.Sequential)
-				{
-					gameObject = summon.Summons[i];
-					Instantiate(gameObject, summon.SummonPoints[i], gameObject.transform.rotation);
-				}
+					position = this.transform.position;
 				else if (summon.Random)
-				{
-					ushort pointIndex = (ushort)Random.Range(0f, summon.SummonPoints.Length - 1f);
-					Instantiate(gameObject, summon.SummonPoints[pointIndex], gameObject.transform.rotation);
-				}
+					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length - 1)];
 				else
-					Instantiate(gameObject, summon.SummonPoints[0], gameObject.transform.rotation);
+					position = summon.SummonPoints[summonIndex];
+				gameObject = summon.Summons[summonIndex];
+				summonIndex = (ushort)(summonIndex >= summon.Summons.Length - 1f ? 0f : summonIndex + 1f);
+				Instantiate(gameObject, position, gameObject.transform.rotation);
 			}
 		}
 		private new void Awake()
@@ -72,7 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			IEnumerator TimedSummon(SummonObject summon)
 			{
 				yield return new WaitTime(this, summon.SummonTime);
-				yield return new WaitUntil(() => !summon.StopTimedSummon && !this._stopSummon);
+				yield return new WaitUntil(() => !summon.StopTimedSummon && !this._stopSummon && this.isActiveAndEnabled);
 				if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
 				{
 					this.Summon(summon);
