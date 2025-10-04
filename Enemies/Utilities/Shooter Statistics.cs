@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
 		[SerializeField, Tooltip("The amount of time to stop this enemy to move.\nRequires: Moving Enemy")]
 		private float _stopTime;
+		[SerializeField, Tooltip("If this enemy will turn the ray to the looking side.")] private bool _turnRay;
 		[SerializeField, Tooltip("If this enemy will become invencible while shooting.\nRequires: Defender Enemy")]
 		private bool _invencibleShoot;
 		[SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] private bool _shootDamaged;
@@ -32,6 +33,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal float RayAngleDirection => this._rayAngleDirection;
 		internal float IntervalToShoot => this._intervalToShoot;
 		internal float StopTime => this._stopTime;
+		internal bool TurnRay => this._turnRay;
 		internal bool InvencibleShoot => this._invencibleShoot;
 		internal bool ShootDamaged => this._shootDamaged;
 		internal bool Stop => this._stop;
