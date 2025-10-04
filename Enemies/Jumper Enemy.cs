@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
+	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer))]
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
 		private Animator _animator;
@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this.StartCoroutine(FollowTarget());
 			IEnumerator FollowTarget()
 			{
-				yield return new WaitUntil(() => !this.SurfacePerception() && this.enabled);
+				yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled);
 				this._sender.Send(PathConnection.Enemy);
 				this._rigidybody.linearVelocityX = 0f;
 				float randomDirection = 0f;
@@ -36,12 +36,18 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 					float targetDirection = targetPosition - this.transform.position.x;
 					this._movementSide = (short)(targetDirection > 0f ? 1f : -1f);
+					this.transform.localScale = new Vector3()
+					{
+						x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+						y = this.transform.localScale.y,
+						z = this.transform.localScale.z
+					};
 					if (this.enabled && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.FollowSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.enabled);
+					yield return new WaitUntil(() => this.isActiveAndEnabled);
 				}
 				this._rigidybody.linearVelocityX = 0f;
 			}
@@ -62,7 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						yield return new WaitUntil(() => this.SurfacePerception() && this.enabled);
+						yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled);
 						if (this._stopJump)
 							yield break;
 						if (this._statistics.JumpPointStructures[index].RemovalJumpCount-- <= 0f)
@@ -100,7 +106,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(TimedJump(jumpStats));
 			IEnumerator TimedJump(JumpStats stats)
 			{
-				yield return new WaitUntil(() => this.SurfacePerception() && this.enabled && !this._stopJump);
+				yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled && !this._stopJump);
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
 				{
