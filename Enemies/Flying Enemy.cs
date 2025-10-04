@@ -1,9 +1,9 @@
 using UnityEngine;
 using System;
-using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
+	[DisallowMultipleComponent]
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
 		private Vector2 _pointOrigin = new();
@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The flying statitics of this enemy.")] private FlyingStatistics _statistics;
 		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
+		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
 		private new void Awake()
 		{
 			base.Awake();
@@ -52,12 +53,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				else if (this._statistics.DetectionStop)
 				{
 					this._stopWorking = true;
-					if (this._statistics.StopToShoot)
-						this._sender.Send(PathConnection.Enemy);
 					return;
 				}
-				else if (this._statistics.ShootDetection)
-					this._sender.Send(PathConnection.Enemy);
 			}
 			else if (!this._isDashing && this._returnDash)
 				this._returnDash = false;
@@ -85,7 +82,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			else
 			{
 				Vector2 target = this._trail[this._pointIndex];
-				if (this._statistics.RepeatWay)
+				if (this._repeatWay)
 				{
 					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
 						this._pointIndex = (ushort)(this._pointIndex < this._trail.Length - 1f ? this._pointIndex + 1f : 0f);
@@ -118,21 +115,20 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._stopWorking || this.IsStunned)
 				return;
+			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
+			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
+			float maxDistanceDelta = Time.fixedDeltaTime * this._statistics.MovementSpeed;
 			if (this._statistics.Target)
 			{
 				this._targetPoint = this._statistics.Target.transform.position;
-				float maxDistanceDelta = Time.fixedDeltaTime * this._statistics.MovementSpeed;
 				this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
 				return;
 			}
 			if (this._statistics.EndlessPursue)
 			{
-				float maxDistanceDelta = Time.fixedDeltaTime * this._statistics.MovementSpeed;
 				this.transform.position = Vector2.MoveTowards(this.transform.position, CentralizableGuwba.Position, maxDistanceDelta);
 				return;
 			}
-			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
-			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			if (!this._isDashing)
 				this._detected = false;
 			if (targetLayer > -1f && !this._isDashing)
