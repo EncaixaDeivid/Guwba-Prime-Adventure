@@ -8,16 +8,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The speed of the enemy to moves.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of speed of the dash.")] private ushort _dashSpeed;
 		[SerializeField, Tooltip("If this enemy will stop on detection of the target.")] private bool _detectionStop;
-		[SerializeField, Tooltip("If this enemy will shoot a projectile on detection.\nRequires: Shooter Enemy")] private bool _shootDetection;
-		[SerializeField, Tooltip("If this enemy will stop to shoot a projectile.\nRequires: Shooter Enemy")] private bool _stopToShoot;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
 		[SerializeField, Tooltip("The amount of time this enemy will stop on detection.")] private float _stopTime;
 		internal EnemyPhysics Physics => this._physics;
 		internal ushort MovementSpeed => this._movementSpeed;
 		internal ushort DashSpeed => this._dashSpeed;
 		internal bool DetectionStop => this._detectionStop;
-		internal bool ShootDetection => this._shootDetection;
-		internal bool StopToShoot => this._stopToShoot;
 		internal bool ReactToDamage => this._reactToDamage;
 		internal float StopTime => this._stopTime;
 	};
