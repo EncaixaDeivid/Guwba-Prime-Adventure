@@ -24,6 +24,19 @@ namespace GuwbaPrimeAdventure.Guwba
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _normalSize = new();
+		private int _isOn;
+		private int _idle;
+		private int _walk;
+		private int _walkSpeed;
+		private int _dashSlide;
+		private int _Jump;
+		private int _fall;
+		private int _attack;
+		private int _attackCombo;
+		private int _attackJump;
+		private int _attackSlide;
+		private int _stun;
+		private int _death;
 		private short _vitality;
 		private ushort _recoverVitality = 0;
 		private float _gravityScale = 0f;
@@ -55,19 +68,19 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
 		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private ushort _stunResistance;
 		[Header("Animation")]
-		[SerializeField, Tooltip("Animation parameter.")] private string _isOn;
-		[SerializeField, Tooltip("Animation parameter.")] private string _idle;
-		[SerializeField, Tooltip("Animation parameter.")] private string _walk;
-		[SerializeField, Tooltip("Animation parameter.")] private string _walkSpeed;
-		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlide;
-		[SerializeField, Tooltip("Animation parameter.")] private string _Jump;
-		[SerializeField, Tooltip("Animation parameter.")] private string _fall;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attack;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackCombo;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackJump;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackSlide;
-		[SerializeField, Tooltip("Animation parameter.")] private string _stun;
-		[SerializeField, Tooltip("Animation parameter.")] private string _death;
+		[SerializeField, Tooltip("Animation parameter.")] private string _isOnAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _idleAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _walkAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _walkSpeedAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlideAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _JumpAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _fallAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackComboAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackJumpAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _attackSlideAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _stunAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _deathAnimation;
 		[Header("Physics Stats")]
 		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
@@ -125,6 +138,19 @@ namespace GuwbaPrimeAdventure.Guwba
 				damageableGuwba.DamageableStun += this.Stun;
 				damageableGuwba.DamageableAttack += this.Attack;
 			}
+			this._isOn = Animator.StringToHash(this._isOnAnimation);
+			this._idle = Animator.StringToHash(this._idleAnimation);
+			this._walk = Animator.StringToHash(this._walkAnimation);
+			this._walkSpeed = Animator.StringToHash(this._walkSpeedAnimation);
+			this._dashSlide = Animator.StringToHash(this._dashSlideAnimation);
+			this._Jump = Animator.StringToHash(this._JumpAnimation);
+			this._fall = Animator.StringToHash(this._fallAnimation);
+			this._attack = Animator.StringToHash(this._attackAnimation);
+			this._attackCombo = Animator.StringToHash(this._attackComboAnimation);
+			this._attackJump = Animator.StringToHash(this._attackJumpAnimation);
+			this._attackSlide = Animator.StringToHash(this._attackSlideAnimation);
+			this._stun = Animator.StringToHash(this._stunAnimation);
+			this._death = Animator.StringToHash(this._deathAnimation);
 			this.transform.localScale = new Vector3()
 			{
 				x = this._turnLeft ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
