@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 namespace GuwbaPrimeAdventure.Enemy
 {
+	[DisallowMultipleComponent]
 	internal sealed class TeleporterEnemy : EnemyController
 	{
 		private bool _canTeleport = true;
