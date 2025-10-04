@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.U2D;
 using Unity.Cinemachine;
 namespace GuwbaPrimeAdventure
 {
@@ -13,7 +14,8 @@ namespace GuwbaPrimeAdventure
 		private Vector2 _startPosition = Vector2.zero;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
-		[SerializeField, Tooltip("The images that are placed in each background.")] private Sprite[] _backgroundImages;
+		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
+		[SerializeField, Tooltip("The name of the images that are placed in each background.")] private string[] _backgroundImages;
 		[Header("Background Stats")]
 		[SerializeField, Tooltip("The amount of speed that the background will move horizontally.")] private float _horizontalBackgroundSpeed;
 		[SerializeField, Tooltip("The amount of speed that the background will move vertically.")] private float _verticalBackgroundSpeed;
@@ -34,7 +36,8 @@ namespace GuwbaPrimeAdventure
 			{
 				this._childrenTransforms[ia] = Instantiate(this._backgroundTransform, this.transform);
 				this._childrenRenderers[ia] = this._childrenTransforms[ia].GetComponent<SpriteRenderer>();
-				this._childrenRenderers[ia].sprite = this._backgroundImages[ia];
+				Sprite sprite = this._backgroundHandler.GetSprite(this._backgroundImages[ia]);
+				this._childrenRenderers[ia].sprite = sprite;
 				this._childrenRenderers[ia].sortingOrder = this._backgroundImages.Length - 1 - ia;
 				this._childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = this._childrenRenderers[ia].sortingOrder;
 				float centerX = this._childrenTransforms[ia].position.x;
@@ -53,7 +56,7 @@ namespace GuwbaPrimeAdventure
 				this._childrenTransforms[ia].GetChild(6).position = new Vector2(centerX, bottom);
 				this._childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
 				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
-					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = this._backgroundImages[ia];
+					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = sprite;
 			}
 		}
 		private void FixedUpdate()
