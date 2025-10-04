@@ -40,6 +40,11 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetAdditionalData(this._hiddenObject);
 			this._activation = !this._fadeActivation;
 		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			EffectsController.OffGlobalLight(this._selfLight);
+		}
 		private IEnumerator Fade(bool appear)
 		{
 			bool onFirst = false;
