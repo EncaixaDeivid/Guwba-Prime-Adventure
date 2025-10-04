@@ -21,9 +21,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Verify()
 		{
 			bool hasTarget = false;
-			float originDirection = this._collider.bounds.extents.x * (this.transform.right.x < 0f ? -1f : 1f);
+			float originDirection = this._collider.bounds.extents.x * (this.transform.localScale.x < 0f ? -1f : 1f);
 			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
 			Vector2 direction = Quaternion.AngleAxis(this._statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
+			if (this._statistics.TurnRay)
+				direction *= this.transform.localScale.x < 0f ? -1f : 1f;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float perceptionDistance = this._statistics.PerceptionDistance;
 			if (this._statistics.CirculateDetection)
