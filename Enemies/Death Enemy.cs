@@ -1,6 +1,5 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -8,7 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private bool _isDead = false;
 		private bool _cancelSend = false;
-		private float _deathTime = 0;
+		private float _deathTime = 0f;
 		[Header("Death Enemy")]
 		[SerializeField, Tooltip("The death statitics of this enemy.")] private DeathStatistics _statistics;
 		private new void Awake()
@@ -36,12 +35,13 @@ namespace GuwbaPrimeAdventure.Enemy
 						Instantiate(this._statistics.ChildEnemy, this.transform.position, Quaternion.identity);
 					if (this._statistics.ChildProjectile)
 						Instantiate(this._statistics.ChildProjectile, this.transform.position, Quaternion.identity);
+					Destroy(this.gameObject);
 				}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._statistics.OnTouch&& CentralizableGuwba.EqualObject(other.gameObject))
+			if (this._statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 				this._isDead = this._cancelSend = true;
 		}
 		public new bool Hurt(ushort damage)
