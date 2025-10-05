@@ -153,7 +153,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._death = Animator.StringToHash(this._deathAnimation);
 			this.transform.localScale = new Vector3()
 			{
-				x = this._turnLeft ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+				x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
@@ -245,10 +245,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			Vector2 movementValue = movementAction.ReadValue<Vector2>();
 			this._movementAction = movementValue.x;
-			if (movementValue.x > 0f)
-				this._movementAction = 1f;
-			else if (movementValue.x < 0f)
-				this._movementAction = -1f;
+			if (Mathf.Abs(movementValue.x) > 0.75f)
+				if (movementValue.x > 0f)
+					this._movementAction = 1f;
+				else if (movementValue.x < 0f)
+					this._movementAction = -1f;
 			if (movementValue.y > 0.5f)
 				this._lastJumpTime = this._jumpBufferTime;
 			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.5f)
@@ -269,7 +270,7 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._dashMovement = this._movementAction;
 					this.transform.localScale = new Vector3()
 					{
-						x = this._dashMovement < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+						x = this._dashMovement < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
@@ -287,7 +288,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float angle = this.transform.eulerAngles.z;
 						bool collision = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayer);
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
-						bool valid = MathF.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
+						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
 						float yAxisPoint = this._normalSize.y / 2f + this._groundChecker;
 						Vector2 wallOrigin = new(this.transform.position.x, this.transform.position.y + yAxisPoint);
 						Vector2 wallSize = new(this._normalSize.x, this._normalSize.y - this._groundChecker);
@@ -554,7 +555,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (this._movementAction != 0f)
 					this.transform.localScale = new Vector3()
 					{
-						x = this._movementAction < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+						x = this._movementAction < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
@@ -645,7 +646,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				this._vitality = (short)this._visualizableGuwba.Vitality;
 				this.transform.localScale = new Vector3()
 				{
-					x = this._turnLeft ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
