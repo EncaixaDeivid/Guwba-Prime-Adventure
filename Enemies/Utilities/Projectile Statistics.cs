@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class ProjectileStatistics : ScriptableObject
 	{
 		[Header("Projectile Statistics")]
+		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayer;
@@ -18,9 +19,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
 		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
 		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
+		[SerializeField, Tooltip("The vitality of the projectile.")] private ushort _vitality;
 		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
 		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
+		[SerializeField, Tooltip("The amount of time this projectile will stun.")] private float _stunTime;
 		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
 		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
 		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
@@ -37,6 +40,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
 		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
 		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
+		internal EnemyPhysics Physics => this._physics;
 		internal EnemyProjectile SecondProjectile => this._secondProjectile;
 		internal EnemyController EnemyOnDeath => this._enemyOnDeath;
 		internal LayerMask GroundLayer => this._groundLayer;
@@ -50,9 +54,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal bool UseQuantity => this._useQuantity;
 		internal bool InDeath => this._inDeath;
 		internal bool IsInoffensive => this._isInoffensive;
+		internal ushort Vitality => this._vitality;
 		internal ushort MovementSpeed => this._movementSpeed;
 		internal ushort Damage => this._damage;
 		internal ushort QuantityToSummon => this._quantityToSummon;
+		internal float StunTime => this._stunTime;
 		internal float RotationSpeed => this._rotationSpeed;
 		internal float BaseAngle => this._baseAngle;
 		internal float SpreadAngle => this._spreadAngle;
