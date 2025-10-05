@@ -90,16 +90,13 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			else
 				this._detected = false;
-			if (this._statistics.UseFaceLook)
-			{
-				float rayDistance = this._statistics.FaceLookDistance;
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, rayDistance, targetLayer))
+			if (this._statistics.LookPerception)
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, this._statistics.LookDistance, targetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
 						this._detected = true;
 						break;
 					}
-			}
 			float xOrigin = (this._collider.bounds.extents.x + groundChecker / 2f) * right.x;
 			Vector2 origin = new(this.transform.position.x + xOrigin, this.transform.position.y);
 			Vector2 size = new(groundChecker, this._collider.bounds.size.y - groundChecker);
