@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						z = this.transform.localScale.z
 					};
 					if (this.enabled && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
-						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.FollowSpeed;
+						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitForFixedUpdate();
