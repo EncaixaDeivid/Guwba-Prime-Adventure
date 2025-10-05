@@ -6,12 +6,9 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
-		[SerializeField, Tooltip("If this enemy will do some action when look to a target.")] private bool _useFaceLook;
 		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
-		[SerializeField, Tooltip("If the target is anything.")] private bool _targetEveryone;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
 		[SerializeField, Tooltip("If this enemy will run toward the target after the run.")] private bool _runTowardsAfter;
-		[SerializeField, Tooltip("The distance of the detection of target.")] private ushort _faceLookDistance;
 		[SerializeField, Tooltip("The amount of time to wait the timed dash to go.")] private float _timeToDash;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
@@ -19,12 +16,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the boss can jump while dashing.\nRequires: Jumper Enemy")] private bool _jumpDash;
 		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
 		internal Vector2 OtherTarget => this._otherTarget;
-		internal bool UseFaceLook => this._useFaceLook;
 		internal bool TimedDash => this._timedDash;
-		internal bool TargetEveryone => this._targetEveryone;
 		internal bool RunFromTarget => this._runFromTarget;
 		internal bool RunTowardsAfter => this._runTowardsAfter;
-		internal ushort FaceLookDistance => this._faceLookDistance;
 		internal float TimeToDash => this._timeToDash;
 		internal ushort TimesToRun => this._timesToRun;
 		internal float RunOfTime => this._runOfTime;
