@@ -39,7 +39,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
 						yield return Opacity(i);
 				else
-					for (float i = this._tilemap.color.a; this._tilemap.color.a > 0f; i -= 0.1f)
+					for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
 						yield return Opacity(i);
 				this._tilemapCollider2D.enabled = appear;
 			}
