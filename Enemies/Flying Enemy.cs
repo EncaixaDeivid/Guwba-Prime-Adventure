@@ -131,8 +131,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (!this._isDashing)
 				this._detected = false;
-			if (targetLayer > -1f && !this._isDashing)
-				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._statistics.RadiusDetection, targetLayer))
+			if (this._statistics.LookPerception && !this._isDashing)
+				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._statistics.LookDistance, targetLayer))
 					if (CentralizableGuwba.EqualObject(collider.gameObject))
 					{
 						this._targetPoint = collider.transform.position;
