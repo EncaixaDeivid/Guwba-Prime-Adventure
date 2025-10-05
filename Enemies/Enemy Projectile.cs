@@ -2,25 +2,28 @@ using UnityEngine;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-	internal sealed class EnemyProjectile : StateController
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D))]
+	[RequireComponent(typeof(Collider2D))]
+	internal sealed class EnemyProjectile : StateController, IDestructible
 	{
-		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private readonly List<EnemyProjectile> _projectiles = new();
-		private Vector2 _guardVelocity = new();
+		private Vector2 _returnedVelocity = new();
 		private Vector2Int _oldCellPosition = new();
 		private Vector2Int _cellPosition = new();
+		private short _vitality;
 		private ushort _angleMulti = 0;
 		private ushort _pointToJump = 0;
 		private ushort _pointToBreak = 0;
 		private ushort _internalBreakPoint = 0;
 		private ushort _pointToReturn = 0;
 		private ushort _internalReturnPoint = 0;
+		private float _stunTimer = 0f;
+		private bool _isStunned = false;
 		private bool _breakInUse = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
+		public short Health => this._vitality;
 		private void CommonInstance()
 		{
 			for (ushort i = 0; i < this._statistics.QuantityToSummon; i++)
@@ -35,6 +38,13 @@ namespace GuwbaPrimeAdventure.Enemy
 					rotation = Quaternion.AngleAxis(this._statistics.BaseAngle + this._statistics.SpreadAngle * i, Vector3.forward);
 				Instantiate(this._statistics.SecondProjectile, this.transform.position, rotation);
 			}
+		}
+		private void CellInstanceOnce()
+		{
+			if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
+				return;
+			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
+			this.CellInstance();
 		}
 		private void CellInstance()
 		{
@@ -88,18 +98,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.CellInstance();
 			}
 		}
-		private void CellInstanceOnce()
-		{
-			if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
-				return;
-			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
-			this.CellInstance();
-		}
 		private new void Awake()
 		{
 			base.Awake();
-			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
+			this._vitality = (short)this._statistics.Vitality;
 			this._pointToJump = this._statistics.JumpPoints;
 			this._breakInUse = this._statistics.UseBreak;
 			this._internalBreakPoint = this._statistics.BreakPoint;
@@ -132,17 +135,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.CommonInstance();
 			Destroy(this.gameObject, this._statistics.TimeToFade);
 		}
-		private void OnEnable()
-		{
-			this._animator.enabled = true;
-			this._rigidbody.linearVelocity = this._guardVelocity;
-		}
-		private void OnDisable()
-		{
-			this._animator.enabled = false;
-			this._guardVelocity = this._rigidbody.linearVelocity;
-			this._rigidbody.linearVelocity = Vector2.zero;
-		}
 		private void Start()
 		{
 			float movementSpeed = this._statistics.MovementSpeed;
@@ -155,8 +147,22 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
 		}
+		private void Update()
+		{
+			if (this._isStunned)
+			{
+				this._stunTimer -= Time.deltaTime;
+				if (this._stunTimer <= 0f)
+				{
+					this._isStunned = false;
+					this._rigidbody.linearVelocity = this._returnedVelocity;
+				}
+			}
+		}
 		private void FixedUpdate()
 		{
+			if (this._isStunned)
+				return;
 			float movementSpeed = this._statistics.MovementSpeed;
 			if (this._statistics.SecondProjectile && this._statistics.InCell && this._statistics.ContinuosSummon)
 				this.CellInstanceOnce();
@@ -168,10 +174,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._statistics.IsInoffensive)
 				return;
-			if (other.TryGetComponent<IDestructible>(out var destructible))
+			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._statistics.Damage))
 			{
-				if (destructible.Hurt(this._statistics.Damage))
-					Destroy(this.gameObject);
+				destructible.Stun(this._statistics.Damage, this._statistics.StunTime);
+				EffectsController.HitStop(this._statistics.Physics.HitStopTime, this._statistics.Physics.HitSlowTime);
 			}
 			else
 			{
@@ -185,6 +191,23 @@ namespace GuwbaPrimeAdventure.Enemy
 							this.CommonInstance();
 				Destroy(this.gameObject);
 			}
+		}
+		public bool Hurt(ushort damage)
+		{
+			if (this._statistics.IsInoffensive || damage <= 0 || this._statistics.Vitality <= 0f)
+				return false;
+			if ((this._vitality -= (short)damage) <= 0f)
+				Destroy(this.gameObject);
+			return true;
+		}
+		public void Stun(ushort stunStength, float stunTime)
+		{
+			if (this._isStunned)
+				return;
+			this._isStunned = true;
+			this._stunTimer = stunTime;
+			this._returnedVelocity = this._rigidbody.linearVelocity;
+			this._rigidbody.linearVelocity = Vector2.zero;
 		}
 	};
 };
