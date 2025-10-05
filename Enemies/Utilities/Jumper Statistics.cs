@@ -10,7 +10,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("If the timmed jumps will be executed in a sequence.")] private bool _sequentialTimmedJumps;
 		[SerializeField, Tooltip("If the sequential timmed jumps will be repeated again over again.")] private bool _repeatTimmedJumps;
-		[SerializeField, Tooltip("The speed to moves on a high jump.")] private ushort _followSpeed;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		[SerializeField, Tooltip("The distance the boss will be to the follow target.")] private float _distanceToTarget;
@@ -23,7 +22,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal Vector2 OtherTarget => this._otherTarget;
 		internal bool SequentialTimmedJumps => this._sequentialTimmedJumps;
 		internal bool RepeatTimmedJumps => this._repeatTimmedJumps;
-		internal ushort FollowSpeed => this._followSpeed;
 		internal bool UseTarget => this._useTarget;
 		internal bool RandomFollow => this._randomFollow;
 		internal float DistanceToTarget => this._distanceToTarget;
