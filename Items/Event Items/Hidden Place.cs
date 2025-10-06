@@ -65,9 +65,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			{
 				while (!appear)
 				{
-					this._followLight.transform.position = CentralizableGuwba.Position;
+					this._followLight.transform.position = GuwbaCentralizer.Position;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.enabled);
+					yield return new WaitUntil(() => this.isActiveAndEnabled);
 				}
 			}
 			void HaveHidden()
@@ -103,7 +103,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			IEnumerator OpacityLevel(float alpha)
 			{
 				yield return new WaitForEndOfFrame();
-				yield return new WaitUntil(() => this.enabled);
+				yield return new WaitUntil(() => this.isActiveAndEnabled);
 				Color color = this._tilemap.color;
 				color.a = alpha;
 				this._tilemap.color = color;
@@ -131,12 +131,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!this._isReceptor && CentralizableGuwba.EqualObject(other.gameObject))
+			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
 				this.StartCoroutine(this.Fade(false));
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!this._isReceptor && CentralizableGuwba.EqualObject(other.gameObject))
+			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
 				this.StartCoroutine(this.Fade(true));
 		}
 	};
