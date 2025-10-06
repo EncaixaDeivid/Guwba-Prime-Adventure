@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(IInteractable))]
