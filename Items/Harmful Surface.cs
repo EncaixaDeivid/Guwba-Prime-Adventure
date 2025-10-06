@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item
 			if (other.TryGetComponent<IDestructible>(out var destructible))
 				if (this._everyone)
 					destructible.Hurt(this._damage);
-				else if (CentralizableGuwba.EqualObject(other.transform.parent.gameObject))
+				else if (GuwbaCentralizer.EqualObject(other.transform.parent.gameObject))
 					destructible.Hurt(this._damage);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
