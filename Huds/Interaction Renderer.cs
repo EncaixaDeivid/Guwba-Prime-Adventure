@@ -42,12 +42,12 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if ((this._isOnCollision = CentralizableGuwba.EqualObject(collision.gameObject)) && this._isActive)
+			if ((this._isOnCollision = GuwbaCentralizer.EqualObject(collision.gameObject)) && this._isActive)
 				this._document.enabled = true;
 		}
 		private void OnTriggerExit2D(Collider2D collision)
 		{
-			if (!(this._isOnCollision = !CentralizableGuwba.EqualObject(collision.gameObject)))
+			if (!(this._isOnCollision = !GuwbaCentralizer.EqualObject(collision.gameObject)))
 				this._document.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
