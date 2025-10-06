@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 namespace GuwbaPrimeAdventure.Story
 {
-	[CreateAssetMenu(fileName = "Dialog", menuName = "Scriptable Objects/Dialog", order = 1)]
+	[CreateAssetMenu(fileName = "Dialog", menuName = "Story/Dialog", order = 0)]
 	internal class DialogObject : ScriptableObject
     {
 		[Header("Dialog Components")]
