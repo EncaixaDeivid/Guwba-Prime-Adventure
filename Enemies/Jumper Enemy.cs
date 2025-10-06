@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private Animator _animator;
 		private bool _isJumping = false;
+		private bool _isFalling = false;
 		private bool _stopJump = false;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
@@ -42,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					targetPosition = Random.Range(-1, 1) >= 0f ? CentralizableGuwba.Position.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
-				this._movementSide = (short)(targetPosition - this.transform.position.x > 0f ? 1f : -1f);
+				this._movementSide = (short)(targetPosition > this.transform.position.x ? 1f : -1f);
 				this.transform.localScale = new Vector3()
 				{
 					x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
@@ -147,7 +148,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this.IsStunned)
 				return;
-			if (this._isJumping && this.SurfacePerception())
+			if (!this._isFalling && !this.SurfacePerception() && this._rigidybody.linearVelocityY < 0f)
+				this._isFalling = true;
+			if (this._isJumping && this._isFalling && this.SurfacePerception())
 			{
 				this._isJumping = false;
 				this._detected = false;
