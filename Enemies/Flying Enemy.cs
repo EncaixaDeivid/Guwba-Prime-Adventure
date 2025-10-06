@@ -1,5 +1,5 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
