@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
+		[SerializeField, Tooltip("If this projectile will use parabolic movement.")] private bool _parabolicMovement;
 		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
 		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
 		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
@@ -19,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
 		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
 		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
-		[SerializeField, Tooltip("The vitality of the projectile.")] private ushort _vitality;
+		[SerializeField, Tooltip("The vitality of this projectile.")] private ushort _vitality;
 		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
 		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
@@ -47,6 +48,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal ForceMode2D ForceMode => this._forceMode;
 		internal bool UseForce => this._useForce;
 		internal bool StayInPlace => this._stayInPlace;
+		internal bool ParabolicMovement => this._parabolicMovement;
 		internal bool SideMovement => this._sideMovement;
 		internal bool InvertSide => this._invertSide;
 		internal bool UseSelfRotation => this._useSelfRotation;
