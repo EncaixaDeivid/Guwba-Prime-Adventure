@@ -145,7 +145,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._statistics.UseOtherTarget)
 					targetPosition = this._statistics.OtherTarget;
 				else
-					targetPosition = CentralizableGuwba.Position;
+					targetPosition = GuwbaCentralizer.Position;
 				this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
 				if (this._statistics.DetectionStop)
 				{
