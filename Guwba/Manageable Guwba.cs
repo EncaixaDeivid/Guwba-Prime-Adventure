@@ -243,7 +243,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
 			Vector2 movementValue = movement.ReadValue<Vector2>();
-			this._movementAction = movementValue.x;
+			this._movementAction = 0f;
 			if (Mathf.Abs(movementValue.x) > 0.5f)
 				if (movementValue.x > 0f)
 					this._movementAction = 1f;
@@ -425,18 +425,16 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private void FixedUpdate()
 		{
-			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
-			Vector2 direction = this.transform.right * movementValue;
+			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
+			Vector2 direction = this.transform.right * this._movementAction;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
 			{
-				float xOrigin = this.transform.position.x - ((this._collider.bounds.extents.x - .025f) * movementValue);
-				Vector2 downRayOrigin = new(xOrigin, this.transform.position.y - this._collider.bounds.extents.y);
-				float distance = rootHeight + this._groundChecker;
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, distance, this._groundLayer);
-				downStairs = downRay;
-				if (downStairs)
+				float xOrigin = position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction;
+				Vector2 downRayOrigin = new(xOrigin, position.y - this._collider.bounds.extents.y);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, rootHeight + this._groundChecker, this._groundLayer);
+				if (downStairs = downRay)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
 			if (!this._dashActive)
@@ -520,11 +518,10 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			if (!this._dashActive)
 			{
-				Vector2 position = (Vector2)this.transform.position + this._collider.offset;
 				if (this._isOnGround && this._movementAction != 0f)
 				{
 					LayerMask groundLayer = this._groundLayer;
-					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * movementValue;
+					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - rootHeight * this._bottomCheckerOffset);
 					Vector2 bottomSize = new(this._groundChecker, rootHeight - this._groundChecker);
 					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, groundLayer);
@@ -537,16 +534,16 @@ namespace GuwbaPrimeAdventure.Guwba
 					{
 						float topCorner = position.y + this._collider.bounds.extents.y;
 						float bottomCorner = position.y - this._collider.bounds.extents.y;
-						Vector2 lineStart = new(stairsXOrigin + this._groundChecker / 2f * movementValue, topCorner);
-						Vector2 lineEnd = new(stairsXOrigin + this._groundChecker / 2f * movementValue, bottomCorner);
-						RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
-						if (lineWallStep && lineWallStep.collider == bottomCast.collider)
-						{
-							float xDistance = position.x + this._groundChecker * movementValue;
-							float yDistance = position.y + (lineWallStep.point.y - bottomCorner);
-							this.transform.position = new Vector2(xDistance, yDistance);
-							this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
-						}
+						Vector2 lineStart = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, topCorner);
+						Vector2 lineEnd = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, bottomCorner);
+						foreach (RaycastHit2D lineWall in Physics2D.LinecastAll(lineStart, lineEnd, this._groundLayer))
+							if (lineWall.collider == bottomCast.collider)
+							{
+								float yDistance = position.y + (lineWall.point.y - bottomCorner);
+								this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
+								this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+								break;
+							}
 					}
 				}
 				if (this._movementAction != 0f)
