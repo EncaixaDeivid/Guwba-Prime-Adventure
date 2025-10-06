@@ -38,9 +38,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled);
 				this._rigidybody.linearVelocityX = 0f;
-				float targetPosition = CentralizableGuwba.Position.x;
+				float targetPosition = GuwbaCentralizer.Position.x;
 				if (this._statistics.RandomFollow)
-					targetPosition = Random.Range(-1, 1) >= 0f ? CentralizableGuwba.Position.x : otherTarget.x;
+					targetPosition = Random.Range(-1, 1) >= 0f ? GuwbaCentralizer.Position.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
 				this._movementSide = (short)(targetPosition > this.transform.position.x ? 1f : -1f);
