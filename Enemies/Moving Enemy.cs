@@ -37,11 +37,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected bool SurfacePerception()
 		{
 			float groundChecker = this._moving.Physics.GroundChecker;
-			float yPoint = this.transform.position.y - this._collider.bounds.extents.y + this._collider.offset.y - groundChecker / 2f;
-			Vector2 origin = new(this.transform.position.x, yPoint);
+			float yPoint = this._collider.offset.y + (this._collider.bounds.extents.y + groundChecker / 2f) * -this.transform.up.y;
+			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, this.transform.position.y + yPoint);
 			Vector2 size = new(this._collider.bounds.size.x - groundChecker, groundChecker);
-			float angle = this.transform.eulerAngles.z;
-			return Physics2D.BoxCast(origin, size, angle, -this.transform.up, groundChecker, this._moving.Physics.GroundLayer);
+			return Physics2D.BoxCast(origin, size, 0f, -this.transform.up, groundChecker, this._moving.Physics.GroundLayer);
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
