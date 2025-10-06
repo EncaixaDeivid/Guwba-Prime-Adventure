@@ -27,11 +27,11 @@ namespace GuwbaPrimeAdventure.Character
 			SaveController.Load(out SaveFile saveFile);
 			if (this.gameObject.scene.name == this._levelSelectorScene && saveFile.lastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == this._selfIndex)
-					CentralizableGuwba.Position = this.transform.position;
+					GuwbaCentralizer.Position = this.transform.position;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!this._isChecked && CentralizableGuwba.EqualObject(other.gameObject))
+			if (!this._isChecked && GuwbaCentralizer.EqualObject(other.gameObject))
 			{
 				this._isChecked = true;
 				_checkpointIndex = this.transform.position;
@@ -40,7 +40,7 @@ namespace GuwbaPrimeAdventure.Character
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (this._isChecked && data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				CentralizableGuwba.Position = _checkpointIndex;
+				GuwbaCentralizer.Position = _checkpointIndex;
 		}
 	};
 };
