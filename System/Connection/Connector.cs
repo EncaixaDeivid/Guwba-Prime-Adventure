@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Connection
 		None,
 		System,
 		Hud,
-		Guwba,
+		Character,
 		Enemy,
 		Item,
 		EventItem,
