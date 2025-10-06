@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
-	internal sealed class PointMarker : StateController, IConnector
+	internal sealed class PointSetter : StateController, IConnector
 	{
 		private static Vector2 _checkpointIndex = new();
 		private bool _isChecked = false;
