@@ -19,7 +19,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this._hasTarget)
 			{
-				if (CentralizableGuwba.EqualObject(other.gameObject))
+				if (GuwbaCentralizer.EqualObject(other.gameObject))
 					this._getTouch.Invoke(this._touchIndex);
 				return;
 			}
