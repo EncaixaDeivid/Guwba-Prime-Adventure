@@ -283,16 +283,14 @@ namespace GuwbaPrimeAdventure.Guwba
 						float xAxisOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement;
 						Vector2 origin = new(position.x + xAxisOrigin, position.y);
 						Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-						RaycastHit2D blockRay = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
-						bool block = blockRay && blockRay.collider.TryGetComponent<Surface>(out var blockSurface) && blockSurface.IsScene;
+						bool block = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
 						float yOrigin = this.transform.position.y + this._normalOffset.y + this._groundChecker;
 						Vector2 wallOrigin = new(this.transform.position.x + this._normalOffset.x, yOrigin);
 						Vector2 wallSize = this._normalSize;
 						Vector2 upDirection = this.transform.up;
-						RaycastHit2D wallRay = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
-						onWall = wallRay && wallRay.collider.TryGetComponent<Surface>(out var wallSurface) && wallSurface.IsScene;
+						onWall = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
 						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
 						{
 							this._animator.SetBool(this._attackSlide, false);
@@ -536,14 +534,13 @@ namespace GuwbaPrimeAdventure.Guwba
 						float bottomCorner = position.y - this._collider.bounds.extents.y;
 						Vector2 lineStart = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, topCorner);
 						Vector2 lineEnd = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, bottomCorner);
-						foreach (RaycastHit2D lineWall in Physics2D.LinecastAll(lineStart, lineEnd, this._groundLayer))
-							if (lineWall.collider == bottomCast.collider)
-							{
-								float yDistance = position.y + (lineWall.point.y - bottomCorner);
-								this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
-								this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
-								break;
-							}
+						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
+						if (lineWall.collider == bottomCast.collider)
+						{
+							float yDistance = position.y + (lineWall.point.y - bottomCorner);
+							this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
+							this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+						}
 					}
 				}
 				if (this._movementAction != 0f)
