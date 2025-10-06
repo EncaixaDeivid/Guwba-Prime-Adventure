@@ -81,8 +81,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		[SerializeField, Tooltip("Animation parameter.")] private string _stunAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _deathAnimation;
 		[Header("Physics Stats")]
-		[SerializeField, Tooltip("Size of collider for checking the ground below the feet.")] private float _groundChecker;
-		[SerializeField, Tooltip("Size of collider for checking the wall to climb stairs.")] private float _wallChecker;
+		[SerializeField, Tooltip("Size of collider for checking the ground.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
 		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
@@ -241,9 +240,9 @@ namespace GuwbaPrimeAdventure.Guwba
 			this._inputController.Commands.Interaction.Disable();
 			this._inputController.Dispose();
 		}
-		private Action<InputAction.CallbackContext> Movement => movementAction =>
+		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
-			Vector2 movementValue = movementAction.ReadValue<Vector2>();
+			Vector2 movementValue = movement.ReadValue<Vector2>();
 			this._movementAction = movementValue.x;
 			if (Mathf.Abs(movementValue.x) > 0.5f)
 				if (movementValue.x > 0f)
@@ -280,20 +279,20 @@ namespace GuwbaPrimeAdventure.Guwba
 					bool onWall = false;
 					while (isActive || onWall)
 					{
-						float xAxisSize = this._collider.bounds.extents.x + this._wallChecker / 2f;
-						float xAxisPosition = this._collider.offset.x + xAxisSize * this._dashMovement;
-						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
-						Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
+						Vector2 position = (Vector2)this.transform.position + this._collider.offset;
+						float xAxisOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement;
+						Vector2 origin = new(position.x + xAxisOrigin, position.y);
+						Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
 						float angle = this.transform.eulerAngles.z;
-						RaycastHit2D blockRay = Physics2D.BoxCast(point, size, angle, direction, this._wallChecker, this._groundLayer);
+						RaycastHit2D blockRay = Physics2D.BoxCast(origin, size, angle, direction, this._groundChecker, this._groundLayer);
 						bool block = blockRay && blockRay.collider.TryGetComponent<Surface>(out var blockSurface) && blockSurface.IsScene;
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
-						float yPoint = this.transform.position.y + this._normalOffset.y + this._wallChecker;
-						Vector2 wallPoint = new(this.transform.position.x + this._normalOffset.x, yPoint);
+						float yOrigin = this.transform.position.y + this._normalOffset.y + this._groundChecker;
+						Vector2 wallOrigin = new(this.transform.position.x + this._normalOffset.x, yOrigin);
 						Vector2 wallSize = this._normalSize;
 						Vector2 upDirection = this.transform.up;
-						RaycastHit2D wallRay = Physics2D.BoxCast(wallPoint, wallSize, angle, upDirection, this._wallChecker, this._groundLayer);
+						RaycastHit2D wallRay = Physics2D.BoxCast(wallOrigin, wallSize, angle, upDirection, this._groundChecker, this._groundLayer);
 						onWall = wallRay && wallRay.collider.TryGetComponent<Surface>(out var wallSurface) && wallSurface.IsScene;
 						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
 						{
@@ -306,16 +305,16 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			}
 		};
-		private Action<InputAction.CallbackContext> AttackUse => attackAction =>
+		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
 			if (this._dashActive)
 				return;
-			if (attackAction.started && !this._attackUsage)
+			if (attackUse.started && !this._attackUsage)
 				this._animator.SetTrigger(this._attack);
-			if (attackAction.canceled && this._comboAttackBuffer)
+			if (attackUse.canceled && this._comboAttackBuffer)
 				this._animator.SetTrigger(this._attackCombo);
 		};
-		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
+		private Action<InputAction.CallbackContext> Interaction => interaction =>
 		{
 			if (this._isOnGround && this._movementAction == 0f)
 			{
@@ -523,29 +522,30 @@ namespace GuwbaPrimeAdventure.Guwba
 				}
 			if (!this._dashActive)
 			{
+				Vector2 position = (Vector2)this.transform.position + this._collider.offset;
 				if (this._isOnGround && this._movementAction != 0f)
 				{
-					float xPosition = this.transform.position.x + (this._collider.bounds.extents.x + this._wallChecker / 2f) * movementValue;
-					Vector2 topOrigin = new(xPosition, this.transform.position.y + rootHeight * .5f);
-					Vector2 bottomOrigin = new(xPosition, this.transform.position.y - rootHeight * this._bottomCheckerOffset);
-					Vector2 topSize = new(this._wallChecker, rootHeight * this._topWallChecker - this._wallChecker);
-					Vector2 bottomSize = new(this._wallChecker, rootHeight - this._wallChecker);
-					LayerMask layerMask = this._groundLayer;
-					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._wallChecker, layerMask);
-					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._wallChecker, layerMask);
+					LayerMask groundLayer = this._groundLayer;
+					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * movementValue;
+					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - rootHeight * this._bottomCheckerOffset);
+					Vector2 bottomSize = new(this._groundChecker, rootHeight - this._groundChecker);
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._groundChecker, groundLayer);
+					Vector2 topOrigin = new(position.x + stairsXOrigin, position.y + rootHeight * .5f);
+					Vector2 topSize = new(this._groundChecker, rootHeight * this._topWallChecker - this._groundChecker);
+					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._groundChecker, groundLayer);
 					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
 					this._animator.SetFloat(this._walkSpeed, topCast ? walkSpeed : 1f);
 					if (bottomCast && topCast)
 					{
-						float topCorner = this.transform.position.y + this._collider.bounds.extents.y;
-						float bottomCorner = this.transform.position.y - this._collider.bounds.extents.y;
-						Vector2 lineStart = new(xPosition + this._wallChecker / 2f * movementValue, topCorner);
-						Vector2 lineEnd = new(xPosition + this._wallChecker / 2f * movementValue, bottomCorner);
+						float topCorner = position.y + this._collider.bounds.extents.y;
+						float bottomCorner = position.y - this._collider.bounds.extents.y;
+						Vector2 lineStart = new(stairsXOrigin + this._groundChecker / 2f * movementValue, topCorner);
+						Vector2 lineEnd = new(stairsXOrigin + this._groundChecker / 2f * movementValue, bottomCorner);
 						RaycastHit2D lineWallStep = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
 						if (lineWallStep && lineWallStep.collider == bottomCast.collider)
 						{
-							float xDistance = this.transform.position.x + this._wallChecker * movementValue;
-							float yDistance = this.transform.position.y + (lineWallStep.point.y - bottomCorner);
+							float xDistance = position.x + this._groundChecker * movementValue;
+							float yDistance = position.y + (lineWallStep.point.y - bottomCorner);
 							this.transform.position = new Vector2(xDistance, yDistance);
 							this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
 						}
@@ -558,10 +558,10 @@ namespace GuwbaPrimeAdventure.Guwba
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
-				float xPoint = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-				Vector2 origin = new(this.transform.position.x + xPoint, this.transform.position.y);
-				Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
-				bool wallBlock = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayer);
+				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
+				Vector2 origin = new(position.x + xOrigin, position.y);
+				Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
+				bool wallBlock = Physics2D.BoxCast(origin, size, angle, direction, this._groundChecker, this._groundLayer);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
@@ -607,12 +607,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnCollision()
 		{
-			float yDirection = this._collider.bounds.extents.y - this._groundChecker / 2f;
-			float yPoint = this.transform.position.y + this._collider.offset.y + yDirection * -this.transform.up.y;
-			Vector2 point = new(this.transform.position.x + this._collider.offset.x, yPoint);
+			float yDirection = this._collider.bounds.extents.y + this._groundChecker / 2f;
+			float yOrigin = this.transform.position.y + this._collider.offset.y + yDirection * -this.transform.up.y;
+			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, yOrigin);
 			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
 			float angle = this.transform.eulerAngles.z;
-			this._isOnGround = Physics2D.BoxCast(point, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
+			this._isOnGround = Physics2D.BoxCast(origin, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
