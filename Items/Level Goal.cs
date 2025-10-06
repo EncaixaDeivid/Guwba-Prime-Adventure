@@ -1,6 +1,6 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
