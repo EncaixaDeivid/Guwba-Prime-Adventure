@@ -28,7 +28,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void Teleport()
 		{
 			this._sender.Send(PathConnection.System);
-			CentralizableGuwba.Position = this._locations[this._index];
+			GuwbaCentralizer.Position = this._locations[this._index];
 			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
 		}
 		private IEnumerator Timer(bool activeValue)
@@ -68,7 +68,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (this._active && this._onCollision && this._useTimer)
 				this.StartCoroutine(this.Timer());
-			else if (this._active && this._onCollision && CentralizableGuwba.EqualObject(other.gameObject))
+			else if (this._active && this._onCollision && GuwbaCentralizer.EqualObject(other.gameObject))
 				this.Teleport();
 		}
 	};
