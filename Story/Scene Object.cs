@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 namespace GuwbaPrimeAdventure.Story
 {
-	[CreateAssetMenu(fileName = "Scene", menuName = "Scriptable Objects/Scene", order = 2)]
+	[CreateAssetMenu(fileName = "Scene", menuName = "Story/Scene", order = 1)]
 	internal sealed class SceneObject : ScriptableObject
 	{
 		[Header("Scene Component Collection")]
