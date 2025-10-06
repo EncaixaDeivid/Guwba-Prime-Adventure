@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
