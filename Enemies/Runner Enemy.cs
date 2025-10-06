@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
@@ -123,7 +122,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			this.transform.localScale = new Vector3()
 			{
-				x = this._movementSide < 0f ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+				x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
