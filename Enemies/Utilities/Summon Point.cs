@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
