@@ -1,0 +1,20 @@
+{
+    "name": "GuwbaPrimeAdventure.Character",
+    "rootNamespace": "GuwbaPrimeAdventure.Character",
+    "references": [
+        "GUID:c5fb3f71187e39a44a05216e6e758570",
+        "GUID:7b4b5b9c6b84b13438e2b4880db5d7d6",
+        "GUID:a85275ba20cdce041969ba5a8a05d34e",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:4307f53044263cf4b835bd812fc161a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
