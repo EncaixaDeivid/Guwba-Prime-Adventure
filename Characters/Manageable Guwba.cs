@@ -111,7 +111,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time the recover's charge of the attack will recover.")] private float _recoverRate;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
-		public PathConnection PathConnection => PathConnection.Guwba;
+		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
 		{
 			base.Awake();
