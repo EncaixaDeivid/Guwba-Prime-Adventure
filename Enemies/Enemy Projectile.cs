@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -38,13 +39,6 @@ namespace GuwbaPrimeAdventure.Enemy
 					rotation = Quaternion.AngleAxis(this._statistics.BaseAngle + this._statistics.SpreadAngle * i, Vector3.forward);
 				Instantiate(this._statistics.SecondProjectile, this.transform.position, rotation);
 			}
-		}
-		private void CellInstanceOnce()
-		{
-			if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
-				return;
-			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
-			this.CellInstance();
 		}
 		private void CellInstance()
 		{
@@ -96,6 +90,26 @@ namespace GuwbaPrimeAdventure.Enemy
 				yAxis += (short)this.transform.up.y;
 				this._cellPosition = new Vector2Int(xAxis, yAxis);
 				this.CellInstance();
+			}
+		}
+		private void ParabolicProjectile()
+		{
+			this.StartCoroutine(Parabola());
+			IEnumerator Parabola()
+			{
+				yield return new WaitUntil(() => this.isActiveAndEnabled);
+				float time = 0f;
+				float x;
+				float y;
+				while (time > this._statistics.TimeToFade)
+				{
+					time += Time.fixedDeltaTime;
+					x = this._statistics.MovementSpeed * time * Mathf.Cos(this._statistics.BaseAngle * Mathf.Deg2Rad);
+					y = this._statistics.MovementSpeed * time * Mathf.Sin(this._statistics.BaseAngle * Mathf.Deg2Rad);
+					this.transform.position = new Vector2(x, y - 0.5f * -Physics2D.gravity.y * Mathf.Pow(time, 2));
+					yield return new WaitForFixedUpdate();
+					yield return new WaitUntil(() => !this._isStunned && this.isActiveAndEnabled);
+				}
 			}
 		}
 		private new void Awake()
@@ -165,9 +179,16 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			float movementSpeed = this._statistics.MovementSpeed;
 			if (this._statistics.SecondProjectile && this._statistics.InCell && this._statistics.ContinuosSummon)
-				this.CellInstanceOnce();
+			{
+				if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
+					return;
+				this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
+				this.CellInstance();
+			}
 			this._rigidbody.rotation += this._statistics.RotationSpeed * movementSpeed * Time.fixedDeltaTime;
-			if (!this._statistics.StayInPlace && this._statistics.RotationMatter)
+			if (this._statistics.ParabolicMovement)
+				this.ParabolicProjectile();
+			else if (!this._statistics.StayInPlace && this._statistics.RotationMatter)
 				this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
