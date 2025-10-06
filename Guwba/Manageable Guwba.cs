@@ -283,8 +283,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						float xAxisOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement;
 						Vector2 origin = new(position.x + xAxisOrigin, position.y);
 						Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-						float angle = this.transform.eulerAngles.z;
-						RaycastHit2D blockRay = Physics2D.BoxCast(origin, size, angle, direction, this._groundChecker, this._groundLayer);
+						RaycastHit2D blockRay = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
 						bool block = blockRay && blockRay.collider.TryGetComponent<Surface>(out var blockSurface) && blockSurface.IsScene;
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
@@ -292,7 +291,7 @@ namespace GuwbaPrimeAdventure.Guwba
 						Vector2 wallOrigin = new(this.transform.position.x + this._normalOffset.x, yOrigin);
 						Vector2 wallSize = this._normalSize;
 						Vector2 upDirection = this.transform.up;
-						RaycastHit2D wallRay = Physics2D.BoxCast(wallOrigin, wallSize, angle, upDirection, this._groundChecker, this._groundLayer);
+						RaycastHit2D wallRay = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
 						onWall = wallRay && wallRay.collider.TryGetComponent<Surface>(out var wallSurface) && wallSurface.IsScene;
 						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
 						{
@@ -318,7 +317,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			if (this._isOnGround && this._movementAction == 0f)
 			{
-				Vector2 point = this.transform.position;
+				Vector2 point = (Vector2)this.transform.position + this._normalOffset;
 				float angle = this.transform.eulerAngles.z;
 				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._normalSize, angle, this._InteractionLayer))
 					if (collider.TryGetComponent<IInteractable>(out _))
@@ -428,7 +427,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			float movementValue = this._movementAction != 0f ? this._movementAction > 0f ? 1f : -1f : 0f;
 			Vector2 direction = this.transform.right * movementValue;
-			float angle = this.transform.eulerAngles.z;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			bool downStairs = false;
 			if (!this._isOnGround && this._downStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
@@ -529,10 +527,10 @@ namespace GuwbaPrimeAdventure.Guwba
 					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * movementValue;
 					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - rootHeight * this._bottomCheckerOffset);
 					Vector2 bottomSize = new(this._groundChecker, rootHeight - this._groundChecker);
-					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, angle, direction, this._groundChecker, groundLayer);
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, groundLayer);
 					Vector2 topOrigin = new(position.x + stairsXOrigin, position.y + rootHeight * .5f);
 					Vector2 topSize = new(this._groundChecker, rootHeight * this._topWallChecker - this._groundChecker);
-					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, angle, direction, this._groundChecker, groundLayer);
+					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, groundLayer);
 					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
 					this._animator.SetFloat(this._walkSpeed, topCast ? walkSpeed : 1f);
 					if (bottomCast && topCast)
@@ -561,7 +559,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 origin = new(position.x + xOrigin, position.y);
 				Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-				bool wallBlock = Physics2D.BoxCast(origin, size, angle, direction, this._groundChecker, this._groundLayer);
+				bool wallBlock = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
@@ -611,8 +609,7 @@ namespace GuwbaPrimeAdventure.Guwba
 			float yOrigin = this.transform.position.y + this._collider.offset.y + yDirection * -this.transform.up.y;
 			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, yOrigin);
 			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
-			float angle = this.transform.eulerAngles.z;
-			this._isOnGround = Physics2D.BoxCast(origin, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
+			this._isOnGround = Physics2D.BoxCast(origin, size, 0f, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
