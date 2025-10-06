@@ -270,33 +270,35 @@ namespace GuwbaPrimeAdventure.Guwba
 					this._dashMovement = this._movementAction;
 					this.transform.localScale = new Vector3()
 					{
-						x = this._dashMovement < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+						x = this._dashMovement * Mathf.Abs(this.transform.localScale.x),
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
+					Vector2 direction = this.transform.right * this._dashMovement;
 					float dashLocation = this.transform.position.x;
 					bool isActive = true;
 					bool onWall = false;
 					while (isActive || onWall)
 					{
-						float xAxisOffset = this._collider.offset.x + this._wallChecker / 2f;
-						float xAxisPosition = (this._collider.bounds.extents.x + xAxisOffset) * this._dashMovement;
+						float xAxisSize = this._collider.bounds.extents.x + this._wallChecker / 2f;
+						float xAxisPosition = this._collider.offset.x + xAxisSize * this._dashMovement;
 						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
 						Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
 						float angle = this.transform.eulerAngles.z;
-						Collider2D collisionCollider = Physics2D.OverlapBox(point, size, angle, this._groundLayer);
-						bool collision = collisionCollider && collisionCollider.TryGetComponent<Surface>(out var surface0) && surface0.IsScene;
+						RaycastHit2D blockRay = Physics2D.BoxCast(point, size, angle, direction, this._wallChecker, this._groundLayer);
+						bool block = blockRay && blockRay.collider.TryGetComponent<Surface>(out var blockSurface) && blockSurface.IsScene;
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
 						float yPoint = this.transform.position.y + this._normalOffset.y + this._wallChecker;
 						Vector2 wallPoint = new(this.transform.position.x + this._normalOffset.x, yPoint);
-						Collider2D wallCollider = Physics2D.OverlapBox(wallPoint, this._normalSize, angle, this._groundLayer);
-						onWall = wallCollider && wallCollider.TryGetComponent<Surface>(out var surface1) && surface1.IsScene;
-						if (!onWall && (valid || !this._dashActive || collision || !this._isOnGround))
+						Vector2 wallSize = this._normalSize;
+						Vector2 upDirection = this.transform.up;
+						RaycastHit2D wallRay = Physics2D.BoxCast(wallPoint, wallSize, angle, upDirection, this._wallChecker, this._groundLayer);
+						onWall = wallRay && wallRay.collider.TryGetComponent<Surface>(out var wallSurface) && wallSurface.IsScene;
+						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
 						{
 							this._animator.SetBool(this._attackSlide, false);
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
-							this._collider.offset = Vector2.zero;
 						}
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.enabled);
@@ -315,11 +317,11 @@ namespace GuwbaPrimeAdventure.Guwba
 		};
 		private Action<InputAction.CallbackContext> Interaction => InteractionAction =>
 		{
-			Vector2 point = this.transform.position;
 			if (this._isOnGround && this._movementAction == 0f)
 			{
+				Vector2 point = this.transform.position;
 				float angle = this.transform.eulerAngles.z;
-				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._collider.size, angle, this._InteractionLayer))
+				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._normalSize, angle, this._InteractionLayer))
 					if (collider.TryGetComponent<IInteractable>(out _))
 					{
 						foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -552,7 +554,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				if (this._movementAction != 0f)
 					this.transform.localScale = new Vector3()
 					{
-						x = this._movementAction < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+						x = this._movementAction * Mathf.Abs(this.transform.localScale.x),
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
@@ -605,11 +607,12 @@ namespace GuwbaPrimeAdventure.Guwba
 		}
 		private void OnCollision()
 		{
-			float yPoint = this.transform.position.y - this._collider.bounds.extents.y + this._collider.offset.y - this._groundChecker / 2f;
+			float yDirection = this._collider.bounds.extents.y - this._groundChecker / 2f;
+			float yPoint = this.transform.position.y + this._collider.offset.y + yDirection * -this.transform.up.y;
 			Vector2 point = new(this.transform.position.x + this._collider.offset.x, yPoint);
 			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
 			float angle = this.transform.eulerAngles.z;
-			this._isOnGround = Physics2D.OverlapBox(point, size, angle, this._groundLayer);
+			this._isOnGround = Physics2D.BoxCast(point, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
