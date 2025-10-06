@@ -13,9 +13,9 @@ namespace GuwbaPrimeAdventure.Character
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CentralizableGuwba), typeof(Animator))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(SortingGroup))]
 	[RequireComponent(typeof(CircleCollider2D), typeof(CinemachineImpulseSource))]
-	internal sealed class ManageableGuwba : StateController, IConnector
+	internal sealed class GuwbaStateMarker : StateController, IConnector
 	{
-		private static ManageableGuwba _instance;
+		private static GuwbaStateMarker _instance;
 		private VisualizableGuwba _visualizableGuwba;
 		private DamageableGuwba[] _damageableGuwbas;
 		private Animator _animator;
