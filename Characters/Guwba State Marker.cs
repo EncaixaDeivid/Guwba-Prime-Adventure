@@ -60,7 +60,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
 		[Header("Visual Interaction")]
-		[SerializeField, Tooltip("The object of the Guwba hud.")] private GuwbaVisualizer _guwbaVisualizerObject;
 		[SerializeField, Tooltip("The name of the scene that contains the hubby world.")] private string _hubbyWorldScene;
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
@@ -125,8 +124,8 @@ namespace GuwbaPrimeAdventure.Character
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
 			this._screenShaker = this.GetComponent<CinemachineImpulseSource>();
-			this._guwbaVisualizer = Instantiate(this._guwbaVisualizerObject, this.transform);
-			this._guwbaDamagers = this.GetComponentsInChildren<GuwbaDamager>(true);
+			this._guwbaVisualizer = this.GetComponentInChildren<GuwbaVisualizer>();
+			this._guwbaDamagers = this.GetComponentsInChildren<GuwbaDamager>();
 			SaveController.Load(out SaveFile saveFile);
 			this._guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
 			this._guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
