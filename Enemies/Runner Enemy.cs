@@ -68,10 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void FixedUpdate()
 		{
 			if (this._stopWorking || this.IsStunned)
-			{
-				this._rigidybody.linearVelocityX = 0f;
 				return;
-			}
 			Vector2 right = this.transform.right * this._movementSide;
 			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
@@ -137,7 +134,10 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (enemy != this)
 						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+			{
+				this._rigidybody.linearVelocityX = 0f;
 				this._stopWorking = !data.ToggleValue.Value;
+			}
 			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
 			{
 				Vector2 targetPosition;
