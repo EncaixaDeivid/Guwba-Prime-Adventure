@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using GuwbaPrimeAdventure.Guwba;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -72,7 +71,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				bool valid = this._pointOrigin.x < this.transform.position.x;
 				this.transform.localScale = new Vector3()
 				{
-					x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
@@ -103,7 +102,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				bool valid = target.x < this.transform.localPosition.x;
 				this.transform.localScale = new Vector3()
 				{
-					x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+					x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
@@ -145,7 +144,7 @@ namespace GuwbaPrimeAdventure.Enemy
 							bool valid = collider.transform.position.x < this.transform.position.x;
 							this.transform.localScale = new Vector3()
 							{
-								x = valid ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+								x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
 								y = this.transform.localScale.y,
 								z = this.transform.localScale.z
 							};
