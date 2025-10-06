@@ -125,14 +125,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (this._statistics.EndlessPursue)
 			{
-				this.transform.position = Vector2.MoveTowards(this.transform.position, CentralizableGuwba.Position, maxDistanceDelta);
+				this.transform.position = Vector2.MoveTowards(this.transform.position, GuwbaCentralizer.Position, maxDistanceDelta);
 				return;
 			}
 			if (!this._isDashing)
 				this._detected = false;
 			if (this._statistics.LookPerception && !this._isDashing)
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(this._pointOrigin, this._statistics.LookDistance, targetLayer))
-					if (CentralizableGuwba.EqualObject(collider.gameObject))
+					if (GuwbaCentralizer.EqualObject(collider.gameObject))
 					{
 						this._targetPoint = collider.transform.position;
 						Vector2 origin = this.transform.position;
