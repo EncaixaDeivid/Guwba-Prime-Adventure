@@ -2,9 +2,10 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent]
+	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
+		private PolygonCollider2D _trail;
 		private Vector2 _pointOrigin = new();
 		private Vector2 _targetPoint = new();
 		private bool _normal = true;
@@ -12,11 +13,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointIndex = 0;
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The flying statitics of this enemy.")] private FlyingStatistics _statistics;
-		[SerializeField, Tooltip("The points that this enemy have to make.")] private Vector2[] _trail;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
 		private new void Awake()
 		{
 			base.Awake();
+			this._trail = this.GetComponent<PolygonCollider2D>();
 			this._pointOrigin = this.transform.position;
 			if (this._statistics.EndlessPursue)
 				Destroy(this.gameObject, this._statistics.FadeTime);
@@ -64,7 +65,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Trail()
 		{
-			if (this._trail.Length <= 0f)
+			if (this._trail.points.Length <= 0f)
 				return;
 			if ((Vector2)this.transform.position != this._pointOrigin)
 			{
@@ -80,17 +81,17 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			else
 			{
-				Vector2 target = this._trail[this._pointIndex];
+				Vector2 target = this._trail.points[this._pointIndex];
 				if (this._repeatWay)
 				{
 					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
-						this._pointIndex = (ushort)(this._pointIndex < this._trail.Length - 1f ? this._pointIndex + 1f : 0f);
+						this._pointIndex = (ushort)(this._pointIndex < this._trail.points.Length - 1f ? this._pointIndex + 1f : 0f);
 				}
 				else if (this._normal)
 				{
 					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0f)
 						this._pointIndex += 1;
-					this._normal = this._pointIndex != this._trail.Length - 1f;
+					this._normal = this._pointIndex != this._trail.points.Length - 1f;
 				}
 				else if (!this._normal)
 				{
