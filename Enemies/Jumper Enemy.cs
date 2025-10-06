@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
 		private Animator _animator;
-		private bool _isJumping;
+		private bool _isJumping = false;
 		private bool _stopJump = false;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
@@ -17,16 +17,17 @@ namespace GuwbaPrimeAdventure.Enemy
 			this.StartCoroutine(Jump());
 			IEnumerator Jump()
 			{
+				this._detected = true;
 				if (this._statistics.DetectionStop)
 				{
-					this._isJumping = true;
 					this._sender.SetToggle(false);
 					this._sender.Send(PathConnection.Enemy);
 					this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitTime(this, this._statistics.StopTime);
 				}
-				Vector2 direction = (target + Vector2.up * this._statistics.JumpHeight - (Vector2)this.transform.position).normalized;
-				this._rigidybody.AddForce(this._rigidybody.mass * this._statistics.JumpStrenght * direction, ForceMode2D.Impulse);
+				this._isJumping = true;
+				this._rigidybody.AddForceY(this._rigidybody.mass * this._statistics.JumpStrenght, ForceMode2D.Impulse);
+				this.FollowJump(target, true);
 			}
 		}
 		private void FollowJump(Vector2 otherTarget, bool useTarget)
@@ -36,30 +37,24 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled);
 				this._rigidybody.linearVelocityX = 0f;
-				float randomDirection = 0f;
+				float targetPosition = CentralizableGuwba.Position.x;
 				if (this._statistics.RandomFollow)
-					randomDirection = Random.Range(-1f, 1f);
+					targetPosition = Random.Range(-1, 1) >= 0f ? CentralizableGuwba.Position.x : otherTarget.x;
+				else if (useTarget)
+					targetPosition = otherTarget.x;
+				this._movementSide = (short)(targetPosition - this.transform.position.x > 0f ? 1f : -1f);
+				this.transform.localScale = new Vector3()
+				{
+					x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+					y = this.transform.localScale.y,
+					z = this.transform.localScale.z
+				};
 				while (!this.SurfacePerception())
 				{
-					float targetPosition = CentralizableGuwba.Position.x;
-					if (useTarget)
-						targetPosition = otherTarget.x;
-					if (this._statistics.RandomFollow)
-					{
-						if (randomDirection >= 0f)
-							targetPosition = CentralizableGuwba.Position.x;
-						else if (randomDirection < 0f)
-							targetPosition = otherTarget.x;
-					}
-					this._movementSide = (short)(targetPosition - this.transform.position.x > 0f ? 1f : -1f);
-					this.transform.localScale = new Vector3()
-					{
-						x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
-						y = this.transform.localScale.y,
-						z = this.transform.localScale.z
-					};
 					if (this.isActiveAndEnabled && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
+					else
+						this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => this.isActiveAndEnabled);
 				}
@@ -81,18 +76,18 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled);
+						yield return new WaitUntil(() => this.SurfacePerception() && !this._detected && this.isActiveAndEnabled);
 						if (this._stopJump)
 							yield break;
 						if (this._statistics.JumpPointStructures[index].RemovalJumpCount-- <= 0f)
 						{
 							if (this._statistics.JumpPointStructures[index].JumpStats.StopMove)
 							{
-								this._isJumping = true;
 								this._sender.SetToggle(false);
 								this._sender.Send(PathConnection.Enemy);
 								this._rigidybody.linearVelocityX = 0f;
 							}
+							this._isJumping = true;
 							float jumpStrenght = this._statistics.JumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass;
 							this._rigidybody.AddForceY(jumpStrenght, ForceMode2D.Impulse);
 							if (this._statistics.JumpPointStructures[index].JumpStats.Follow)
@@ -122,15 +117,15 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(TimedJump(jumpStats));
 			IEnumerator TimedJump(JumpStats stats)
 			{
-				yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled && !this._stopJump);
+				yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled && !this._stopJump && !this._detected);
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
 				{
-					this._isJumping = true;
 					this._sender.SetToggle(false);
 					this._sender.Send(PathConnection.Enemy);
 					this._rigidybody.linearVelocityX = 0f;
 				}
+				this._isJumping = true;
 				this._rigidybody.AddForceY(stats.Strength * this._rigidybody.mass, ForceMode2D.Impulse);
 				if (stats.Follow)
 					this.FollowJump(stats.OtherTarget, stats.UseTarget);
@@ -155,13 +150,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._isJumping && this.SurfacePerception())
 			{
 				this._isJumping = false;
+				this._detected = false;
 				this._sender.SetToggle(true);
 				this._sender.Send(PathConnection.Enemy);
 			}
 			Vector2 right = (this.transform.right * this.transform.localScale.x).normalized;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float lookDistance = this._statistics.LookDistance;
-			if (this._statistics.LookPerception && this.SurfacePerception())
+			if (!this._detected && this._statistics.LookPerception && this.SurfacePerception())
 				if (this._statistics.CircularDetection)
 				{
 					foreach (Collider2D collider in Physics2D.OverlapCircleAll(this.transform.position, lookDistance, targetLayer))
@@ -193,11 +189,11 @@ namespace GuwbaPrimeAdventure.Enemy
 						{
 							if (this._statistics.StopMoveReact)
 							{
-								this._isJumping = true;
 								this._sender.SetToggle(false);
 								this._sender.Send(PathConnection.Enemy);
 								this._rigidybody.linearVelocityX = 0f;
 							}
+							this._isJumping = true;
 							this._rigidybody.AddForceY(this._statistics.StrenghtReact* this._rigidybody.mass, ForceMode2D.Impulse);
 							if (this._statistics.FollowReact)
 								this.FollowJump(this._statistics.OtherTarget, this._statistics.UseTarget);
