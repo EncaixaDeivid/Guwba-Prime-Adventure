@@ -23,6 +23,7 @@ namespace GuwbaPrimeAdventure.Guwba
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _normalOffset = new();
 		private Vector2 _normalSize = new();
 		private int _isOn;
 		private int _idle;
@@ -57,8 +58,6 @@ namespace GuwbaPrimeAdventure.Guwba
 		[Header("World Interaction")]
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
-		[SerializeField, Tooltip("Size of the collider in dash slide.")] private Vector2 _dashSlideSize;
-		[SerializeField, Tooltip("Size of the collider in death.")] private Vector2 _deadSize;
 		[Header("Visual Interaction")]
 		[SerializeField, Tooltip("The object of the Guwba hud.")] private VisualizableGuwba _visualizableGuwbaObject;
 		[SerializeField, Tooltip("The name of the scene that contains the hubby world.")] private string _hubbyWorldScene;
@@ -158,6 +157,7 @@ namespace GuwbaPrimeAdventure.Guwba
 				z = this.transform.localScale.z
 			};
 			this._gravityScale = this._rigidbody.gravityScale;
+			this._normalOffset = this._collider.offset;
 			this._normalSize = this._collider.size;
 			if (this.gameObject.scene.name == this._hubbyWorldScene)
 			{
@@ -245,14 +245,14 @@ namespace GuwbaPrimeAdventure.Guwba
 		{
 			Vector2 movementValue = movementAction.ReadValue<Vector2>();
 			this._movementAction = movementValue.x;
-			if (Mathf.Abs(movementValue.x) > 0.75f)
+			if (Mathf.Abs(movementValue.x) > 0.5f)
 				if (movementValue.x > 0f)
 					this._movementAction = 1f;
 				else if (movementValue.x < 0f)
 					this._movementAction = -1f;
-			if (movementValue.y > 0.5f)
+			if (movementValue.y > 0.25f)
 				this._lastJumpTime = this._jumpBufferTime;
-			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.5f)
+			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.25f)
 			{
 				this._isJumping = false;
 				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
@@ -275,29 +275,27 @@ namespace GuwbaPrimeAdventure.Guwba
 						z = this.transform.localScale.z
 					};
 					float dashLocation = this.transform.position.x;
-					this._collider.size = this._dashSlideSize;
-					this._collider.offset = new Vector2(this._collider.offset.x, -((this._normalSize.y - this._collider.size.y) / 2f));
 					bool isActive = true;
 					bool onWall = false;
 					while (isActive || onWall)
 					{
-						float xAxisPosition = (this._collider.bounds.extents.x + this._wallChecker / 2f) * this._dashMovement;
-						Vector2 origin = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
-						Vector2 size = new(this._wallChecker, this._collider.size.y - 0.025f);
-						Vector2 direction = this.transform.right * this._dashMovement;
+						float xAxisOffset = this._collider.offset.x + this._wallChecker / 2f;
+						float xAxisPosition = (this._collider.bounds.extents.x + xAxisOffset) * this._dashMovement;
+						Vector2 point = new(this.transform.position.x + xAxisPosition, this.transform.position.y + this._collider.offset.y);
+						Vector2 size = new(this._wallChecker, this._collider.size.y - this._wallChecker);
 						float angle = this.transform.eulerAngles.z;
-						bool collision = Physics2D.BoxCast(origin, size, angle, direction, this._wallChecker, this._groundLayer);
+						Collider2D collisionCollider = Physics2D.OverlapBox(point, size, angle, this._groundLayer);
+						bool collision = collisionCollider && collisionCollider.TryGetComponent<Surface>(out var surface0) && surface0.IsScene;
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
 						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
-						float yAxisPoint = this._normalSize.y / 2f + this._groundChecker;
-						Vector2 wallOrigin = new(this.transform.position.x, this.transform.position.y + yAxisPoint);
-						Vector2 wallSize = new(this._normalSize.x, this._normalSize.y - this._groundChecker);
-						onWall = Physics2D.BoxCast(wallOrigin, wallSize, angle, this.transform.up, this._groundChecker, this._groundLayer);
-						if ((valid || collision || !this._isOnGround || !this._dashActive) && !onWall)
+						float yPoint = this.transform.position.y + this._normalOffset.y + this._wallChecker;
+						Vector2 wallPoint = new(this.transform.position.x + this._normalOffset.x, yPoint);
+						Collider2D wallCollider = Physics2D.OverlapBox(wallPoint, this._normalSize, angle, this._groundLayer);
+						onWall = wallCollider && wallCollider.TryGetComponent<Surface>(out var surface1) && surface1.IsScene;
+						if (!onWall && (valid || !this._dashActive || collision || !this._isOnGround))
 						{
 							this._animator.SetBool(this._attackSlide, false);
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
-							this._collider.size = this._normalSize;
 							this._collider.offset = Vector2.zero;
 						}
 						yield return new WaitForFixedUpdate();
@@ -357,7 +355,6 @@ namespace GuwbaPrimeAdventure.Guwba
 				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
-				this._collider.size = this._deadSize;
 				this._sender.SetToggle(false);
 				this._sender.SetStateForm(StateForm.Action);
 				this._sender.Send(PathConnection.Hud);
@@ -609,10 +606,10 @@ namespace GuwbaPrimeAdventure.Guwba
 		private void OnCollision()
 		{
 			float yPoint = this.transform.position.y - this._collider.bounds.extents.y + this._collider.offset.y - this._groundChecker / 2f;
-			Vector2 origin = new(this.transform.position.x, yPoint);
+			Vector2 point = new(this.transform.position.x + this._collider.offset.x, yPoint);
 			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
 			float angle = this.transform.eulerAngles.z;
-			this._isOnGround = Physics2D.BoxCast(origin, size, angle, -this.transform.up, this._groundChecker, this._groundLayer);
+			this._isOnGround = Physics2D.OverlapBox(point, size, angle, this._groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
 		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
