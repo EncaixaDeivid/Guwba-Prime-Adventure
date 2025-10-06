@@ -1,5 +1,5 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Guwba;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
@@ -8,12 +8,12 @@ namespace GuwbaPrimeAdventure.Item
 		[Header("Interactions")]
 		[SerializeField, Tooltip("The damage the surface hits.")] private ushort _damage;
 		[SerializeField, Tooltip("If anything can be damaged")] private bool _everyone;
-		private void OnCollision(GameObject collisionObject)
+		private void OnCollision(GameObject other)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var destructible))
+			if (other.TryGetComponent<IDestructible>(out var destructible))
 				if (this._everyone)
 					destructible.Hurt(this._damage);
-				else if (CentralizableGuwba.EqualObject(collisionObject))
+				else if (CentralizableGuwba.EqualObject(other.transform.parent.gameObject))
 					destructible.Hurt(this._damage);
 		}
 		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision(other.gameObject);
