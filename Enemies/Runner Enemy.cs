@@ -108,7 +108,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
 			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
-			if (!Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer) || blockPerception)
+			bool valid = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer);
+			if (this.SurfacePerception() && valid || blockPerception)
 				this._movementSide *= -1;
 			if (this._detected && !this._isDashing && this._statistics.DetectionStop)
 			{
