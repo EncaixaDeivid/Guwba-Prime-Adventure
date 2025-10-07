@@ -31,7 +31,7 @@ namespace GuwbaPrimeAdventure.Character
 		private int _walk;
 		private int _walkSpeed;
 		private int _dashSlide;
-		private int _Jump;
+		private int _jump;
 		private int _fall;
 		private int _attack;
 		private int _attackCombo;
@@ -41,6 +41,7 @@ namespace GuwbaPrimeAdventure.Character
 		private int _death;
 		private short _vitality;
 		private ushort _recoverVitality = 0;
+		private ushort _useHighJump = 0;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
@@ -72,7 +73,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("Animation parameter.")] private string _walkAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _walkSpeedAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlideAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _JumpAnimation;
+		[SerializeField, Tooltip("Animation parameter.")] private string _jumpAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _fallAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attackAnimation;
 		[SerializeField, Tooltip("Animation parameter.")] private string _attackComboAnimation;
@@ -101,6 +102,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of strenght that will be added to the high Jump.")] private float _additionalStrenght;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
@@ -141,7 +143,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._walk = Animator.StringToHash(this._walkAnimation);
 			this._walkSpeed = Animator.StringToHash(this._walkSpeedAnimation);
 			this._dashSlide = Animator.StringToHash(this._dashSlideAnimation);
-			this._Jump = Animator.StringToHash(this._JumpAnimation);
+			this._jump = Animator.StringToHash(this._jumpAnimation);
 			this._fall = Animator.StringToHash(this._fallAnimation);
 			this._attack = Animator.StringToHash(this._attackAnimation);
 			this._attackCombo = Animator.StringToHash(this._attackComboAnimation);
@@ -250,7 +252,11 @@ namespace GuwbaPrimeAdventure.Character
 				else if (movementValue.x < 0f)
 					this._movementAction = -1f;
 			if (movementValue.y > 0.25f)
+			{
 				this._lastJumpTime = this._jumpBufferTime;
+				if (this._isJumping)
+					this._useHighJump += 1;
+			}
 			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.25f)
 			{
 				this._isJumping = false;
@@ -258,14 +264,13 @@ namespace GuwbaPrimeAdventure.Character
 				this._lastJumpTime = 0f;
 			}
 			bool valid = !this._dashActive && this._isOnGround && (!this._attackUsage || this._comboAttackBuffer);
-			if (this._movementAction != 0f && movementValue.y < -0.5f && valid)
+			if (this._movementAction != 0f && movementValue.y < -0.25f && valid)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
-					if (this._comboAttackBuffer)
-						this._animator.SetBool(this._attackSlide, true);
 					this._animator.SetBool(this._dashSlide, this._dashActive = true);
+					this._animator.SetBool(this._attackSlide, this._comboAttackBuffer);
 					this._dashMovement = this._movementAction;
 					this.transform.localScale = new Vector3()
 					{
@@ -293,8 +298,8 @@ namespace GuwbaPrimeAdventure.Character
 						onWall = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
 						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
 						{
-							this._animator.SetBool(this._attackSlide, false);
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
+							this._animator.SetBool(this._attackSlide, false);
 						}
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.enabled);
@@ -431,7 +436,8 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				float xOrigin = position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction;
 				Vector2 downRayOrigin = new(xOrigin, position.y - this._collider.bounds.extents.y);
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, rootHeight + this._groundChecker, this._groundLayer);
+				float distance = rootHeight + this._groundChecker;
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, distance, this._groundLayer);
 				if (downStairs = downRay)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
@@ -440,11 +446,12 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					this._animator.SetBool(this._idle, this._movementAction == 0f);
 					this._animator.SetBool(this._walk, this._movementAction != 0f);
-					this._animator.SetBool(this._Jump, false);
+					this._animator.SetBool(this._jump, false);
 					this._animator.SetBool(this._fall, false);
 					this._lastGroundedTime = this._jumpCoyoteTime;
 					this._downStairs = true;
 					this._isJumping = false;
+					this._useHighJump = this._lastJumpTime > 0f ? this._useHighJump : (ushort)0f;
 					if (this._fallDamage > 0f)
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
@@ -470,7 +477,7 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					this._animator.SetBool(this._idle, false);
 					this._animator.SetBool(this._walk, false);
-					this._animator.SetBool(this._Jump, this._rigidbody.linearVelocityY > 0f);
+					this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
 					this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
 					if (this._animator.GetBool(this._attackJump))
 						this._animator.SetBool(this._attackJump, this._rigidbody.linearVelocityY > 0f);
@@ -511,7 +518,7 @@ namespace GuwbaPrimeAdventure.Character
 					if (this._attackUsage)
 						this._rigidbody.linearVelocityY *= this._attackVelocityCut;
 					this._lastGroundedTime -= Time.fixedDeltaTime;
-					this._lastJumpTime -= Time.fixedDeltaTime;
+					this._lastJumpTime -= Time.fixedDeltaTime * (this._useHighJump > 0f ? this._useHighJump : 1f);
 					this._downStairs = false;
 				}
 			if (!this._dashActive)
@@ -551,9 +558,9 @@ namespace GuwbaPrimeAdventure.Character
 						z = this.transform.localScale.z
 					};
 				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-				Vector2 origin = new(position.x + xOrigin, position.y);
-				Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-				bool wallBlock = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
+				Vector2 wallOrigin = new(position.x + xOrigin, position.y);
+				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
+				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, this._groundLayer);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
 				float targetSpeed = this._movementSpeed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
@@ -569,14 +576,15 @@ namespace GuwbaPrimeAdventure.Character
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
+			bool valid = this._useHighJump > 0f;
 			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
 			{
-				if (this._comboAttackBuffer)
-					this._animator.SetBool(this._attackJump, true);
+				this._animator.SetBool(this._attackJump, this._comboAttackBuffer);
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._rigidbody.AddForceY(this._jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
+				float jumpStrenght = valid ? this._jumpStrenght + this._additionalStrenght * this._useHighJump : this._jumpStrenght;
+				this._rigidbody.AddForceY(jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
 		}
@@ -597,16 +605,16 @@ namespace GuwbaPrimeAdventure.Character
 			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
 				guwbaDamager.Alpha = 1f;
 		}
-		private void OnCollision()
+		private void GroundCheck()
 		{
-			float yDirection = this._collider.bounds.extents.y + this._groundChecker / 2f;
-			float yOrigin = this.transform.position.y + this._collider.offset.y + yDirection * -this.transform.up.y;
-			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, yOrigin);
-			Vector2 size = new(this._collider.size.x - this._groundChecker, this._groundChecker);
-			this._isOnGround = Physics2D.BoxCast(origin, size, 0f, -this.transform.up, this._groundChecker, this._groundLayer);
+			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
+			float yOriginSize = this._collider.bounds.extents.y + this._groundChecker / 2f;
+			Vector2 groundOrigin = new(position.x, position.y + yOriginSize * -this.transform.up.y);
+			Vector2 groundSize = new(this._collider.size.x - this._groundChecker, this._groundChecker);
+			this._isOnGround = Physics2D.BoxCast(groundOrigin, groundSize, 0f, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
-		private void OnCollisionEnter2D(Collision2D other) => this.OnCollision();
-		private void OnCollisionStay2D(Collision2D other) => this.OnCollision();
+		private void OnCollisionEnter2D(Collision2D collision) => this.GroundCheck();
+		private void OnCollisionStay2D(Collision2D collision) => this.GroundCheck();
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (other.TryGetComponent<ICollectable>(out var collectable))
