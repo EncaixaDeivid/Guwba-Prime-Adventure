@@ -46,7 +46,6 @@ namespace GuwbaPrimeAdventure.Character
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
 		private float _dashMovement = 0f;
-		private float _dashPermanence = 0f;
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
@@ -56,6 +55,7 @@ namespace GuwbaPrimeAdventure.Character
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
+		private bool _longJumping = false;
 		private bool _dashActive = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
@@ -101,7 +101,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, Tooltip("The amount of time the speed of the dash will be on.")] private float _dashPermanenceBuff;
 		[SerializeField, Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
 		[SerializeField, Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
 		[SerializeField, Tooltip("The amount of bunny hops to reach max increaement.")] private ushort _maxBoost;
@@ -305,11 +304,10 @@ namespace GuwbaPrimeAdventure.Character
 						Vector2 wallSize = this._normalSize;
 						Vector2 upDirection = this.transform.up;
 						onWall = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
-						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround))
+						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround || this._isJumping))
 						{
 							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
 							this._animator.SetBool(this._attackSlide, false);
-							this._dashPermanence = this._dashPermanenceBuff;
 						}
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.enabled);
@@ -438,26 +436,24 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private void Update()
 		{
-			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0 && this._downStairs)
+			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0 && !this._downStairs)
 			{
 				this._lastGroundedTime -= Time.deltaTime;
 				this._lastJumpTime -= Time.deltaTime;
 			}
-			if (this._dashPermanence > 0f)
-				this._dashPermanence -= Time.deltaTime;
 		}
 		private void FixedUpdate()
 		{
 			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
 			Vector2 direction = this.transform.right * this._movementAction;
+			LayerMask groundLayer = this._groundLayer;
 			float rootHeight = this._collider.size.y / this._collider.size.y;
 			this._downStairs = false;
 			if (!this._isOnGround && this._canDownStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
 			{
 				float xOrigin = position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction;
 				Vector2 downRayOrigin = new(xOrigin, position.y - this._collider.bounds.extents.y);
-				float distance = rootHeight + this._groundChecker;
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, distance, this._groundLayer);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, rootHeight + this._groundChecker, groundLayer);
 				if (this._downStairs = downRay)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
@@ -471,6 +467,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._lastGroundedTime = this._jumpCoyoteTime;
 					this._canDownStairs = true;
 					this._isJumping = false;
+					this._longJumping = false;
 					this._bunnyHopBoost = this._lastJumpTime > 0f ? this._bunnyHopBoost : (ushort)0f;
 					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f)
 					{
@@ -540,11 +537,12 @@ namespace GuwbaPrimeAdventure.Character
 					this._canDownStairs = false;
 				}
 			float BunnyHop(float callBackValue) => this._bunnyHopBoost > 0f ? this._bunnyHopBoost * callBackValue : 1f;
-			if (!this._dashActive)
+			if (this._longJumping)
+				this._rigidbody.linearVelocityX = this._dashSpeed * this._movementAction;
+			if (!this._dashActive || !this._longJumping)
 			{
 				if (this._isOnGround && this._movementAction != 0f)
 				{
-					LayerMask groundLayer = this._groundLayer;
 					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - rootHeight * this._bottomCheckerOffset);
 					Vector2 bottomSize = new(this._groundChecker, rootHeight - this._groundChecker);
@@ -560,7 +558,7 @@ namespace GuwbaPrimeAdventure.Character
 						float bottomCorner = position.y - this._collider.bounds.extents.y;
 						Vector2 lineStart = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, topCorner);
 						Vector2 lineEnd = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, bottomCorner);
-						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
+						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, groundLayer);
 						if (lineWall.collider == bottomCast.collider)
 						{
 							float yDistance = position.y + (lineWall.point.y - bottomCorner);
@@ -579,10 +577,10 @@ namespace GuwbaPrimeAdventure.Character
 				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 wallOrigin = new(position.x + xOrigin, position.y);
 				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, this._groundLayer);
-				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
-				float dashSpeed = this._dashPermanence / this._dashPermanenceBuff * this._dashSpeed;
-				float targetSpeed = (this._movementSpeed + BunnyHop(this._velocityBoost) + dashSpeed) * this._movementAction;
+				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, groundLayer);
+				float speed = this._movementSpeed + BunnyHop(this._velocityBoost);
+				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / speed);
+				float targetSpeed = speed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
 				accelerationRate += BunnyHop(this._potencyBoost);
@@ -601,9 +599,9 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				this._animator.SetBool(this._attackJump, this._comboAttackBuffer);
 				this._isJumping = true;
+				this._longJumping = this._dashActive;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._dashPermanence = this._bunnyHopBoost > 0f && this._dashPermanence > 0f ? this._dashPermanenceBuff : this._dashPermanence;
 				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
