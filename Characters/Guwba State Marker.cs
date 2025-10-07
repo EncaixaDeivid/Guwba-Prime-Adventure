@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Character
 		private int _death;
 		private short _vitality;
 		private ushort _recoverVitality = 0;
-		private ushort _useHighJump = 0;
+		private ushort _highJump = 0;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
@@ -255,7 +255,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				this._lastJumpTime = this._jumpBufferTime;
 				if (this._isJumping)
-					this._useHighJump += 1;
+					this._highJump += 1;
 			}
 			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.25f)
 			{
@@ -451,7 +451,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._lastGroundedTime = this._jumpCoyoteTime;
 					this._downStairs = true;
 					this._isJumping = false;
-					this._useHighJump = this._lastJumpTime > 0f ? this._useHighJump : (ushort)0f;
+					this._highJump = this._lastJumpTime > 0f ? this._highJump : (ushort)0f;
 					if (this._fallDamage > 0f)
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
@@ -518,7 +518,7 @@ namespace GuwbaPrimeAdventure.Character
 					if (this._attackUsage)
 						this._rigidbody.linearVelocityY *= this._attackVelocityCut;
 					this._lastGroundedTime -= Time.fixedDeltaTime;
-					this._lastJumpTime -= Time.fixedDeltaTime * (this._useHighJump > 0f ? this._useHighJump : 1f);
+					this._lastJumpTime -= Time.fixedDeltaTime * (this._highJump > 0f ? this._highJump : 1f);
 					this._downStairs = false;
 				}
 			if (!this._dashActive)
@@ -576,14 +576,13 @@ namespace GuwbaPrimeAdventure.Character
 				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
 				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
-			bool valid = this._useHighJump > 0f;
 			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
 			{
 				this._animator.SetBool(this._attackJump, this._comboAttackBuffer);
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				float jumpStrenght = valid ? this._jumpStrenght + this._additionalStrenght * this._useHighJump : this._jumpStrenght;
+				float jumpStrenght = this._highJump > 0f ? this._jumpStrenght + this._additionalStrenght * this._highJump : this._jumpStrenght;
 				this._rigidbody.AddForceY(jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
