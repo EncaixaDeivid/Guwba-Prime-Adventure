@@ -6,8 +6,8 @@ using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
+using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(GuwbaCentralizer), typeof(Animator))]
@@ -173,6 +173,16 @@ namespace GuwbaPrimeAdventure.Character
 					recoverVitality.style.display = DisplayStyle.None;
 				this._guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
 			}
+			this._inputController = new InputController();
+			this._inputController.Commands.Movement.started += this.Movement;
+			this._inputController.Commands.Movement.performed += this.Movement;
+			this._inputController.Commands.Movement.canceled += this.Movement;
+			this._inputController.Commands.AttackUse.started += this.AttackUse;
+			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
+			this._inputController.Commands.Interaction.started += this.Interaction;
+			this._inputController.Commands.Movement.Enable();
+			this._inputController.Commands.AttackUse.Enable();
+			this._inputController.Commands.Interaction.Enable();
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -188,6 +198,16 @@ namespace GuwbaPrimeAdventure.Character
 				guwbaDamager.DamagerAttack -= this.Attack;
 				guwbaDamager.Alpha = 1f;
 			}
+			this._inputController.Commands.Movement.started -= this.Movement;
+			this._inputController.Commands.Movement.performed -= this.Movement;
+			this._inputController.Commands.Movement.canceled -= this.Movement;
+			this._inputController.Commands.AttackUse.started -= this.AttackUse;
+			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
+			this._inputController.Commands.Interaction.started -= this.Interaction;
+			this._inputController.Commands.Movement.Disable();
+			this._inputController.Commands.AttackUse.Disable();
+			this._inputController.Commands.Interaction.Disable();
+			this._inputController.Dispose();
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
@@ -197,7 +217,6 @@ namespace GuwbaPrimeAdventure.Character
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.Flex;
 			this._animator.SetFloat(this._isOn, 1f);
 			this._animator.SetFloat(this._walkSpeed, 1f);
-			this.EnableCommands();
 			if (this._dashActive)
 				this._dashMovement = this._guardDashMovement;
 			this._rigidbody.gravityScale = this._gravityScale;
@@ -210,7 +229,6 @@ namespace GuwbaPrimeAdventure.Character
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.None;
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
-			this.DisableCommands();
 			this._movementAction = 0f;
 			if (this._dashActive)
 			{
@@ -221,34 +239,10 @@ namespace GuwbaPrimeAdventure.Character
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
-		private void EnableCommands()
-		{
-			this._inputController = new InputController();
-			this._inputController.Commands.Movement.started += this.Movement;
-			this._inputController.Commands.Movement.performed += this.Movement;
-			this._inputController.Commands.Movement.canceled += this.Movement;
-			this._inputController.Commands.AttackUse.started += this.AttackUse;
-			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
-			this._inputController.Commands.Interaction.started += this.Interaction;
-			this._inputController.Commands.Movement.Enable();
-			this._inputController.Commands.AttackUse.Enable();
-			this._inputController.Commands.Interaction.Enable();
-		}
-		private void DisableCommands()
-		{
-			this._inputController.Commands.Movement.started -= this.Movement;
-			this._inputController.Commands.Movement.performed -= this.Movement;
-			this._inputController.Commands.Movement.canceled -= this.Movement;
-			this._inputController.Commands.AttackUse.started -= this.AttackUse;
-			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
-			this._inputController.Commands.Interaction.started -= this.Interaction;
-			this._inputController.Commands.Movement.Disable();
-			this._inputController.Commands.AttackUse.Disable();
-			this._inputController.Commands.Interaction.Disable();
-			this._inputController.Dispose();
-		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
+			if (!this.isActiveAndEnabled || this._animator.GetBool(this._stun))
+				return;
 			Vector2 movementValue = movement.ReadValue<Vector2>();
 			this._movementAction = 0f;
 			if (Mathf.Abs(movementValue.x) > 0.5f)
@@ -310,14 +304,14 @@ namespace GuwbaPrimeAdventure.Character
 							this._animator.SetBool(this._attackSlide, false);
 						}
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => this.enabled);
+						yield return new WaitUntil(() => this.isActiveAndEnabled || this._animator.GetBool(this._stun));
 					}
 				}
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if (this._dashActive)
+			if (this._dashActive || !this.isActiveAndEnabled || this._animator.GetBool(this._stun))
 				return;
 			if (attackUse.started && !this._attackUsage)
 				this._animator.SetTrigger(this._attack);
@@ -326,18 +320,17 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private Action<InputAction.CallbackContext> Interaction => interaction =>
 		{
-			if (this._isOnGround && this._movementAction == 0f)
-			{
-				Vector2 point = (Vector2)this.transform.position + this._normalOffset;
-				float angle = this.transform.eulerAngles.z;
-				foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._normalSize, angle, this._InteractionLayer))
-					if (collider.TryGetComponent<IInteractable>(out _))
-					{
-						foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
-							interactable.Interaction();
-						return;
-					}
-			}
+			if (!this._isOnGround || this._movementAction != 0f || !this.isActiveAndEnabled || this._animator.GetBool(this._stun))
+				return;
+			Vector2 point = (Vector2)this.transform.position + this._normalOffset;
+			float angle = this.transform.eulerAngles.z;
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._normalSize, angle, this._InteractionLayer))
+				if (collider.TryGetComponent<IInteractable>(out _))
+				{
+					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
+						interactable.Interaction();
+					return;
+				}
 		};
 		public Predicate<ushort> Hurt => damage =>
 		{
@@ -385,11 +378,9 @@ namespace GuwbaPrimeAdventure.Character
 			IEnumerator StunTimer()
 			{
 				this._animator.SetBool(this._stun, true);
-				this.DisableCommands();
 				this._dashActive = false;
 				yield return new WaitTime(this, stunTime);
 				this._animator.SetBool(this._stun, false);
-				this.EnableCommands();
 			}
 		};
 		private UnityAction<GuwbaDamager, IDestructible> Attack => (guwbaDamager, destructible) =>
