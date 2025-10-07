@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure.Character
 		private int _death;
 		private short _vitality;
 		private ushort _recoverVitality = 0;
-		private ushort _highJump = 0;
+		private ushort _bunnyHopBoost = 0;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _yMovement = 0f;
@@ -99,10 +99,13 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
+		[SerializeField, Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
+		[SerializeField, Tooltip("The amount of bunny hops to reach max increaement.")] private ushort _maxBoost;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
-		[SerializeField, Tooltip("The amount of strenght that will be added to the high Jump.")] private float _additionalJump;
+		[SerializeField, Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
@@ -255,7 +258,10 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				this._lastJumpTime = this._jumpBufferTime;
 				if (this._isJumping)
-					this._highJump += 1;
+					if (this._bunnyHopBoost >= this._maxBoost)
+						this._bunnyHopBoost = this._maxBoost;
+					else
+						this._bunnyHopBoost += 1;
 			}
 			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.25f)
 			{
@@ -451,8 +457,8 @@ namespace GuwbaPrimeAdventure.Character
 					this._lastGroundedTime = this._jumpCoyoteTime;
 					this._downStairs = true;
 					this._isJumping = false;
-					this._highJump = this._lastJumpTime > 0f ? this._highJump : (ushort)0f;
-					if (this._fallDamage > 0f && this._highJump <= 0f)
+					this._bunnyHopBoost = this._lastJumpTime > 0f ? this._bunnyHopBoost : (ushort)0f;
+					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f)
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
 						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
@@ -518,9 +524,10 @@ namespace GuwbaPrimeAdventure.Character
 					if (this._attackUsage)
 						this._rigidbody.linearVelocityY *= this._attackVelocityCut;
 					this._lastGroundedTime -= Time.fixedDeltaTime;
-					this._lastJumpTime -= Time.fixedDeltaTime * (this._highJump > 0f ? this._highJump : 1f);
+					this._lastJumpTime -= Time.fixedDeltaTime;
 					this._downStairs = false;
 				}
+			float BunnyHop(float callBackValue) => this._bunnyHopBoost > 0f ? this._bunnyHopBoost * callBackValue : 1f;
 			if (!this._dashActive)
 			{
 				if (this._isOnGround && this._movementAction != 0f)
@@ -562,9 +569,10 @@ namespace GuwbaPrimeAdventure.Character
 				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
 				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, this._groundLayer);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed);
-				float targetSpeed = this._movementSpeed * this._movementAction;
+				float targetSpeed = (this._movementSpeed + BunnyHop(this._velocityBoost)) * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
 				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
+				accelerationRate += BunnyHop(this._potencyBoost);
 				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
 				this._rigidbody.AddForceX(movement * this._rigidbody.mass);
 				if (this._attackUsage)
@@ -582,8 +590,7 @@ namespace GuwbaPrimeAdventure.Character
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				float jumpStrenght = this._highJump > 0f ? this._jumpStrenght + this._additionalJump * this._highJump : this._jumpStrenght;
-				this._rigidbody.AddForceY(jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
+				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
 		}
