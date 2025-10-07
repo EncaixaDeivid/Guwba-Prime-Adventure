@@ -452,7 +452,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._downStairs = true;
 					this._isJumping = false;
 					this._highJump = this._lastJumpTime > 0f ? this._highJump : (ushort)0f;
-					if (this._fallDamage > 0f)
+					if (this._fallDamage > 0f && this._highJump <= 0f)
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
 						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
