@@ -537,9 +537,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._canDownStairs = false;
 				}
 			float BunnyHop(float callBackValue) => this._bunnyHopBoost > 0f ? this._bunnyHopBoost * callBackValue : 1f;
-			if (this._longJumping)
-				this._rigidbody.linearVelocityX = this._dashSpeed * this._movementAction;
-			if (!this._dashActive || !this._longJumping)
+			if (!this._dashActive)
 			{
 				if (this._isOnGround && this._movementAction != 0f)
 				{
@@ -578,7 +576,7 @@ namespace GuwbaPrimeAdventure.Character
 				Vector2 wallOrigin = new(position.x + xOrigin, position.y);
 				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
 				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, groundLayer);
-				float speed = this._movementSpeed + BunnyHop(this._velocityBoost);
+				float speed = this._longJumping ? this._dashSpeed : this._movementSpeed + BunnyHop(this._velocityBoost);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / speed);
 				float targetSpeed = speed * this._movementAction;
 				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
