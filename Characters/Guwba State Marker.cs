@@ -102,7 +102,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
-		[SerializeField, Tooltip("The amount of strenght that will be added to the high Jump.")] private float _additionalStrenght;
+		[SerializeField, Tooltip("The amount of strenght that will be added to the high Jump.")] private float _additionalJump;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
@@ -582,7 +582,7 @@ namespace GuwbaPrimeAdventure.Character
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				float jumpStrenght = this._highJump > 0f ? this._jumpStrenght + this._additionalStrenght * this._highJump : this._jumpStrenght;
+				float jumpStrenght = this._highJump > 0f ? this._jumpStrenght + this._additionalJump * this._highJump : this._jumpStrenght;
 				this._rigidbody.AddForceY(jumpStrenght * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
