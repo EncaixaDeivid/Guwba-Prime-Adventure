@@ -603,7 +603,7 @@ namespace GuwbaPrimeAdventure.Character
 				this._isJumping = true;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
-				this._dashPermanence = this._bunnyHopBoost > 0f ? this._dashPermanenceBuff : this._dashPermanence;
+				this._dashPermanence = this._bunnyHopBoost > 0f && this._dashPermanence > 0f ? this._dashPermanenceBuff : this._dashPermanence;
 				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
