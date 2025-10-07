@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Character
 		private ushort _bunnyHopBoost = 0;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
-		private float _yMovement = 0f;
+		private float _yVelocity = 0f;
 		private float _dashMovement = 0f;
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
@@ -201,7 +201,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (this._dashActive)
 				this._dashMovement = this._guardDashMovement;
 			this._rigidbody.gravityScale = this._gravityScale;
-			this._rigidbody.linearVelocityY = this._yMovement;
+			this._rigidbody.linearVelocityY = this._yVelocity;
 		}
 		private void OnDisable()
 		{
@@ -217,7 +217,7 @@ namespace GuwbaPrimeAdventure.Character
 				this._guardDashMovement = this._dashMovement;
 				this._dashMovement = 0f;
 			}
-			this._yMovement = this._rigidbody.linearVelocityY;
+			this._yVelocity = this._rigidbody.linearVelocityY;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
 		}
