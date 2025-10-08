@@ -4,12 +4,11 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer))]
+	[DisallowMultipleComponent]
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
 		private Animator _animator;
 		private bool _isJumping = false;
-		private bool _isFalling = false;
 		private bool _stopJump = false;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
@@ -23,8 +22,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					this._sender.SetToggle(false);
 					this._sender.Send(PathConnection.Enemy);
-					this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitTime(this, this._statistics.StopTime);
+					yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
 				}
 				this._isJumping = true;
 				this._rigidybody.AddForceY(this._rigidybody.mass * this._statistics.JumpStrenght, ForceMode2D.Impulse);
@@ -36,7 +35,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this.StartCoroutine(FollowTarget());
 			IEnumerator FollowTarget()
 			{
-				yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled);
+				yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled && !this.IsStunned && !this._stopJump);
 				this._rigidybody.linearVelocityX = 0f;
 				float targetPosition = GuwbaCentralizer.Position.x;
 				if (this._statistics.RandomFollow)
@@ -46,18 +45,18 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._movementSide = (short)(targetPosition > this.transform.position.x ? 1f : -1f);
 				this.transform.localScale = new Vector3()
 				{
-					x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+					x = this._movementSide * Mathf.Abs(this.transform.localScale.x),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
 				while (!this.SurfacePerception())
 				{
-					if (this.isActiveAndEnabled && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
+					bool valid = this.isActiveAndEnabled && !this.IsStunned;
+					if (valid && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
 					else
 						this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.isActiveAndEnabled);
 				}
 				this._rigidybody.linearVelocityX = 0f;
 			}
@@ -77,7 +76,8 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						yield return new WaitUntil(() => this.SurfacePerception() && !this._detected && this.isActiveAndEnabled);
+						bool valid = this.SurfacePerception() && !this._detected && this.isActiveAndEnabled && !this.IsStunned;
+						yield return new WaitUntil(() => valid);
 						if (this._stopJump)
 							yield break;
 						if (this._statistics.JumpPointStructures[index].RemovalJumpCount-- <= 0f)
@@ -86,7 +86,6 @@ namespace GuwbaPrimeAdventure.Enemy
 							{
 								this._sender.SetToggle(false);
 								this._sender.Send(PathConnection.Enemy);
-								this._rigidybody.linearVelocityX = 0f;
 							}
 							this._isJumping = true;
 							float jumpStrenght = this._statistics.JumpPointStructures[index].JumpStats.Strength * this._rigidybody.mass;
@@ -118,7 +117,8 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(TimedJump(jumpStats));
 			IEnumerator TimedJump(JumpStats stats)
 			{
-				yield return new WaitUntil(() => this.SurfacePerception() && this.isActiveAndEnabled && !this._stopJump && !this._detected);
+				bool valid = this.SurfacePerception() && !this._detected && this.isActiveAndEnabled && !this.IsStunned && !this._stopJump;
+				yield return new WaitUntil(() => valid);
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
 				{
@@ -139,25 +139,23 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnEnable();
 			this._animator.enabled = true;
 		}
-		private void OnDisable()
+		private new void OnDisable()
 		{
+			base.OnDisable();
 			this._animator.enabled = false;
-			this._rigidybody.gravityScale = 0f;
 		}
 		private void FixedUpdate()
 		{
 			if (this.IsStunned)
 				return;
-			if (!this._isFalling && !this.SurfacePerception() && this._rigidybody.linearVelocityY < 0f)
-				this._isFalling = true;
-			if (this._isJumping && this._isFalling && this.SurfacePerception())
+			if (this._isJumping && this.SurfacePerception())
 			{
 				this._isJumping = false;
 				this._detected = false;
 				this._sender.SetToggle(true);
 				this._sender.Send(PathConnection.Enemy);
 			}
-			Vector2 right = (this.transform.right * this.transform.localScale.x).normalized;
+			Vector2 right = this.transform.right * (this.transform.localScale.x > 0f ? 1f : -1f);
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float lookDistance = this._statistics.LookDistance;
 			if (!this._detected && this._statistics.LookPerception && this.SurfacePerception())
@@ -167,7 +165,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (collider.TryGetComponent<IDestructible>(out _))
 						{
 							this.BasicJump(collider.transform.position);
-							break;
+							return;
 						}
 				}
 				else
@@ -175,7 +173,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
 							this.BasicJump(ray.collider.transform.position);
-							break;
+							return;
 						}
 		}
 		public new void Receive(DataConnection data, object additionalData)
@@ -184,25 +182,22 @@ namespace GuwbaPrimeAdventure.Enemy
 			EnemyController[] enemies = (EnemyController[])additionalData;
 			if (enemies != null)
 				foreach (EnemyController enemy in enemies)
-					if (enemy == this)
-					{
-						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-							this._stopJump = !data.ToggleValue.Value;
-						else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
-						{
-							if (this._statistics.StopMoveReact)
-							{
-								this._sender.SetToggle(false);
-								this._sender.Send(PathConnection.Enemy);
-								this._rigidybody.linearVelocityX = 0f;
-							}
-							this._isJumping = true;
-							this._rigidybody.AddForceY(this._statistics.StrenghtReact* this._rigidybody.mass, ForceMode2D.Impulse);
-							if (this._statistics.FollowReact)
-								this.FollowJump(this._statistics.OtherTarget, this._statistics.UseTarget);
-						}
-						break;
-					}
+					if (enemy != this)
+						return;
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+				this._stopJump = !data.ToggleValue.Value;
+			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
+			{
+				if (this._statistics.StopMoveReact)
+				{
+					this._sender.SetToggle(false);
+					this._sender.Send(PathConnection.Enemy);
+				}
+				this._isJumping = true;
+				this._rigidybody.AddForceY(this._statistics.StrenghtReact * this._rigidybody.mass, ForceMode2D.Impulse);
+				if (this._statistics.FollowReact)
+					this.FollowJump(this._statistics.OtherTarget, this._statistics.UseTarget);
+			}
 		}
 	};
 };
