@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class RunnerEnemy : MovingEnemy
+	internal sealed class RunnerEnemy : MovingEnemy, IConnector
 	{
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
@@ -13,11 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _dashTime = 0f;
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
-		private new void Awake()
-		{
-			base.Awake();
-			this._timeRun = this._statistics.TimesToRun;
-		}
+		private void Start() => this._timeRun = this._statistics.TimesToRun;
 		private new void Update()
 		{
 			base.Update();
@@ -64,15 +60,6 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._isDashing = false;
 				}
 			}
-		}
-		private void FixedUpdate()
-		{
-			if (this._stopWorking || this.IsStunned)
-				return;
-			Vector2 right = this.transform.right * this._movementSide;
-			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
-			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
-			float groundChecker = this._statistics.Physics.GroundChecker;
 			if (this._isDashing)
 			{
 				this._dashedTime += Time.deltaTime;
@@ -84,8 +71,20 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._sender.Send(PathConnection.Enemy);
 				}
 			}
-			else
+			else if (this._detected)
 				this._detected = false;
+		}
+		private void FixedUpdate()
+		{
+			if (this._stopWorking || this.IsStunned)
+			{
+				this._rigidybody.linearVelocityX = 0f;
+				return;
+			}
+			Vector2 right = this.transform.right * this._movementSide;
+			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
+			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
+			float groundChecker = this._statistics.Physics.GroundChecker;
 			if (this._statistics.LookPerception)
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, this._statistics.LookDistance, targetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
@@ -120,7 +119,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			this.transform.localScale = new Vector3()
 			{
-				x = this._movementSide < 0f ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+				x = this._movementSide * Mathf.Abs(this.transform.localScale.x),
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
@@ -134,18 +133,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (EnemyController enemy in enemies)
 					if (enemy != this)
 						return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-			{
-				this._rigidybody.linearVelocityX = 0f;
-				this._stopWorking = !data.ToggleValue.Value;
-			}
 			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
 			{
-				Vector2 targetPosition;
+				Vector2 targetPosition = GuwbaCentralizer.Position;
 				if (this._statistics.UseOtherTarget)
 					targetPosition = this._statistics.OtherTarget;
-				else
-					targetPosition = GuwbaCentralizer.Position;
 				this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
 				if (this._statistics.DetectionStop)
 				{
