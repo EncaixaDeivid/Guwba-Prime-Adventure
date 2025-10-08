@@ -3,7 +3,7 @@
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Texts">
             <ui:GroupBox name="SubText">
-                <ui:VisualElement name="LifeIcon" style="background-image: url(&quot;project://database/Assets/Guwba/Designs/Guwba.png?fileID=-837235628&amp;guid=6e5aacc0b23644643bd2658681a0951e&amp;type=3#Guwba_8&quot;);" />
+                <ui:VisualElement name="LifeIcon" style="background-image: url(&quot;project://database/Assets/Characters/Designs/Guwba.png?fileID=-837235628&amp;guid=6e5aacc0b23644643bd2658681a0951e&amp;type=3#Guwba_8&quot;);" />
                 <ui:Label text="X 0" name="LifeText" />
             </ui:GroupBox>
             <ui:GroupBox name="SubText">
@@ -11,13 +11,16 @@
                 <ui:Label text="X 0" name="CoinText" />
             </ui:GroupBox>
         </ui:GroupBox>
-        <ui:GroupBox name="VitalityShow">
-            <ui:GroupBox name="VitalityGroup">
+        <ui:GroupBox name="BarShow">
+            <ui:GroupBox name="BarGroup">
                 <ui:GroupBox name="Vitality">
                     <ui:VisualElement name="VitalityPiece" />
                 </ui:GroupBox>
                 <ui:GroupBox name="RecoverVitality">
                     <ui:VisualElement name="RecoverVitalityPiece" />
+                </ui:GroupBox>
+                <ui:GroupBox name="BunnyHop">
+                    <ui:VisualElement name="BunnyHopPiece" />
                 </ui:GroupBox>
             </ui:GroupBox>
             <ui:Label text="X 0" name="FallDamageText" />
