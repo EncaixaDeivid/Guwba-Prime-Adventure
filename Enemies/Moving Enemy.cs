@@ -1,11 +1,12 @@
 using UnityEngine;
-using System;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	internal abstract class MovingEnemy : EnemyController, IConnector
+	[RequireComponent(typeof(Rigidbody2D))]
+	internal abstract class MovingEnemy : EnemyController, IConnector, IDestructible
 	{
 		private Vector2 _guardVelocity = new();
+		private bool _stunned = false;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
@@ -16,31 +17,50 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetStateForm(StateForm.State);
 			this.transform.localScale = new Vector3()
 			{
-				x = this._invertMovementSide ? -MathF.Abs(this.transform.localScale.x) : MathF.Abs(this.transform.localScale.x),
+				x = (this._movementSide = (short)(this._invertMovementSide ? -1 : 1)) * Mathf.Abs(this.transform.localScale.x),
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
 		}
-		private new void OnEnable()
+		protected new void OnEnable()
 		{
 			base.OnEnable();
 			this._rigidybody.linearVelocity = this._guardVelocity;
 		}
-		private void OnDisable()
+		protected new void OnDisable()
 		{
+			base.OnDisable();
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.linearVelocity = Vector2.zero;
+		}
+		protected new void Update()
+		{
+			base.Update();
+			if (!this.IsStunned && this._stunned)
+			{
+				this._stunned = false;
+				this._rigidybody.linearVelocity = this._guardVelocity;
+			}
 		}
 		protected bool SurfacePerception()
 		{
 			float groundChecker = this._moving.Physics.GroundChecker;
-			float yPoint = this._collider.offset.y + (this._collider.bounds.extents.y + groundChecker / 2f) * -this.transform.up.y;
-			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, this.transform.position.y + yPoint);
+			float yOrigin = this._collider.offset.y + (this._collider.bounds.extents.y + groundChecker / 2f) * -this.transform.up.y;
+			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, this.transform.position.y + yOrigin);
 			Vector2 size = new(this._collider.bounds.size.x - groundChecker, groundChecker);
 			return Physics2D.BoxCast(origin, size, 0f, -this.transform.up, groundChecker, this._moving.Physics.GroundLayer);
+		}
+		public new void Stun(ushort stunStength, float stunTime)
+		{
+			if (this.IsStunned)
+				return;
+			base.Stun(stunStength, stunTime);
+			this._stunned = true;
+			this._guardVelocity = this._rigidybody.linearVelocity;
+			this._rigidybody.linearVelocity = Vector2.zero;
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
