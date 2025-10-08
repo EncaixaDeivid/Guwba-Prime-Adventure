@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private static MenuController _instance;
 		private MenuHud _menuHud;
 		private InputController _inputController;
+		private bool _isPlay = false;
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the menu.")] private MenuHud _menuHudObject;
 		private void Awake()
@@ -42,6 +43,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[1].clicked += this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked += this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked += this.DeleteSaveFile4;
+			this._inputController = new InputController();
+			this._inputController.Commands.HideHud.canceled += this.HideHud;
+			this._inputController.Commands.HideHud.Enable();
 		}
 		private void OnDestroy()
 		{
@@ -63,26 +67,27 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Delete[1].clicked -= this.DeleteSaveFile2;
 			this._menuHud.Delete[2].clicked -= this.DeleteSaveFile3;
 			this._menuHud.Delete[3].clicked -= this.DeleteSaveFile4;
+			this._inputController.Commands.HideHud.canceled -= this.HideHud;
+			this._inputController.Commands.HideHud.Disable();
+			this._inputController.Dispose();
 		}
-		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.Back.Invoke();
+		private Action<InputAction.CallbackContext> HideHud => _ => this.Back.Invoke();
 		private Action Play => () =>
 		{
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
-			this._inputController = new InputController();
-			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
-			this._inputController.Commands.HideHud.Enable();
+			this._isPlay = true;
 			ConfigurationController.instance.SetActive(false);
 		};
 		private Action OpenConfigurations => () => ConfigurationController.instance.OpenCloseConfigurations();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
+			if (!this._isPlay)
+				return;
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
-			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
-			this._inputController.Commands.HideHud.Disable();
-			this._inputController.Dispose();
+			this._isPlay = false;
 			ConfigurationController.instance.SetActive(true);
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
