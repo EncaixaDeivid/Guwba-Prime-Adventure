@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(Rigidbody2D)), RequireComponent(typeof(Collider2D))]
+	[RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal abstract class EnemyController : StateController, IConnector, IDestructible
     {
 		protected Rigidbody2D _rigidybody;
@@ -45,13 +45,17 @@ namespace GuwbaPrimeAdventure.Enemy
 			Sender.Exclude(this);
 		}
 		protected void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
+		protected void OnDisable() => this._rigidybody.gravityScale = 0f;
 		protected void Update()
 		{
 			if (this.IsStunned)
 			{
 				this._stunTimer -= Time.deltaTime;
 				if (this._stunTimer <= 0f)
+				{
 					this.IsStunned = false;
+					this._rigidybody.gravityScale = this._guardGravityScale;
+				}
 			}
 		}
 		private void OnTrigger(GameObject collisionObject)
@@ -88,8 +92,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this.IsStunned)
 				return;
-			this.IsStunned = true;
 			this._stunTimer = stunTime;
+			this._rigidybody.gravityScale = 0f;
 			if ((this._armorResistance -= (short)stunStength) <= 0f)
 			{
 				this._stunTimer = this._control.StunnedTime;
