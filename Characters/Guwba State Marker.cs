@@ -56,6 +56,7 @@ namespace GuwbaPrimeAdventure.Character
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _longJumping = false;
+		private bool _isHoping = false;
 		private bool _dashActive = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
@@ -103,7 +104,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
 		[SerializeField, Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, Tooltip("The amount of bunny hops to reach max increaement.")] private ushort _maxBoost;
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
@@ -253,9 +253,9 @@ namespace GuwbaPrimeAdventure.Character
 			if (movementValue.y > 0.25f)
 			{
 				this._lastJumpTime = this._jumpBufferTime;
-				if (this._isJumping)
-					if (this._bunnyHopBoost >= this._maxBoost)
-						this._bunnyHopBoost = this._maxBoost;
+				if (!this._isOnGround && movement.performed)
+					if (this._bunnyHopBoost >= this._guwbaVisualizer.BunnyHopVisual.Length)
+						this._bunnyHopBoost = (ushort)this._guwbaVisualizer.BunnyHopVisual.Length;
 					else
 						this._bunnyHopBoost += 1;
 			}
@@ -340,7 +340,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaVisualizer.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
-				Color missingColor = this._guwbaVisualizer.MissingVitalityColor;
+				Color missingColor = this._guwbaVisualizer.MissingColor;
 				this._guwbaVisualizer.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(missingColor);
 				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(missingColor);
 				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(missingColor);
@@ -394,7 +394,7 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					Color backgroundColor = this._guwbaVisualizer.BackgroundColor;
 					Color borderColor = this._guwbaVisualizer.BorderColor;
-					Color missingColor = this._guwbaVisualizer.MissingVitalityColor;
+					Color missingColor = this._guwbaVisualizer.MissingColor;
 					short damageDifference = (short)(guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health));
 					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : damageDifference); amount++)
 					{
@@ -460,6 +460,13 @@ namespace GuwbaPrimeAdventure.Character
 					this._isJumping = false;
 					this._longJumping = false;
 					this._bunnyHopBoost = this._lastJumpTime > 0f ? this._bunnyHopBoost : (ushort)0f;
+					if (this._bunnyHopBoost <= 0f && this._isHoping)
+					{
+						this._isHoping = false;
+						Color missingColor = this._guwbaVisualizer.MissingColor;
+						for (ushort i = 0; i < this._guwbaVisualizer.BunnyHopVisual.Length; i++)
+							this._guwbaVisualizer.BunnyHopVisual[i].style.backgroundColor = new StyleColor(missingColor);
+					}
 					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f)
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
@@ -591,6 +598,13 @@ namespace GuwbaPrimeAdventure.Character
 				this._longJumping = this._dashActive;
 				this._rigidbody.gravityScale = this._gravityScale;
 				this._rigidbody.linearVelocityY = 0f;
+				if (this._bunnyHopBoost > 0f)
+				{
+					this._isHoping = true;
+					Color bunnyHopColor = this._guwbaVisualizer.BunnyHopColor;
+					for (ushort i = 0; i < this._bunnyHopBoost; i++)
+						this._guwbaVisualizer.BunnyHopVisual[i].style.backgroundColor = new StyleColor(bunnyHopColor);
+				}
 				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
@@ -646,7 +660,7 @@ namespace GuwbaPrimeAdventure.Character
 				}
 				for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitalityVisual.Length; i++)
 				{
-					Color missingColor = this._guwbaVisualizer.MissingVitalityColor;
+					Color missingColor = this._guwbaVisualizer.MissingColor;
 					this._guwbaVisualizer.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
 				}
 				this._vitality = (short)this._guwbaVisualizer.Vitality;
