@@ -8,32 +8,36 @@ namespace GuwbaPrimeAdventure.Character
 		private static GuwbaVisualizer _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
-		[SerializeField, Tooltip("User interface element.")] private string _vitalityGroupObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _recoverVitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _recoverVitalityPieceVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopVisual;
+		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _fallDamageTextObject;
-		[SerializeField, Tooltip("User interface element.")] private string _subTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
 		[Header("Vitality Visual")]
 		[SerializeField, Tooltip("The color of Guwba's vitality bar background.")] private Color _backgroundColor;
 		[SerializeField, Tooltip("The color of Guwba's vitality bar border.")] private Color _borderColor;
+		[SerializeField, Tooltip("The color of Guwba's bunny hop bar.")] private Color _bunnyHopColor;
 		[SerializeField, Tooltip("The color of Guwba's vitality bar missing vitality piece.")] private Color _missingVitalityColor;
 		[SerializeField, Tooltip("The total of vitality that Guwba have.")] private ushort _vitality;
 		[SerializeField, Tooltip("The total of recover vitality that Guwba have.")] private ushort _recoverVitality;
+		[SerializeField, Tooltip("The total of bunny hop that Guwba have.")] private ushort _bunnyHop;
 		[SerializeField, Tooltip("The total width of Guwba's vitality bar.")] private float _totalWidth;
 		[SerializeField, Tooltip("The norder width of Guwba's vitality bar.")] private float _borderWidth;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement[] VitalityVisual { get; private set; }
 		internal VisualElement[] RecoverVitalityVisual { get; private set; }
+		internal VisualElement[] BunnyHopVisual { get; private set; }
 		internal Label FallDamageText { get; private set; }
 		internal Label LifeText { get; private set; }
 		internal Label CoinText { get; private set; }
 		internal Color BackgroundColor => this._backgroundColor;
 		internal Color BorderColor => this._borderColor;
-		internal Color MissingVitalityColor => this._missingVitalityColor;
+		internal Color BunnyHopColor => this._bunnyHopColor;
+		internal Color MissingColor => this._missingVitalityColor;
 		internal ushort Vitality => (ushort)this._vitality;
 		internal ushort RecoverVitality => (ushort)this._recoverVitality;
 		private void Awake()
@@ -46,9 +50,7 @@ namespace GuwbaPrimeAdventure.Character
 			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.RootElement = root.Q<VisualElement>(this._rootElementObject);
-			root.Q<GroupBox>(this._vitalityGroupObject).style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			this.FallDamageText = root.Q<Label>(this._fallDamageTextObject);
-			root.Q<GroupBox>(this._subTextObject).style.width = new StyleLength(new Length(this._totalWidth / 2f, LengthUnit.Pixel));
 			this.LifeText = root.Q<Label>(this._lifeTextObject);
 			this.CoinText = root.Q<Label>(this._coinTextObject);
 			VisualElement vitality = root.Q<VisualElement>($"{this._vitalityVisual}");
@@ -76,18 +78,30 @@ namespace GuwbaPrimeAdventure.Character
 			recoverVitality.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			VisualElement recoverVitalityPiece = root.Q<VisualElement>($"{this._recoverVitalityPieceVisual}");
 			this.RecoverVitalityVisual = new VisualElement[this._recoverVitality];
+			float recoverVitalityPieceWidth = this._totalWidth / this._recoverVitality - this._borderWidth * 2f;
 			for (ushort i = 0; i < this._recoverVitality; i++)
 			{
-				VisualElement vitalityPieceClone = new() { name = recoverVitalityPiece.name };
-				vitalityPieceClone.style.backgroundColor = new StyleColor(this._missingVitalityColor);
-				float width = this._totalWidth / this._recoverVitality - this._borderWidth * 2f;
-				vitalityPieceClone.style.width = new StyleLength(new Length(width, LengthUnit.Pixel));
-				vitalityPieceClone.style.marginLeft = new StyleLength(new Length(this._borderWidth, LengthUnit.Pixel));
-				vitalityPieceClone.style.marginRight = new StyleLength(new Length(this._borderWidth, LengthUnit.Pixel));
-				recoverVitality.Add(vitalityPieceClone);
+				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
+				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(this._missingVitalityColor);
+				recoverVitalityPieceClone.style.width = new StyleLength(new Length(recoverVitalityPieceWidth, LengthUnit.Pixel));
+				recoverVitality.Add(recoverVitalityPieceClone);
 				this.RecoverVitalityVisual[i] = recoverVitality[i + 1];
 			}
 			recoverVitality.Remove(recoverVitalityPiece);
+			VisualElement bunnyHop = root.Q<VisualElement>(this._bunnyHopVisual);
+			bunnyHop.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
+			VisualElement bunnyHopPiece = root.Q<VisualElement>($"{this._bunnyHopPieceVisual}");
+			this.BunnyHopVisual = new VisualElement[this._bunnyHop];
+			float bunnyHopPieceWidth = this._totalWidth / this._bunnyHop - this._borderWidth * 2f;
+			for (ushort i = 0; i < this._bunnyHop; i++)
+			{
+				VisualElement bunnyHopClone = new() { name = bunnyHopPiece.name };
+				bunnyHopClone.style.backgroundColor = new StyleColor(this._missingVitalityColor);
+				bunnyHopClone.style.width = new StyleLength(new Length(bunnyHopPieceWidth, LengthUnit.Pixel));
+				bunnyHop.Add(bunnyHopClone);
+				this.BunnyHopVisual[i] = bunnyHop[i + 1];
+			}
+			bunnyHop.Remove(bunnyHopPiece);
 		}
 	};
 };
