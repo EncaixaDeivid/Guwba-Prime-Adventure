@@ -50,7 +50,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
 		}
-		private Action<InputAction.CallbackContext> HideHudAction => hideHudAction => this.OpenCloseConfigurations();
+		private Action<InputAction.CallbackContext> HideHudAction => _ => this.OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
 			this._configurationHud.Close.clicked -= this.CloseConfigurations;
