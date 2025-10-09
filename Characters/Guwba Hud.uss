@@ -21,7 +21,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 30%;
+    width: 25%;
     height: 150px;
     align-self: flex-end;
 }
