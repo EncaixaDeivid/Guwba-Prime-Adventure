@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
 }
-
 #RootElement {
     width: 100%;
     height: 100%;
@@ -10,7 +9,6 @@
     justify-content: space-around;
     background-image: url("project://database/Assets/Huds/Designs/Configuration Screen.png");
 }
-
 #Settings {
     width: 100%;
     height: 100%;
@@ -19,7 +17,6 @@
     justify-content: center;
     align-self: center;
 }
-
 #LeftPage, #RightPage {
     width: 47.5%;
     height: 90%;
@@ -27,7 +24,6 @@
     justify-content: space-evenly;
     align-self: center;
 }
-
 #Output {
     width: 90%;
     height: 40%;
@@ -36,7 +32,6 @@
     justify-content: center;
     align-self: center;
 }
-
 #OutputSliders {
     width: 90%;
     height: 100%;
@@ -45,7 +40,6 @@
     align-self: center;
     flex-direction: column;
 }
-
 #Sliders {
     width: 90%;
     height: 20%;
@@ -54,17 +48,15 @@
     align-self: center;
     flex-direction: column;
 }
-
 #Sliders Slider, #Sliders SliderInt {
     width: 90%;
     height: 50%;
-    padding-bottom: 110px;
+    padding-bottom: 55px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     align-self: center;
 }
-
 #Output #Toggles {
     width: 10%;
     height: 100%;
@@ -73,21 +65,18 @@
     align-self: center;
     flex-direction: column;
 }
-
 Slider, SliderInt {
     width: 90%;
     height: 25%;
-    padding-bottom: 110px;
+    padding-bottom: 55px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     align-self: center;
 }
-
 Slider Label, SliderInt Label {
-    font-size: 50px;
+    font-size: 25px;
 }
-
 Slider VisualElement, SliderInt VisualElement {
     width: 100%;
     height: 80%;
@@ -95,7 +84,6 @@ Slider VisualElement, SliderInt VisualElement {
     align-content: center;
     align-self: center;
 }
-
 Slider #unity-drag-container, SliderInt #unity-drag-container{
     width: 100%;
     height: 100%;
@@ -105,51 +93,44 @@ Slider #unity-drag-container, SliderInt #unity-drag-container{
     align-self: center;
     align-items: center;
 }
-
 Slider #unity-tracker, SliderInt #unity-tracker{
     height: 75%;
     background-color: rgb(192, 192, 192);
     flex-direction: row;
     align-self: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
-
 Slider #unity-dragger, SliderInt #unity-dragger{
     width: 2.5%;
     height: 75%;
     background-color: rgb(255, 160, 0);
     flex-direction: row;
-    border-radius: 20px;
+    border-radius: 10px;
 }
-
 #Output Toggle {
     width: 80px;
     height: 25%;
     align-self: center;
 }
-
 #Output Toggle VisualElement {
     width: 100%;
     height: 80px;
     align-self: center;
     justify-content: center;
     align-content: center;
-    border-radius: 20px;
+    border-radius: 10px;
     border-color: rgba(255, 255, 0, 0.5);
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 #Output Toggle #unity-checkmark {
     width: 100%;
     height: 100%;
     align-self: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
-
 #Output Toggle VisualElement:checked {
     background-color: rgb(255, 160, 0);
 }
-
 #ScreenBrightness {
     width: 90%;
     height: 10%;
@@ -158,7 +139,6 @@ Slider #unity-dragger, SliderInt #unity-dragger{
     justify-content: center;
     align-self: center;
 }
-
 #DropsDown {
     flex-direction: row;
     height: 10%;
@@ -167,122 +147,103 @@ Slider #unity-dragger, SliderInt #unity-dragger{
     justify-content: space-evenly;
     align-self: center;
 }
-
 DropdownField {
     width: 30%;
     flex-direction: column;
     justify-content: space-around;
 }
-
 DropdownField Label {
-    font-size: 50px;
+    font-size: 25px;
 }
-
 DropdownField > VisualElement {
     width: 100%;
     height: 50%;
-    border-radius: 20px;
+    border-radius: 10px;
     align-self: center;
     justify-content: center;
     align-content: center;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 .unity-base-dropdown__container-outer, .unity-base-dropdown__container-inner {
-    border-radius: 20px;
+    border-radius: 10px;
     border-width: 0px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 #unity-content-and-vertical-scroll-container {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 #unity-content-viewport {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 #unity-content-container {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 PopupTextElement {
     width: 100%;
     height: 100%;
-    font-size: 40px;
+    font-size: 20px;
     color: rgb(0, 0, 0);
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 DropdownField > VisualElement VisualElement {
     width: 0%;
     height: 0%;
 }
-
 DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
     background-color: rgb(255, 160, 0);
 }
-
 .unity-base-dropdown__item {
-    font-size: 40px;
+    font-size: 20px;
     color: rgb(0, 0, 0);
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 .unity-base-dropdown__item:hover {
     background-color: rgb(255, 160, 0);
 }
-
 .unity-base-dropdown__item:hover:active {
     background-color: rgb(255, 160, 0);
 }
-
 .unity-base-dropdown__checkmark {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     color: rgb(0, 0, 0);
     align-self: center;
 }
-
 #DropsDown Toggle {
     width: 5%;
-    height: 80px;
+    height: 40px;
     align-self: center;
 }
-
 #DropsDown Toggle VisualElement {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
     align-self: center;
     justify-content: center;
     align-content: center;
-    border-radius: 20px;
+    border-radius: 10px;
     border-color: rgba(255, 255, 0, 0.5);
     background-color: rgba(255, 255, 0, 0.5);
 }
-
 #DropsDown Toggle #unity-checkmark {
-    width: 80px;
+    width: 40px;
     height: 100%;
     align-self: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
-
 #DropsDown Toggle VisualElement:checked {
     background-color: rgb(255, 160, 0);
 }
-
 #Buttons {
     flex-direction: row;
     width: 100%;
@@ -290,20 +251,17 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
     justify-content: space-evenly;
     align-self: flex-start;
 }
-
 #Buttons Button, #ConfirmationButtons Button {
     width: 20%;
-    height: 200px;
+    height: 100px;
     background-color: rgba(255, 255, 0, 0.5);
-    font-size: 80px;
+    font-size: 40px;
     border-width: 0;
-    border-radius: 20px;
+    border-radius: 10px;
 }
-
 #Buttons Button:hover, #ConfirmationButtons Button:hover {
     background-color: rgb(255, 160, 0);
 }
-
 #Confirmation {
     display: none;
     width: 50%;
@@ -313,7 +271,6 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
     align-self: center;
     background-color: rgb(255, 160, 0);
 }
-
 #ConfirmationButtons {
     flex-direction: row;
     width: 100%;
