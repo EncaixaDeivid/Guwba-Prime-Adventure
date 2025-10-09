@@ -81,11 +81,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			EnemyController[] enemies = (EnemyController[])additionalData;
-			if (enemies != null)
-				foreach (EnemyController enemy in enemies)
-					if (enemy != this)
-						return;
+			foreach (EnemyController enemy in (EnemyController[])additionalData)
+				if (enemy != this)
+					return;
 			bool numberValid = data.NumberValue.HasValue && data.NumberValue.Value < this._statistics.EventSummons.Length;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this._stopSummon = !data.ToggleValue.Value;
