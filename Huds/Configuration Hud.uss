@@ -58,7 +58,7 @@
 #Sliders Slider, #Sliders SliderInt {
     width: 90%;
     height: 50%;
-    padding-bottom: 55px;
+    padding-bottom: 110px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -77,7 +77,7 @@
 Slider, SliderInt {
     width: 90%;
     height: 25%;
-    padding-bottom: 55px;
+    padding-bottom: 110px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -85,7 +85,7 @@ Slider, SliderInt {
 }
 
 Slider Label, SliderInt Label {
-    font-size: 25px;
+    font-size: 50px;
 }
 
 Slider VisualElement, SliderInt VisualElement {
@@ -111,7 +111,7 @@ Slider #unity-tracker, SliderInt #unity-tracker{
     background-color: rgb(192, 192, 192);
     flex-direction: row;
     align-self: center;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 Slider #unity-dragger, SliderInt #unity-dragger{
@@ -119,22 +119,22 @@ Slider #unity-dragger, SliderInt #unity-dragger{
     height: 75%;
     background-color: rgb(255, 160, 0);
     flex-direction: row;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 #Output Toggle {
-    width: 40px;
+    width: 80px;
     height: 25%;
     align-self: center;
 }
 
 #Output Toggle VisualElement {
     width: 100%;
-    height: 40px;
+    height: 80px;
     align-self: center;
     justify-content: center;
     align-content: center;
-    border-radius: 10px;
+    border-radius: 20px;
     border-color: rgba(255, 255, 0, 0.5);
     background-color: rgba(255, 255, 0, 0.5);
 }
@@ -143,7 +143,7 @@ Slider #unity-dragger, SliderInt #unity-dragger{
     width: 100%;
     height: 100%;
     align-self: center;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 #Output Toggle VisualElement:checked {
@@ -175,13 +175,13 @@ DropdownField {
 }
 
 DropdownField Label {
-    font-size: 25px;
+    font-size: 50px;
 }
 
 DropdownField > VisualElement {
     width: 100%;
     height: 50%;
-    border-radius: 10px;
+    border-radius: 20px;
     align-self: center;
     justify-content: center;
     align-content: center;
@@ -189,7 +189,7 @@ DropdownField > VisualElement {
 }
 
 .unity-base-dropdown__container-outer, .unity-base-dropdown__container-inner {
-    border-radius: 10px;
+    border-radius: 20px;
     border-width: 0px;
     background-color: rgba(255, 255, 0, 0.5);
 }
@@ -197,30 +197,30 @@ DropdownField > VisualElement {
 #unity-content-and-vertical-scroll-container {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 0, 0.5);
 }
 
 #unity-content-viewport {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 0, 0.5);
 }
 
 #unity-content-container {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 0, 0.5);
 }
 
 PopupTextElement {
     width: 100%;
     height: 100%;
-    font-size: 20px;
+    font-size: 40px;
     color: rgb(0, 0, 0);
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 0, 0.5);
 }
 
@@ -234,9 +234,9 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
 }
 
 .unity-base-dropdown__item {
-    font-size: 20px;
+    font-size: 40px;
     color: rgb(0, 0, 0);
-    border-radius: 10px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 0, 0.5);
 }
 
@@ -249,34 +249,34 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
 }
 
 .unity-base-dropdown__checkmark {
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     color: rgb(0, 0, 0);
     align-self: center;
 }
 
 #DropsDown Toggle {
     width: 5%;
-    height: 40px;
+    height: 80px;
     align-self: center;
 }
 
 #DropsDown Toggle VisualElement {
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
     align-self: center;
     justify-content: center;
     align-content: center;
-    border-radius: 10px;
+    border-radius: 20px;
     border-color: rgba(255, 255, 0, 0.5);
     background-color: rgba(255, 255, 0, 0.5);
 }
 
 #DropsDown Toggle #unity-checkmark {
-    width: 40px;
+    width: 80px;
     height: 100%;
     align-self: center;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 #DropsDown Toggle VisualElement:checked {
@@ -293,11 +293,11 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
 
 #Buttons Button, #ConfirmationButtons Button {
     width: 20%;
-    height: 100px;
+    height: 200px;
     background-color: rgba(255, 255, 0, 0.5);
-    font-size: 40px;
+    font-size: 80px;
     border-width: 0;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 #Buttons Button:hover, #ConfirmationButtons Button:hover {
