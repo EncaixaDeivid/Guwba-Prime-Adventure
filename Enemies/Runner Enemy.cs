@@ -65,24 +65,27 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._dashedTime += Time.deltaTime;
 				if (this._dashedTime >= this._statistics.TimeDashing)
 				{
+					this._detected = false;
 					this._dashedTime = 0f;
 					this._isDashing = false;
 					this._sender.SetToggle(true);
 					this._sender.Send(PathConnection.Enemy);
 				}
 			}
-			else if (this._detected)
-				this._detected = false;
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopWorking || this.IsStunned)
+			if (this.IsStunned)
+				return;
+			if (this._statistics.DetectionStop && this._detected && !this._isDashing && this.SurfacePerception())
+				this._rigidybody.linearVelocityX = 0f;
+			if (this._stopWorking)
 				return;
 			Vector2 right = this.transform.right * this._movementSide;
 			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float groundChecker = this._statistics.Physics.GroundChecker;
-			if (this._statistics.LookPerception)
+			if (this._statistics.LookPerception && !this._detected)
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, this._statistics.LookDistance, targetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
@@ -105,7 +108,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
 			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
 			bool valid = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer);
-			if (this.SurfacePerception() && valid || blockPerception)
+			if (this.SurfacePerception() && this._statistics.TurnOffEdge && valid || blockPerception)
 				this._movementSide *= -1;
 			if (this._detected && !this._isDashing && this._statistics.DetectionStop)
 			{
