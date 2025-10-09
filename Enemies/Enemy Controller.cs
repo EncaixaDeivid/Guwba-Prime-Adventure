@@ -92,6 +92,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (this.IsStunned)
 				return;
+			this.IsStunned = true;
 			this._stunTimer = stunTime;
 			this._rigidybody.gravityScale = 0f;
 			if ((this._armorResistance -= (short)stunStength) <= 0f)
