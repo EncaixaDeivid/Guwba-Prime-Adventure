@@ -3,7 +3,7 @@ using System.Collections;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class TeleporterEnemy : EnemyController
+	internal sealed class TeleporterEnemy : EnemyProvider
 	{
 		private bool _canTeleport = true;
 		[Header("Teleporter Enemy")]
