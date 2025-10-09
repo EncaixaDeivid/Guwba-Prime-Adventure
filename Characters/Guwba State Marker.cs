@@ -26,19 +26,19 @@ namespace GuwbaPrimeAdventure.Character
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _normalOffset = new();
 		private Vector2 _normalSize = new();
-		private int _isOn;
-		private int _idle;
-		private int _walk;
-		private int _walkSpeed;
-		private int _dashSlide;
-		private int _jump;
-		private int _fall;
-		private int _attack;
-		private int _attackCombo;
-		private int _attackJump;
-		private int _attackSlide;
-		private int _stun;
-		private int _death;
+		private readonly int _isOn = Animator.StringToHash("IsOn");
+		private readonly int _idle = Animator.StringToHash("Idle");
+		private readonly int _walk = Animator.StringToHash("Walk");
+		private readonly int _walkSpeed = Animator.StringToHash("WalkSpeed");
+		private readonly int _dashSlide = Animator.StringToHash("DashSlide");
+		private readonly int _jump = Animator.StringToHash("Jump");
+		private readonly int _fall = Animator.StringToHash("Fall");
+		private readonly int _attack = Animator.StringToHash("Attack");
+		private readonly int _attackCombo = Animator.StringToHash("AttackCombo");
+		private readonly int _attackJump = Animator.StringToHash("AttackJump");
+		private readonly int _attackSlide = Animator.StringToHash("AttackSlide");
+		private readonly int _stun = Animator.StringToHash("Stun");
+		private readonly int _death = Animator.StringToHash("Death");
 		private short _vitality;
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
@@ -143,19 +143,6 @@ namespace GuwbaPrimeAdventure.Character
 				guwbaDamager.DamagerStun += this.Stun;
 				guwbaDamager.DamagerAttack += this.Attack;
 			}
-			this._isOn = Animator.StringToHash(this._isOnAnimation);
-			this._idle = Animator.StringToHash(this._idleAnimation);
-			this._walk = Animator.StringToHash(this._walkAnimation);
-			this._walkSpeed = Animator.StringToHash(this._walkSpeedAnimation);
-			this._dashSlide = Animator.StringToHash(this._dashSlideAnimation);
-			this._jump = Animator.StringToHash(this._jumpAnimation);
-			this._fall = Animator.StringToHash(this._fallAnimation);
-			this._attack = Animator.StringToHash(this._attackAnimation);
-			this._attackCombo = Animator.StringToHash(this._attackComboAnimation);
-			this._attackJump = Animator.StringToHash(this._attackJumpAnimation);
-			this._attackSlide = Animator.StringToHash(this._attackSlideAnimation);
-			this._stun = Animator.StringToHash(this._stunAnimation);
-			this._death = Animator.StringToHash(this._deathAnimation);
 			this.transform.localScale = new Vector3()
 			{
 				x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
