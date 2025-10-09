@@ -27,7 +27,27 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				this._isJumping = true;
 				this._rigidybody.AddForceY(this._rigidybody.mass * this._statistics.JumpStrenght, ForceMode2D.Impulse);
-				this.FollowJump(target, true);
+				this.StartCoroutine(FollowSide());
+				IEnumerator FollowSide()
+				{
+					yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled && !this.IsStunned && !this._stopJump);
+					this._rigidybody.linearVelocityX = 0f;
+					this._movementSide = (short)(target.x >= this.transform.position.x ? 1f : -1f);
+					this.transform.localScale = new Vector3()
+					{
+						x = this._movementSide * Mathf.Abs(this.transform.localScale.x),
+						y = this.transform.localScale.y,
+						z = this.transform.localScale.z
+					};
+					while (!this.SurfacePerception())
+					{
+						if (Mathf.Abs(target.x - this.transform.position.x) > this._statistics.DistanceToTarget)
+							this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
+						yield return new WaitForFixedUpdate();
+						yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
+					}
+					this._rigidybody.linearVelocityX = 0f;
+				}
 			}
 		}
 		private void FollowJump(Vector2 otherTarget, bool useTarget)
@@ -49,12 +69,16 @@ namespace GuwbaPrimeAdventure.Enemy
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
+				float xStart = this.transform.position.x;
+				float distance = Mathf.Abs(targetPosition - xStart);
+				float remainingDistance = distance;
 				while (!this.SurfacePerception())
 				{
-					bool valid = this.isActiveAndEnabled && !this.IsStunned;
-					if (valid && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
-						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
+					float xPosition = Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance);
+					this.transform.position = new Vector2(xPosition, this.transform.position.y);
+					remainingDistance -= this._statistics.MovementSpeed * Time.fixedDeltaTime;
 					yield return new WaitForFixedUpdate();
+					yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
 				}
 				this._rigidybody.linearVelocityX = 0f;
 			}
