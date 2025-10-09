@@ -343,13 +343,13 @@ namespace GuwbaPrimeAdventure.Character
 				this.StopAllCoroutines();
 				foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
 					guwbaDamager.Alpha = 1f;
-				this.OnDisable();
 				this._animator.SetBool(this._death, true);
 				this._rigidbody.gravityScale = this._gravityScale;
+				this.OnDisable();
 				this._sender.SetToggle(false);
-				this._sender.SetStateForm(StateForm.Action);
-				this._sender.Send(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.State);
+				this._sender.Send(PathConnection.Hud);
+				this._sender.SetStateForm(StateForm.Action);
 				this._sender.Send(PathConnection.Hud);
 				this._sender.SetStateForm(StateForm.None);
 				this._sender.Send(PathConnection.Enemy);
