@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class ShooterEnemy : EnemyController, IConnector, IDestructible
+	internal sealed class ShooterEnemy : EnemyProvider, IConnector, IDestructible
 	{
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
@@ -17,6 +17,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			this._gravityScale = this._rigidybody.gravityScale;
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void Verify()
 		{
@@ -92,9 +98,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._sender.Send(PathConnection.Enemy);
 			}
 		}
-		private new void Update()
+		private void Update()
 		{
-			base.Update();
 			if (this._stopWorking || this.IsStunned)
 				return;
 			if (this._shootInterval > 0f && !this._isStopped)
@@ -123,10 +128,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				this.Shoot();
 			return base.Hurt(damage);
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data, additionalData);
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
 					this.Shoot();
 		}
