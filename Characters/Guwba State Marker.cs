@@ -344,7 +344,7 @@ namespace GuwbaPrimeAdventure.Character
 				foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
 					guwbaDamager.Alpha = 1f;
 				this._animator.SetBool(this._death, true);
-				this._rigidbody.gravityScale = this._gravityScale;
+				this._rigidbody.gravityScale = this._fallGravityMultiply * this._gravityScale;
 				this.OnDisable();
 				this._sender.SetToggle(false);
 				this._sender.SetStateForm(StateForm.State);
