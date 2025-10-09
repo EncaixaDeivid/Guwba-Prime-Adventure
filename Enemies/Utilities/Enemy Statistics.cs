@@ -4,7 +4,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[CreateAssetMenu(fileName = "Enemy Control", menuName = "Enemy Statistics/Control", order = 1)]
 	internal sealed class EnemyStatistics : ScriptableObject
 	{
-		[Header("Control Statistics")]
+		[Header("Providence Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private ushort _vitality;
 		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private ushort _hitResistance;
