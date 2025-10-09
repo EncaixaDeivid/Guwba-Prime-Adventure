@@ -54,8 +54,6 @@ namespace GuwbaPrimeAdventure.Enemy
 					bool valid = this.isActiveAndEnabled && !this.IsStunned;
 					if (valid && Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
 						this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
-					else
-						this._rigidybody.linearVelocityX = 0f;
 					yield return new WaitForFixedUpdate();
 				}
 				this._rigidybody.linearVelocityX = 0f;
@@ -181,7 +179,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy != this)
 					return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
