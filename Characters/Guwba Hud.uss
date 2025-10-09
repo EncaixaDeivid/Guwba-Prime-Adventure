@@ -74,7 +74,7 @@
 }
 #RecoverVitalityPiece {
     height: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 #BunnyHop {
     flex-direction: row;
@@ -87,7 +87,7 @@
 }
 #BunnyHopPiece {
     height: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 #FallDamageText {
     opacity: 0;
