@@ -14,14 +14,14 @@
 }
 
 #LoadingBar {
-    top: 100px;
+    top: 120px;
     width: 50%;
-    height: 60px;
+    height: 120px;
     background-color: rgb(0, 0, 0);
     border-radius: 0;
-    border-width: 1px;
+    border-width: 2px;
     border-color: rgb(255, 255, 255);
-    padding: 10px;
+    padding: 20px;
 }
 
 #unity-progress-bar {
