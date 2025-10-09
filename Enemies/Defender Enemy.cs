@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class DefenderEnemy : EnemyController, IConnector, IDestructible
+	internal sealed class DefenderEnemy : EnemyProvider, IConnector, IDestructible
 	{
 		private bool _invencible = false;
 		private float _timeOperation = 0f;
@@ -14,10 +14,15 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._sender.SetStateForm(StateForm.State);
 			this._timeOperation = this._statistics.TimeToInvencible;
+			Sender.Include(this);
 		}
-		private new void Update()
+		private new void OnDestroy()
 		{
-			base.Update();
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
+		private void Update()
+		{
 			if (this._stopWorking || this.IsStunned || !this._statistics.UseAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
@@ -63,10 +68,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			return isHurted;
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data, additionalData);
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy != this)
 					return;
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
