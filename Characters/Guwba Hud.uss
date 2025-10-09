@@ -13,23 +13,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    width: 1152px;
-    height: 200px;
-    margin-left: 40px;
+    width: 576px;
+    height: 100px;
+    margin-left: 20px;
 }
 #SubIcon {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     width: 25%;
-    height: 150px;
+    height: 75px;
     align-self: flex-end;
 }
 #LifeText, #CoinText {
-    font-size: 60px;
+    font-size: 30px;
 }
 #LifeIcon, #CoinIcon{
-    width: 150px;
+    width: 75px;
     height: 100%;
 }
 #CoinIcon {
@@ -40,9 +40,9 @@
     align-items: center;
     justify-content: flex-start;
     align-content: center;
-    width: 1152px;
-    height: 300px;
-    margin-left: 40px;
+    width: 576px;
+    height: 150px;
+    margin-left: 20px;
 }
 #BarGroup {
     flex-direction: column;
@@ -56,7 +56,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 80px;
+    height: 40px;
     align-self: flex-start;
 }
 #VitalityPiece {
@@ -69,7 +69,7 @@
     justify-content: space-between;
     border-width: 0px;
     width: 100%;
-    height: 80px;
+    height: 40px;
     align-self: center;
 }
 #RecoverVitalityPiece {
@@ -82,7 +82,7 @@
     justify-content: space-between;
     border-width: 0px;
     width: 100%;
-    height: 20px;
+    height: 10px;
     align-self: flex-end;
 }
 #BunnyHopPiece {
@@ -91,8 +91,8 @@
 }
 #FallDamageText {
     opacity: 0;
-    font-size: 60px;
-    margin-top: 20px;
-    margin-left: 40px;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-left: 20px;
     align-self: flex-start;
 }
