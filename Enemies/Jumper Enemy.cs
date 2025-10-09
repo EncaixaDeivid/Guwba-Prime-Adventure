@@ -31,7 +31,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				IEnumerator FollowSide()
 				{
 					yield return new WaitUntil(() => !this.SurfacePerception() && this.isActiveAndEnabled && !this.IsStunned && !this._stopJump);
-					this._rigidybody.linearVelocityX = 0f;
 					this._movementSide = (short)(target.x >= this.transform.position.x ? 1f : -1f);
 					this.transform.localScale = new Vector3()
 					{
@@ -43,6 +42,8 @@ namespace GuwbaPrimeAdventure.Enemy
 					{
 						if (Mathf.Abs(target.x - this.transform.position.x) > this._statistics.DistanceToTarget)
 							this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
+						else
+							this._rigidybody.linearVelocityX = 0f;
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
 					}
@@ -72,11 +73,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				float xStart = this.transform.position.x;
 				float distance = Mathf.Abs(targetPosition - xStart);
 				float remainingDistance = distance;
+				float xPosition;
 				while (!this.SurfacePerception())
 				{
-					float xPosition = Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance);
+					xPosition = Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance);
 					this.transform.position = new Vector2(xPosition, this.transform.position.y);
-					remainingDistance -= this._statistics.MovementSpeed * Time.fixedDeltaTime;
+					if (Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
+						remainingDistance -= this._statistics.MovementSpeed * Time.fixedDeltaTime;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
 				}
@@ -203,9 +206,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy != this)
-					return;
+			if ((EnemyProvider[])additionalData != null)
+				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+					if (enemy != this)
+						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this._stopJump = !data.ToggleValue.Value;
 			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
