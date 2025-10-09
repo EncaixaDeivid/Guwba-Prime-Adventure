@@ -27,6 +27,8 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._stoppedTime = 0f;
 					this._stopWorking = false;
 					this._isDashing = true;
+					this._sender.SetToggle(this._statistics.JumpDash);
+					this._sender.Send(PathConnection.Enemy);
 				}
 				return;
 			}
@@ -108,12 +110,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
 			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
 			bool valid = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer);
-			if (this.SurfacePerception() && this._statistics.TurnOffEdge && valid || blockPerception)
+			if (this.SurfacePerception() && !this._statistics.TurnOffEdge && valid || blockPerception)
 				this._movementSide *= -1;
-			if (this._detected && !this._isDashing && this._statistics.DetectionStop)
+			if (this._statistics.DetectionStop && this._detected && !this._isDashing)
 			{
 				this._stopWorking = true;
-				this._sender.SetToggle(this._statistics.JumpDash);
+				this._sender.SetToggle(false);
 				this._sender.Send(PathConnection.Enemy);
 				return;
 			}
@@ -128,9 +130,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy != this)
-					return;
+			if ((EnemyProvider[])additionalData != null)
+				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+					if (enemy != this)
+						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 				this._rigidybody.linearVelocityX = 0f;
 			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
