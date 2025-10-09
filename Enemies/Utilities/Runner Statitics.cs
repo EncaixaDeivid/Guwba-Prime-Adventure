@@ -6,6 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("In the react to damage it already have a target.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("If the off edge verifier will be turned off.")] private bool _turnOffEdge;
 		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
 		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
 		[SerializeField, Tooltip("If this enemy will run toward the target after the run.")] private bool _runTowardsAfter;
@@ -16,6 +17,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the boss can jump while dashing.\nRequires: Jumper Enemy")] private bool _jumpDash;
 		[SerializeField, Tooltip("If the boss will target other object when react to damage.")] private bool _useOtherTarget;
 		internal Vector2 OtherTarget => this._otherTarget;
+		internal bool TurnOffEdge => this._turnOffEdge;
 		internal bool TimedDash => this._timedDash;
 		internal bool RunFromTarget => this._runFromTarget;
 		internal bool RunTowardsAfter => this._runTowardsAfter;
