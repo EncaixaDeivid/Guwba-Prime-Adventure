@@ -43,15 +43,12 @@ namespace GuwbaPrimeAdventure.Enemy
 						yield return Opacity(i);
 				this._tilemapCollider2D.enabled = appear;
 			}
-			EnemyController[] enemies = (EnemyController[])additionalData;
-			if (enemies != null)
-				foreach (EnemyController enemy in enemies)
-					if (enemy != this)
-						return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this.StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (this._reactToDamage && data.StateForm == StateForm.Action)
-				this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
+			foreach (EnemyController enemy in (EnemyController[])additionalData)
+				if (enemy == this)
+					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+						this.StartCoroutine(AppearFade(data.ToggleValue.Value));
+					else if (this._reactToDamage && data.StateForm == StateForm.Action)
+						this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
 		}
 	}
 };
