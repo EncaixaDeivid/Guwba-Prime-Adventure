@@ -70,9 +70,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy != this)
-					return;
+			if ((EnemyProvider[])additionalData != null)
+				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+					if (enemy != this)
+						return;
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 				if (this._statistics.UseAlternatedTime && data.ToggleValue.Value)
 					this._invencible = true;
