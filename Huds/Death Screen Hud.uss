@@ -19,55 +19,27 @@
 }
 
 #Text {
-    width: 750px;
-    height: 200px;
-    font-size: 100px;
+    width: 1500px;
+    height: 400px;
+    font-size: 200px;
     -unity-text-align: middle-center;
     align-self: center;
 }
 
-#Continue {
-    width: 500px;
-    height: 62.5px;
-    font-size: 30px;
-    margin-top: 60px;
+#Continue, #OutLevel, #GameOver {
+    width: 1000px;
+    height: 125px;
+    font-size: 60px;
+    margin-top: 120px;
     background-color: rgba(255, 255, 0, 0.5);
     border-width: 0;
-    border-radius: 35px;
-}
-
-#OutLevel {
-    width: 500px;
-    height: 62.5px;
-    font-size: 30px;
-    margin-top: 60px;
-    background-color: rgba(255, 255, 0, 0.5);
-    border-width: 0;
-    border-radius: 35px;
-}
-
-#GameOver {
-    width: 500px;
-    height: 62.5px;
-    font-size: 30px;
-    margin-top: 60px;
-    background-color: rgba(255, 255, 0, 0.5);
-    border-width: 0;
-    border-radius: 35px;
+    border-radius: 70px;
 }
 
 #GameOver {
     display: none;
 }
 
-#Continue:hover {
-    background-color: rgb(255, 160, 0);
-}
-
-#OutLevel:hover {
-    background-color: rgb(255, 160, 0);
-}
-
-#GameOver:hover {
+#Continue:hover, #OutLevel:hover, #GameOver:hover {
     background-color: rgb(255, 160, 0);
 }
