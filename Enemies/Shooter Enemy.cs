@@ -130,9 +130,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
-					this.Shoot();
+			if ((EnemyProvider[])additionalData != null)
+				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+					if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
+						this.Shoot();
 		}
 	};
 };
