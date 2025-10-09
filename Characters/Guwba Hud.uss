@@ -13,7 +13,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    width: 576px;
+    width: 432px;
     height: 100px;
     margin-left: 20px;
 }
@@ -21,12 +21,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 25%;
+    width: 150px;
     height: 75px;
     align-self: flex-end;
-}
-#LifeText, #CoinText {
-    font-size: 30px;
 }
 #LifeIcon, #CoinIcon{
     width: 75px;
@@ -35,12 +32,15 @@
 #CoinIcon {
     background-image: url("project://database/Assets/Items/Designs/Coin Frame.png");
 }
+#LifeText, #CoinText {
+    font-size: 30px;
+}
 #BarShow {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     align-content: center;
-    width: 576px;
+    width: 432px;
     height: 150px;
     margin-left: 20px;
 }
@@ -51,24 +51,23 @@
     align-content: center;
     height: 100%;
 }
-#Vitality {
+#Vitality, #RecoverVitality, #BunnyHop {
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
+}
+#Vitality {
     height: 40px;
     align-self: flex-start;
 }
 #VitalityPiece {
-    height: 100%;
-    border-radius: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 15px;
 }
 #RecoverVitality {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
     border-width: 0px;
-    width: 100%;
     height: 40px;
     align-self: center;
 }
@@ -77,11 +76,7 @@
     border-radius: 10px;
 }
 #BunnyHop {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
     border-width: 0px;
-    width: 100%;
     height: 10px;
     align-self: flex-end;
 }
@@ -92,7 +87,7 @@
 #FallDamageText {
     opacity: 0;
     font-size: 30px;
-    margin-top: 10px;
+    margin-top: 15px;
     margin-left: 20px;
     align-self: flex-start;
 }
