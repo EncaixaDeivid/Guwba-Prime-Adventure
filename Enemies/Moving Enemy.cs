@@ -3,7 +3,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Rigidbody2D))]
-	internal abstract class MovingEnemy : EnemyController, IConnector, IDestructible
+	internal abstract class MovingEnemy : EnemyProvider, IConnector, IDestructible
 	{
 		private Vector2 _guardVelocity = new();
 		private bool _stunned = false;
@@ -24,21 +24,21 @@ namespace GuwbaPrimeAdventure.Enemy
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
+			Sender.Include(this);
 		}
-		protected new void OnEnable()
+		protected new void OnDestroy()
 		{
-			base.OnEnable();
-			this._rigidybody.linearVelocity = this._guardVelocity;
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
-		protected new void OnDisable()
+		protected void OnEnable() => this._rigidybody.linearVelocity = this._guardVelocity;
+		protected void OnDisable()
 		{
-			base.OnDisable();
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.linearVelocity = Vector2.zero;
 		}
-		protected new void Update()
+		protected void Update()
 		{
-			base.Update();
 			if (!this.IsStunned && this._stunned)
 			{
 				this._stunned = false;
@@ -55,17 +55,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public new void Stun(ushort stunStength, float stunTime)
 		{
-			if (this.IsStunned)
-				return;
 			base.Stun(stunStength, stunTime);
 			this._stunned = true;
 			this._guardVelocity = this._rigidybody.linearVelocity;
 			this._rigidybody.linearVelocity = Vector2.zero;
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data, additionalData);
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy == this && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 					this._stopWorking = !data.ToggleValue.Value;
 		}
