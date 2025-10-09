@@ -3,108 +3,102 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal abstract class EnemyController : StateController, IConnector, IDestructible
+	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
+	internal sealed class EnemyController : StateController, IConnector, IDestructible
     {
-		protected Rigidbody2D _rigidybody;
-		protected Collider2D _collider;
-		protected readonly Sender _sender = Sender.Create();
+		private EnemyProvider[] _selfEnemies;
+		private Rigidbody2D _rigidybody;
 		private float _guardGravityScale = 0f;
 		private float _stunTimer = 0f;
 		private short _vitality;
 		private short _armorResistance = 0;
-		protected bool _stopWorking = false;
-		[Header("Enemy Controller")]
-		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _control;
-		[SerializeField, Tooltip("The enemies to send messages.")] private EnemyController[] _enemiesToSend;
-		protected bool IsStunned { get; private set; }
+		private bool _isStunned = false;
+		[Header("Enemy Statistics")]
+		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
+		internal EnemyStatistics ProvidenceStatistics => this._statistics;
 		public PathConnection PathConnection => PathConnection.Enemy;
+		internal short Vitality { get => this._vitality; set => this._vitality = value; }
+		internal short ArmorResistance { get => this._armorResistance; set => this._armorResistance = value; }
+		internal float GuardGravityScale { get => this._guardGravityScale; set => this._guardGravityScale = value; }
+		internal float StunTimer { get => this._stunTimer; set => this._stunTimer = value; }
+		internal bool IsStunned { get => this._isStunned; set => this._isStunned = value; }
 		public short Health => this._vitality;
-		protected new void Awake()
+		private new void Awake()
 		{
 			base.Awake();
+			this._selfEnemies = this.GetComponents<EnemyProvider>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
-			this._collider = this.GetComponent<Collider2D>();
-			this._sender.SetAdditionalData(this._enemiesToSend);
 			this._guardGravityScale = this._rigidybody.gravityScale;
-			this._vitality = (short)this._control.Vitality;
-			this._armorResistance = (short)this._control.HitResistance;
-			if (this._control.FadeOverTime)
-				Destroy(this.gameObject, this._control.TimeToFadeAway);
+			this._vitality = (short)this._statistics.Vitality;
+			this._armorResistance = (short)this._statistics.HitResistance;
+			if (this._statistics.FadeOverTime)
+				Destroy(this.gameObject, this._statistics.TimeToFadeAway);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._control.SaveOnSpecifics&& !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (this._statistics.SaveOnSpecifics&& !saveFile.generalObjects.Contains(this.gameObject.name))
 			{
 				saveFile.generalObjects.Add(this.gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
 			Sender.Exclude(this);
 		}
-		protected void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
-		protected void OnDisable() => this._rigidybody.gravityScale = 0f;
-		protected void Update()
+		private void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
+		private void OnDisable() => this._rigidybody.gravityScale = 0f;
+		private void Update()
 		{
-			if (this.IsStunned)
+			if (this._isStunned)
 			{
 				this._stunTimer -= Time.deltaTime;
 				if (this._stunTimer <= 0f)
 				{
-					this.IsStunned = false;
+					this._isStunned = false;
 					this._rigidybody.gravityScale = this._guardGravityScale;
 				}
 			}
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._control.Damage))
+			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._statistics.Damage))
 			{
-				destructible.Stun(this._control.Damage, this._control.StunTime);
-				EffectsController.HitStop(this._control.Physics.HitStopTime, this._control.Physics.HitSlowTime);
+				destructible.Stun(this._statistics.Damage, this._statistics.StunTime);
+				EffectsController.HitStop(this._statistics.Physics.HitStopTime, this._statistics.Physics.HitSlowTime);
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
 		public bool Hurt(ushort damage)
 		{
-			if (this._control.NoDamage|| damage <= 0)
+			if (this._statistics.NoDamage || damage <= 0)
 				return false;
-			if (this._control.ReactToDamage)
-				if (this._control.HasIndex)
-				{
-					this._sender.SetStateForm(StateForm.Action);
-					this._sender.SetNumber(this._control.IndexEvent);
-					this._sender.Send(PathConnection.Enemy);
-				}
-				else
-				{
-					this._sender.SetStateForm(StateForm.Action);
-					this._sender.Send(PathConnection.Enemy);
-				}
-			if ((this._vitality -= (short)damage) <= 0f)
-				Destroy(this.gameObject);
-			return true;
+			ushort priority = 0;
+			for (ushort i = 0; i < this._selfEnemies.Length - 1f; i++)
+			{
+				if (this._selfEnemies[i + 1].DestructilbePriority > this._selfEnemies[i].DestructilbePriority)
+					priority = (ushort)(i + 1);
+			}
+			return this._selfEnemies[priority].Hurt(damage);
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (this.IsStunned)
+			if (this._isStunned)
 				return;
-			this.IsStunned = true;
-			this._stunTimer = stunTime;
-			this._rigidybody.gravityScale = 0f;
-			if ((this._armorResistance -= (short)stunStength) <= 0f)
+			ushort priority = 0;
+			for (ushort i = 0; i < this._selfEnemies.Length - 1f; i++)
 			{
-				this._stunTimer = this._control.StunnedTime;
-				this._armorResistance = (short)this._control.HitResistance;
+				if (this._selfEnemies[i + 1].DestructilbePriority > this._selfEnemies[i].DestructilbePriority)
+					priority = (ushort)(i + 1);
 			}
+			this._selfEnemies[priority].Stun(stunStength, stunTime);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
-				this.enabled = data.ToggleValue.Value;
+				foreach (EnemyProvider enemy in this._selfEnemies)
+					enemy.enabled = data.ToggleValue.Value;
 		}
 	};
 };
