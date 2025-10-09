@@ -15,6 +15,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _fallDamageTextObject;
+		[SerializeField, Tooltip("User interface element.")] private string _iconsObject;
 		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
 		[Header("Vitality Visual")]
@@ -53,6 +54,7 @@ namespace GuwbaPrimeAdventure.Character
 			this.FallDamageText = root.Q<Label>(this._fallDamageTextObject);
 			this.LifeText = root.Q<Label>(this._lifeTextObject);
 			this.CoinText = root.Q<Label>(this._coinTextObject);
+			root.Q<GroupBox>(this._iconsObject).style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			VisualElement vitality = root.Q<VisualElement>($"{this._vitalityVisual}");
 			vitality.style.width = new StyleLength(new Length(this._totalWidth, LengthUnit.Pixel));
 			VisualElement vitalityPiece = root.Q<VisualElement>($"{this._vitalityPieceVisual}");
@@ -65,7 +67,6 @@ namespace GuwbaPrimeAdventure.Character
 				vitalityPieceClone.style.borderLeftColor = new StyleColor(this._borderColor);
 				vitalityPieceClone.style.borderRightColor = new StyleColor(this._borderColor);
 				vitalityPieceClone.style.borderTopColor = new StyleColor(this._borderColor);
-				vitalityPieceClone.style.width = new StyleLength(new Length(this._totalWidth / this._vitality, LengthUnit.Pixel));
 				vitalityPieceClone.style.borderBottomWidth = new StyleFloat(this._borderWidth);
 				vitalityPieceClone.style.borderLeftWidth = new StyleFloat(this._borderWidth);
 				vitalityPieceClone.style.borderRightWidth = new StyleFloat(this._borderWidth);
