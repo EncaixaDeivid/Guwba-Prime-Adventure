@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer))]
-	internal sealed class SummonerEnemy : EnemyController, IConnector
+	internal sealed class SummonerEnemy : EnemyProvider, IConnector
 	{
 		private float _gravityScale = 0f;
 		private bool _stopSummon = false;
@@ -77,11 +77,16 @@ namespace GuwbaPrimeAdventure.Enemy
 						this.StartCoroutine(TimedSummon(summon));
 				}
 			}
+			Sender.Include(this);
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		private new void OnDestroy()
 		{
-			base.Receive(data, additionalData);
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
+		public void Receive(DataConnection data, object additionalData)
+		{
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy != this)
 					return;
 			bool numberValid = data.NumberValue.HasValue && data.NumberValue.Value < this._statistics.EventSummons.Length;
