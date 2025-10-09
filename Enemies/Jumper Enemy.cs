@@ -155,6 +155,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._sender.SetToggle(true);
 				this._sender.Send(PathConnection.Enemy);
 			}
+			if (this._stopWorking)
+				return;
 			Vector2 right = this.transform.right * (this.transform.localScale.x > 0f ? 1f : -1f);
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float lookDistance = this._statistics.LookDistance;
@@ -179,11 +181,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			EnemyController[] enemies = (EnemyController[])additionalData;
-			if (enemies != null)
-				foreach (EnemyController enemy in enemies)
-					if (enemy != this)
-						return;
+			foreach (EnemyController enemy in (EnemyController[])additionalData)
+				if (enemy != this)
+					return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this._stopJump = !data.ToggleValue.Value;
 			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
