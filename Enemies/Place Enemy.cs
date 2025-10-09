@@ -4,8 +4,8 @@ using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Tilemap), typeof(TilemapRenderer))]
-	internal sealed class PlaceEnemy : EnemyController, IConnector
+	[DisallowMultipleComponent, RequireComponent(typeof(Tilemap), typeof(TilemapRenderer), typeof(CompositeCollider2D))]
+	internal sealed class PlaceEnemy : EnemyProvider, IConnector
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _tilemapCollider2D;
@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data, object additionalData)
 		{
 			IEnumerator AppearFade(bool appear)
 			{
@@ -33,7 +33,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					color.a = alpha;
 					this._tilemap.color = color;
 					yield return new WaitForEndOfFrame();
-					yield return new WaitUntil(() => this.isActiveAndEnabled);
+					yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
 				}
 				if (appear)
 					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
@@ -43,12 +43,12 @@ namespace GuwbaPrimeAdventure.Enemy
 						yield return Opacity(i);
 				this._tilemapCollider2D.enabled = appear;
 			}
-			foreach (EnemyController enemy in (EnemyController[])additionalData)
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy == this)
 					if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 						this.StartCoroutine(AppearFade(data.ToggleValue.Value));
 					else if (this._reactToDamage && data.StateForm == StateForm.Action)
 						this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
 		}
-	}
+	};
 };
