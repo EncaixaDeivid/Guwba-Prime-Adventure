@@ -126,11 +126,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new void Receive(DataConnection data, object additionalData)
 		{
 			base.Receive(data, additionalData);
-			EnemyController[] enemies = (EnemyController[])additionalData;
-			if (enemies != null)
-				foreach (EnemyController enemy in enemies)
-					if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
-						this.Shoot();
+			foreach (EnemyController enemy in (EnemyController[])additionalData)
+				if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
+					this.Shoot();
 		}
 	};
 };
