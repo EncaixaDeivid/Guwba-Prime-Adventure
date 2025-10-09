@@ -2,14 +2,12 @@
     margin: 0;
     padding: 0;
 }
-
 #RootElement {
     width: 100%;
     height: 100%;
     align-items: center;
     justify-content: center;
 }
-
 #Curtain {
     width: 100%;
     height: 100%;
@@ -17,7 +15,6 @@
     opacity: 0;
     background-color: rgb(0, 0, 0);
 }
-
 #Text {
     width: 750px;
     height: 200px;
@@ -25,7 +22,6 @@
     -unity-text-align: middle-center;
     align-self: center;
 }
-
 #Continue, #OutLevel, #GameOver {
     width: 500px;
     height: 62.5px;
@@ -35,11 +31,9 @@
     border-width: 0;
     border-radius: 35px;
 }
-
 #GameOver {
     display: none;
 }
-
 #Continue:hover, #OutLevel:hover, #GameOver:hover {
     background-color: rgb(255, 160, 0);
 }
