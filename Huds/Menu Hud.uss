@@ -20,18 +20,18 @@
 }
 #LogoBrand
 {
-	font-size : 120px;
+	font-size : 60px;
 	-unity-text-align : middle-center;
 	background-image: url("project://database/Assets/Huds/Designs/Guwba Prime Adventure Logo.png");
-	width: 1200px;
-	height: 1200px;
+	width: 600px;
+	height: 600px;
 	justify-content: center;
 	align-self: center;
-	border-radius: 50px;
+	border-radius: 25px;
 }
 #MainButtons{
-	width : 800px;
-	height : 800px;
+	width : 400px;
+	height : 400px;
 	border-radius : 0px;
 	align-items: center;
 	justify-content: space-evenly;
@@ -39,10 +39,10 @@
 #MainButtons Button
 {
 	background-color : rgba(255, 255, 0, 0.5);
-	width : 600px;
-	height : 125px;
-	font-size : 60px;
-	border-radius: 70px;
+	width : 300px;
+	height : 62.5px;
+	font-size : 30px;
+	border-radius: 35px;
 	-unity-text-align : middle-center;
 }
 #MainButtons Button:hover
@@ -57,13 +57,13 @@
 	justify-content: space-around;
 }
 #Back{
-	width : 300px;
+	width : 150px;
 	background-color : rgba(255, 255, 0, 0.5);
-	height : 150px;
-	font-size : 50px;
+	height : 75px;
+	font-size : 25px;
 	align-self: flex-start;
-	margin-left: 100px;
-	border-radius : 10px;
+	margin-left: 50px;
+	border-radius : 5px;
 }
 #Back:hover{
 	background-color : rgb(255, 160, 0);
@@ -80,15 +80,15 @@
 	flex-direction: column;
 	width : 25%;
 	height : 80%;
-	border-radius : 25px;
+	border-radius : 12.5px;
 	background-color: rgb(224, 192, 0);
 	align-items: center;
 	justify-content: space-evenly;
 }
 #SaveName1, #SaveName2, #SaveName3, #SaveName4{
-	width : 600px;
-	height : 80px;
-	border-radius : 15px;
+	width : 300px;
+	height : 40px;
+	border-radius : 7.5px;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
@@ -96,12 +96,12 @@
 	-unity-text-align : middle-center;
 }
 #SaveName1 TextElement, #SaveName2 TextElement, #SaveName3 TextElement, #SaveName4 TextElement{
-	font-size : 50px;
+	font-size : 25px;
 }
 #SaveName1 #unity-text-input, #SaveName2 #unity-text-input, #SaveName3 #unity-text-input, #SaveName4 #unity-text-input{
-	width : 1000px;
-	height : 250px;
-	font-size : 160px;
+	width : 500px;
+	height : 125px;
+	font-size : 80px;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
@@ -109,12 +109,12 @@
 	-unity-text-align : middle-center;
 }
 #Load1, #Load2, #Load3, #Load4, #Delete1, #Delete2, #Delete3, #Delete4{
-	width : 600px;
+	width : 300px;
 	background-color : rgba(255, 255, 0, 0.5);
-	height : 80px;
-	font-size : 50px;
+	height : 40px;
+	font-size : 25px;
 	-unity-text-align : middle-center;
-	border-radius : 15px;
+	border-radius : 7.5px;
 }
 #Load1:hover, #Load2:hover, #Load3:hover, #Load4:hover, #Delete1:hover, #Delete2:hover, #Delete3:hover, #Delete4:hover{
 	background-color : rgb(255, 160, 0);
