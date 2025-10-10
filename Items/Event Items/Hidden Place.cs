@@ -116,6 +116,16 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				else if (!this._otherPlace._fadeFirst && !this._otherPlace._activation)
 					this.StartCoroutine(this._otherPlace.Fade(false));
 		}
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
+				this.StartCoroutine(this.Fade(false));
+		}
+		private void OnTriggerExit2D(Collider2D other)
+		{
+			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
+				this.StartCoroutine(this.Fade(true));
+		}
 		public void Execute()
 		{
 			if (this._timeToFadeAppearAgain > 0f)
@@ -128,16 +138,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				yield return new WaitTime(this, this._timeToFadeAppearAgain);
 				this.StartCoroutine(this.Fade(!appear));
 			}
-		}
-		private void OnTriggerEnter2D(Collider2D other)
-		{
-			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
-				this.StartCoroutine(this.Fade(false));
-		}
-		private void OnTriggerExit2D(Collider2D other)
-		{
-			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
-				this.StartCoroutine(this.Fade(true));
 		}
 	};
 };
