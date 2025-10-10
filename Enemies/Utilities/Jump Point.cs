@@ -8,7 +8,8 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private UnityAction<ushort> _getTouch;
 		private ushort _touchIndex;
-		[Header("Extern Interaction")]
+		[Header("Interactions")]
+		[SerializeField, Tooltip("If this point will destroy itself after use.")] private bool _destroyAfter;
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
 		internal void GetTouch(ushort touchIndex, UnityAction<ushort> getTouch)
 		{
@@ -21,10 +22,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				if (GuwbaCentralizer.EqualObject(other.gameObject))
 					this._getTouch.Invoke(this._touchIndex);
-				return;
 			}
-			if (other.TryGetComponent<JumperEnemy>(out _))
+			else if (other.TryGetComponent<JumperEnemy>(out _))
 				this._getTouch.Invoke(this._touchIndex);
+			if (this._destroyAfter)
+				Destroy(this.gameObject);
 		}
 	};
 };
