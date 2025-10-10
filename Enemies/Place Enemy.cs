@@ -9,6 +9,8 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _tilemapCollider2D;
+		[Header("Interactions")]
+		[SerializeField, Tooltip("If anything can be hurt.")] private bool _hurtEveryone;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
 		private new void Awake()
 		{
@@ -49,7 +51,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				this.StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (this._reactToDamage && data.StateForm == StateForm.Action)
+			else if (data.StateForm == StateForm.Action && this._reactToDamage)
 				this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
 		}
 	};
