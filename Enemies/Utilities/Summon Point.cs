@@ -17,9 +17,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				if (GuwbaCentralizer.EqualObject(other.gameObject))
 					this._getTouch.Invoke();
-				return;
 			}
-			if (other.TryGetComponent<SummonerEnemy>(out _))
+			else if (other.TryGetComponent<SummonerEnemy>(out _))
 				this._getTouch.Invoke();
 			if (this._destroyAfter)
 				Destroy(this.gameObject);
