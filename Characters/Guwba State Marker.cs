@@ -321,7 +321,7 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		public Predicate<ushort> Hurt => damage =>
 		{
-			if (this._invencibility || damage < 1f)
+			if (this._invencibility || damage <= 0f)
 				return false;
 			this._invencibility = true;
 			this._vitality -= (short)damage;
