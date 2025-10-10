@@ -17,12 +17,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
 		internal EnemyStatistics ProvidenceStatistics => this._statistics;
 		public PathConnection PathConnection => PathConnection.Enemy;
+		public short Health => this._vitality;
 		internal short Vitality { get => this._vitality; set => this._vitality = value; }
 		internal short ArmorResistance { get => this._armorResistance; set => this._armorResistance = value; }
 		internal float GuardGravityScale { get => this._guardGravityScale; set => this._guardGravityScale = value; }
 		internal float StunTimer { get => this._stunTimer; set => this._stunTimer = value; }
 		internal bool IsStunned { get => this._isStunned; set => this._isStunned = value; }
-		public short Health => this._vitality;
 		private new void Awake()
 		{
 			base.Awake();
