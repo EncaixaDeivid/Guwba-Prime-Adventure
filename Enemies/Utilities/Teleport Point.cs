@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class TeleportPoint : MonoBehaviour
+	internal sealed class TeleportPoint : StateController
 	{
 		private UnityAction _getTouch;
 		[Header("Interactions")]
@@ -17,9 +17,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				if (GuwbaCentralizer.EqualObject(other.gameObject))
 					this._getTouch.Invoke();
-				return;
 			}
-			if (other.TryGetComponent<TeleporterEnemy>(out _))
+			else if (other.TryGetComponent<TeleporterEnemy>(out _))
 				this._getTouch.Invoke();
 			if (this._destroyAfter)
 				Destroy(this.gameObject);
