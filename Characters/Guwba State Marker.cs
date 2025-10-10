@@ -167,9 +167,6 @@ namespace GuwbaPrimeAdventure.Character
 			this._inputController.Commands.AttackUse.started += this.AttackUse;
 			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
 			this._inputController.Commands.Interaction.started += this.Interaction;
-			this._inputController.Commands.Movement.Enable();
-			this._inputController.Commands.AttackUse.Enable();
-			this._inputController.Commands.Interaction.Enable();
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -191,9 +188,6 @@ namespace GuwbaPrimeAdventure.Character
 			this._inputController.Commands.AttackUse.started -= this.AttackUse;
 			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
 			this._inputController.Commands.Interaction.started -= this.Interaction;
-			this._inputController.Commands.Movement.Disable();
-			this._inputController.Commands.AttackUse.Disable();
-			this._inputController.Commands.Interaction.Disable();
 			this._inputController.Dispose();
 			Sender.Exclude(this);
 		}
@@ -204,6 +198,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.Flex;
 			this._animator.SetFloat(this._isOn, 1f);
 			this._animator.SetFloat(this._walkSpeed, 1f);
+			this.EnableInputs();
 			if (this._dashActive)
 				this._dashMovement = this._guardDashMovement;
 			this._rigidbody.gravityScale = this._gravityScale;
@@ -216,6 +211,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.None;
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
+			this.DisableInputs();
 			this._movementAction = 0f;
 			if (this._dashActive)
 			{
@@ -225,6 +221,18 @@ namespace GuwbaPrimeAdventure.Character
 			this._yVelocity = this._rigidbody.linearVelocityY;
 			this._rigidbody.gravityScale = 0f;
 			this._rigidbody.linearVelocity = Vector2.zero;
+		}
+		private void EnableInputs()
+		{
+			this._inputController.Commands.Movement.Enable();
+			this._inputController.Commands.AttackUse.Enable();
+			this._inputController.Commands.Interaction.Enable();
+		}
+		private void DisableInputs()
+		{
+			this._inputController.Commands.Movement.Disable();
+			this._inputController.Commands.AttackUse.Disable();
+			this._inputController.Commands.Interaction.Disable();
 		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
