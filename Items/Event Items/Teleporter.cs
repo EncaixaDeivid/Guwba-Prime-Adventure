@@ -46,6 +46,13 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetToggle(true);
 			this._sender.Send(PathConnection.Hud);
 		}
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (this._active && this._onCollision && this._useTimer)
+				this.StartCoroutine(this.Timer());
+			else if (this._active && this._onCollision && GuwbaCentralizer.EqualObject(other.gameObject))
+				this.Teleport();
+		}
 		public void Execute()
 		{
 			this._active = !this._active;
@@ -62,13 +69,6 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			if (this._active && this._isInteractive && this._useTimer)
 				this.StartCoroutine(this.Timer());
 			else if (this._active && this._isInteractive)
-				this.Teleport();
-		}
-		private void OnTriggerEnter2D(Collider2D other)
-		{
-			if (this._active && this._onCollision && this._useTimer)
-				this.StartCoroutine(this.Timer());
-			else if (this._active && this._onCollision && GuwbaCentralizer.EqualObject(other.gameObject))
 				this.Teleport();
 		}
 	};
