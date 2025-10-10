@@ -65,8 +65,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Trail()
 		{
-			if (this._trail.points.Length <= 0f)
-				return;
 			if ((Vector2)this.transform.position != this._pointOrigin)
 			{
 				bool valid = this._pointOrigin.x < this.transform.position.x;
@@ -79,7 +77,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				float maxDistanceDelta = this._statistics.ReturnSpeed * Time.fixedDeltaTime;
 				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, maxDistanceDelta);
 			}
-			else
+			else if (this._trail.points.Length > 0f)
 			{
 				Vector2 target = this._trail.points[this._pointIndex];
 				if (this._repeatWay)
@@ -136,10 +134,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (GuwbaCentralizer.EqualObject(collider.gameObject))
 					{
 						this._targetPoint = collider.transform.position;
-						Vector2 origin = this.transform.position;
-						Vector2 size = this._collider.bounds.size;
-						float targetDistance = Vector2.Distance(this.transform.position, this._targetPoint);
-						this._detected = !Physics2D.BoxCast(origin, size, 0f, this._targetPoint, targetDistance, groundLayer);
+						this._detected = !Physics2D.Linecast(this.transform.position, this._targetPoint, groundLayer);
 						if (this._detected)
 						{
 							bool valid = collider.transform.position.x < this.transform.position.x;
