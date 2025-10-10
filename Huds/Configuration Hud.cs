@@ -78,7 +78,7 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!SettingsController.FileExists())
 				SettingsController.SaveSettings();
 			SettingsController.Load(out Settings settings);
-			this.FrameRate.highValue = 240;
+			this.FrameRate.highValue = 120;
 			this.DialogSpeed.highValue = .1f;
 			this.ScreenBrightness.highValue = 1f;
 			this.GeneralVolume.highValue = 100;
