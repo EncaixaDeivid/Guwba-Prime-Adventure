@@ -20,26 +20,6 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
 		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
 		public PathConnection PathConnection => PathConnection.Story;
-		public void Interaction()
-		{
-			SettingsController.Load(out Settings settings);
-			if (settings.DialogToggle && this._dialogObject && this._dialogHudObject)
-			{
-				this._sender.SetStateForm(StateForm.State);
-				this._sender.SetAdditionalData(this.gameObject);
-				this._sender.SetToggle(false);
-				this._sender.Send(PathConnection.Hud);
-				StateController.SetState(false);
-				this._storyTeller = this.GetComponent<StoryTeller>();
-				this._animator = this.GetComponent<Animator>();
-				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
-				this._dialogTime = settings.DialogSpeed;
-				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
-				this.StartCoroutine(this.TextDigitation());
-				if (this._storyTeller)
-					this._storyTeller.ShowScene();
-			}
-		}
 		private IEnumerator TextDigitation()
 		{
 			StyleBackground image = new(this._dialogObject.Speachs[this._speachIndex].Model);
@@ -108,9 +88,29 @@ namespace GuwbaPrimeAdventure.Story
 			else
 				this._dialogTime = 0f;
 		}
+		public void Interaction()
+		{
+			SettingsController.Load(out Settings settings);
+			if (settings.DialogToggle && this._dialogObject && this._dialogHudObject)
+			{
+				this._sender.SetStateForm(StateForm.State);
+				this._sender.SetAdditionalData(this.gameObject);
+				this._sender.SetToggle(false);
+				this._sender.Send(PathConnection.Hud);
+				StateController.SetState(false);
+				this._storyTeller = this.GetComponent<StoryTeller>();
+				this._animator = this.GetComponent<Animator>();
+				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
+				this._dialogTime = settings.DialogSpeed;
+				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
+				this.StartCoroutine(this.TextDigitation());
+				if (this._storyTeller)
+					this._storyTeller.ShowScene();
+			}
+		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && additionalData as GameObject == this.gameObject)
+			if (data.StateForm == StateForm.Action && (GameObject)additionalData == this.gameObject)
 				this.Interaction();
 		}
 	};
