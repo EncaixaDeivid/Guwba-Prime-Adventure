@@ -2,7 +2,6 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Rigidbody2D))]
 	internal abstract class MovingEnemy : EnemyProvider, IConnector, IDestructible
 	{
 		private Vector2 _guardVelocity = new();
