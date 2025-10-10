@@ -1,5 +1,4 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -14,6 +13,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Enemy Provider")]
 		[SerializeField, Tooltip("The enemies to send messages.")] private EnemyProvider[] _enemiesToSend;
 		[SerializeField, Tooltip("The level of priority to use the destructible side.")] private ushort _destructilbePriority = 0;
+		internal EnemyStatistics Statistics => this._controller.ProvidenceStatistics;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		public short Health => this._controller.Health;
 		internal ushort DestructilbePriority => this._destructilbePriority;
@@ -25,16 +25,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<Collider2D>();
 			this._sender.SetAdditionalData(this._enemiesToSend);
-		}
-		protected new void OnDestroy()
-		{
-			base.OnDestroy();
-			SaveController.Load(out SaveFile saveFile);
-			if (this._controller.ProvidenceStatistics.SaveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
-			{
-				saveFile.generalObjects.Add(this.gameObject.name);
-				SaveController.WriteSave(saveFile);
-			}
 		}
 		public bool Hurt(ushort damage)
 		{
