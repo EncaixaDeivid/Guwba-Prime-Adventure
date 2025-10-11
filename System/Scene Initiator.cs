@@ -1,0 +1,34 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor;
+using System.Collections;
+namespace GuwbaPrimeAdventure
+{
+	internal sealed class SceneInitiator : MonoBehaviour
+	{
+		private TransicionHud _transicionHud;
+		[SerializeField] private SceneAsset[] _subScenes;
+		private IEnumerator Start()
+		{
+			this._transicionHud = FindFirstObjectByType<TransicionHud>();
+			this._transicionHud.LoadingBar.highValue = this._subScenes.Length * 2f;
+			AsyncOperation asyncOperation;
+			float stillProgress;
+			foreach (SceneAsset scene in this._subScenes)
+			{
+				asyncOperation = SceneManager.LoadSceneAsync(scene.name, LoadSceneMode.Additive);
+				while (!asyncOperation.isDone)
+				{
+					this._transicionHud.LoadingBar.value += asyncOperation.progress;
+					stillProgress = asyncOperation.progress;
+					yield return new WaitForEndOfFrame();
+					this._transicionHud.LoadingBar.value -= stillProgress;
+				}
+				this._transicionHud.LoadingBar.value += asyncOperation.progress;
+				asyncOperation.allowSceneActivation = true;
+			}
+			Destroy(this.gameObject);
+			Destroy(this._transicionHud.gameObject);
+		}
+	};
+};
