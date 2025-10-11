@@ -6,8 +6,8 @@ namespace GuwbaPrimeAdventure.Story
 	internal class DialogObject : ScriptableObject
     {
 		[Header("Dialog Components")]
+		[SerializeField, Tooltip("The scene to trancision to after the speach.")] private SceneField _sceneToTransition;
 		[SerializeField, Tooltip("The collection of the object that contais the speach.")] private Speach[] _speach;
-		[SerializeField, Tooltip("The scene to trancision to after the speach.")] private string _sceneToTransition;
 		[SerializeField, Tooltip("The animation to play after the speach.")] private string _animation;
 		[SerializeField, Tooltip("If the trancision have to be activated after the speach.")] private bool _activateTransition;
 		[SerializeField, Tooltip("If the interaction have to be inactivated after the speach.")] private bool _desactiveInteraction;
@@ -15,8 +15,8 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("If the object will destruct.")] private bool _activateDestroy;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		[SerializeField, Tooltip("The amount of time to wait to destroy after the speach.")] private float _timeToDestroy;
+		internal SceneField SceneToTransition => this._sceneToTransition;
 		internal Speach[] Speachs => this._speach;
-		internal string SceneToTransition => this._sceneToTransition;
 		internal string Animation => this._animation;
 		internal bool ActivateTransition => this._activateTransition;
 		internal bool DesactiveInteraction => this._desactiveInteraction;
