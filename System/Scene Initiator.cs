@@ -24,6 +24,7 @@ namespace GuwbaPrimeAdventure
 			if (!KeepTrancision || KeepTrancision != this)
 				yield break;
 			TransicionHud transicionHud = Instantiate(this._transicionHud, this.transform);
+			transicionHud.RootVisualElement.style.opacity = 1f;
 			transicionHud.LoadingBar.highValue = this._subScenes.Length * 2f;
 			AsyncOperation asyncOperation;
 			float stillProgress;
