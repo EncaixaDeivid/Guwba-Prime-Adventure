@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using UnityEditor;
 using System;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
@@ -15,8 +16,8 @@ namespace GuwbaPrimeAdventure.Hud
 		private bool _isActive = true;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
-		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
-		[SerializeField, Tooltip("The name of the menu scene.")] private string _menuScene;
+		[SerializeField, Tooltip("The name of the menu scene.")] private SceneAsset _menuScene;
+		[SerializeField, Tooltip("The name of the hubby world scene.")] private SceneAsset _levelSelectorScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -157,7 +158,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private Action YesBackLevel => () =>
 		{
 			SettingsController.SaveSettings();
-			if (this.gameObject.scene.name != this._levelSelectorScene)
+			if (this.gameObject.scene.name != this._levelSelectorScene.name)
 				this.GetComponent<Transitioner>().Transicion();
 			else
 				this.GetComponent<Transitioner>().Transicion(this._menuScene);
@@ -178,7 +179,7 @@ namespace GuwbaPrimeAdventure.Hud
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				this._configurationHud = Instantiate(this._configurationHudObject, this.transform);
-				if (this.gameObject.scene.name == this._menuScene)
+				if (this.gameObject.scene.name == this._menuScene.name)
 				{
 					this._configurationHud.OutLevel.style.display = DisplayStyle.None;
 					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
