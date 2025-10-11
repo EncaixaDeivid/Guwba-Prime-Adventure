@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -15,7 +14,8 @@ namespace GuwbaPrimeAdventure.Hud
 		private readonly Sender _sender = Sender.Create();
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
-		[SerializeField, Tooltip("The name of this level scene.")] private SceneAsset _bossScene;
+		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
+		[SerializeField, Tooltip("The scene of this level, if it's a boss scene.")] private SceneField _bossScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -82,7 +82,7 @@ namespace GuwbaPrimeAdventure.Hud
 				}
 			}
 		};
-		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion();
+		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
 		private Action GameOver => () =>
 		{
 			SaveController.RefreshData();
