@@ -234,6 +234,12 @@ namespace GuwbaPrimeAdventure.Character
 			this._inputController.Commands.AttackUse.Disable();
 			this._inputController.Commands.Interaction.Disable();
 		}
+		private IEnumerator Start()
+		{
+			this.DisableInputs();
+			yield return new WaitWhile(() => SceneInitiator.KeepTrancision);
+			this.EnableInputs();
+		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
 			if (!this.isActiveAndEnabled || this._animator.GetBool(this._stun))
