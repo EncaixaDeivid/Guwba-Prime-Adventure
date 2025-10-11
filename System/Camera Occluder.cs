@@ -4,8 +4,8 @@ using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(Rigidbody2D))]
+	[RequireComponent(typeof(BoxCollider2D))]
 	internal sealed class CameraOccluder : StateController, IConnector
 	{
 		private static CameraOccluder _instance;
