@@ -25,7 +25,7 @@ namespace GuwbaPrimeAdventure
 				yield break;
 			TransicionHud transicionHud = Instantiate(this._transicionHud, this.transform);
 			transicionHud.RootVisualElement.style.opacity = 1f;
-			transicionHud.LoadingBar.highValue = this._subScenes.Length * 2f;
+			transicionHud.LoadingBar.highValue = this._subScenes.Length;
 			AsyncOperation asyncOperation;
 			float stillProgress;
 			foreach (SceneField scene in this._subScenes)
