@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
@@ -10,8 +9,8 @@ namespace GuwbaPrimeAdventure
 	{
 		[Header("Scene Interaction")]
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
-		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private SceneAsset _sceneTransicion;
-		public void Transicion(SceneAsset scene = null)
+		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private SceneField _sceneTransicion;
+		public void Transicion(SceneField scene = null)
 		{
 			this.StartCoroutine(SceneTransicion());
 			IEnumerator SceneTransicion()
@@ -25,12 +24,12 @@ namespace GuwbaPrimeAdventure
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
 				}
-				SceneAsset newScene = scene != null ? scene : this._sceneTransicion;
-				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene.name, LoadSceneMode.Single);
-				if (newScene.name != this.gameObject.scene.name)
+				SceneField newScene = scene ?? this._sceneTransicion;
+				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
+				if (newScene != this.gameObject.scene.name)
 					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
-						if (newScene.name.Contains($"{i}"))
-							saveFile.lastLevelEntered = newScene.name;
+						if (newScene.SceneName.Contains($"{i}"))
+							saveFile.lastLevelEntered = newScene;
 				yield return new WaitUntil(() => asyncOperation.isDone);
 				asyncOperation.allowSceneActivation = true;
 			}
