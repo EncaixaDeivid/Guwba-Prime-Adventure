@@ -152,7 +152,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._gravityScale = this._rigidbody.gravityScale;
 			this._normalOffset = this._collider.offset;
 			this._normalSize = this._collider.size;
-			if (this.gameObject.scene.name == this._hubbyWorldScene)
+			if (this.gameObject.scene.name.Contains(this._hubbyWorldScene))
 			{
 				foreach (VisualElement vitality in this._guwbaVisualizer.VitalityVisual)
 					vitality.style.display = DisplayStyle.None;
