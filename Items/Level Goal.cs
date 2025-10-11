@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Item
@@ -9,7 +8,7 @@ namespace GuwbaPrimeAdventure.Item
 	internal sealed class LevelGoal : StateController
 	{
 		[Header("Scene Interactions")]
-		[SerializeField, Tooltip("If this will go direct to the boss.")] private SceneAsset _goToBoss;
+		[SerializeField, Tooltip("If this will go direct to the boss.")] private SceneField _goToBoss;
 		[SerializeField, Tooltip("If theres a dialog after the goal.")] private bool _enterInDialog;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private void OnTriggerEnter2D(Collider2D other)
