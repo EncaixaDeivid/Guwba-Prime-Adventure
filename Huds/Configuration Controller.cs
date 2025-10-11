@@ -159,7 +159,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			SettingsController.SaveSettings();
 			if (this.gameObject.scene.name != this._levelSelectorScene.name)
-				this.GetComponent<Transitioner>().Transicion();
+				this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
 			else
 				this.GetComponent<Transitioner>().Transicion(this._menuScene);
 		};
