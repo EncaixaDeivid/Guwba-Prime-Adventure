@@ -236,6 +236,8 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private IEnumerator Start()
 		{
+			if (!_instance || _instance != this)
+				yield break;
 			this.DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.KeepTrancision);
 			this.EnableInputs();
