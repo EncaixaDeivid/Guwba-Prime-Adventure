@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEditor;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -14,6 +15,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private readonly Sender _sender = Sender.Create();
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
+		[SerializeField, Tooltip("The name of this level scene.")] private SceneAsset _levelScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -40,7 +42,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private Action Continue => () =>
 		{
 			if (this.gameObject.scene.name.Contains("Boss"))
-				this.GetComponent<Transitioner>().Transicion(this.gameObject.scene.name);
+				this.GetComponent<Transitioner>().Transicion(this._levelScene);
 			else
 			{
 				this.StartCoroutine(Curtain());
