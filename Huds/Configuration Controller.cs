@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using UnityEditor;
 using System;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
@@ -10,34 +9,35 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class ConfigurationController : MonoBehaviour, IConnector
 	{
-		internal static ConfigurationController instance;
+		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
 		private InputController _inputController;
 		private bool _isActive = true;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
-		[SerializeField, Tooltip("The name of the menu scene.")] private SceneAsset _menuScene;
-		[SerializeField, Tooltip("The name of the hubby world scene.")] private SceneAsset _levelSelectorScene;
+		[SerializeField, Tooltip("The name of the menu scene.")] private SceneField _menuScene;
+		[SerializeField, Tooltip("The name of the hubby world scene.")] private SceneField _levelSelectorScene;
+		internal static ConfigurationController Instance => _instance;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
-			if (instance)
+			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			instance = this;
+			_instance = this;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
-			if (!instance || instance != this)
+			if (!_instance || _instance != this)
 				return;
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
-			if (!instance || instance != this)
+			if (!_instance || _instance != this)
 				return;
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
@@ -45,7 +45,7 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnDisable()
 		{
-			if (!instance || instance != this)
+			if (!_instance || _instance != this)
 				return;
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
@@ -158,7 +158,7 @@ namespace GuwbaPrimeAdventure.Hud
 		private Action YesBackLevel => () =>
 		{
 			SettingsController.SaveSettings();
-			if (this.gameObject.scene.name != this._levelSelectorScene.name)
+			if (this.gameObject.scene.name != this._levelSelectorScene)
 				this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
 			else
 				this.GetComponent<Transitioner>().Transicion(this._menuScene);
@@ -179,7 +179,7 @@ namespace GuwbaPrimeAdventure.Hud
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				this._configurationHud = Instantiate(this._configurationHudObject, this.transform);
-				if (this.gameObject.scene.name == this._menuScene.name)
+				if (this.gameObject.scene.name == this._menuScene)
 				{
 					this._configurationHud.OutLevel.style.display = DisplayStyle.None;
 					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
