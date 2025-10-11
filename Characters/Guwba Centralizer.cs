@@ -7,7 +7,20 @@ namespace GuwbaPrimeAdventure.Character
 	public sealed class GuwbaCentralizer : StateController
 	{
 		private static GuwbaCentralizer _instance;
-		public static Vector2 Position { get => _instance.transform.position; set => _instance.transform.position = value; }
+		public static Vector2 Position
+		{
+			get
+			{
+				if (_instance)
+					return _instance.transform.position;
+				return Vector2.zero;
+			}
+			set
+			{
+				if (_instance)
+					_instance.transform.position = value;
+			}
+		}
 		private new void Awake()
 		{
 			base.Awake();
@@ -20,9 +33,10 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		public static bool EqualObject(params GameObject[] othersObjects)
 		{
-			foreach (GameObject other in othersObjects)
-				if (other == _instance.gameObject)
-					return true;
+			if (_instance)
+				foreach (GameObject other in othersObjects)
+					if (other == _instance.gameObject)
+						return true;
 			return false;
 		}
 	};
