@@ -64,7 +64,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
 		[Header("Visual Interaction")]
-		[SerializeField, Tooltip("The name of the scene that contains the hubby world.")] private string _hubbyWorldScene;
+		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
