@@ -7,7 +7,7 @@ namespace GuwbaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Camera), typeof(CinemachineCamera))]
 	public sealed class SceneInitiator : MonoBehaviour
 	{
-		public static SceneInitiator KeepTrancision { get; private set; }
+		public static bool KeepTrancision { get; private set; }
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
 		[SerializeField, Tooltip("The sub scenes to be lodaed.")] private SceneField[] _subScenes;
 		private void Awake()
