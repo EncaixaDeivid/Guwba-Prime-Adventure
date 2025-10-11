@@ -31,10 +31,7 @@ namespace GuwbaPrimeAdventure
 							saveFile.lastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
 				if (newScene != this._menuScene)
-				{
-					DontDestroyOnLoad(transicionHud);
 					yield return new WaitUntil(() => asyncOperation.isDone);
-				}
 				else
 				{
 					this._transicionHud.LoadingBar.highValue = 100f;
