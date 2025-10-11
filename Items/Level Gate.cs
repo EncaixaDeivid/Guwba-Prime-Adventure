@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor;
 using Unity.Cinemachine;
 using System;
 using GuwbaPrimeAdventure.Data;
@@ -18,8 +17,8 @@ namespace GuwbaPrimeAdventure.Item
 		private short _defaultPriority;
 		[Header("Scene Status")]
 		[SerializeField, Tooltip("The object that handles the hud of the level gate.")] private LevelGateHud _levelGateObject;
-		[SerializeField, Tooltip("The name of the level scene.")] private SceneAsset _levelScene;
-		[SerializeField, Tooltip("The name of the boss scene.")] private SceneAsset _bossScene;
+		[SerializeField, Tooltip("The name of the level scene.")] private SceneField _levelScene;
+		[SerializeField, Tooltip("The name of the boss scene.")] private SceneField _bossScene;
 		[SerializeField, Tooltip("The offset that the hud will be.")] private Vector2 _offsetPosition;
 		[SerializeField, Tooltip("Where the this camera have to be in the hierarchy.")] private short _overlayPriority;
 		private void Awake()
@@ -31,9 +30,9 @@ namespace GuwbaPrimeAdventure.Item
 			this._levelGate.transform.localPosition = this._offsetPosition;
 			SaveController.Load(out SaveFile saveFile);
 			this._levelGate.Level.clicked += this.EnterLevel;
-			if (saveFile.levelsCompleted[ushort.Parse($"{this._levelScene.name[^1]}") - 1])
+			if (saveFile.levelsCompleted[ushort.Parse($"{this._levelScene.SceneName[^1]}") - 1])
 				this._levelGate.Boss.clicked += this.EnterBoss;
-			if (saveFile.deafetedBosses[ushort.Parse($"{this._levelScene.name[^1]}") - 1])
+			if (saveFile.deafetedBosses[ushort.Parse($"{this._levelScene.SceneName[^1]}") - 1])
 				this._levelGate.Scenes.clicked += this.ShowScenes;
 			this._levelGate.Level.SetEnabled(false);
 			this._levelGate.Boss.SetEnabled(false);
@@ -44,9 +43,9 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			SaveController.Load(out SaveFile saveFile);
 			this._levelGate.Level.clicked -= this.EnterLevel;
-			if (saveFile.levelsCompleted[ushort.Parse($"{this._levelScene.name[^1]}") - 1])
+			if (saveFile.levelsCompleted[ushort.Parse($"{this._levelScene.SceneName[^1]}") - 1])
 				this._levelGate.Boss.clicked -= this.EnterBoss;
-			if (saveFile.deafetedBosses[ushort.Parse($"{this._levelScene.name[^1]}") - 1])
+			if (saveFile.deafetedBosses[ushort.Parse($"{this._levelScene.SceneName[^1]}") - 1])
 				this._levelGate.Scenes.clicked -= this.ShowScenes;
 		}
 		private Action EnterLevel => () => this.GetComponent<Transitioner>().Transicion(this._levelScene);
