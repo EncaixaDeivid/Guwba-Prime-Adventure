@@ -8,9 +8,9 @@ namespace GuwbaPrimeAdventure
 	public class SceneField
 	{
 #if UNITY_EDITOR
-		[SerializeField] private SceneAsset _sceneAsset;
+		[SerializeField, Tooltip("The scene to be handled.")] private SceneAsset _sceneAsset;
 #endif
-		[SerializeField] private string _sceneName;
+		[SerializeField, Tooltip("The name of the scene.")] private string _sceneName;
 		public string SceneName => this._sceneName;
 		public static implicit operator string(SceneField sceneObject) => sceneObject.SceneName;
 	};
