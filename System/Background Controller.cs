@@ -1,11 +1,9 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D;
-using Unity.Cinemachine;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(CinemachineBrain))]
-	[RequireComponent(typeof(SortingGroup))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
 	internal sealed class BackgroundController : StateController
 	{
 		private static BackgroundController _instance;
