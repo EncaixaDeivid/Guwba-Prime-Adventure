@@ -26,7 +26,7 @@ namespace GuwbaPrimeAdventure
 			position =  EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 			if (sceneAsset != null)
 			{
-				sceneAsset.objectReferenceValue = EditorGUI.ObjectField(position, sceneAsset.objectReferenceValue, typeof(SceneAsset), false);
+				sceneAsset.objectReferenceValue = EditorGUI.ObjectField(position, sceneAsset.objectReferenceValue, typeof(SceneAsset), true);
 				if (sceneAsset.objectReferenceValue != null)
 					sceneName.stringValue = (sceneAsset.objectReferenceValue as SceneAsset).name;
 			}
