@@ -77,9 +77,9 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Buttons.style.display = DisplayStyle.None;
 			this._menuHud.Saves.style.display = DisplayStyle.Flex;
 			this._isPlay = true;
-			ConfigurationController.instance.SetActive(false);
+			ConfigurationController.Instance.SetActive(false);
 		};
-		private Action OpenConfigurations => () => ConfigurationController.instance.OpenCloseConfigurations();
+		private Action OpenConfigurations => () => ConfigurationController.Instance.OpenCloseConfigurations();
 		private Action Quit => () => Application.Quit();
 		private Action Back => () =>
 		{
@@ -88,7 +88,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this._menuHud.Saves.style.display = DisplayStyle.None;
 			this._menuHud.Buttons.style.display = DisplayStyle.Flex;
 			this._isPlay = false;
-			ConfigurationController.instance.SetActive(true);
+			ConfigurationController.Instance.SetActive(true);
 		};
 		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
 		{
