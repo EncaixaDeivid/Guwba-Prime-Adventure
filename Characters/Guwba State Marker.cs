@@ -60,31 +60,10 @@ namespace GuwbaPrimeAdventure.Character
 		private bool _dashActive = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
-		[Header("World Interaction")]
+		[Header("Control Statistics")]
+		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
-		[Header("Visual Interaction")]
-		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
-		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
-		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
-		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
-		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
-		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private ushort _stunResistance;
-		[Header("Animation")]
-		[SerializeField, Tooltip("Animation parameter.")] private string _isOnAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _idleAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _walkAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _walkSpeedAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _dashSlideAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _jumpAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _fallAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackComboAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackJumpAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _attackSlideAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _stunAnimation;
-		[SerializeField, Tooltip("Animation parameter.")] private string _deathAnimation;
-		[Header("Physics Stats")]
 		[SerializeField, Tooltip("Size of collider for checking the ground.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
@@ -94,6 +73,11 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")]
 		private float _fallDamageShowMultiply;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
+		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
+		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
+		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
+		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private ushort _stunResistance;
+		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
