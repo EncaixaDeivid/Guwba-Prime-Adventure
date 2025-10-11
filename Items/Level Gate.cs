@@ -17,8 +17,8 @@ namespace GuwbaPrimeAdventure.Item
 		private short _defaultPriority;
 		[Header("Scene Status")]
 		[SerializeField, Tooltip("The object that handles the hud of the level gate.")] private LevelGateHud _levelGateObject;
-		[SerializeField, Tooltip("The name of the level scene.")] private SceneField _levelScene;
-		[SerializeField, Tooltip("The name of the boss scene.")] private SceneField _bossScene;
+		[SerializeField, Tooltip("The scene of the level.")] private SceneField _levelScene;
+		[SerializeField, Tooltip("The scene of the boss.")] private SceneField _bossScene;
 		[SerializeField, Tooltip("The offset that the hud will be.")] private Vector2 _offsetPosition;
 		[SerializeField, Tooltip("Where the this camera have to be in the hierarchy.")] private short _overlayPriority;
 		private void Awake()
