@@ -1,6 +1,8 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.IO;
 using System.Runtime.CompilerServices;
+#endif
 namespace GuwbaPrimeAdventure
 {
 	public interface IDestructible
