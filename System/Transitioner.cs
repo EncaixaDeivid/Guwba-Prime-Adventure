@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure
 	{
 		[Header("Scene Interaction")]
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
-		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private SceneField _sceneTransicion;
+		[SerializeField, Tooltip("The scene that will be trancisionate to.")] private SceneField _sceneTransicion;
 		public void Transicion(SceneField scene = null)
 		{
 			this.StartCoroutine(SceneTransicion());
