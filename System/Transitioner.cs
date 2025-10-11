@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure
@@ -9,8 +10,8 @@ namespace GuwbaPrimeAdventure
 	{
 		[Header("Scene Interaction")]
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
-		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private string _sceneTransicion;
-		public void Transicion(string sceneName = "")
+		[SerializeField, Tooltip("The name of the scene that will trancisionate to.")] private SceneAsset _sceneTransicion;
+		public void Transicion(SceneAsset scene = null)
 		{
 			this.StartCoroutine(SceneTransicion());
 			IEnumerator SceneTransicion()
@@ -18,22 +19,19 @@ namespace GuwbaPrimeAdventure
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(this._transicionHud);
+				DontDestroyOnLoad(transicionHud);
 				for (float i = 0f; transicionHud.RootVisualElement.style.opacity.value < 1f; i += 0.1f)
 				{
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
 				}
-				string newSceneName = sceneName != "" ? sceneName : this._sceneTransicion;
-				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newSceneName, LoadSceneMode.Single);
-				if (newSceneName != this.gameObject.scene.name)
+				SceneAsset newScene = scene != null ? scene : this._sceneTransicion;
+				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene.name, LoadSceneMode.Single);
+				if (newScene.name != this.gameObject.scene.name)
 					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
-						if (newSceneName.Contains($"{i}"))
-							saveFile.lastLevelEntered = newSceneName;
-				while (!asyncOperation.isDone)
-				{
-					transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
-					yield return new WaitForEndOfFrame();
-				}
+						if (newScene.name.Contains($"{i}"))
+							saveFile.lastLevelEntered = newScene.name;
+				yield return new WaitUntil(() => asyncOperation.isDone);
 				asyncOperation.allowSceneActivation = true;
 			}
 		}
