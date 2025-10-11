@@ -9,12 +9,12 @@ namespace GuwbaPrimeAdventure.Hud
 	{
 		private Animator _animator;
 		private UIDocument _document;
+		private readonly int _isOn = Animator.StringToHash("IsOn");
 		private bool _isActive = true;
 		private bool _isOnCollision = false;
 		[Header("Interaction Components")]
 		[SerializeField, Tooltip("The UI document of the interaction.")] private UIDocument _documentObject;
 		[SerializeField, Tooltip("The offset of the document of interaction.")] private Vector2 _imageOffset;
-		[SerializeField, Tooltip("Animation Parameter.")] private string _isOn;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private new void Awake()
 		{
