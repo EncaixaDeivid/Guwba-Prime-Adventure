@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure
 	internal sealed class SceneInitiator : MonoBehaviour
 	{
 		private TransicionHud _transicionHud;
-		[SerializeField] private SceneField[] _subScenes;
+		[SerializeField, Tooltip("The sub scenes to be lodaed.")] private SceneField[] _subScenes;
 		private IEnumerator Start()
 		{
 			this._transicionHud = FindFirstObjectByType<TransicionHud>();
