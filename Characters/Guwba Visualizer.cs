@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Character
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class GuwbaVisualizer : MonoBehaviour
 	{
-		private static bool _isExistent;
+		private static GuwbaVisualizer _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
@@ -43,12 +43,12 @@ namespace GuwbaPrimeAdventure.Character
 		internal ushort RecoverVitality => (ushort)this._recoverVitality;
 		private void Awake()
 		{
-			if (_isExistent)
+			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_isExistent = this;
+			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.RootElement = root.Q<VisualElement>(this._rootElementObject);
 			this.FallDamageText = root.Q<Label>(this._fallDamageTextObject);
