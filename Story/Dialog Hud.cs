@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Story
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class DialogHud : MonoBehaviour
 	{
-		static private bool _isExistent;
+		static private DialogHud _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElementVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _characterIcon;
@@ -19,12 +19,12 @@ namespace GuwbaPrimeAdventure.Story
 		internal Button AdvanceSpeach { get; private set; }
 		private void Awake()
 		{
-			if (_isExistent)
+			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_isExistent = this;
+			_instance = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.RootElement = root.Q<VisualElement>(this._rootElementVisual);
 			this.CharacterIcon = root.Q<VisualElement>(this._characterIcon);
