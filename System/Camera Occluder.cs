@@ -38,11 +38,10 @@ namespace GuwbaPrimeAdventure
 				return;
 			Sender.Exclude(this);
 		}
-		private void SetOtherChildren(GameObject gameObject, bool activeValue)
+		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
 			if (gameObject.TryGetComponent<HiddenObject>(out var hiddenObject))
-				for (ushort i = 0; i < hiddenObject.transform.childCount; i++)
-					hiddenObject.transform.GetChild(i).gameObject.SetActive(activeValue);
+				hiddenObject.Execution(activate);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => this.SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
