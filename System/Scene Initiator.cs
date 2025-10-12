@@ -7,21 +7,21 @@ namespace GuwbaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Camera), typeof(CinemachineCamera))]
 	public sealed class SceneInitiator : MonoBehaviour
 	{
-		public static bool KeepTrancision { get; private set; }
+		public static bool IsInTrancision { get; private set; }
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
 		[SerializeField, Tooltip("The sub scenes to be lodaed.")] private SceneField[] _subScenes;
 		private void Awake()
 		{
-			if (KeepTrancision)
+			if (IsInTrancision)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			KeepTrancision = this;
+			IsInTrancision = this;
 		}
 		private IEnumerator Start()
 		{
-			if (!KeepTrancision || KeepTrancision != this)
+			if (!IsInTrancision || IsInTrancision != this)
 				yield break;
 			TransicionHud transicionHud = Instantiate(this._transicionHud, this.transform);
 			transicionHud.RootVisualElement.style.opacity = 1f;
@@ -42,6 +42,7 @@ namespace GuwbaPrimeAdventure
 				asyncOperation.allowSceneActivation = true;
 			}
 			Destroy(this.gameObject);
+			IsInTrancision = false;
 		}
 	};
 };
