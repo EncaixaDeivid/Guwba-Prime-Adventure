@@ -7,7 +7,7 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class ConfigurationHud : MonoBehaviour
 	{
-		private static ConfigurationHud _instance;
+		private static bool _isExistent;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _settingsGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _confirmationGroup;
@@ -49,12 +49,12 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Button No { get; private set; }
 		private void Awake()
 		{
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.Settings = root.Q<GroupBox>(this._settingsGroup);
 			this.Confirmation = root.Q<GroupBox>(this._confirmationGroup);
