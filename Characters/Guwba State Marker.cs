@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Character
 	[RequireComponent(typeof(CircleCollider2D), typeof(CinemachineImpulseSource))]
 	internal sealed class GuwbaStateMarker : StateController, IConnector
 	{
-		private static GuwbaStateMarker _instance;
+		private static bool _isExistent;
 		private GuwbaVisualizer _guwbaVisualizer;
 		private GuwbaDamager[] _guwbaDamagers;
 		private Animator _animator;
@@ -105,12 +105,12 @@ namespace GuwbaPrimeAdventure.Character
 		private new void Awake()
 		{
 			base.Awake();
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			this._animator = this.GetComponent<Animator>();
 			this._rigidbody = this.GetComponent<Rigidbody2D>();
 			this._collider = this.GetComponent<BoxCollider2D>();
@@ -156,7 +156,7 @@ namespace GuwbaPrimeAdventure.Character
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				return;
 			this.StopAllCoroutines();
 			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
@@ -177,7 +177,7 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private void OnEnable()
 		{
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				return;
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.Flex;
 			this._animator.SetFloat(this._isOn, 1f);
@@ -190,7 +190,7 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private void OnDisable()
 		{
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				return;
 			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.None;
 			this._animator.SetFloat(this._isOn, 0f);
@@ -220,10 +220,10 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private IEnumerator Start()
 		{
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				yield break;
 			this.DisableInputs();
-			yield return new WaitWhile(() => SceneInitiator.KeepTrancision);
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision);
 			this.EnableInputs();
 		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
