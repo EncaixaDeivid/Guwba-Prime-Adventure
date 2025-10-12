@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
@@ -48,6 +49,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
 		private void OnDisable() => this._rigidybody.gravityScale = 0f;
+		private IEnumerator Start()
+		{
+			foreach (EnemyProvider enemy in this._selfEnemies)
+				enemy.enabled = false;
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision);
+			foreach (EnemyProvider enemy in this._selfEnemies)
+				enemy.enabled = true;
+		}
 		private void Update()
 		{
 			if (this._isStunned)
