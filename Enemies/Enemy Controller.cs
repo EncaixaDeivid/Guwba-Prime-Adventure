@@ -53,7 +53,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			foreach (EnemyProvider enemy in this._selfEnemies)
 				enemy.enabled = false;
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision);
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			foreach (EnemyProvider enemy in this._selfEnemies)
 				enemy.enabled = true;
 		}
