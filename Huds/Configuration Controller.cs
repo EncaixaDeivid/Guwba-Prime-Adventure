@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Hud
@@ -9,7 +10,6 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class ConfigurationController : MonoBehaviour, IConnector
 	{
-		private static ConfigurationController _instance;
 		private ConfigurationHud _configurationHud;
 		private InputController _inputController;
 		private bool _isActive = true;
@@ -17,27 +17,27 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
-		internal static ConfigurationController Instance => _instance;
+		internal static ConfigurationController Instance { get; private set; }
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
-			if (_instance)
+			if (Instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			Instance = this;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
-			if (!_instance || _instance != this)
+			if (!Instance || Instance != this)
 				return;
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
-			if (!_instance || _instance != this)
+			if (!Instance || Instance != this)
 				return;
 			this._inputController = new InputController();
 			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
@@ -45,12 +45,13 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnDisable()
 		{
-			if (!_instance || _instance != this)
+			if (!Instance || Instance != this)
 				return;
 			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
 			this._inputController.Commands.HideHud.Disable();
 			this._inputController.Dispose();
 		}
+		private IEnumerator Start() => new WaitWhile(() => !(this._isActive = !SceneInitiator.IsInTrancision));
 		private Action<InputAction.CallbackContext> HideHudAction => _ => this.OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
