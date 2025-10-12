@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure
 	[RequireComponent(typeof(BoxCollider2D))]
 	internal sealed class CameraOccluder : StateController, IConnector
 	{
-		private static CameraOccluder _instance;
+		private static bool _isExistent;
 		private Vector2 _positionDamping = new();
 		[Header("Camera Objects")]
 		[SerializeField, Tooltip("The object that handles the follow of the camera.")] private CinemachineFollow _cinemachineFollow;
@@ -17,12 +17,12 @@ namespace GuwbaPrimeAdventure
 		private new void Awake()
 		{
 			base.Awake();
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			Camera camera = this.GetComponent<Camera>();
 			BoxCollider2D boxCollider = this.GetComponent<BoxCollider2D>();
 			this._positionDamping = this._cinemachineFollow.TrackerSettings.PositionDamping;
@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				return;
 			Sender.Exclude(this);
 		}
