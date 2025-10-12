@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class DeathScreenHud : MonoBehaviour
 	{
-		private static DeathScreenHud _instance;
+		private static bool _isExistent;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _textLabel;
 		[SerializeField, Tooltip("User interface element.")] private string _curtainVisual;
@@ -19,12 +19,12 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Button GameOver { get; private set; }
 		private void Awake()
 		{
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.Text = root.Q<Label>(this._textLabel);
 			this.Curtain = root.Q<VisualElement>(this._curtainVisual);
