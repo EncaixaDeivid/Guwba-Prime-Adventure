@@ -4,7 +4,7 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, Receptor.IReceptorSignal, IDestructible
+	internal sealed class DestructiveObject : StateController, IReceptorSignal, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
