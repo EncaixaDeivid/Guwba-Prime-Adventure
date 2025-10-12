@@ -7,19 +7,19 @@ namespace GuwbaPrimeAdventure.Item
 	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGoal : StateController
 	{
-		private static bool _isExistent;
+		private static LevelGoal _instance;
 		[Header("Scene Interactions")]
 		[SerializeField, Tooltip("If this will go direct to the boss.")] private SceneField _goToBoss;
 		[SerializeField, Tooltip("If theres a dialog after the goal.")] private bool _enterInDialog;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
-			if (_isExistent)
+			if (_instance)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_isExistent = true;
+			_instance = this;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
