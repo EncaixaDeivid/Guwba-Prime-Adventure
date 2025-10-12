@@ -93,9 +93,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.NormalSignal(signalActivator);
 			}
 		}
-		internal interface IReceptorSignal
-		{
-			public void Execute();
-		};
+	};
+	internal interface IReceptorSignal
+	{
+		public void Execute();
 	};
 };
