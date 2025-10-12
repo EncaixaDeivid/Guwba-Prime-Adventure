@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
 	internal sealed class BackgroundController : StateController
 	{
-		private static bool _isExistent;
+		private static BackgroundController _instance;
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private Vector2 _startPosition = Vector2.zero;
@@ -21,12 +21,12 @@ namespace GuwbaPrimeAdventure
 		[SerializeField, Tooltip("The amount to slow vertically for each layer that is after the first.")] private float _slowVertical;
 		private new void Awake()
 		{
-			if (_isExistent)
+			if (_instance)
 			{
-				Destroy(this.gameObject);
+				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_isExistent = this;
+			_instance = this;
 			base.Awake();
 			this._childrenTransforms = new Transform[this._backgroundImages.Length];
 			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
