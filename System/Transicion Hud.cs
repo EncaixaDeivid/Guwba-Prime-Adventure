@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class TransicionHud : MonoBehaviour
 	{
-		private static TransicionHud _instance;
+		private static bool _isExistent;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElement;
 		[SerializeField, Tooltip("User interface element.")] private string _loadingBarProgress;
@@ -13,12 +13,12 @@ namespace GuwbaPrimeAdventure
 		internal ProgressBar LoadingBar { get; private set; }
 		private void Awake()
 		{
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.RootVisualElement = root.Q<VisualElement>(this._rootElement);
 			this.LoadingBar = root.Q<ProgressBar>(this._loadingBarProgress);
