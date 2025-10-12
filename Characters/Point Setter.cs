@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Character
@@ -22,8 +23,9 @@ namespace GuwbaPrimeAdventure.Character
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void Start()
+		private IEnumerator Start()
 		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision);
 			SaveController.Load(out SaveFile saveFile);
 			if (this.gameObject.scene.name == this._levelSelectorScene && saveFile.lastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == this._selfIndex)
