@@ -25,7 +25,7 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private IEnumerator Start()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision);
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (this.gameObject.scene.name == this._levelSelectorScene && saveFile.lastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == this._selfIndex)
