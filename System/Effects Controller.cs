@@ -34,26 +34,26 @@ namespace GuwbaPrimeAdventure
 				Time.timeScale = 1f;
 			}
 		}
-		private void PrivateOnGlobalLight(Light2DBase globalLight)
+		private void PrivateGlobalLight(Light2DBase globalLight, bool active)
 		{
-			if (this._lightsStack.Contains(globalLight))
+			if (this._lightsStack.Contains(globalLight) && globalLight)
 				return;
 			foreach (Light2DBase light in this._lightsStack)
-				light.enabled = false;
-			globalLight.enabled = true;
-			this._lightsStack.Add(globalLight);
-		}
-		private void PrivateOffGlobalLight(Light2DBase globalLight)
-		{
-			if (!this._lightsStack.Contains(globalLight))
-				return;
-			foreach (Light2DBase light in this._lightsStack)
-				light.enabled = false;
-			this._lightsStack.Remove(globalLight);
-			this._lightsStack[^1].enabled = true;
+				if (light)
+					light.enabled = false;
+			if (active)
+			{
+				globalLight.enabled = true;
+				this._lightsStack.Add(globalLight);
+			}
+			else
+			{
+				this._lightsStack.Remove(globalLight);
+				this._lightsStack[^1].enabled = true;
+			}
 		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
-		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateOnGlobalLight(globalLight);
-		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateOffGlobalLight(globalLight);
+		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateGlobalLight(globalLight, true);
+		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateGlobalLight(globalLight, false);
 	};
 };
