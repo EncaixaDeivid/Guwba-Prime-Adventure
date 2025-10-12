@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Unity.Cinemachine;
 using System.Collections;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Camera), typeof(CinemachineCamera))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Camera))]
 	public sealed class SceneInitiator : MonoBehaviour
 	{
 		private static SceneInitiator _instance;
