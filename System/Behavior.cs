@@ -22,17 +22,17 @@ namespace GuwbaPrimeAdventure
 #if UNITY_EDITOR
 	public interface ILogger
 	{
-		public void LogInfo(string message,
+		public void LogInfo(object message,
 			[CallerMemberName] string member = "",
 			[CallerFilePath] string file = "",
 			[CallerLineNumber] int line = 0)
 		{
-			Debug.Log($"[{Path.GetFileName(file)} : {line} - {member}] {message}");
+			Debug.Log($"[{Path.GetFileName(file)} : {line} - {member}] " + message);
 		}
 	};
 	public sealed class Logger : ILogger
 	{
-		public static readonly ILogger Informer = new Logger();
+		public static void LogInfo(object message) => (new Logger() as ILogger).LogInfo(message);
 		private Logger() { }
 	};
 #endif
