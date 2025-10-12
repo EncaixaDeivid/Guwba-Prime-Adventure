@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
 	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface))]
 	[RequireComponent(typeof(Light2DBase), typeof(Receptor))]
-	internal sealed class HiddenPlace : StateController, Receptor.IReceptorSignal
+	internal sealed class HiddenPlace : StateController, IReceptorSignal
 	{
 		private Tilemap _tilemap;
 		private TilemapCollider2D _collider;
