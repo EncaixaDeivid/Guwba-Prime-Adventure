@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class MenuHud : MonoBehaviour
 	{
-		private static MenuHud _instance;
+		private static bool _isExistent;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _buttonsGroup;
 		[SerializeField, Tooltip("User interface element.")] private string _savesGroup;
@@ -27,12 +27,12 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Button[] Delete { get; private set; }
 		private void Awake()
 		{
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
 			this.Buttons = root.Q<GroupBox>(this._buttonsGroup);
 			this.Play = root.Q<Button>(this._playButton);
