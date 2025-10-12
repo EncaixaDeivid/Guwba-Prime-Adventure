@@ -142,6 +142,8 @@ namespace GuwbaPrimeAdventure.Character
 					vitality.style.display = DisplayStyle.None;
 				foreach (VisualElement recoverVitality in this._guwbaVisualizer.RecoverVitalityVisual)
 					recoverVitality.style.display = DisplayStyle.None;
+				foreach (VisualElement bunnyHop in this._guwbaVisualizer.BunnyHopVisual)
+					bunnyHop.style.display = DisplayStyle.None;
 				this._guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
 			}
 			this._inputController = new InputController();
@@ -240,7 +242,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (movementValue.y > 0.25f)
 			{
 				this._lastJumpTime = this._jumpBufferTime;
-				if (!this._isOnGround && movement.performed)
+				if (!this._isOnGround && movement.performed && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
 					if (this._bunnyHopBoost >= this._guwbaVisualizer.BunnyHopVisual.Length)
 						this._bunnyHopBoost = (ushort)this._guwbaVisualizer.BunnyHopVisual.Length;
 					else
@@ -454,7 +456,7 @@ namespace GuwbaPrimeAdventure.Character
 						for (ushort i = 0; i < this._guwbaVisualizer.BunnyHopVisual.Length; i++)
 							this._guwbaVisualizer.BunnyHopVisual[i].style.backgroundColor = new StyleColor(missingColor);
 					}
-					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f)
+					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
 					{
 						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
 						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
