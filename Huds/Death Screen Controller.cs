@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure.Hud
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class DeathScreenController : MonoBehaviour, IConnector
 	{
-		private static DeathScreenController _instance;
+		private static bool _isExistent;
 		private DeathScreenHud _deathScreenHud;
 		private readonly Sender _sender = Sender.Create();
 		[Header("Interaction Object")]
@@ -19,17 +19,17 @@ namespace GuwbaPrimeAdventure.Hud
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
-			if (_instance)
+			if (_isExistent)
 			{
 				Destroy(this.gameObject, 0.001f);
 				return;
 			}
-			_instance = this;
+			_isExistent = this;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
-			if (!_instance || _instance != this)
+			if (!_isExistent || _isExistent != this)
 				return;
 			if (this._deathScreenHud)
 			{
