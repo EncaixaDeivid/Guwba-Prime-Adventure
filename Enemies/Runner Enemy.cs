@@ -14,10 +14,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
 		private void Start() => this._timeRun = this._statistics.TimesToRun;
-		private new void Update()
+		private void Update()
 		{
-			base.Update();
-			if (this.IsStunned)
+			if (this._rigidybody.IsSleeping())
 				return;
 			if (this._statistics.DetectionStop && this._stopWorking)
 			{
@@ -77,7 +76,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this.IsStunned)
+			if (this._rigidybody.IsSleeping())
 				return;
 			if (this._statistics.DetectionStop && this._detected && !this._isDashing && this.SurfacePerception())
 				this._rigidybody.linearVelocityX = 0f;
