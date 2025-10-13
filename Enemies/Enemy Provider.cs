@@ -48,11 +48,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			this._controller.IsStunned = true;
 			this._controller.StunTimer = stunTime;
-			this._rigidybody.gravityScale = 0f;
-			this._rigidybody.linearVelocity = Vector2.zero;
+			this._rigidybody.Sleep();
 			if ((this._controller.ArmorResistance -= (short)stunStength) <= 0f)
 			{
-				this._rigidybody.gravityScale = this._controller.GuardGravityScale;
+				this._rigidybody.WakeUp();
 				this._controller.StunTimer = this._controller.ProvidenceStatistics.StunnedTime;
 				this._controller.ArmorResistance = (short)this._controller.ProvidenceStatistics.HitResistance;
 			}
