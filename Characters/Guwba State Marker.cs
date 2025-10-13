@@ -40,6 +40,7 @@ namespace GuwbaPrimeAdventure.Character
 		private readonly int _stun = Animator.StringToHash("Stun");
 		private readonly int _death = Animator.StringToHash("Death");
 		private short _vitality;
+		private short _stunResistance;
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
 		private float _gravityScale = 0f;
@@ -76,7 +77,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
 		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
-		[SerializeField, Tooltip("The amount of stun that Guwba can resists.")] private ushort _stunResistance;
 		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
 		[Header("Movement")]
 		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
@@ -120,7 +120,8 @@ namespace GuwbaPrimeAdventure.Character
 			SaveController.Load(out SaveFile saveFile);
 			this._guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
 			this._guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
-			this._vitality = (short)this._guwbaVisualizer.Vitality;
+			this._vitality = (short)this._guwbaVisualizer.Vitality.Length;
+			this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
 			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
 			{
 				guwbaDamager.DamagerHurt += this.Hurt;
@@ -138,11 +139,13 @@ namespace GuwbaPrimeAdventure.Character
 			this._normalSize = this._collider.size;
 			if (this.gameObject.scene.name.Contains(this._hubbyWorldScene))
 			{
-				foreach (VisualElement vitality in this._guwbaVisualizer.VitalityVisual)
+				foreach (VisualElement vitality in this._guwbaVisualizer.Vitality)
 					vitality.style.display = DisplayStyle.None;
-				foreach (VisualElement recoverVitality in this._guwbaVisualizer.RecoverVitalityVisual)
+				foreach (VisualElement recoverVitality in this._guwbaVisualizer.RecoverVitality)
 					recoverVitality.style.display = DisplayStyle.None;
-				foreach (VisualElement bunnyHop in this._guwbaVisualizer.BunnyHopVisual)
+				foreach (VisualElement stunResistance in this._guwbaVisualizer.StunResistance)
+					stunResistance.style.display = DisplayStyle.None;
+				foreach (VisualElement bunnyHop in this._guwbaVisualizer.BunnyHop)
 					bunnyHop.style.display = DisplayStyle.None;
 				this._guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
 			}
@@ -243,8 +246,8 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				this._lastJumpTime = this._jumpBufferTime;
 				if (!this._isOnGround && movement.performed && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
-					if (this._bunnyHopBoost >= this._guwbaVisualizer.BunnyHopVisual.Length)
-						this._bunnyHopBoost = (ushort)this._guwbaVisualizer.BunnyHopVisual.Length;
+					if (this._bunnyHopBoost >= this._guwbaVisualizer.BunnyHop.Length)
+						this._bunnyHopBoost = (ushort)this._guwbaVisualizer.BunnyHop.Length;
 					else
 						this._bunnyHopBoost += 1;
 			}
@@ -327,14 +330,13 @@ namespace GuwbaPrimeAdventure.Character
 				return false;
 			this._invencibility = true;
 			this._vitality -= (short)damage;
-			for (ushort i = (ushort)this._guwbaVisualizer.VitalityVisual.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
+			for (ushort i = (ushort)this._guwbaVisualizer.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
-				Color missingColor = this._guwbaVisualizer.MissingColor;
-				this._guwbaVisualizer.VitalityVisual[i - 1].style.backgroundColor = new StyleColor(missingColor);
-				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderBottomColor = new StyleColor(missingColor);
-				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderLeftColor = new StyleColor(missingColor);
-				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderRightColor = new StyleColor(missingColor);
-				this._guwbaVisualizer.VitalityVisual[i - 1].style.borderTopColor = new StyleColor(missingColor);
+				this._guwbaVisualizer.Vitality[i - 1].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				this._guwbaVisualizer.Vitality[i - 1].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				this._guwbaVisualizer.Vitality[i - 1].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				this._guwbaVisualizer.Vitality[i - 1].style.borderRightColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				this._guwbaVisualizer.Vitality[i - 1].style.borderTopColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 			}
 			if (this._vitality <= 0f)
 			{
@@ -362,11 +364,19 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
 		{
-			if (this._stunResistance - stunStrength <= 0f)
+			this._stunResistance -= (short)stunStrength;
+			bool condition = this._stunResistance >= 0f;
+			for (ushort i = (ushort)this._guwbaVisualizer.StunResistance.Length; i > (condition ? this._stunResistance : 0f); i--)
+				this._guwbaVisualizer.StunResistance[i - 1].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+			if (this._stunResistance <= 0f)
 				this.StartCoroutine(StunTimer());
 			IEnumerator StunTimer()
 			{
 				this._animator.SetBool(this._stun, true);
+				Color stunResistanceColor = this._guwbaVisualizer.StunResistanceColor;
+				this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
+				for (ushort i = 0; i < this._stunResistance; i++)
+					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(stunResistanceColor);
 				this._dashActive = false;
 				yield return new WaitTime(this, stunTime);
 				this._animator.SetBool(this._stun, false);
@@ -387,27 +397,28 @@ namespace GuwbaPrimeAdventure.Character
 					short damageDifference = (short)(guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health));
 					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : damageDifference); amount++)
 					{
-						bool valid = this._vitality < this._guwbaVisualizer.Vitality;
-						if (this._recoverVitality >= this._guwbaVisualizer.RecoverVitality && valid)
+						bool valid = this._vitality < this._guwbaVisualizer.Vitality.Length;
+						if (this._recoverVitality >= this._guwbaVisualizer.RecoverVitality.Length && valid)
 						{
 							this._recoverVitality = 0;
-							for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitality; i++)
-								this._guwbaVisualizer.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
+							for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitality.Length; i++)
+								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(missingColor);
 							this._vitality += 1;
+							this._stunResistance += 1;
 							for (ushort i = 0; i < this._vitality; i++)
 							{
-								this._guwbaVisualizer.VitalityVisual[i].style.backgroundColor = new StyleColor(backgroundColor);
-								this._guwbaVisualizer.VitalityVisual[i].style.borderBottomColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.VitalityVisual[i].style.borderLeftColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.VitalityVisual[i].style.borderRightColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.VitalityVisual[i].style.borderTopColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(backgroundColor);
+								this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(borderColor);
 							}
 						}
-						else if (this._recoverVitality < this._guwbaVisualizer.RecoverVitality)
+						else if (this._recoverVitality < this._guwbaVisualizer.RecoverVitality.Length)
 						{
 							this._recoverVitality += 1;
 							for (ushort i = 0; i < this._recoverVitality; i++)
-								this._guwbaVisualizer.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(borderColor);
 						}
 						yield return new WaitTime(this, this._recoverRate);
 					}
@@ -426,14 +437,12 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
 			Vector2 direction = this.transform.right * this._movementAction;
-			LayerMask groundLayer = this._groundLayer;
-			float rootHeight = this._collider.size.y / this._collider.size.y;
 			this._downStairs = false;
 			if (!this._isOnGround && this._canDownStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
 			{
 				float xOrigin = position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction;
 				Vector2 downRayOrigin = new(xOrigin, position.y - this._collider.bounds.extents.y);
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, rootHeight + this._groundChecker, groundLayer);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, 1f + this._groundChecker, this._groundLayer);
 				if (this._downStairs = downRay)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
 			}
@@ -452,9 +461,8 @@ namespace GuwbaPrimeAdventure.Character
 					if (this._bunnyHopBoost <= 0f && this._isHoping)
 					{
 						this._isHoping = false;
-						Color missingColor = this._guwbaVisualizer.MissingColor;
-						for (ushort i = 0; i < this._guwbaVisualizer.BunnyHopVisual.Length; i++)
-							this._guwbaVisualizer.BunnyHopVisual[i].style.backgroundColor = new StyleColor(missingColor);
+						for (ushort i = 0; i < this._guwbaVisualizer.BunnyHop.Length; i++)
+							this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 					}
 					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
 					{
@@ -529,12 +537,12 @@ namespace GuwbaPrimeAdventure.Character
 				if (this._isOnGround && this._movementAction != 0f)
 				{
 					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - rootHeight * this._bottomCheckerOffset);
-					Vector2 bottomSize = new(this._groundChecker, rootHeight - this._groundChecker);
-					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, groundLayer);
-					Vector2 topOrigin = new(position.x + stairsXOrigin, position.y + rootHeight * .5f);
-					Vector2 topSize = new(this._groundChecker, rootHeight * this._topWallChecker - this._groundChecker);
-					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, groundLayer);
+					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - 1f * this._bottomCheckerOffset);
+					Vector2 bottomSize = new(this._groundChecker, 1f - this._groundChecker);
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, this._groundLayer);
+					Vector2 topOrigin = new(position.x + stairsXOrigin, position.y + 1f * .5f);
+					Vector2 topSize = new(this._groundChecker, 1f * this._topWallChecker - this._groundChecker);
+					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, this._groundLayer);
 					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
 					this._animator.SetFloat(this._walkSpeed, topCast ? walkSpeed : 1f);
 					if (bottomCast && topCast)
@@ -543,7 +551,7 @@ namespace GuwbaPrimeAdventure.Character
 						float bottomCorner = position.y - this._collider.bounds.extents.y;
 						Vector2 lineStart = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, topCorner);
 						Vector2 lineEnd = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, bottomCorner);
-						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, groundLayer);
+						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
 						if (lineWall.collider == bottomCast.collider)
 						{
 							float yDistance = position.y + (lineWall.point.y - bottomCorner);
@@ -562,7 +570,7 @@ namespace GuwbaPrimeAdventure.Character
 				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
 				Vector2 wallOrigin = new(position.x + xOrigin, position.y);
 				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, groundLayer);
+				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, this._groundLayer);
 				float speed = this._longJumping ? this._dashSpeed : this._movementSpeed + BunnyHop(this._velocityBoost);
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / speed);
 				float targetSpeed = speed * this._movementAction;
@@ -592,7 +600,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._isHoping = true;
 					Color bunnyHopColor = this._guwbaVisualizer.BunnyHopColor;
 					for (ushort i = 0; i < this._bunnyHopBoost; i++)
-						this._guwbaVisualizer.BunnyHopVisual[i].style.backgroundColor = new StyleColor(bunnyHopColor);
+						this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(bunnyHopColor);
 				}
 				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
@@ -639,20 +647,21 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				for (ushort i = 0; i < this._guwbaVisualizer.VitalityVisual.Length; i++)
+				for (ushort i = 0; i < (this._vitality = (short)this._guwbaVisualizer.Vitality.Length); i++)
 				{
-					this._guwbaVisualizer.VitalityVisual[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BackgroundColor);
-					this._guwbaVisualizer.VitalityVisual[i].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.VitalityVisual[i].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.VitalityVisual[i].style.borderRightColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.VitalityVisual[i].style.borderTopColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+					this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BackgroundColor);
+					this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+					this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+					this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+					this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(this._guwbaVisualizer.BorderColor);
 				}
-				for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitalityVisual.Length; i++)
-				{
-					Color missingColor = this._guwbaVisualizer.MissingColor;
-					this._guwbaVisualizer.RecoverVitalityVisual[i].style.backgroundColor = new StyleColor(missingColor);
-				}
-				this._vitality = (short)this._guwbaVisualizer.Vitality;
+				for (ushort i = this._recoverVitality = 0; i < this._guwbaVisualizer.RecoverVitality.Length; i++)
+					this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				for (ushort i = 0; i < (this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length); i++)
+					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
+				for (ushort i = this._bunnyHopBoost = 0; i < this._guwbaVisualizer.BunnyHop.Length; i++)
+					this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				this._isHoping = false;
 				this.transform.localScale = new Vector3()
 				{
 					x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
