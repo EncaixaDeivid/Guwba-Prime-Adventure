@@ -98,7 +98,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			Vector2 origin = new(this.transform.position.x + xOrigin, this.transform.position.y);
 			Vector2 size = new(groundChecker, this._collider.bounds.size.y - groundChecker);
 			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, right, groundChecker, groundLayer);
-			bool blockPerception = blockCast && blockCast.collider.TryGetComponent<Surface>(out var surface) && surface.IsScene;
+			bool blockPerception = blockCast && blockCast.collider.CanContact(this._collider);
 			if (this._statistics.RunFromTarget && this._timeRun <= 0f && this._detected)
 			{
 				this._timeRun = this._statistics.RunOfTime;
