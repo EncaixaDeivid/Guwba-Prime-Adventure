@@ -20,6 +20,13 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
 		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
 		public PathConnection PathConnection => PathConnection.Story;
+		private void Awake()
+		{
+			this._storyTeller = this.GetComponent<StoryTeller>();
+			this._animator = this.GetComponent<Animator>();
+			this._sender.SetStateForm(StateForm.State);
+			this._sender.SetAdditionalData(this.gameObject);
+		}
 		private IEnumerator TextDigitation()
 		{
 			StyleBackground image = new(this._dialogObject.Speachs[this._speachIndex].Model);
@@ -90,16 +97,12 @@ namespace GuwbaPrimeAdventure.Story
 		}
 		public void Interaction()
 		{
+			this._sender.SetToggle(false);
+			this._sender.Send(PathConnection.Hud);
+			StateController.SetState(false);
 			SettingsController.Load(out Settings settings);
 			if (settings.DialogToggle && this._dialogObject && this._dialogHudObject)
 			{
-				this._sender.SetStateForm(StateForm.State);
-				this._sender.SetAdditionalData(this.gameObject);
-				this._sender.SetToggle(false);
-				this._sender.Send(PathConnection.Hud);
-				StateController.SetState(false);
-				this._storyTeller = this.GetComponent<StoryTeller>();
-				this._animator = this.GetComponent<Animator>();
 				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
 				this._dialogTime = settings.DialogSpeed;
 				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
