@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	[DisallowMultipleComponent, RequireComponent(typeof(Collider2D))]
 	internal sealed class InteractiveActivator : Activator, IInteractable
 	{
+		private readonly Sender _sender = Sender.Create();
 		public void Interaction()
 		{
 			if (this.Usable)
@@ -12,11 +13,10 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				this.Activation();
 				if (!this.Usable)
 				{
-					Sender sender = Sender.Create();
-					sender.SetStateForm(StateForm.State);
-					sender.SetToggle(false);
-					sender.SetAdditionalData(this.gameObject);
-					sender.Send(PathConnection.Hud);
+					this._sender.SetStateForm(StateForm.State);
+					this._sender.SetToggle(false);
+					this._sender.SetAdditionalData(this.gameObject);
+					this._sender.Send(PathConnection.Hud);
 				}
 			}
 		}
