@@ -13,11 +13,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Enemy Provider")]
 		[SerializeField, Tooltip("The enemies to send messages.")] private EnemyProvider[] _enemiesToSend;
 		[SerializeField, Tooltip("The level of priority to use the destructible side.")] private ushort _destructilbePriority = 0;
-		internal EnemyStatistics Statistics => this._controller.ProvidenceStatistics;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		public short Health => this._controller.Health;
 		internal ushort DestructilbePriority => this._destructilbePriority;
-		internal bool IsStunned => this._controller.IsStunned;
 		protected new void Awake()
 		{
 			base.Awake();
@@ -46,12 +44,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			this._controller.IsStunned = true;
 			this._controller.StunTimer = stunTime;
 			this._rigidybody.Sleep();
 			if ((this._controller.ArmorResistance -= (short)stunStength) <= 0f)
 			{
-				this._rigidybody.WakeUp();
 				this._controller.StunTimer = this._controller.ProvidenceStatistics.StunnedTime;
 				this._controller.ArmorResistance = (short)this._controller.ProvidenceStatistics.HitResistance;
 			}
