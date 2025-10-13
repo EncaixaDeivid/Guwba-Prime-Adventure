@@ -68,7 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			IEnumerator TimedSummon(SummonObject summon)
 			{
 				yield return new WaitTime(this, summon.SummonTime);
-				yield return new WaitUntil(() => !summon.StopTimedSummon && !this._stopSummon && this.isActiveAndEnabled);
+				yield return new WaitUntil(() => !summon.StopTimedSummon && !this._stopSummon && this.isActiveAndEnabled && !this.IsStunned);
 				if (!summon.StopTimedSummon && !summon.StopPermanently && !this._stopSummon)
 				{
 					this.Summon(summon);
