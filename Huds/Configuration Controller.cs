@@ -136,6 +136,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			SettingsController.Load(out Settings settings);
 			Application.targetFrameRate = settings.FrameRate = (ushort)frameRate.newValue;
+			this._configurationHud.FrameRateText.text = frameRate.newValue.ToString();
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<int>> GeneralVolume => volume =>
