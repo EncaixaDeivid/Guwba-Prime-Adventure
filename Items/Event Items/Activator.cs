@@ -38,18 +38,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (this._oneActivation && this._usedOne)
 				return;
+			this._used = !this._used;
+			if (this._oneActivation)
+				this._usable = false;
 			if (this._animator)
-			{
-				this._used = !this._used;
 				if (this._used)
 					this._animator.SetTrigger(this._use);
 				else
 					this._animator.SetTrigger(this._useAgain);
-				if (this._oneActivation)
-				{
-					this._usable = false;
-				}
-			}
 			foreach (Receptor receptor in this._receptors)
 				if (receptor)
 					receptor.ReceiveSignal(this);
