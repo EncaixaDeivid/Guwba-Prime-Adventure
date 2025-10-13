@@ -52,8 +52,7 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			GameObject gameObject = additionalData as GameObject;
-			if (gameObject == this.gameObject && data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (additionalData as GameObject == this.gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
 				{
 					this._isActive = true;
