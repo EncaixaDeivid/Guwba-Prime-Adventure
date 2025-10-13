@@ -72,6 +72,7 @@ namespace GuwbaPrimeAdventure.Hud
 					this._sender.Send(PathConnection.Character);
 					this._sender.SetStateForm(StateForm.None);
 					this._sender.Send(PathConnection.Enemy);
+					ConfigurationController.Instance.SetActive(true);
 					if (this._deathScreenHud)
 					{
 						this._deathScreenHud.Continue.clicked -= this.Continue;
