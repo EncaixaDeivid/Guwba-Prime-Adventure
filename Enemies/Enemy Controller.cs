@@ -103,8 +103,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
+			{
+				this._rigidybody.Sleep();
 				foreach (EnemyProvider enemy in this._selfEnemies)
 					enemy.enabled = data.ToggleValue.Value;
+			}
 		}
 	};
 };
