@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
-		private float _gravityScale = 0f;
 		private bool _canShoot = false;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy")]
@@ -16,7 +15,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._gravityScale = this._rigidybody.gravityScale;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -64,12 +62,11 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._canShoot = true;
 					this._timeStop = this._statistics.StopTime;
 					this._isStopped = true;
-					this._rigidybody.linearVelocity = Vector2.zero;
 					this._sender.SetStateForm(StateForm.State);
 					this._sender.SetToggle(false);
 					this._sender.Send(PathConnection.Enemy);
 					if (this._statistics.Paralyze)
-						this._rigidybody.gravityScale = 0f;
+						this._rigidybody.Sleep();
 				}
 				else
 					this.Shoot();
@@ -100,7 +97,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopWorking || this._rigidybody.IsSleeping())
+			if (this._stopWorking || this.IsStunned)
 				return;
 			if (this._shootInterval > 0f && !this._isStopped)
 				this._shootInterval -= Time.deltaTime;
@@ -117,8 +114,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._sender.SetStateForm(StateForm.State);
 				this._sender.SetToggle(true);
 				this._sender.Send(PathConnection.Enemy);
-				if (this._statistics.ReturnGravity)
-					this._rigidybody.gravityScale = this._gravityScale;
+				if (this._statistics.ReturnParalyze)
+					this._rigidybody.WakeUp();
 			}
 			this.Verify();
 		}
