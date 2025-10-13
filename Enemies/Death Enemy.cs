@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._isDead && !this.IsStunned)
+			if (this._isDead && !this._rigidybody.IsSleeping())
 			{
 				this._deathTime += Time.deltaTime;
 				if (this._deathTime >= this._statistics.TimeToDie)
