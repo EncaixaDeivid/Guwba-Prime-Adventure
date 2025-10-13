@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (!this.Usable)
 				{
 					Sender sender = Sender.Create();
-					sender.SetStateForm(StateForm.Action);
+					sender.SetStateForm(StateForm.State);
 					sender.SetToggle(false);
 					sender.SetAdditionalData(this.gameObject);
 					sender.Send(PathConnection.Hud);
