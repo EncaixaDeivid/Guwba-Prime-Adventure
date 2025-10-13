@@ -100,7 +100,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopWorking || this.IsStunned)
+			if (this._stopWorking || this._rigidybody.IsSleeping())
 				return;
 			if (this._shootInterval > 0f && !this._isStopped)
 				this._shootInterval -= Time.deltaTime;
