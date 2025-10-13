@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Guwba/Designs/Guwba%20Hud.uss?fileID=7433441132597879392&amp;guid=09c1d2f441fe8624d8a5be5bba1f7864&amp;type=3#Guwba Hud" />
+    <Style src="project://database/Assets/Characters/Designs/Guwba%20Hud.uss?fileID=7433441132597879392&amp;guid=09c1d2f441fe8624d8a5be5bba1f7864&amp;type=3#Guwba Hud" />
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Icons">
             <ui:GroupBox name="SubIcon">
@@ -18,6 +18,9 @@
                 </ui:GroupBox>
                 <ui:GroupBox name="RecoverVitality">
                     <ui:VisualElement name="RecoverVitalityPiece" />
+                </ui:GroupBox>
+                <ui:GroupBox name="StunResistance">
+                    <ui:VisualElement name="StunResistancePiece" />
                 </ui:GroupBox>
                 <ui:GroupBox name="BunnyHop">
                     <ui:VisualElement name="BunnyHopPiece" />
