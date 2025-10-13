@@ -328,7 +328,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (this._invencibility || damage <= 0f)
 				return false;
-			this._invencibility = !this._animator.GetBool(this._stun);
+			this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaVisualizer.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
@@ -372,7 +372,7 @@ namespace GuwbaPrimeAdventure.Character
 				this.StartCoroutine(StunTimer());
 			IEnumerator StunTimer()
 			{
-				this._animator.SetBool(this._stun, !(this._invencibility = false));
+				this._animator.SetBool(this._stun, true);
 				Color stunResistanceColor = this._guwbaVisualizer.StunResistanceColor;
 				this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
 				for (ushort i = 0; i < this._stunResistance; i++)
