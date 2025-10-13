@@ -32,7 +32,7 @@ namespace GuwbaPrimeAdventure
 	};
 	public sealed class Logger : ILogger
 	{
-		public static void LogInfo(object message) => (new Logger() as ILogger).LogInfo(message);
+		public static ILogger Informer = new Logger();
 		private Logger() { }
 	};
 #endif
