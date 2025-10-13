@@ -74,7 +74,6 @@ namespace GuwbaPrimeAdventure.Hud
 			this._configurationHud.No.clicked -= this.NoBackLevel;
 			Destroy(this._configurationHud.gameObject);
 			StateController.SetState(true);
-			SettingsController.SaveSettings();
 		};
 		private Action OutLevel => () =>
 		{
@@ -159,7 +158,6 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		private Action YesBackLevel => () =>
 		{
-			SettingsController.SaveSettings();
 			if (this.gameObject.scene.name != this._levelSelectorScene)
 				this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
 			else
