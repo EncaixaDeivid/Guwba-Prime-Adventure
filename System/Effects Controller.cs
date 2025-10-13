@@ -36,20 +36,21 @@ namespace GuwbaPrimeAdventure
 		}
 		private void PrivateGlobalLight(Light2DBase globalLight, bool active)
 		{
-			if ((active && !this._lightsStack.Contains(globalLight) || !active && this._lightsStack.Contains(globalLight)) && !globalLight)
-				return;
-			foreach (Light2DBase light in this._lightsStack)
-				if (light)
-					light.enabled = false;
-			if (active)
+			if ((active && !this._lightsStack.Contains(globalLight) || !active && this._lightsStack.Contains(globalLight)) && globalLight)
 			{
-				globalLight.enabled = true;
-				this._lightsStack.Add(globalLight);
-			}
-			else
-			{
-				this._lightsStack.Remove(globalLight);
-				this._lightsStack[^1].enabled = true;
+				foreach (Light2DBase light in this._lightsStack)
+					if (light)
+						light.enabled = false;
+				if (active)
+				{
+					globalLight.enabled = true;
+					this._lightsStack.Add(globalLight);
+				}
+				else
+				{
+					this._lightsStack.Remove(globalLight);
+					this._lightsStack[^1].enabled = true;
+				}
 			}
 		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
