@@ -91,7 +91,6 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data, object additionalData)
 		{
-			Logger.Informer.LogInfo(data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value);
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
