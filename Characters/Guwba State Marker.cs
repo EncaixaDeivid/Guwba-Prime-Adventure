@@ -201,7 +201,6 @@ namespace GuwbaPrimeAdventure.Character
 			this._animator.SetFloat(this._isOn, 0f);
 			this._animator.SetFloat(this._walkSpeed, 0f);
 			this.DisableInputs();
-			this._movementAction = 0f;
 			if (this._dashActive)
 			{
 				this._guardDashMovement = this._dashMovement;
@@ -216,12 +215,15 @@ namespace GuwbaPrimeAdventure.Character
 			this._inputController.Commands.Movement.Enable();
 			this._inputController.Commands.AttackUse.Enable();
 			this._inputController.Commands.Interaction.Enable();
+			this._rigidbody.WakeUp();
 		}
 		private void DisableInputs()
 		{
 			this._inputController.Commands.Movement.Disable();
 			this._inputController.Commands.AttackUse.Disable();
 			this._inputController.Commands.Interaction.Disable();
+			this._rigidbody.Sleep();
+			this._movementAction = 0f;
 		}
 		private IEnumerator Start()
 		{
@@ -378,8 +380,10 @@ namespace GuwbaPrimeAdventure.Character
 				for (ushort i = 0; i < this._stunResistance; i++)
 					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(stunResistanceColor);
 				this._dashActive = false;
+				this.DisableInputs();
 				yield return new WaitTime(this, stunTime);
 				this._animator.SetBool(this._stun, false);
+				this.EnableInputs();
 			}
 		};
 		private UnityAction<GuwbaDamager, IDestructible> Attack => (guwbaDamager, destructible) =>
