@@ -79,7 +79,10 @@ namespace GuwbaPrimeAdventure.Hud
 			this.No = root.Q<Button>(this._noButton);
 			this.FrameRateText =  root.Q<Label>(this._frameRateText);
 			if (!SettingsController.FileExists())
-				SettingsController.SaveSettings();
+			{
+				SettingsController.Load(out Settings saveSettings);
+				SettingsController.WriteSave(saveSettings);
+			}
 			SettingsController.Load(out Settings settings);
 			this.FrameRate.highValue = 120;
 			this.DialogSpeed.highValue = .1f;
