@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
-		private Animator _animator;
 		private bool _isJumping = false;
 		private bool _stopJump = false;
 		[Header("Jumper Enemy")]
@@ -89,7 +88,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._animator = this.GetComponent<Animator>();
 			this._sender.SetStateForm(StateForm.State);
 			for (ushort i = 0; i < this._statistics.JumpPointStructures.Length; i++)
 			{
@@ -158,16 +156,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (!this._statistics.SequentialTimmedJumps)
 					this.StartCoroutine(TimedJump(stats));
 			}
-		}
-		private new void OnEnable()
-		{
-			base.OnEnable();
-			this._animator.enabled = true;
-		}
-		private new void OnDisable()
-		{
-			base.OnDisable();
-			this._animator.enabled = false;
 		}
 		private void FixedUpdate()
 		{
