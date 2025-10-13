@@ -9,9 +9,10 @@ namespace GuwbaPrimeAdventure.Enemy
     {
 		private EnemyProvider[] _selfEnemies;
 		private Rigidbody2D _rigidybody;
-		private float _stunTimer = 0f;
 		private short _vitality;
 		private short _armorResistance = 0;
+		private float _stunTimer = 0f;
+		private bool _stunned = false;
 		[Header("Enemy Statistics")]
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
 		internal EnemyStatistics ProvidenceStatistics => this._statistics;
@@ -20,6 +21,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal short Vitality { get => this._vitality; set => this._vitality = value; }
 		internal short ArmorResistance { get => this._armorResistance; set => this._armorResistance = value; }
 		internal float StunTimer { get => this._stunTimer; set => this._stunTimer = value; }
+		internal bool IsStunned { get => this._stunned; set => this._stunned = value; }
 		private new void Awake()
 		{
 			base.Awake();
@@ -54,11 +56,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._rigidybody.IsSleeping())
+			if (this._stunned)
 			{
 				this._stunTimer -= Time.deltaTime;
 				if (this._stunTimer <= 0f)
+				{
+					this._stunned = false;
 					this._rigidybody.WakeUp();
+				}
 			}
 		}
 		private void OnTrigger(GameObject collisionObject)
@@ -85,7 +90,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (this._rigidybody.IsSleeping())
+			if (this._stunned)
 				return;
 			ushort priority = 0;
 			for (ushort i = 0; i < this._selfEnemies.Length - 1f; i++)
