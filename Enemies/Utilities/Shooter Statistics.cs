@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _paralyze;
 		[SerializeField, Tooltip("If this enemy will return the gravity after paralyze.\nRequires: Moving Enemy")]
 		private bool _returnGravity;
-		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circulateDetection;
+		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circularDetection;
 		[SerializeField, Tooltip("Will shoot to infinity without any detection.")] private bool _shootInfinity;
 		[SerializeField, Tooltip("If this enemy won't interfere in the projectile.")] private bool _pureInstance;
 		[SerializeField, Tooltip("If the projectile will be instantiate on the same point as this enemy.")] private bool _instanceOnSelf;
@@ -39,7 +39,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal bool Stop => this._stop;
 		internal bool Paralyze => this._paralyze;
 		internal bool ReturnGravity => this._returnGravity;
-		internal bool CirculateDetection => this._circulateDetection;
+		internal bool CircularDetection => this._circularDetection;
 		internal bool ShootInfinity => this._shootInfinity;
 		internal bool PureInstance => this._pureInstance;
 		internal bool InstanceOnSelf => this._instanceOnSelf;
