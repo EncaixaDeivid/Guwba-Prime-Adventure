@@ -22,21 +22,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._statistics.EndlessPursue)
 				Destroy(this.gameObject, this._statistics.FadeTime);
 		}
-		private void Update()
-		{
-			if (this._rigidybody.IsSleeping())
-				return;
-			if (this._statistics.DetectionStop && this._stopWorking)
-			{
-				this._stoppedTime += Time.deltaTime;
-				if (this._stoppedTime >= this._statistics.StopTime)
-				{
-					this._stoppedTime = 0f;
-					this._stopWorking = false;
-					this._isDashing = true;
-				}
-			}
-		}
 		private void Chase()
 		{
 			float maxDistanceDelta;
@@ -108,9 +93,24 @@ namespace GuwbaPrimeAdventure.Enemy
 				this._pointOrigin = this.transform.position;
 			}
 		}
+		private void Update()
+		{
+			if (this.IsStunned)
+				return;
+			if (this._statistics.DetectionStop && this._stopWorking)
+			{
+				this._stoppedTime += Time.deltaTime;
+				if (this._stoppedTime >= this._statistics.StopTime)
+				{
+					this._stoppedTime = 0f;
+					this._stopWorking = false;
+					this._isDashing = true;
+				}
+			}
+		}
 		private void FixedUpdate()
 		{
-			if (this._stopWorking || this._rigidybody.IsSleeping())
+			if (this._stopWorking || this.IsStunned)
 				return;
 			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
