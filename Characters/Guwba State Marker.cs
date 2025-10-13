@@ -374,8 +374,8 @@ namespace GuwbaPrimeAdventure.Character
 				this.StartCoroutine(StunTimer());
 			IEnumerator StunTimer()
 			{
+				this._animator.SetBool(this._idle, false);
 				this._animator.SetBool(this._stun, true);
-				this._animator.SetFloat(this._isOn, 0f);
 				Color stunResistanceColor = this._guwbaVisualizer.StunResistanceColor;
 				this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
 				for (ushort i = 0; i < this._stunResistance; i++)
@@ -384,7 +384,6 @@ namespace GuwbaPrimeAdventure.Character
 				this.DisableInputs();
 				yield return new WaitTime(this, stunTime);
 				this._animator.SetBool(this._stun, false);
-				this._animator.SetFloat(this._isOn, 1f);
 				this.EnableInputs();
 			}
 		};
