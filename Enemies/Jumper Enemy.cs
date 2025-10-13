@@ -22,14 +22,14 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._sender.SetToggle(false);
 					this._sender.Send(PathConnection.Enemy);
 					yield return new WaitTime(this, this._statistics.StopTime);
-					yield return new WaitUntil(() => this.isActiveAndEnabled && this._rigidybody.IsAwake());
+					yield return new WaitUntil(() => this.isActiveAndEnabled && this.IsStunned);
 				}
 				this._isJumping = true;
 				this._rigidybody.AddForceY(this._rigidybody.mass * this._statistics.JumpStrenght, ForceMode2D.Impulse);
 				this.StartCoroutine(FollowSide());
 				IEnumerator FollowSide()
 				{
-					bool valid = !this.SurfacePerception() && this.isActiveAndEnabled && this._rigidybody.IsAwake() && !this._stopJump;
+					bool valid = !this.SurfacePerception() && this.isActiveAndEnabled && this.IsStunned && !this._stopJump;
 					yield return new WaitUntil(() => valid);
 					this._movementSide = (short)(target.x >= this.transform.position.x ? 1f : -1f);
 					this.transform.localScale = new Vector3()
@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						if (Mathf.Abs(target.x - this.transform.position.x) > this._statistics.DistanceToTarget)
 							this._rigidybody.linearVelocityX = this._movementSide * this._statistics.MovementSpeed;
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => this.isActiveAndEnabled && this._rigidybody.IsAwake());
+						yield return new WaitUntil(() => this.isActiveAndEnabled && this.IsStunned);
 					}
 					this._rigidybody.linearVelocityX = 0f;
 				}
@@ -54,7 +54,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			this.StartCoroutine(FollowTarget());
 			IEnumerator FollowTarget()
 			{
-				bool valid = !this.SurfacePerception() && this.isActiveAndEnabled && this._rigidybody.IsAwake() && !this._stopJump;
+				bool valid = !this.SurfacePerception() && this.isActiveAndEnabled && this.IsStunned && !this._stopJump;
 				yield return new WaitUntil(() => valid);
 				this._rigidybody.linearVelocityX = 0f;
 				float targetPosition = GuwbaCentralizer.Position.x;
@@ -80,7 +80,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (Mathf.Abs(targetPosition - this.transform.position.x) > this._statistics.DistanceToTarget)
 						remainingDistance -= this._statistics.MovementSpeed * Time.fixedDeltaTime;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.isActiveAndEnabled && this._rigidybody.IsAwake());
+					yield return new WaitUntil(() => this.isActiveAndEnabled && this.IsStunned);
 				}
 				this._rigidybody.linearVelocityX = 0f;
 			}
@@ -99,7 +99,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
 					{
-						bool valid = this.SurfacePerception() && !this._detected && this.isActiveAndEnabled && this._rigidybody.IsAwake();
+						bool valid = this.SurfacePerception() && !this._detected && this.isActiveAndEnabled && this.IsStunned;
 						yield return new WaitUntil(() => valid);
 						if (this._stopJump)
 							yield break;
@@ -140,7 +140,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this.StartCoroutine(TimedJump(jumpStats));
 			IEnumerator TimedJump(JumpStats stats)
 			{
-				bool valid = !this._detected && this.isActiveAndEnabled && this._rigidybody.IsAwake() && !this._stopJump;
+				bool valid = !this._detected && this.isActiveAndEnabled && this.IsStunned && !this._stopJump;
 				yield return new WaitUntil(() => this.SurfacePerception() && valid);
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
@@ -159,7 +159,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._rigidybody.IsSleeping())
+			if (this.IsStunned)
 				return;
 			if (this._isJumping && this.SurfacePerception())
 			{
