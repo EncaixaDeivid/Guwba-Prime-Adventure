@@ -5,7 +5,7 @@ namespace GuwbaPrimeAdventure.Data
 {
 	internal static class ArchiveEncoder
 	{
-		private const string ScriptPassword = "";
+		private const string ScriptPassword = "BoLo%De%CeNoUrA%cOm%CoBeRtUrA%dE%cHoCoLaTe%AmArGo%!";
 		private static string ScriptData(string data)
 		{
 			string scriptedData = "";
@@ -23,6 +23,8 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			string dataJSON = JsonUtility.ToJson(structData);
 			string scriptedData = ScriptData(dataJSON);
+			if (File.Exists(path))
+				File.Delete(path);
 			File.WriteAllText(path, scriptedData, Encoding.UTF8);
 		}
 	};
