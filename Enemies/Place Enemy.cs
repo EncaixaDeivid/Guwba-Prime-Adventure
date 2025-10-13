@@ -35,7 +35,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					color.a = alpha;
 					this._tilemap.color = color;
 					yield return new WaitForEndOfFrame();
-					yield return new WaitUntil(() => this.isActiveAndEnabled && !this.IsStunned);
+					yield return new WaitUntil(() => this.isActiveAndEnabled && !this._rigidybody.IsSleeping());
 				}
 				if (appear)
 					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
