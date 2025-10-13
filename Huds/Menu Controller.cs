@@ -121,7 +121,10 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!SaveController.FileExists())
 				SaveController.SaveData();
 			if (!SettingsController.FileExists())
-				SettingsController.SaveSettings();
+			{
+				SettingsController.Load(out Settings settings);
+				SettingsController.WriteSave(settings);
+			}
 		}
 		private Action SelectSaveFile1 => () => this.SetSaveFile(1);
 		private Action SelectSaveFile2 => () => this.SetSaveFile(2);
