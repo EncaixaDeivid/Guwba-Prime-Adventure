@@ -9,7 +9,6 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private Rigidbody2D _rigidbody;
 		private readonly List<EnemyProjectile> _projectiles = new();
-		private Vector2 _returnedVelocity = new();
 		private Vector2Int _oldCellPosition = new();
 		private Vector2Int _cellPosition = new();
 		private short _vitality;
@@ -20,7 +19,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _pointToReturn = 0;
 		private ushort _internalReturnPoint = 0;
 		private float _stunTimer = 0f;
-		private bool _isStunned = false;
 		private bool _breakInUse = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
@@ -98,9 +96,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			IEnumerator Parabola()
 			{
 				yield return new WaitUntil(() => this.isActiveAndEnabled);
-				float time = 0f;
-				float x;
-				float y;
+				float time = 0f, x, y;
 				while (time > this._statistics.TimeToFade)
 				{
 					time += Time.fixedDeltaTime;
@@ -108,7 +104,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					y = this._statistics.MovementSpeed * time * Mathf.Sin(this._statistics.BaseAngle * Mathf.Deg2Rad);
 					this.transform.position = new Vector2(x, y - 0.5f * -Physics2D.gravity.y * Mathf.Pow(time, 2));
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => !this._isStunned && this.isActiveAndEnabled);
+					yield return new WaitUntil(() => this.isActiveAndEnabled && this._rigidbody.IsAwake());
 				}
 			}
 		}
@@ -163,19 +159,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._isStunned)
+			if (this._rigidbody.IsSleeping())
 			{
 				this._stunTimer -= Time.deltaTime;
 				if (this._stunTimer <= 0f)
-				{
-					this._isStunned = false;
-					this._rigidbody.linearVelocity = this._returnedVelocity;
-				}
+					this._rigidbody.WakeUp();
 			}
 		}
 		private void FixedUpdate()
 		{
-			if (this._isStunned)
+			if (this._rigidbody.IsSleeping())
 				return;
 			float movementSpeed = this._statistics.MovementSpeed;
 			if (this._statistics.SecondProjectile && this._statistics.InCell && this._statistics.ContinuosSummon)
@@ -223,12 +216,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (this._isStunned)
+			if (this._rigidbody.IsSleeping())
 				return;
-			this._isStunned = true;
+			this._rigidbody.Sleep();
 			this._stunTimer = stunTime;
-			this._returnedVelocity = this._rigidbody.linearVelocity;
-			this._rigidbody.linearVelocity = Vector2.zero;
 		}
 	};
 };
