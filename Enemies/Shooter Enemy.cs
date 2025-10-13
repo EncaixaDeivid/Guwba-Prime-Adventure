@@ -34,7 +34,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				direction *= this.transform.localScale.x < 0f ? -1f : 1f;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
 			float perceptionDistance = this._statistics.PerceptionDistance;
-			if (this._statistics.CirculateDetection)
+			if (this._statistics.CircularDetection)
 			{
 				Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, perceptionDistance, targetLayer);
 				foreach (Collider2D collider in colliders)
@@ -85,7 +85,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					Vector2 position = this.transform.position;
 					float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
 					Quaternion rotation = Quaternion.AngleAxis(this._statistics.RayAngleDirection, Vector3.forward);
-					if (this._statistics.CirculateDetection)
+					if (this._statistics.CircularDetection)
 						rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 					if (!this._statistics.InstanceOnSelf)
 						position += (Vector2)(rotation * Vector2.up);
