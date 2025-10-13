@@ -57,21 +57,6 @@ namespace GuwbaPrimeAdventure.Data
 				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
 		}
 		public static void WriteSave(Settings settings) => _settings = settings;
-		public static void SaveSettings() =>
-			ArchiveEncoder.WriteData(new Settings()
-			{
-				ScreenResolution = _settings.ScreenResolution,
-				FullScreenMode = _settings.FullScreenMode,
-				DialogToggle = _settings.DialogToggle,
-				GeneralVolumeToggle = _settings.GeneralVolumeToggle,
-				EffectsVolumeToggle = _settings.EffectsVolumeToggle,
-				MusicVolumeToggle = _settings.MusicVolumeToggle,
-				DialogSpeed = _settings.DialogSpeed,
-				ScreenBrightness = _settings.ScreenBrightness,
-				FrameRate = _settings.FrameRate,
-				GeneralVolume = _settings.GeneralVolume,
-				EffectsVolume = _settings.EffectsVolume,
-				MusicVolume = _settings.MusicVolume
-			}, SettingsPath);
+		public static void SaveSettings() => ArchiveEncoder.WriteData(_settings, SettingsPath);
 	};
 };
