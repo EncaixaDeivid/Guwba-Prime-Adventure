@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Start() => this._timeRun = this._statistics.TimesToRun;
 		private void Update()
 		{
-			if (this._rigidybody.IsSleeping())
+			if (this.IsStunned)
 				return;
 			if (this._statistics.DetectionStop && this._stopWorking)
 			{
@@ -76,7 +76,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._rigidybody.IsSleeping())
+			if (this.IsStunned)
 				return;
 			if (this._statistics.DetectionStop && this._detected && !this._isDashing && this.SurfacePerception())
 				this._rigidybody.linearVelocityX = 0f;
