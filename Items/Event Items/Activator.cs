@@ -6,11 +6,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 	internal abstract class Activator : StateController
 	{
 		private Animator _animator;
+		private readonly int _isOn = Animator.StringToHash("IsOn");
+		private readonly int _use = Animator.StringToHash("Use");
+		private readonly int _useAgain = Animator.StringToHash("UseAgain");
 		private bool _used = false;
 		private bool _usedOne = false;
 		private bool _usable = true;
-		private readonly int _use = Animator.StringToHash("Use");
-		private readonly int _useAgain = Animator.StringToHash("UseAgain");
 		[Header("Activator")]
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
 		[SerializeField, Tooltip("The activator only can be activeted one time.")] private bool _oneActivation;
@@ -27,12 +28,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void OnEnable()
 		{
 			if (this._animator)
-				this._animator.enabled = true;
+				this._animator.SetFloat(this._isOn, 1f);
 		}
 		private void OnDisable()
 		{
 			if (this._animator)
-				this._animator.enabled = false;
+				this._animator.SetFloat(this._isOn, 0f);
 		}
 		protected void Activation()
 		{
