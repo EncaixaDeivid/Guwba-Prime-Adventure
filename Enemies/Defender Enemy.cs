@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopWorking || this._rigidybody.IsSleeping() || !this._statistics.UseAlternatedTime && !this._invencible)
+			if (this._stopWorking || this.IsStunned || !this._statistics.UseAlternatedTime && !this._invencible)
 				return;
 			if (this._timeOperation > 0f)
 				this._timeOperation -= Time.deltaTime;
