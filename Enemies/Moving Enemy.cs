@@ -2,9 +2,8 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	internal abstract class MovingEnemy : EnemyProvider, IConnector, IDestructible
+	internal abstract class MovingEnemy : EnemyProvider, IConnector
 	{
-		private bool _stunned = false;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
@@ -29,14 +28,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		protected void Update()
-		{
-			if (!this.IsStunned && this._stunned)
-			{
-				this._stunned = false;
-				this._rigidybody.WakeUp();
-			}
-		}
 		protected bool SurfacePerception()
 		{
 			float groundChecker = this._moving.Physics.GroundChecker;
@@ -44,12 +35,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, this.transform.position.y + yOrigin);
 			Vector2 size = new(this._collider.bounds.size.x - groundChecker, groundChecker);
 			return Physics2D.BoxCast(origin, size, 0f, -this.transform.up, groundChecker, this._moving.Physics.GroundLayer);
-		}
-		public new void Stun(ushort stunStength, float stunTime)
-		{
-			base.Stun(stunStength, stunTime);
-			this._stunned = true;
-			this._rigidybody.Sleep();
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
