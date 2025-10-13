@@ -9,7 +9,6 @@ namespace GuwbaPrimeAdventure.Enemy
     {
 		private EnemyProvider[] _selfEnemies;
 		private Rigidbody2D _rigidybody;
-		private float _guardGravityScale = 0f;
 		private float _stunTimer = 0f;
 		private short _vitality;
 		private short _armorResistance = 0;
@@ -21,7 +20,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		public short Health => this._vitality;
 		internal short Vitality { get => this._vitality; set => this._vitality = value; }
 		internal short ArmorResistance { get => this._armorResistance; set => this._armorResistance = value; }
-		internal float GuardGravityScale { get => this._guardGravityScale; set => this._guardGravityScale = value; }
 		internal float StunTimer { get => this._stunTimer; set => this._stunTimer = value; }
 		internal bool IsStunned { get => this._isStunned; set => this._isStunned = value; }
 		private new void Awake()
@@ -29,7 +27,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._selfEnemies = this.GetComponents<EnemyProvider>();
 			this._rigidybody = this.GetComponent<Rigidbody2D>();
-			this._guardGravityScale = this._rigidybody.gravityScale;
 			this._vitality = (short)this._statistics.Vitality;
 			this._armorResistance = (short)this._statistics.HitResistance;
 			if (this._statistics.FadeOverTime)
@@ -47,8 +44,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private void OnEnable() => this._rigidybody.gravityScale = this._guardGravityScale;
-		private void OnDisable() => this._rigidybody.gravityScale = 0f;
+		private void OnEnable() => this._rigidybody.WakeUp();
+		private void OnDisable() => this._rigidybody.Sleep();
 		private IEnumerator Start()
 		{
 			foreach (EnemyProvider enemy in this._selfEnemies)
@@ -65,7 +62,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._stunTimer <= 0f)
 				{
 					this._isStunned = false;
-					this._rigidybody.gravityScale = this._guardGravityScale;
+					this._rigidybody.WakeUp();
 				}
 			}
 		}
