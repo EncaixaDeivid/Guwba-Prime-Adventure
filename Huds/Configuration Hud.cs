@@ -23,12 +23,14 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("User interface element.")] private string _generalVolume;
 		[SerializeField, Tooltip("User interface element.")] private string _effectsVolume;
 		[SerializeField, Tooltip("User interface element.")] private string _musicVolume;
+		[SerializeField, Tooltip("User interface element.")] private string _closeButton;
 		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
+		[SerializeField, Tooltip("User interface element.")] private string _saveGameButton;
 		[SerializeField, Tooltip("User interface element.")] private string _yesButton;
 		[SerializeField, Tooltip("User interface element.")] private string _noButton;
-		[SerializeField, Tooltip("User interface element.")] private string _saveGameButton;
-		[SerializeField, Tooltip("User interface element.")] private string _closeButton;
+		[SerializeField, Tooltip("User interface element.")] private string _frameRateText;
 		internal GroupBox Settings { get; private set; }
+		internal GroupBox Confirmation { get; private set; }
 		internal DropdownField ScreenResolution { get; private set; }
 		internal DropdownField FullScreenModes { get; private set; }
 		internal Toggle DialogToggle { get; private set; }
@@ -44,9 +46,9 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Button Close { get; private set; }
 		internal Button OutLevel { get; private set; }
 		internal Button SaveGame { get; private set; }
-		internal GroupBox Confirmation { get; private set; }
 		internal Button Yes { get; private set; }
 		internal Button No { get; private set; }
+		internal Label FrameRateText { get; private set; }
 		private void Awake()
 		{
 			if (_instance)
@@ -75,6 +77,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this.SaveGame = root.Q<Button>(this._saveGameButton);
 			this.Yes = root.Q<Button>(this._yesButton);
 			this.No = root.Q<Button>(this._noButton);
+			this.FrameRateText =  root.Q<Label>(this._frameRateText);
 			if (!SettingsController.FileExists())
 				SettingsController.SaveSettings();
 			SettingsController.Load(out Settings settings);
@@ -106,6 +109,7 @@ namespace GuwbaPrimeAdventure.Hud
 			this.GeneralVolume.value = settings.GeneralVolume;
 			this.EffectsVolume.value = settings.EffectsVolume;
 			this.MusicVolume.value = settings.MusicVolume;
+			this.FrameRateText.text = settings.FrameRate.ToString();
 		}
 	};
 };
