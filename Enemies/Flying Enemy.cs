@@ -22,10 +22,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (this._statistics.EndlessPursue)
 				Destroy(this.gameObject, this._statistics.FadeTime);
 		}
-		private new void Update()
+		private void Update()
 		{
-			base.Update();
-			if (this.IsStunned)
+			if (this._rigidybody.IsSleeping())
 				return;
 			if (this._statistics.DetectionStop && this._stopWorking)
 			{
