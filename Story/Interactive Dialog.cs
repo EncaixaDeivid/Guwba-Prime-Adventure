@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Story
 		private StoryTeller _storyTeller;
 		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
+		private readonly int _isOn = Animator.StringToHash("IsOn");
 		private string _text = "";
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
@@ -26,6 +27,16 @@ namespace GuwbaPrimeAdventure.Story
 			this._animator = this.GetComponent<Animator>();
 			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this.gameObject);
+		}
+		private void OnEnable()
+		{
+			if (this._animator)
+				this._animator.SetFloat(this._isOn, 1f);
+		}
+		private void OnDisable()
+		{
+			if (this._animator)
+				this._animator.SetFloat(this._isOn, 0f);
 		}
 		private IEnumerator TextDigitation()
 		{
@@ -74,8 +85,6 @@ namespace GuwbaPrimeAdventure.Story
 					StateController.SetState(true);
 					if (this._storyTeller)
 						this._storyTeller.CloseScene();
-					this._sender.SetToggle(true);
-					this._sender.Send(PathConnection.Hud);
 					SaveController.Load(out SaveFile saveFile);
 					if (this._dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
 					{
@@ -87,9 +96,14 @@ namespace GuwbaPrimeAdventure.Story
 					else if (this._dialogObject.ActivateAnimation)
 						this._animator.SetTrigger(this._dialogObject.Animation);
 					if (this._dialogObject.DesactiveInteraction)
-						this.enabled = false;
+					{
+						this._sender.SetAdditionalData(null);
+						Destroy(this);
+					}
 					if (!this._dialogObject.ActivateTransition && this._dialogObject.ActivateDestroy)
 						Destroy(this.gameObject, this._dialogObject.TimeToDestroy);
+					this._sender.SetToggle(true);
+					this._sender.Send(PathConnection.Hud);
 				}
 			}
 			else
