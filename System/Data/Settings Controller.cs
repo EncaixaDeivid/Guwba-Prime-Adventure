@@ -20,13 +20,7 @@ namespace GuwbaPrimeAdventure.Data
 	};
 	public static class SettingsController
 	{
-		private static Settings _settings = LoadFile();
 		private static readonly string SettingsPath = $@"{Application.persistentDataPath}\Settings.txt";
-		private static Settings LoadFile()
-		{
-			Load(out Settings settings);
-			return settings;
-		}
 		public static Resolution[] PixelPerfectResolutions()
 		{
 			List<Resolution> resolutions = new();
@@ -41,7 +35,7 @@ namespace GuwbaPrimeAdventure.Data
 			settings = new Settings()
 			{
 				ScreenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
-				FullScreenMode = Screen.fullScreenMode,
+				FullScreenMode = FullScreenMode.FullScreenWindow,
 				DialogToggle = true,
 				GeneralVolumeToggle = true,
 				EffectsVolumeToggle = true,
@@ -56,7 +50,6 @@ namespace GuwbaPrimeAdventure.Data
 			if (File.Exists(SettingsPath))
 				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
 		}
-		public static void WriteSave(Settings settings) => _settings = settings;
-		public static void SaveSettings() => ArchiveEncoder.WriteData(_settings, SettingsPath);
+		public static void WriteSave(Settings settings) => ArchiveEncoder.WriteData(settings, SettingsPath);
 	};
 };
