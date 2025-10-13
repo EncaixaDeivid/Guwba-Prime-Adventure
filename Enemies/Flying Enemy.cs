@@ -110,7 +110,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopWorking || this.IsStunned)
+			if (this._stopWorking || this._rigidybody.IsSleeping())
 				return;
 			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
 			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
