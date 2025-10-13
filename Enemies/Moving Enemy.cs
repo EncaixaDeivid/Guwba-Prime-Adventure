@@ -4,7 +4,6 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	internal abstract class MovingEnemy : EnemyProvider, IConnector, IDestructible
 	{
-		private Vector2 _guardVelocity = new();
 		private bool _stunned = false;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
@@ -30,18 +29,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		protected void OnEnable() => this._rigidybody.linearVelocity = this._guardVelocity;
-		protected void OnDisable()
-		{
-			this._guardVelocity = this._rigidybody.linearVelocity;
-			this._rigidybody.linearVelocity = Vector2.zero;
-		}
 		protected void Update()
 		{
 			if (!this.IsStunned && this._stunned)
 			{
 				this._stunned = false;
-				this._rigidybody.linearVelocity = this._guardVelocity;
+				this._rigidybody.WakeUp();
 			}
 		}
 		protected bool SurfacePerception()
@@ -56,8 +49,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Stun(stunStength, stunTime);
 			this._stunned = true;
-			this._guardVelocity = this._rigidybody.linearVelocity;
-			this._rigidybody.linearVelocity = Vector2.zero;
+			this._rigidybody.Sleep();
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
