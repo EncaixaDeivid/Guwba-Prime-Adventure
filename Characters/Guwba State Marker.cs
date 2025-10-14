@@ -130,7 +130,7 @@ namespace GuwbaPrimeAdventure.Character
 			}
 			this.transform.localScale = new Vector3()
 			{
-				x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+				x = Mathf.Abs(this.transform.localScale.x) * (this._turnLeft ? -1f : 1f),
 				y = this.transform.localScale.y,
 				z = this.transform.localScale.z
 			};
@@ -270,7 +270,7 @@ namespace GuwbaPrimeAdventure.Character
 					this._dashMovement = this._movementAction;
 					this.transform.localScale = new Vector3()
 					{
-						x = this._dashMovement * Mathf.Abs(this.transform.localScale.x),
+						x = Mathf.Abs(this.transform.localScale.x) * this._dashMovement,
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
@@ -572,7 +572,7 @@ namespace GuwbaPrimeAdventure.Character
 				if (this._movementAction != 0f)
 					this.transform.localScale = new Vector3()
 					{
-						x = this._movementAction * Mathf.Abs(this.transform.localScale.x),
+						x = Mathf.Abs(this.transform.localScale.x) * this._movementAction,
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
@@ -673,7 +673,7 @@ namespace GuwbaPrimeAdventure.Character
 				this._isHoping = false;
 				this.transform.localScale = new Vector3()
 				{
-					x = this._turnLeft ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+					x = Mathf.Abs(this.transform.localScale.x) * (this._turnLeft ? -1f : 1f),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
