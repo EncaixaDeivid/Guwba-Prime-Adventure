@@ -7,15 +7,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The target this enemy have to pursue.")] private GameObject _target;
 		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
-		[SerializeField, Tooltip("The time this enemy stay alive during the endless pursue.")] private float _fadeTime;
 		[SerializeField, Tooltip("The multiplication factor of the detection.")] private float _detectionFactor;
 		[SerializeField, Tooltip("The amount of speed that this enemy moves to go back to the original point.")] private float _returnSpeed;
+		[SerializeField, Tooltip("The amount of time this enemy will stay alive during the endless pursue.")] private float _fadeTime;
+		[SerializeField, Tooltip("The amount of time this enemy moves will be stopped after it attack.")] private float _afterTime;
 		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
 		internal GameObject Target => this._target;
 		internal float TargetDistance => this._targetDistance;
-		internal float FadeTime => this._fadeTime;
 		internal float DetectionFactor => this._detectionFactor;
 		internal float ReturnSpeed => this._returnSpeed;
+		internal float FadeTime => this._fadeTime;
+		internal float AfterTime => this._afterTime;
 		internal bool EndlessPursue => this._endlessPursue;
 	};
 };
