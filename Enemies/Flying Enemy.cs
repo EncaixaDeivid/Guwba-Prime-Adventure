@@ -9,8 +9,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Vector2 _pointOrigin = new();
 		private Vector2 _targetPoint = new();
 		private bool _normal = true;
+		private bool _afterDash = false;
 		private bool _returnDash = false;
 		private ushort _pointIndex = 0;
+		private float _fadeTime = 0f;
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The flying statitics of this enemy.")] private FlyingStatistics _statistics;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
@@ -19,8 +21,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			this._trail = this.GetComponent<PolygonCollider2D>();
 			this._pointOrigin = this.transform.position;
-			if (this._statistics.EndlessPursue)
-				Destroy(this.gameObject, this._statistics.FadeTime);
 		}
 		private void Chase()
 		{
@@ -36,6 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (this._statistics.DetectionStop)
 				{
 					this._stopWorking = true;
+					this._stoppedTime = this._statistics.StopTime;
 					return;
 				}
 				else
@@ -43,7 +44,13 @@ namespace GuwbaPrimeAdventure.Enemy
 			maxDistanceDelta = Time.fixedDeltaTime * (this._isDashing ? this._statistics.DashSpeed : this._statistics.MovementSpeed);
 			this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
 			if (this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= 0.001f)
-				this._isDashing = !(this._returnDash = true);
+				if (this._statistics.DetectionStop)
+				{
+					this._stopWorking = this._afterDash = true;
+					this._stoppedTime = this._statistics.AfterTime;
+				}
+				else
+					this._isDashing = !(this._returnDash = true);
 		}
 		private void Trail()
 		{
@@ -53,7 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				bool valid = this._pointOrigin.x < this.transform.position.x;
 				this.transform.localScale = new Vector3()
 				{
-					x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+					x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
@@ -84,7 +91,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				bool valid = target.x < this.transform.localPosition.x;
 				this.transform.localScale = new Vector3()
 				{
-					x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+					x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
 					y = this.transform.localScale.y,
 					z = this.transform.localScale.z
 				};
@@ -94,16 +101,21 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
+			if (this._statistics.EndlessPursue)
+			{
+				this._fadeTime += Time.deltaTime;
+				if (this._fadeTime >= this._statistics.FadeTime)
+					Destroy(this.gameObject);
+			}
 			if (this.IsStunned)
 				return;
 			if (this._statistics.DetectionStop && this._stopWorking)
 			{
-				this._stoppedTime += Time.deltaTime;
-				if (this._stoppedTime >= this._statistics.StopTime)
+				this._stoppedTime -= Time.deltaTime;
+				if (this._stoppedTime <= 0f)
 				{
-					this._stoppedTime = 0f;
 					this._stopWorking = false;
-					this._isDashing = true;
+					(this._isDashing, this._afterDash) = (!this._afterDash, false);
 				}
 			}
 		}
@@ -155,7 +167,7 @@ namespace GuwbaPrimeAdventure.Enemy
 							bool valid = verifyCollider.transform.position.x < this.transform.position.x;
 							this.transform.localScale = new Vector3()
 							{
-								x = valid ? -Mathf.Abs(this.transform.localScale.x) : Mathf.Abs(this.transform.localScale.x),
+								x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
 								y = this.transform.localScale.y,
 								z = this.transform.localScale.z
 							};
