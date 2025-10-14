@@ -2,7 +2,7 @@ using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(EnemyController), typeof(Collider2D))]
+	[RequireComponent(typeof(Transform), typeof(EnemyController))]
 	internal abstract class EnemyProvider : StateController, IDestructible
 	{
 		private EnemyController _controller;
