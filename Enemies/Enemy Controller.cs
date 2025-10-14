@@ -5,6 +5,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
+	[RequireComponent(typeof(EnemyProvider))]
 	internal sealed class EnemyController : StateController, IConnector, IDestructible
     {
 		private EnemyProvider[] _selfEnemies;
