@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (Instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			Instance = this;
@@ -39,46 +39,46 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!Instance || Instance != this)
 				return;
-			this._inputController = new InputController();
-			this._inputController.Commands.HideHud.canceled += this.HideHudAction;
-			this._inputController.Commands.HideHud.Enable();
+			_inputController = new InputController();
+			_inputController.Commands.HideHud.canceled += HideHudAction;
+			_inputController.Commands.HideHud.Enable();
 		}
 		private void OnDisable()
 		{
 			if (!Instance || Instance != this)
 				return;
-			this._inputController.Commands.HideHud.canceled -= this.HideHudAction;
-			this._inputController.Commands.HideHud.Disable();
-			this._inputController.Dispose();
+			_inputController.Commands.HideHud.canceled -= HideHudAction;
+			_inputController.Commands.HideHud.Disable();
+			_inputController.Dispose();
 		}
-		private IEnumerator Start() => new WaitWhile(() => !(this._isActive = !SceneInitiator.IsInTrancision()));
-		private Action<InputAction.CallbackContext> HideHudAction => _ => this.OpenCloseConfigurations();
+		private IEnumerator Start() => new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
+		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
-			this._configurationHud.Close.clicked -= this.CloseConfigurations;
-			this._configurationHud.OutLevel.clicked -= this.OutLevel;
-			this._configurationHud.SaveGame.clicked -= this.SaveGame;
-			this._configurationHud.ScreenResolution.UnregisterValueChangedCallback<string>(this.ScreenResolution);
-			this._configurationHud.FullScreenModes.UnregisterValueChangedCallback<string>(this.FullScreenModes);
-			this._configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(this.DialogToggle);
-			this._configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-			this._configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-			this._configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-			this._configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(this.DialogSpeed);
-			this._configurationHud.ScreenBrightness.UnregisterValueChangedCallback<float>(this.ScreenBrightness);
-			this._configurationHud.FrameRate.UnregisterValueChangedCallback<int>(this.FrameRate);
-			this._configurationHud.GeneralVolume.UnregisterValueChangedCallback<int>(this.GeneralVolume);
-			this._configurationHud.EffectsVolume.UnregisterValueChangedCallback<int>(this.EffectsVolume);
-			this._configurationHud.MusicVolume.UnregisterValueChangedCallback<int>(this.MusicVolume);
-			this._configurationHud.Yes.clicked -= this.YesBackLevel;
-			this._configurationHud.No.clicked -= this.NoBackLevel;
-			Destroy(this._configurationHud.gameObject);
+			_configurationHud.Close.clicked -= CloseConfigurations;
+			_configurationHud.OutLevel.clicked -= OutLevel;
+			_configurationHud.SaveGame.clicked -= SaveGame;
+			_configurationHud.ScreenResolution.UnregisterValueChangedCallback<string>(ScreenResolution);
+			_configurationHud.FullScreenModes.UnregisterValueChangedCallback<string>(FullScreenModes);
+			_configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(DialogToggle);
+			_configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(GeneralVolumeToggle);
+			_configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(EffectsVolumeToggle);
+			_configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(MusicVolumeToggle);
+			_configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(DialogSpeed);
+			_configurationHud.ScreenBrightness.UnregisterValueChangedCallback<float>(ScreenBrightness);
+			_configurationHud.FrameRate.UnregisterValueChangedCallback<int>(FrameRate);
+			_configurationHud.GeneralVolume.UnregisterValueChangedCallback<int>(GeneralVolume);
+			_configurationHud.EffectsVolume.UnregisterValueChangedCallback<int>(EffectsVolume);
+			_configurationHud.MusicVolume.UnregisterValueChangedCallback<int>(MusicVolume);
+			_configurationHud.Yes.clicked -= YesBackLevel;
+			_configurationHud.No.clicked -= NoBackLevel;
+			Destroy(_configurationHud.gameObject);
 			StateController.SetState(true);
 		};
 		private Action OutLevel => () =>
 		{
-			this._configurationHud.Settings.style.display = DisplayStyle.None;
-			this._configurationHud.Confirmation.style.display = DisplayStyle.Flex;
+			_configurationHud.Settings.style.display = DisplayStyle.None;
+			_configurationHud.Confirmation.style.display = DisplayStyle.Flex;
 		};
 		private Action SaveGame => () => SaveController.SaveData();
 		private EventCallback<ChangeEvent<string>> ScreenResolution => resolution =>
@@ -135,7 +135,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			SettingsController.Load(out Settings settings);
 			Application.targetFrameRate = settings.FrameRate = (ushort)frameRate.newValue;
-			this._configurationHud.FrameRateText.text = frameRate.newValue.ToString();
+			_configurationHud.FrameRateText.text = frameRate.newValue.ToString();
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<int>> GeneralVolume => volume =>
@@ -158,62 +158,64 @@ namespace GuwbaPrimeAdventure.Hud
 		};
 		private Action YesBackLevel => () =>
 		{
-			if (this.gameObject.scene.name != this._levelSelectorScene)
-				this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
+			CloseConfigurations.Invoke();
+			_isActive = false;
+			if (gameObject.scene.name != _levelSelectorScene)
+				GetComponent<Transitioner>().Transicion(_levelSelectorScene);
 			else
-				this.GetComponent<Transitioner>().Transicion(this._menuScene);
+				GetComponent<Transitioner>().Transicion(_menuScene);
 		};
 		private Action NoBackLevel => () =>
 		{
-			this._configurationHud.Settings.style.display = DisplayStyle.Flex;
-			this._configurationHud.Confirmation.style.display = DisplayStyle.None;
+			_configurationHud.Settings.style.display = DisplayStyle.Flex;
+			_configurationHud.Confirmation.style.display = DisplayStyle.None;
 		};
 		internal void OpenCloseConfigurations()
 		{
-			if (!this._isActive)
+			if (!_isActive)
 				return;
-			if (this._configurationHud)
-				this.CloseConfigurations.Invoke();
+			if (_configurationHud)
+				CloseConfigurations.Invoke();
 			else
 			{
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
-				this._configurationHud = Instantiate(this._configurationHudObject, this.transform);
-				if (this.gameObject.scene.name == this._menuScene)
+				_configurationHud = Instantiate(_configurationHudObject, transform);
+				if (gameObject.scene.name == _menuScene)
 				{
-					this._configurationHud.OutLevel.style.display = DisplayStyle.None;
-					this._configurationHud.SaveGame.style.display = DisplayStyle.None;
+					_configurationHud.OutLevel.style.display = DisplayStyle.None;
+					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
 				for (ushort i = 1; i <= 12f; i++)
-					if (this.gameObject.scene.name.Contains($"{i}"))
+					if (gameObject.scene.name.Contains($"{i}"))
 					{
-						this._configurationHud.SaveGame.style.display = DisplayStyle.None;
+						_configurationHud.SaveGame.style.display = DisplayStyle.None;
 						break;
 					}
-				this._configurationHud.Close.clicked += this.CloseConfigurations;
-				this._configurationHud.OutLevel.clicked += this.OutLevel;
-				this._configurationHud.SaveGame.clicked += this.SaveGame;
-				this._configurationHud.ScreenResolution.RegisterValueChangedCallback<string>(this.ScreenResolution);
-				this._configurationHud.FullScreenModes.RegisterValueChangedCallback<string>(this.FullScreenModes);
-				this._configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(this.DialogToggle);
-				this._configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(this.GeneralVolumeToggle);
-				this._configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(this.EffectsVolumeToggle);
-				this._configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(this.MusicVolumeToggle);
-				this._configurationHud.ScreenBrightness.RegisterValueChangedCallback<float>(this.ScreenBrightness);
-				this._configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(this.DialogSpeed);
-				this._configurationHud.FrameRate.RegisterValueChangedCallback<int>(this.FrameRate);
-				this._configurationHud.GeneralVolume.RegisterValueChangedCallback<int>(this.GeneralVolume);
-				this._configurationHud.EffectsVolume.RegisterValueChangedCallback<int>(this.EffectsVolume);
-				this._configurationHud.MusicVolume.RegisterValueChangedCallback<int>(this.MusicVolume);
-				this._configurationHud.Yes.clicked += this.YesBackLevel;
-				this._configurationHud.No.clicked += this.NoBackLevel;
+				_configurationHud.Close.clicked += CloseConfigurations;
+				_configurationHud.OutLevel.clicked += OutLevel;
+				_configurationHud.SaveGame.clicked += SaveGame;
+				_configurationHud.ScreenResolution.RegisterValueChangedCallback<string>(ScreenResolution);
+				_configurationHud.FullScreenModes.RegisterValueChangedCallback<string>(FullScreenModes);
+				_configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(DialogToggle);
+				_configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(GeneralVolumeToggle);
+				_configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(EffectsVolumeToggle);
+				_configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(MusicVolumeToggle);
+				_configurationHud.ScreenBrightness.RegisterValueChangedCallback<float>(ScreenBrightness);
+				_configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(DialogSpeed);
+				_configurationHud.FrameRate.RegisterValueChangedCallback<int>(FrameRate);
+				_configurationHud.GeneralVolume.RegisterValueChangedCallback<int>(GeneralVolume);
+				_configurationHud.EffectsVolume.RegisterValueChangedCallback<int>(EffectsVolume);
+				_configurationHud.MusicVolume.RegisterValueChangedCallback<int>(MusicVolume);
+				_configurationHud.Yes.clicked += YesBackLevel;
+				_configurationHud.No.clicked += NoBackLevel;
 			}
 		}
-		internal void SetActive(bool isActive) => this._isActive = isActive;
+		internal void SetActive(bool isActive) => _isActive = isActive;
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this._isActive = data.ToggleValue.Value;
+				_isActive = data.ToggleValue.Value;
 		}
 	};
 };
