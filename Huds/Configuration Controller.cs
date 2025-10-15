@@ -142,9 +142,9 @@ namespace GuwbaPrimeAdventure.Hud
 		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
 		{
 			SettingsController.Load(out Settings settings);
-			if (settings.InfinityFPS)
-				return;
-			Application.targetFrameRate = settings.FrameRate = (ushort)frameRate.newValue;
+			settings.FrameRate = (ushort)frameRate.newValue;
+			if (!settings.InfinityFPS)
+				Application.targetFrameRate = settings.FrameRate;
 			_configurationHud.FrameRateText.text = frameRate.newValue.ToString();
 			SettingsController.WriteSave(settings);
 		};
