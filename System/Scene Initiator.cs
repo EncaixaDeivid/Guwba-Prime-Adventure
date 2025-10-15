@@ -14,7 +14,7 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
@@ -23,12 +23,12 @@ namespace GuwbaPrimeAdventure
 		{
 			if (!_instance || _instance != this)
 				yield break;
-			TransicionHud transicionHud = Instantiate(this._transicionHud, this.transform);
+			TransicionHud transicionHud = Instantiate(_transicionHud, transform);
 			transicionHud.RootVisualElement.style.opacity = 1f;
-			transicionHud.LoadingBar.highValue = this._subScenes.Length;
+			transicionHud.LoadingBar.highValue = _subScenes.Length;
 			AsyncOperation asyncOperation;
 			float stillProgress;
-			foreach (SceneField scene in this._subScenes)
+			foreach (SceneField scene in _subScenes)
 			{
 				asyncOperation = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
 				while (!asyncOperation.isDone)
@@ -41,7 +41,7 @@ namespace GuwbaPrimeAdventure
 				transicionHud.LoadingBar.value += asyncOperation.progress;
 				asyncOperation.allowSceneActivation = true;
 			}
-			Destroy(this.gameObject);
+			Destroy(gameObject);
 		}
 	};
 };
