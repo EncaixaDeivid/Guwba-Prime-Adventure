@@ -15,8 +15,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._tilemap = this.GetComponent<Tilemap>();
-			this._tilemapCollider2D = this.GetComponent<TilemapCollider2D>();
+			_tilemap = GetComponent<Tilemap>();
+			_tilemapCollider2D = GetComponent<TilemapCollider2D>();
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -31,28 +31,28 @@ namespace GuwbaPrimeAdventure.Enemy
 				Color color;
 				IEnumerator Opacity(float alpha)
 				{
-					color = this._tilemap.color;
+					color = _tilemap.color;
 					color.a = alpha;
-					this._tilemap.color = color;
+					_tilemap.color = color;
 					yield return new WaitForEndOfFrame();
-					yield return new WaitUntil(() => this.isActiveAndEnabled && !this._rigidybody.IsSleeping());
+					yield return new WaitUntil(() => isActiveAndEnabled && !_rigidybody.IsSleeping());
 				}
 				if (appear)
-					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
+					for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
 						yield return Opacity(i);
 				else
-					for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
+					for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
 						yield return Opacity(i);
-				this._tilemapCollider2D.enabled = appear;
+				_tilemapCollider2D.enabled = appear;
 			}
 			if ((EnemyProvider[])additionalData != null)
 				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 					if (enemy != this)
 						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				this.StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (data.StateForm == StateForm.Action && this._reactToDamage)
-				this.StartCoroutine(AppearFade(this._tilemap.color.a <= 0f));
+				StartCoroutine(AppearFade(data.ToggleValue.Value));
+			else if (data.StateForm == StateForm.Action && _reactToDamage)
+				StartCoroutine(AppearFade(_tilemap.color.a <= 0f));
 		}
 	};
 };
