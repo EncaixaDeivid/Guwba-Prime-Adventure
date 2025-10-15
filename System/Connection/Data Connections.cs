@@ -7,9 +7,9 @@ namespace GuwbaPrimeAdventure.Connection
 		public uint? NumberValue { get; private set; }
 		internal DataConnection(StateForm stateForm, bool? toggleValue, uint? numberValue)
 		{
-			this.StateForm = stateForm;
-			this.ToggleValue = toggleValue;
-			this.NumberValue = numberValue;
+			StateForm = stateForm;
+			ToggleValue = toggleValue;
+			NumberValue = numberValue;
 		}
 	};
 };
