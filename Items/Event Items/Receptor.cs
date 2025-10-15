@@ -23,74 +23,74 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._receptor = this.GetComponent<IReceptorSignal>();
+			_receptor = GetComponent<IReceptorSignal>();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._specificsObjects.Length > 0f)
-				foreach (string specificObject in this._specificsObjects)
+			if (_specificsObjects.Length > 0f)
+				foreach (string specificObject in _specificsObjects)
 					if (saveFile.generalObjects.Contains(specificObject))
-						this.Activate();
+						Activate();
 		}
-		private void Activate() => this._receptor.Execute();
+		private void Activate() => _receptor.Execute();
 		private void NormalSignal(Activator signalActivator)
 		{
-			if (this._onlyOneActivation)
+			if (_onlyOneActivation)
 				return;
-			if (this._usedActivators.ToArray() == this._activators)
-				this._usedActivators.Clear();
-			if (this._1X1)
+			if (_usedActivators.ToArray() == _activators)
+				_usedActivators.Clear();
+			if (_1X1)
 			{
-				foreach (Activator activator1X1 in this._activators)
-					if (signalActivator == activator1X1 && !this._usedActivators.Contains(activator1X1))
+				foreach (Activator activator1X1 in _activators)
+					if (signalActivator == activator1X1 && !_usedActivators.Contains(activator1X1))
 					{
-						this._usedActivators.Add(activator1X1);
-						this.Activate();
+						_usedActivators.Add(activator1X1);
+						Activate();
 						return;
 					}
 			}
-			else if (this._multiplesNeeded)
+			else if (_multiplesNeeded)
 			{
-				foreach (Activator activator in this._activators)
+				foreach (Activator activator in _activators)
 					if (activator == signalActivator)
-						this._signals += 1;
-				if (this._signals >= this._quantityNeeded)
+						_signals += 1;
+				if (_signals >= _quantityNeeded)
 				{
-					this._signals = 0;
-					this.Activate();
+					_signals = 0;
+					Activate();
 				}
 			}
-			else if (this._oneNeeded)
+			else if (_oneNeeded)
 			{
-				foreach (Activator activator in this._activators)
+				foreach (Activator activator in _activators)
 					if (activator == signalActivator)
 					{
-						this.Activate();
-						if (this._oneActivation)
-							this._onlyOneActivation = true;
+						Activate();
+						if (_oneActivation)
+							_onlyOneActivation = true;
 						return;
 					}
 			}
 			else
 			{
-				foreach (Activator activator in this._activators)
+				foreach (Activator activator in _activators)
 					if (activator == signalActivator)
-						this._signals += 1;
-				if (this._signals >= this._activators.Length)
+						_signals += 1;
+				if (_signals >= _activators.Length)
 				{
-					this._signals = 0;
-					this.Activate();
+					_signals = 0;
+					Activate();
 				}
 			}
 		}
 		internal void ReceiveSignal(Activator signalActivator)
 		{
-			if (this._timeToActivate > 0f)
-				this.StartCoroutine(TimerSignal());
+			if (_timeToActivate > 0f)
+				StartCoroutine(TimerSignal());
 			else
-				this.NormalSignal(signalActivator);
+				NormalSignal(signalActivator);
 			IEnumerator TimerSignal()
 			{
-				yield return new WaitTime(this, this._timeToActivate);
-				this.NormalSignal(signalActivator);
+				yield return new WaitTime(this, _timeToActivate);
+				NormalSignal(signalActivator);
 			}
 		}
 	};
