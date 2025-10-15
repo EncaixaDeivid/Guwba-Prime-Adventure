@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
@@ -27,23 +27,23 @@ namespace GuwbaPrimeAdventure.Item
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
-			ushort sceneIndex = ushort.Parse($"{this.gameObject.scene.name[^1]}");
+			ushort sceneIndex = ushort.Parse($"{gameObject.scene.name[^1]}");
 			if (!saveFile.levelsCompleted[sceneIndex - 1])
 			{
 				saveFile.levelsCompleted[sceneIndex - 1] = true;
 				SaveController.WriteSave(saveFile);
 			}
-			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
 			{
-				saveFile.generalObjects.Add(this.gameObject.name);
+				saveFile.generalObjects.Add(gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
-			if (this._enterInDialog && settings.DialogToggle)
-				this.GetComponent<IInteractable>().Interaction();
+			if (_enterInDialog && settings.DialogToggle)
+				GetComponent<IInteractable>().Interaction();
 			else if (sceneIndex - 1 >= 0f && !saveFile.deafetedBosses[sceneIndex - 1])
-				this.GetComponent<Transitioner>().Transicion(this._goToBoss);
+				GetComponent<Transitioner>().Transicion(_goToBoss);
 			else
-				this.GetComponent<Transitioner>().Transicion();
+				GetComponent<Transitioner>().Transicion();
 		}
 	};
 };
