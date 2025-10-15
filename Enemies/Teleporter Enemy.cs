@@ -11,12 +11,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			foreach (TeleportPointStructure teleportPointStructure in this._statistics.TeleportPointStructures)
+			foreach (TeleportPointStructure teleportPointStructure in _statistics.TeleportPointStructures)
 			{
-				TeleportPoint teleportPoint = teleportPointStructure.TeleportPointObject;
-				Instantiate(teleportPoint, teleportPointStructure.InstancePoint, Quaternion.identity).GetTouch(() =>
+				Instantiate(teleportPointStructure.TeleportPointObject, teleportPointStructure.InstancePoint, Quaternion.identity).GetTouch(() =>
 				{
-					if (this._canTeleport)
+					if (_canTeleport)
 					{
 						Vector2 teleportPointToUse;
 						if (teleportPointStructure.RandomTeleports)
@@ -26,14 +25,14 @@ namespace GuwbaPrimeAdventure.Enemy
 						}
 						else
 							teleportPointToUse = teleportPointStructure.TeleportPoints[0];
-						this.transform.position = teleportPointToUse;
-						this.StartCoroutine(UseTimer());
+						transform.position = teleportPointToUse;
+						StartCoroutine(UseTimer());
 					}
 					IEnumerator UseTimer()
 					{
-						this._canTeleport = false;
-						yield return new WaitTime(this, this._statistics.TimeToUse);
-						this._canTeleport = true;
+						_canTeleport = false;
+						yield return new WaitTime(this, _statistics.TimeToUse);
+						_canTeleport = true;
 					}
 				});
 			}
