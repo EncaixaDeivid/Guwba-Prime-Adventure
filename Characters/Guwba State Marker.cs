@@ -107,55 +107,55 @@ namespace GuwbaPrimeAdventure.Character
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			this._animator = this.GetComponent<Animator>();
-			this._rigidbody = this.GetComponent<Rigidbody2D>();
-			this._collider = this.GetComponent<BoxCollider2D>();
-			this._screenShaker = this.GetComponent<CinemachineImpulseSource>();
-			this._guwbaVisualizer = this.GetComponentInChildren<GuwbaVisualizer>();
-			this._guwbaDamagers = this.GetComponentsInChildren<GuwbaDamager>();
+			_animator = GetComponent<Animator>();
+			_rigidbody = GetComponent<Rigidbody2D>();
+			_collider = GetComponent<BoxCollider2D>();
+			_screenShaker = GetComponent<CinemachineImpulseSource>();
+			_guwbaVisualizer = GetComponentInChildren<GuwbaVisualizer>();
+			_guwbaDamagers = GetComponentsInChildren<GuwbaDamager>();
 			SaveController.Load(out SaveFile saveFile);
-			this._guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
-			this._guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
-			this._vitality = (short)this._guwbaVisualizer.Vitality.Length;
-			this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
-			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+			_guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
+			_guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
+			_vitality = (short)_guwbaVisualizer.Vitality.Length;
+			_stunResistance = (short)_guwbaVisualizer.StunResistance.Length;
+			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 			{
-				guwbaDamager.DamagerHurt += this.Hurt;
-				guwbaDamager.DamagerStun += this.Stun;
-				guwbaDamager.DamagerAttack += this.Attack;
+				guwbaDamager.DamagerHurt += Hurt;
+				guwbaDamager.DamagerStun += Stun;
+				guwbaDamager.DamagerAttack += Attack;
 			}
-			this.transform.localScale = new Vector3()
+			transform.localScale = new Vector3()
 			{
-				x = Mathf.Abs(this.transform.localScale.x) * (this._turnLeft ? -1f : 1f),
-				y = this.transform.localScale.y,
-				z = this.transform.localScale.z
+				x = Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f),
+				y = transform.localScale.y,
+				z = transform.localScale.z
 			};
-			this._gravityScale = this._rigidbody.gravityScale;
-			this._normalOffset = this._collider.offset;
-			this._normalSize = this._collider.size;
-			if (this.gameObject.scene.name.Contains(this._hubbyWorldScene))
+			_gravityScale = _rigidbody.gravityScale;
+			_normalOffset = _collider.offset;
+			_normalSize = _collider.size;
+			if (gameObject.scene.name.Contains(_hubbyWorldScene))
 			{
-				foreach (VisualElement vitality in this._guwbaVisualizer.Vitality)
+				foreach (VisualElement vitality in _guwbaVisualizer.Vitality)
 					vitality.style.display = DisplayStyle.None;
-				foreach (VisualElement recoverVitality in this._guwbaVisualizer.RecoverVitality)
+				foreach (VisualElement recoverVitality in _guwbaVisualizer.RecoverVitality)
 					recoverVitality.style.display = DisplayStyle.None;
-				foreach (VisualElement stunResistance in this._guwbaVisualizer.StunResistance)
+				foreach (VisualElement stunResistance in _guwbaVisualizer.StunResistance)
 					stunResistance.style.display = DisplayStyle.None;
-				foreach (VisualElement bunnyHop in this._guwbaVisualizer.BunnyHop)
+				foreach (VisualElement bunnyHop in _guwbaVisualizer.BunnyHop)
 					bunnyHop.style.display = DisplayStyle.None;
-				this._guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
+				_guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
 			}
-			this._inputController = new InputController();
-			this._inputController.Commands.Movement.started += this.Movement;
-			this._inputController.Commands.Movement.performed += this.Movement;
-			this._inputController.Commands.Movement.canceled += this.Movement;
-			this._inputController.Commands.AttackUse.started += this.AttackUse;
-			this._inputController.Commands.AttackUse.canceled += this.AttackUse;
-			this._inputController.Commands.Interaction.started += this.Interaction;
+			_inputController = new InputController();
+			_inputController.Commands.Movement.started += Movement;
+			_inputController.Commands.Movement.performed += Movement;
+			_inputController.Commands.Movement.canceled += Movement;
+			_inputController.Commands.AttackUse.started += AttackUse;
+			_inputController.Commands.AttackUse.canceled += AttackUse;
+			_inputController.Commands.Interaction.started += Interaction;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -163,150 +163,150 @@ namespace GuwbaPrimeAdventure.Character
 			base.OnDestroy();
 			if (!_instance || _instance != this)
 				return;
-			this.StopAllCoroutines();
-			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+			StopAllCoroutines();
+			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 			{
-				guwbaDamager.DamagerHurt -= this.Hurt;
-				guwbaDamager.DamagerStun -= this.Stun;
-				guwbaDamager.DamagerAttack -= this.Attack;
+				guwbaDamager.DamagerHurt -= Hurt;
+				guwbaDamager.DamagerStun -= Stun;
+				guwbaDamager.DamagerAttack -= Attack;
 				guwbaDamager.Alpha = 1f;
 			}
-			this._inputController.Commands.Movement.started -= this.Movement;
-			this._inputController.Commands.Movement.performed -= this.Movement;
-			this._inputController.Commands.Movement.canceled -= this.Movement;
-			this._inputController.Commands.AttackUse.started -= this.AttackUse;
-			this._inputController.Commands.AttackUse.canceled -= this.AttackUse;
-			this._inputController.Commands.Interaction.started -= this.Interaction;
-			this._inputController.Dispose();
+			_inputController.Commands.Movement.started -= Movement;
+			_inputController.Commands.Movement.performed -= Movement;
+			_inputController.Commands.Movement.canceled -= Movement;
+			_inputController.Commands.AttackUse.started -= AttackUse;
+			_inputController.Commands.AttackUse.canceled -= AttackUse;
+			_inputController.Commands.Interaction.started -= Interaction;
+			_inputController.Dispose();
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.Flex;
-			this._animator.SetFloat(this._isOn, 1f);
-			this._animator.SetFloat(this._walkSpeed, 1f);
-			this.EnableInputs();
-			if (this._dashActive)
-				this._dashMovement = this._guardDashMovement;
+			_guwbaVisualizer.RootElement.style.display = DisplayStyle.Flex;
+			_animator.SetFloat(_isOn, 1f);
+			_animator.SetFloat(_walkSpeed, 1f);
+			EnableInputs();
+			if (_dashActive)
+				_dashMovement = _guardDashMovement;
 		}
 		private void OnDisable()
 		{
 			if (!_instance || _instance != this)
 				return;
-			this._guwbaVisualizer.RootElement.style.display = DisplayStyle.None;
-			this._animator.SetFloat(this._isOn, 0f);
-			this._animator.SetFloat(this._walkSpeed, 0f);
-			this.DisableInputs();
-			if (this._dashActive)
-				(this._guardDashMovement, this._dashMovement) = (this._dashMovement, 0f);
+			_guwbaVisualizer.RootElement.style.display = DisplayStyle.None;
+			_animator.SetFloat(_isOn, 0f);
+			_animator.SetFloat(_walkSpeed, 0f);
+			DisableInputs();
+			if (_dashActive)
+				(_guardDashMovement, _dashMovement) = (_dashMovement, 0f);
 		}
 		private void EnableInputs()
 		{
-			this._inputController.Commands.Movement.Enable();
-			this._inputController.Commands.AttackUse.Enable();
-			this._inputController.Commands.Interaction.Enable();
-			this._rigidbody.WakeUp();
+			_inputController.Commands.Movement.Enable();
+			_inputController.Commands.AttackUse.Enable();
+			_inputController.Commands.Interaction.Enable();
+			_rigidbody.WakeUp();
 		}
 		private void DisableInputs()
 		{
-			this._inputController.Commands.Movement.Disable();
-			this._inputController.Commands.AttackUse.Disable();
-			this._inputController.Commands.Interaction.Disable();
-			this._rigidbody.Sleep();
-			this._movementAction = 0f;
+			_inputController.Commands.Movement.Disable();
+			_inputController.Commands.AttackUse.Disable();
+			_inputController.Commands.Interaction.Disable();
+			_rigidbody.Sleep();
+			_movementAction = 0f;
 		}
 		private IEnumerator Start()
 		{
 			if (!_instance || _instance != this)
 				yield break;
-			this.DisableInputs();
+			DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			this.EnableInputs();
+			EnableInputs();
 		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
-			if (!this.isActiveAndEnabled || this._animator.GetBool(this._stun))
+			if (!isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
-			this._movementAction = 0f;
+			_movementAction = 0f;
 			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 0.5f)
 				if (movement.ReadValue<Vector2>().x > 0f)
-					this._movementAction = 1f;
+					_movementAction = 1f;
 				else if (movement.ReadValue<Vector2>().x < 0f)
-					this._movementAction = -1f;
+					_movementAction = -1f;
 			if (movement.ReadValue<Vector2>().y > 0.25f)
 			{
-				this._lastJumpTime = this._jumpBufferTime;
-				if (!this._isOnGround && movement.performed && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
-					if (this._bunnyHopBoost >= this._guwbaVisualizer.BunnyHop.Length)
-						this._bunnyHopBoost = (ushort)this._guwbaVisualizer.BunnyHop.Length;
+				_lastJumpTime = _jumpBufferTime;
+				if (!_isOnGround && movement.performed && !gameObject.scene.name.Contains(_hubbyWorldScene))
+					if (_bunnyHopBoost >= _guwbaVisualizer.BunnyHop.Length)
+						_bunnyHopBoost = (ushort)_guwbaVisualizer.BunnyHop.Length;
 					else
-						this._bunnyHopBoost += 1;
+						_bunnyHopBoost += 1;
 			}
-			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
+			if (_isJumping && _rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
 			{
-				this._isJumping = false;
-				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
-				this._lastJumpTime = 0f;
+				_isJumping = false;
+				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
+				_lastJumpTime = 0f;
 			}
-			bool valid = !this._dashActive && this._isOnGround && (!this._attackUsage || this._comboAttackBuffer);
-			if (this._movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && valid)
+			bool valid = !_dashActive && _isOnGround && (!_attackUsage || _comboAttackBuffer);
+			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && valid)
 			{
-				this.StartCoroutine(Dash());
+				StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
-					this._animator.SetBool(this._dashSlide, this._dashActive = true);
-					this._animator.SetBool(this._attackSlide, this._comboAttackBuffer);
-					this._dashMovement = this._movementAction;
-					this.transform.localScale = new Vector3()
+					_animator.SetBool(_dashSlide, _dashActive = true);
+					_animator.SetBool(_attackSlide, _comboAttackBuffer);
+					_dashMovement = _movementAction;
+					transform.localScale = new Vector3()
 					{
-						x = Mathf.Abs(this.transform.localScale.x) * this._dashMovement,
-						y = this.transform.localScale.y,
-						z = this.transform.localScale.z
+						x = Mathf.Abs(transform.localScale.x) * _dashMovement,
+						y = transform.localScale.y,
+						z = transform.localScale.z
 					};
 					Vector2 position;
 					Vector2 origin;
 					Vector2 size;
 					Vector2 wallOrigin;
-					float dashLocation = this.transform.position.x;
+					float dashLocation = transform.position.x;
 					bool onWall = false;
 					bool block = false;
 					bool distanceValidation = false;
-					while (onWall || !(distanceValidation || !this._dashActive || block || !this._isOnGround || this._isJumping))
+					while (onWall || !(distanceValidation || !_dashActive || block || !_isOnGround || _isJumping))
 					{
-						position = (Vector2)this.transform.position + this._collider.offset;
-						origin = new Vector2(position.x + (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement, position.y);
-						size = new Vector2(this._groundChecker, this._collider.size.y - this._groundChecker);
-						block = Physics2D.BoxCast(origin, size, 0f, this.transform.right * this._dashMovement, this._groundChecker, this._groundLayer);
-						wallOrigin = new Vector2(this.transform.position.x + this._normalOffset.x, this.transform.position.y + this._normalOffset.y + this._groundChecker);
-						onWall = Physics2D.BoxCast(wallOrigin, this._normalSize, 0f, this.transform.up, this._groundChecker, this._groundLayer);
-						distanceValidation = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
-						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
+						position = (Vector2)transform.position + _collider.offset;
+						origin = new Vector2(position.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, position.y);
+						size = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
+						block = Physics2D.BoxCast(origin, size, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer);
+						wallOrigin = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
+						onWall = Physics2D.BoxCast(wallOrigin, _normalSize, 0f, transform.up, _groundChecker, _groundLayer);
+						distanceValidation = Mathf.Abs(transform.position.x - dashLocation) >= _dashDistance;
+						_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => this.isActiveAndEnabled || this._animator.GetBool(this._stun));
+						yield return new WaitUntil(() => isActiveAndEnabled || _animator.GetBool(_stun));
 					}
-					this._animator.SetBool(this._dashSlide, this._dashActive = false);
-					this._animator.SetBool(this._attackSlide, false);
+					_animator.SetBool(_dashSlide, _dashActive = false);
+					_animator.SetBool(_attackSlide, false);
 				}
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if (this._dashActive || !this.isActiveAndEnabled || this._animator.GetBool(this._stun))
+			if (_dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
-			if (attackUse.started && !this._attackUsage)
-				this._animator.SetTrigger(this._attack);
-			if (attackUse.canceled && this._comboAttackBuffer)
-				this._animator.SetTrigger(this._attackCombo);
+			if (attackUse.started && !_attackUsage)
+				_animator.SetTrigger(_attack);
+			if (attackUse.canceled && _comboAttackBuffer)
+				_animator.SetTrigger(_attackCombo);
 		};
 		private Action<InputAction.CallbackContext> Interaction => interaction =>
 		{
-			if (!this._isOnGround || this._movementAction != 0f || !this.isActiveAndEnabled || this._animator.GetBool(this._stun))
+			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
-			Vector2 point = (Vector2)this.transform.position + this._normalOffset;
-			float angle = this.transform.eulerAngles.z;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, this._normalSize, angle, this._InteractionLayer))
+			Vector2 point = (Vector2)transform.position + _normalOffset;
+			float angle = transform.eulerAngles.z;
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, _normalSize, angle, _InteractionLayer))
 				if (collider.TryGetComponent<IInteractable>(out _))
 				{
 					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -316,74 +316,74 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private IEnumerator VisualEffect()
 		{
-			while (this._invencibility)
+			while (_invencibility)
 			{
-				foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
-					guwbaDamager.Alpha = guwbaDamager.Alpha >= 1f ? this._invencibilityValue : 1f;
-				yield return new WaitTime(this, this._timeStep);
+				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
+					guwbaDamager.Alpha = guwbaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
+				yield return new WaitTime(this, _timeStep);
 			}
-			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 				guwbaDamager.Alpha = 1f;
 		}
 		public Predicate<ushort> Hurt => damage =>
 		{
-			if (this._invencibility || damage <= 0f)
+			if (_invencibility || damage <= 0f)
 				return false;
-			this._vitality -= (short)damage;
-			for (ushort i = (ushort)this._guwbaVisualizer.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
+			_vitality -= (short)damage;
+			for (ushort i = (ushort)_guwbaVisualizer.Vitality.Length; i > (_vitality >= 0f ? _vitality : 0f); i--)
 			{
-				this._guwbaVisualizer.Vitality[i - 1].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				this._guwbaVisualizer.Vitality[i - 1].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				this._guwbaVisualizer.Vitality[i - 1].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				this._guwbaVisualizer.Vitality[i - 1].style.borderRightColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				this._guwbaVisualizer.Vitality[i - 1].style.borderTopColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+				_guwbaVisualizer.Vitality[i - 1].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				_guwbaVisualizer.Vitality[i - 1].style.borderBottomColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				_guwbaVisualizer.Vitality[i - 1].style.borderLeftColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				_guwbaVisualizer.Vitality[i - 1].style.borderRightColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				_guwbaVisualizer.Vitality[i - 1].style.borderTopColor = new StyleColor(_guwbaVisualizer.MissingColor);
 			}
-			this._timerOfInvencibility = this._invencibilityTime;
-			this._invencibility = true;
-			this.StartCoroutine(this.VisualEffect());
-			if (this._vitality <= 0f)
+			_timerOfInvencibility = _invencibilityTime;
+			_invencibility = true;
+			StartCoroutine(VisualEffect());
+			if (_vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				saveFile.lifes -= 1;
-				this._guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
+				_guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
 				SaveController.WriteSave(saveFile);
-				this.StopAllCoroutines();
-				foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+				StopAllCoroutines();
+				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 					guwbaDamager.Alpha = 1f;
-				this.OnDisable();
-				this._animator.SetBool(this._death, true);
-				this._rigidbody.gravityScale = this._fallGravityMultiply * this._gravityScale;
-				this._sender.SetToggle(false);
-				this._sender.SetStateForm(StateForm.State);
-				this._sender.Send(PathConnection.Hud);
-				this._sender.SetStateForm(StateForm.Action);
-				this._sender.Send(PathConnection.Hud);
-				this._sender.SetStateForm(StateForm.None);
-				this._sender.Send(PathConnection.Enemy);
+				OnDisable();
+				_animator.SetBool(_death, true);
+				_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
+				_sender.SetToggle(false);
+				_sender.SetStateForm(StateForm.State);
+				_sender.Send(PathConnection.Hud);
+				_sender.SetStateForm(StateForm.Action);
+				_sender.Send(PathConnection.Hud);
+				_sender.SetStateForm(StateForm.None);
+				_sender.Send(PathConnection.Enemy);
 				return true;
 			}
 			return true;
 		};
 		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
 		{
-			this._stunResistance -= (short)stunStrength;
-			for (ushort i = (ushort)this._guwbaVisualizer.StunResistance.Length; i > (this._stunResistance >= 0f ? this._stunResistance : 0f); i--)
-				this._guwbaVisualizer.StunResistance[i - 1].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-			if (this._stunResistance <= 0f)
-				this.StartCoroutine(StunTimer());
+			_stunResistance -= (short)stunStrength;
+			for (ushort i = (ushort)_guwbaVisualizer.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
+				_guwbaVisualizer.StunResistance[i - 1].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+			if (_stunResistance <= 0f)
+				StartCoroutine(StunTimer());
 			IEnumerator StunTimer()
 			{
-				this._animator.SetBool(this._stun, true);
-				this._animator.SetFloat(this._isOn, 100f);
-				this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
-				for (ushort i = 0; i < this._stunResistance; i++)
-					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
-				this._dashActive = false;
-				this.DisableInputs();
+				_animator.SetBool(_stun, true);
+				_animator.SetFloat(_isOn, 100f);
+				_stunResistance = (short)_guwbaVisualizer.StunResistance.Length;
+				for (ushort i = 0; i < _stunResistance; i++)
+					_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
+				_dashActive = false;
+				DisableInputs();
 				yield return new WaitTime(this, stunTime);
-				this._animator.SetBool(this._stun, false);
-				this._animator.SetFloat(this._isOn, 1f);
-				this.EnableInputs();
+				_animator.SetBool(_stun, false);
+				_animator.SetFloat(_isOn, 1f);
+				EnableInputs();
 			}
 		};
 		private UnityAction<GuwbaDamager, IDestructible> Attack => (guwbaDamager, destructible) =>
@@ -391,271 +391,271 @@ namespace GuwbaPrimeAdventure.Character
 			if (destructible.Hurt(guwbaDamager.AttackDamage))
 			{
 				destructible.Stun(guwbaDamager.AttackDamage, guwbaDamager.StunTime);
-				EffectsController.HitStop(this._hitStopTime, this._hitSlowTime);
-				this.StartCoroutine(RecoverVitality());
+				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
+				StartCoroutine(RecoverVitality());
 				IEnumerator RecoverVitality()
 				{
 					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
 					{
-						bool valid = this._vitality < this._guwbaVisualizer.Vitality.Length;
-						if (this._recoverVitality >= this._guwbaVisualizer.RecoverVitality.Length && valid)
+						bool valid = _vitality < _guwbaVisualizer.Vitality.Length;
+						if (_recoverVitality >= _guwbaVisualizer.RecoverVitality.Length && valid)
 						{
-							this._recoverVitality = 0;
-							for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitality.Length; i++)
-								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-							this._vitality += 1;
-							for (ushort i = 0; i < this._vitality; i++)
+							_recoverVitality = 0;
+							for (ushort i = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
+								_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+							_vitality += 1;
+							for (ushort i = 0; i < _vitality; i++)
 							{
-								this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BackgroundColor);
-								this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+								_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
+								_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
+								_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
+								_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
+								_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
 							}
-							this._stunResistance += 1;
-							for (ushort i = 0; i < this._stunResistance; i++)
-								this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
+							_stunResistance += 1;
+							for (ushort i = 0; i < _stunResistance; i++)
+								_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
 						}
-						else if (this._recoverVitality < this._guwbaVisualizer.RecoverVitality.Length)
+						else if (_recoverVitality < _guwbaVisualizer.RecoverVitality.Length)
 						{
-							this._recoverVitality += 1;
-							for (ushort i = 0; i < this._recoverVitality; i++)
-								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+							_recoverVitality += 1;
+							for (ushort i = 0; i < _recoverVitality; i++)
+								_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BorderColor);
 						}
-						yield return new WaitTime(this, this._recoverRate);
+						yield return new WaitTime(this, _recoverRate);
 					}
 				}
 			}
 		};
 		private void Update()
 		{
-			if (this._invencibility)
+			if (_invencibility)
 			{
-				this._timerOfInvencibility -= Time.deltaTime;
-				this._invencibility = this._timerOfInvencibility > 0f;
+				_timerOfInvencibility -= Time.deltaTime;
+				_invencibility = _timerOfInvencibility > 0f;
 			}
-			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0f && !this._downStairs && (this._lastGroundedTime > 0f || this._lastJumpTime > 0f))
+			if (!_dashActive && !_isOnGround && _rigidbody.linearVelocityY != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 			{
-				this._lastGroundedTime -= Time.deltaTime;
-				this._lastJumpTime -= Time.deltaTime;
+				_lastGroundedTime -= Time.deltaTime;
+				_lastJumpTime -= Time.deltaTime;
 			}
 		}
 		private void FixedUpdate()
 		{
-			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
-			Vector2 direction = this.transform.right * this._movementAction;
-			this._downStairs = false;
-			if (!this._isOnGround && this._canDownStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
+			Vector2 position = (Vector2)transform.position + _collider.offset;
+			Vector2 direction = transform.right * _movementAction;
+			_downStairs = false;
+			if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f && !_dashActive)
 			{
-				Vector2 downRayOrigin = new(position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction, position.y - this._collider.bounds.extents.y);
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, 1f + this._groundChecker, this._groundLayer);
-				if (this._downStairs = downRay)
-					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
+				Vector2 downRayOrigin = new(position.x - (_collider.bounds.extents.x - _groundChecker) * _movementAction, position.y - _collider.bounds.extents.y);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -transform.up, 1f + _groundChecker, _groundLayer);
+				if (_downStairs = downRay)
+					transform.position = new Vector2(transform.position.x, transform.position.y - downRay.distance);
 			}
-			if (!this._dashActive)
-				if (this._isOnGround)
+			if (!_dashActive)
+				if (_isOnGround)
 				{
-					this._animator.SetBool(this._idle, this._movementAction == 0f);
-					this._animator.SetBool(this._walk, this._movementAction != 0f);
-					this._animator.SetBool(this._jump, false);
-					this._animator.SetBool(this._fall, false);
-					this._lastGroundedTime = this._jumpCoyoteTime;
-					this._canDownStairs = true;
-					this._isJumping = false;
-					this._longJumping = false;
-					this._bunnyHopBoost = this._lastJumpTime > 0f ? this._bunnyHopBoost : (ushort)0f;
-					if (this._bunnyHopBoost <= 0f && this._isHoping)
+					_animator.SetBool(_idle, _movementAction == 0f);
+					_animator.SetBool(_walk, _movementAction != 0f);
+					_animator.SetBool(_jump, false);
+					_animator.SetBool(_fall, false);
+					_lastGroundedTime = _jumpCoyoteTime;
+					_canDownStairs = true;
+					_isJumping = false;
+					_longJumping = false;
+					_bunnyHopBoost = _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f;
+					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
-						this._isHoping = false;
-						for (ushort i = 0; i < this._guwbaVisualizer.BunnyHop.Length; i++)
-							this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
+						_isHoping = false;
+						for (ushort i = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
+							_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
 					}
-					if (this._fallDamage > 0f && this._bunnyHopBoost <= 0f && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
+					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && !gameObject.scene.name.Contains(_hubbyWorldScene))
 					{
-						this._screenShaker.GenerateImpulseWithForce(this._fallDamage / this._fallDamageDistance);
-						this.Hurt.Invoke((ushort)Mathf.Floor(this._fallDamage / this._fallDamageDistance));
-						this._fallStarted = false;
-						this._fallDamage = 0f;
-						if (this._invencibility)
-							this.StartCoroutine(KeepShow());
+						_screenShaker.GenerateImpulseWithForce(_fallDamage / _fallDamageDistance);
+						Hurt.Invoke((ushort)Mathf.Floor(_fallDamage / _fallDamageDistance));
+						_fallStarted = false;
+						_fallDamage = 0f;
+						if (_invencibility)
+							StartCoroutine(KeepShow());
 						else
 						{
-							this._guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							this._guwbaVisualizer.FallDamageText.text = $"X 0";
+							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
+							_guwbaVisualizer.FallDamageText.text = $"X 0";
 						}
 						IEnumerator KeepShow()
 						{
-							yield return new WaitTime(this, this._timeToFadeShow);
-							this._guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							this._guwbaVisualizer.FallDamageText.text = $"X 0";
+							yield return new WaitTime(this, _timeToFadeShow);
+							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
+							_guwbaVisualizer.FallDamageText.text = $"X 0";
 						}
 					}
 				}
-				else if (this._rigidbody.linearVelocityY != 0f && !this._downStairs)
+				else if (_rigidbody.linearVelocityY != 0f && !_downStairs)
 				{
-					this._animator.SetBool(this._idle, false);
-					this._animator.SetBool(this._walk, false);
-					this._animator.SetBool(this._jump, this._rigidbody.linearVelocityY > 0f);
-					this._animator.SetBool(this._fall, this._rigidbody.linearVelocityY < 0f);
-					if (this._animator.GetBool(this._attackJump))
-						this._animator.SetBool(this._attackJump, this._rigidbody.linearVelocityY > 0f);
-					if (this._animator.GetBool(this._fall))
+					_animator.SetBool(_idle, false);
+					_animator.SetBool(_walk, false);
+					_animator.SetBool(_jump, _rigidbody.linearVelocityY > 0f);
+					_animator.SetBool(_fall, _rigidbody.linearVelocityY < 0f);
+					if (_animator.GetBool(_attackJump))
+						_animator.SetBool(_attackJump, _rigidbody.linearVelocityY > 0f);
+					if (_animator.GetBool(_fall))
 					{
-						this._rigidbody.gravityScale = this._fallGravityMultiply * this._gravityScale;
-						if (this._fallStarted)
+						_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
+						if (_fallStarted)
 						{
-							this._fallDamage = Mathf.Abs(this.transform.position.y - this._fallStart);
-							if (this._fallDamage >= this._fallDamageDistance * this._fallDamageShowMultiply)
+							_fallDamage = Mathf.Abs(transform.position.y - _fallStart);
+							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
 							{
-								this._guwbaVisualizer.FallDamageText.style.opacity = 1f;
-								this._guwbaVisualizer.FallDamageText.text = $"X {this._fallDamage / this._fallDamageDistance}";
+								_guwbaVisualizer.FallDamageText.style.opacity = 1f;
+								_guwbaVisualizer.FallDamageText.text = $"X {_fallDamage / _fallDamageDistance}";
 							}
-							else if (!this._invencibility)
+							else if (!_invencibility)
 							{
-								this._guwbaVisualizer.FallDamageText.style.opacity = 0f;
-								this._guwbaVisualizer.FallDamageText.text = $"X 0";
+								_guwbaVisualizer.FallDamageText.style.opacity = 0f;
+								_guwbaVisualizer.FallDamageText.text = $"X 0";
 							}
 						}
 						else
 						{
-							this._fallStarted = true;
-							this._fallStart = this.transform.position.y;
-							this._fallDamage = 0f;
+							_fallStarted = true;
+							_fallStart = transform.position.y;
+							_fallDamage = 0f;
 						}
 					}
 					else
 					{
-						if (!this._invencibility)
+						if (!_invencibility)
 						{
-							this._guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							this._guwbaVisualizer.FallDamageText.text = $"X 0";
+							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
+							_guwbaVisualizer.FallDamageText.text = $"X 0";
 						}
-						this._rigidbody.gravityScale = this._gravityScale;
-						this._fallDamage = 0f;
+						_rigidbody.gravityScale = _gravityScale;
+						_fallDamage = 0f;
 					}
-					if (this._attackUsage)
-						this._rigidbody.linearVelocityY *= this._attackVelocityCut;
-					this._canDownStairs = false;
+					if (_attackUsage)
+						_rigidbody.linearVelocityY *= _attackVelocityCut;
+					_canDownStairs = false;
 				}
-			float BunnyHop(float callBackValue) => this._bunnyHopBoost > 0f ? this._bunnyHopBoost * callBackValue : 1f;
-			if (!this._dashActive)
+			float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
+			if (!_dashActive)
 			{
-				float speed = this._longJumping ? this._dashSpeed : this._movementSpeed + BunnyHop(this._velocityBoost);
-				if (this._isOnGround && this._movementAction != 0f)
+				float speed = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
+				if (_isOnGround && _movementAction != 0f)
 				{
-					float stairsOriginX = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-					Vector2 bottomOrigin = new(position.x + stairsOriginX, position.y - 1f * this._bottomCheckerOffset);
-					Vector2 bottomSize = new(this._groundChecker, 1f - this._groundChecker);
-					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, this._groundLayer);
+					float stairsOriginX = (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction;
+					Vector2 bottomOrigin = new(position.x + stairsOriginX, position.y - 1f * _bottomCheckerOffset);
+					Vector2 bottomSize = new(_groundChecker, 1f - _groundChecker);
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, _groundChecker, _groundLayer);
 					if (bottomCast)
 					{
 						Vector2 topOrigin = new(position.x + stairsOriginX, position.y + 1f * .5f);
-						Vector2 topSize = new(this._groundChecker, 1f * this._topWallChecker - this._groundChecker);
-						if (!Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, this._groundLayer))
+						Vector2 topSize = new(_groundChecker, 1f * _topWallChecker - _groundChecker);
+						if (!Physics2D.BoxCast(topOrigin, topSize, 0f, direction, _groundChecker, _groundLayer))
 						{
-							Vector2 lineStart = new(position.x + stairsOriginX + this._groundChecker / 2f * this._movementAction, position.y + this._collider.bounds.extents.y);
-							Vector2 lineEnd = new(position.x + stairsOriginX + this._groundChecker / 2f * this._movementAction, position.y - this._collider.bounds.extents.y);
-							RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
+							Vector2 lineStart = new(position.x + stairsOriginX + _groundChecker / 2f * _movementAction, position.y + _collider.bounds.extents.y);
+							Vector2 lineEnd = new(position.x + stairsOriginX + _groundChecker / 2f * _movementAction, position.y - _collider.bounds.extents.y);
+							RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, _groundLayer);
 							if (lineWall.collider == bottomCast.collider)
 							{
-								float yDistance = position.y + (lineWall.point.y - (position.y - this._collider.bounds.extents.y));
-								this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
-								this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+								float yDistance = position.y + (lineWall.point.y - (position.y - _collider.bounds.extents.y));
+								transform.position = new Vector2(position.x + _groundChecker * _movementAction, yDistance);
+								_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 							}
 						}
 					}
 				}
-				if (this._movementAction != 0f)
-					this.transform.localScale = new Vector3()
+				if (_movementAction != 0f)
+					transform.localScale = new Vector3()
 					{
-						x = Mathf.Abs(this.transform.localScale.x) * this._movementAction,
-						y = this.transform.localScale.y,
-						z = this.transform.localScale.z
+						x = Mathf.Abs(transform.localScale.x) * _movementAction,
+						y = transform.localScale.y,
+						z = transform.localScale.z
 					};
-				bool wallBlock = this._movementAction != 0f && Mathf.Abs(this._rigidbody.linearVelocityX) <= 1e-3f;
-				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / speed);
-				float speedDiferrence = speed * this._movementAction - this._rigidbody.linearVelocityX;
-				float accelerationRate = (Mathf.Abs(speed * this._movementAction) > 0f ? this._acceleration : this._decceleration) + BunnyHop(this._potencyBoost);
-				this._rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence) * this._rigidbody.mass);
-				if (this._attackUsage)
-					this._rigidbody.linearVelocityX *= this._attackVelocityCut;
+				bool wallBlock = _movementAction != 0f && Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f;
+				_animator.SetFloat(_walkSpeed, wallBlock ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / speed);
+				float speedDiferrence = speed * _movementAction - _rigidbody.linearVelocityX;
+				float accelerationRate = (Mathf.Abs(speed * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
+				_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, _velocityPower) * Mathf.Sign(speedDiferrence) * _rigidbody.mass);
+				if (_attackUsage)
+					_rigidbody.linearVelocityX *= _attackVelocityCut;
 			}
-			if (this._isOnGround && this._movementAction == 0f && !this._dashActive)
+			if (_isOnGround && _movementAction == 0f && !_dashActive)
 			{
-				float frictionAmount = Mathf.Min(Mathf.Abs(this._rigidbody.linearVelocityX), Mathf.Abs(this._frictionAmount));
-				frictionAmount *= Mathf.Sign(this._rigidbody.linearVelocityX);
-				this._rigidbody.AddForceX(-frictionAmount * this._rigidbody.mass, ForceMode2D.Impulse);
+				float frictionAmount = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount));
+				frictionAmount *= Mathf.Sign(_rigidbody.linearVelocityX);
+				_rigidbody.AddForceX(-frictionAmount * _rigidbody.mass, ForceMode2D.Impulse);
 			}
-			if (!this._isJumping && this._lastJumpTime > 0f && this._lastGroundedTime > 0f)
+			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
 			{
-				this._animator.SetBool(this._attackJump, this._comboAttackBuffer);
-				this._isJumping = true;
-				this._longJumping = this._dashActive;
-				this._rigidbody.gravityScale = this._gravityScale;
-				this._rigidbody.linearVelocityY = 0f;
-				if (this._bunnyHopBoost > 0f)
+				_animator.SetBool(_attackJump, _comboAttackBuffer);
+				_isJumping = true;
+				_longJumping = _dashActive;
+				_rigidbody.gravityScale = _gravityScale;
+				_rigidbody.linearVelocityY = 0f;
+				if (_bunnyHopBoost > 0f)
 				{
-					this._isHoping = true;
-					for (ushort i = 0; i < this._bunnyHopBoost; i++)
-						this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BunnyHopColor);
+					_isHoping = true;
+					for (ushort i = 0; i < _bunnyHopBoost; i++)
+						_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BunnyHopColor);
 				}
-				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
+				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 			}
-			this._isOnGround = false;
+			_isOnGround = false;
 		}
 		private void GroundCheck()
 		{
-			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
-			Vector2 groundOrigin = new(position.x, position.y + (this._collider.bounds.extents.y + this._groundChecker / 2f) * -this.transform.up.y);
-			Vector2 groundSize = new(this._collider.size.x - this._groundChecker, this._groundChecker);
-			this._isOnGround = Physics2D.BoxCast(groundOrigin, groundSize, 0f, -this.transform.up, this._groundChecker, this._groundLayer);
+			Vector2 position = (Vector2)transform.position + _collider.offset;
+			Vector2 groundOrigin = new(position.x, position.y + (_collider.bounds.extents.y + _groundChecker / 2f) * -transform.up.y);
+			Vector2 groundSize = new(_collider.size.x - _groundChecker, _groundChecker);
+			_isOnGround = Physics2D.BoxCast(groundOrigin, groundSize, 0f, -transform.up, _groundChecker, _groundLayer);
 		}
-		private void OnCollisionEnter2D(Collision2D collision) => this.GroundCheck();
-		private void OnCollisionStay2D(Collision2D collision) => this.GroundCheck();
+		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
+		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (other.TryGetComponent<ICollectable>(out var collectable))
 			{
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
-				this._guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
-				this._guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
+				_guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
+				_guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
 			}
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				for (ushort i = 0; i < (this._vitality = (short)this._guwbaVisualizer.Vitality.Length); i++)
+				for (ushort i = 0; i < (_vitality = (short)_guwbaVisualizer.Vitality.Length); i++)
 				{
-					this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BackgroundColor);
-					this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(this._guwbaVisualizer.BorderColor);
-					this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+					_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
+					_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
+					_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
+					_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
+					_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
 				}
-				for (ushort i = this._recoverVitality = 0; i < this._guwbaVisualizer.RecoverVitality.Length; i++)
-					this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				for (ushort i = 0; i < (this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length); i++)
-					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
-				for (ushort i = this._bunnyHopBoost = 0; i < this._guwbaVisualizer.BunnyHop.Length; i++)
-					this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
-				this._isHoping = false;
-				this.transform.localScale = new Vector3()
+				for (ushort i = _recoverVitality = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
+					_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				for (ushort i = 0; i < (_stunResistance = (short)_guwbaVisualizer.StunResistance.Length); i++)
+					_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
+				for (ushort i = _bunnyHopBoost = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
+					_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+				_isHoping = false;
+				transform.localScale = new Vector3()
 				{
-					x = Mathf.Abs(this.transform.localScale.x) * (this._turnLeft ? -1f : 1f),
-					y = this.transform.localScale.y,
-					z = this.transform.localScale.z
+					x = Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f),
+					y = transform.localScale.y,
+					z = transform.localScale.z
 				};
-				this._animator.SetBool(this._death, false);
-				this._collider.size = this._normalSize;
+				_animator.SetBool(_death, false);
+				_collider.size = _normalSize;
 			}
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				this._timerOfInvencibility = this._invencibilityTime;
-				this._invencibility = true;
-				this.StartCoroutine(this.VisualEffect());
-				this.OnEnable();
+				_timerOfInvencibility = _invencibilityTime;
+				_invencibility = true;
+				StartCoroutine(VisualEffect());
+				OnEnable();
 			}
 		}
 	};
