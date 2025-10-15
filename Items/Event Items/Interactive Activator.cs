@@ -8,15 +8,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private readonly Sender _sender = Sender.Create();
 		public void Interaction()
 		{
-			if (this.Usable)
+			if (Usable)
 			{
-				this.Activation();
-				if (!this.Usable)
+				Activation();
+				if (!Usable)
 				{
-					this._sender.SetStateForm(StateForm.State);
-					this._sender.SetToggle(false);
-					this._sender.SetAdditionalData(this.gameObject);
-					this._sender.Send(PathConnection.Hud);
+					_sender.SetStateForm(StateForm.State);
+					_sender.SetToggle(false);
+					_sender.SetAdditionalData(gameObject);
+					_sender.Send(PathConnection.Hud);
 				}
 			}
 		}
