@@ -19,10 +19,10 @@ namespace GuwbaPrimeAdventure.Hud
 		private new void Awake()
 		{
 			base.Awake();
-			this._animator = this.GetComponent<Animator>();
-			this._document = Instantiate(this._documentObject, this.transform);
-			this._document.enabled = false;
-			this._document.transform.localPosition = this._imageOffset;
+			_animator = GetComponent<Animator>();
+			_document = Instantiate(_documentObject, transform);
+			_document.enabled = false;
+			_document.transform.localPosition = _imageOffset;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -32,38 +32,35 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnEnable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 1f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 1f);
 		}
 		private void OnDisable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 0f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if ((this._isOnCollision = GuwbaCentralizer.EqualObject(collision.gameObject)) && this._isActive)
-				this._document.enabled = true;
+			if ((_isOnCollision = GuwbaCentralizer.EqualObject(collision.gameObject)) && _isActive)
+				_document.enabled = true;
 		}
 		private void OnTriggerExit2D(Collider2D collision)
 		{
-			if (!(this._isOnCollision = !GuwbaCentralizer.EqualObject(collision.gameObject)))
-				this._document.enabled = false;
+			if (!(_isOnCollision = !GuwbaCentralizer.EqualObject(collision.gameObject)))
+				_document.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData as GameObject == this.gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+			if (additionalData as GameObject == gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
 				{
-					this._isActive = true;
-					if (this._isOnCollision)
-						this._document.enabled = true;
+					_isActive = true;
+					if (_isOnCollision)
+						_document.enabled = true;
 				}
 				else
-				{
-					this._isActive = false;
-					this._document.enabled = false;
-				}
+					_isActive = _document.enabled = false;
 		}
 	};
 };
