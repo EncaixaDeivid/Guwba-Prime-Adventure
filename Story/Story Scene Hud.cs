@@ -13,12 +13,11 @@ namespace GuwbaPrimeAdventure.Story
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.SceneImage = root.Q<VisualElement>(this._sceneImageVisual);
+			SceneImage = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(_sceneImageVisual);
 		}
 	};
 };
