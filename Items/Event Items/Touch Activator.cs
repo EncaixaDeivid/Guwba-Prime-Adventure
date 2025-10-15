@@ -13,24 +13,24 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("If this activator will destroy the object that activated the activator.")] private bool _destroyObject;
 		private void Activate(bool activationKey, GameObject objectKey)
 		{
-			if (activationKey && this.Usable)
-				if (this._objectsActivators != null)
+			if (activationKey && Usable)
+				if (_objectsActivators != null)
 				{
-					foreach (GameObject activator in this._objectsActivators)
+					foreach (GameObject activator in _objectsActivators)
 						if (activator != null && activator == objectKey)
 						{
-							this.Activation();
-							if (this._destroyObject)
+							Activation();
+							if (_destroyObject)
 								Destroy(activator);
 							return;
 						}
 				}
 				else
-					this.Activation();
+					Activation();
 		}
-		private void OnCollisionEnter2D(Collision2D other) => this.Activate(this._enterCollision, other.gameObject);
-		private void OnTriggerEnter2D(Collider2D other) => this.Activate(this._enterTrigger, other.gameObject);
-		private void OnCollisionExit2D(Collision2D other) => this.Activate(this._exitCollision, other.gameObject);
-		private void OnTriggerExit2D(Collider2D other) => this.Activate(this._exitTrigger, other.gameObject);
+		private void OnCollisionEnter2D(Collision2D other) => Activate(_enterCollision, other.gameObject);
+		private void OnTriggerEnter2D(Collider2D other) => Activate(_enterTrigger, other.gameObject);
+		private void OnCollisionExit2D(Collision2D other) => Activate(_exitCollision, other.gameObject);
+		private void OnTriggerExit2D(Collider2D other) => Activate(_exitTrigger, other.gameObject);
 	};
 };
