@@ -13,13 +13,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized timed.")] private bool _randomTimedSummons;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
-		internal EnemyPhysics Physics => this._physics;
-		internal SummonObject[] EventSummons => this._eventSummons;
-		internal SummonObject[] TimedSummons => this._timedSummons;
-		internal SummonPointStructure[] SummonPointStructures => this._summonPointStructures;
-		internal bool RandomReactSummons => this._randomReactSummons;
-		internal bool RandomTimedSummons => this._randomTimedSummons;
-		internal bool ReactToDamage => this._reactToDamage;
+		internal EnemyPhysics Physics => _physics;
+		internal SummonObject[] EventSummons => _eventSummons;
+		internal SummonObject[] TimedSummons => _timedSummons;
+		internal SummonPointStructure[] SummonPointStructures => _summonPointStructures;
+		internal bool RandomReactSummons => _randomReactSummons;
+		internal bool RandomTimedSummons => _randomTimedSummons;
+		internal bool ReactToDamage => _reactToDamage;
 	};
 	[Serializable]
 	internal struct SummonPointStructure
@@ -27,8 +27,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The object to activate the summon.")] private SummonPoint _summonPointObject;
 		[SerializeField, Tooltip("Which summon event the summon point will activate.")] private SummonObject _objectToSummon;
 		[SerializeField, Tooltip("The point where the summon point will be.")] private Vector2 _point;
-		internal readonly SummonPoint SummonPointObject => this._summonPointObject;
-		internal readonly SummonObject Summon => this._objectToSummon;
-		internal readonly Vector2 Point => this._point;
+		internal readonly SummonPoint SummonPointObject => _summonPointObject;
+		internal readonly SummonObject Summon => _objectToSummon;
+		internal readonly Vector2 Point => _point;
 	};
 };
