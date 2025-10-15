@@ -10,10 +10,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The collection of the summon places.")] private TeleportPointStructure[] _teleportPointStructures;
 		[SerializeField, Tooltip("The amount of time to use the teleport again.")] private float _timeToUse;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
-		internal EnemyPhysics Physics => this._physics;
-		internal TeleportPointStructure[] TeleportPointStructures => this._teleportPointStructures;
-		internal float TimeToUse => this._timeToUse;
-		internal bool ReactToDamage => this._reactToDamage;
+		internal EnemyPhysics Physics => _physics;
+		internal TeleportPointStructure[] TeleportPointStructures => _teleportPointStructures;
+		internal float TimeToUse => _timeToUse;
+		internal bool ReactToDamage => _reactToDamage;
 	};
 	[Serializable]
 	internal struct TeleportPointStructure
@@ -22,9 +22,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The point where the teleport point will be.")] private Vector2 _instancePoint;
 		[SerializeField, Tooltip("The points where the point will teleport to.")] private Vector2[] _teleportPoints;
 		[SerializeField, Tooltip("If the points to teleport will be random.")] private bool _randomTeleports;
-		internal readonly TeleportPoint TeleportPointObject => this._teleportPoint;
-		internal readonly Vector2 InstancePoint => this._instancePoint;
-		internal readonly Vector2[] TeleportPoints => this._teleportPoints;
-		internal readonly bool RandomTeleports => this._randomTeleports;
+		internal readonly TeleportPoint TeleportPointObject => _teleportPoint;
+		internal readonly Vector2 InstancePoint => _instancePoint;
+		internal readonly Vector2[] TeleportPoints => _teleportPoints;
+		internal readonly bool RandomTeleports => _randomTeleports;
 	}
 };
