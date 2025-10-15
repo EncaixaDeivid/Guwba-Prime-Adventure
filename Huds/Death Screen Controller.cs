@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
@@ -31,79 +31,79 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (this._deathScreenHud)
+			if (_deathScreenHud)
 			{
-				this._deathScreenHud.Continue.clicked -= this.Continue;
-				this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
-				this._deathScreenHud.GameOver.clicked -= this.GameOver;
+				_deathScreenHud.Continue.clicked -= Continue;
+				_deathScreenHud.OutLevel.clicked -= OutLevel;
+				_deathScreenHud.GameOver.clicked -= GameOver;
 			}
 			Sender.Exclude(this);
 		}
 		private Action Continue => () =>
 		{
-			if (this.gameObject.scene.name.Contains("Boss"))
-				this.GetComponent<Transitioner>().Transicion(this._bossScene);
+			if (gameObject.scene.name.Contains("Boss"))
+				GetComponent<Transitioner>().Transicion(_bossScene);
 			else
 			{
-				this.StartCoroutine(Curtain());
+				StartCoroutine(Curtain());
 				IEnumerator Curtain()
 				{
-					this._deathScreenHud.Text.style.display = DisplayStyle.None;
-					this._deathScreenHud.Continue.style.display = DisplayStyle.None;
-					this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
-					this._deathScreenHud.GameOver.style.display = DisplayStyle.None;
-					this._deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
-					for (float i = 0f; this._deathScreenHud.Curtain.style.opacity.value < 1f; i += 0.05f)
+					_deathScreenHud.Text.style.display = DisplayStyle.None;
+					_deathScreenHud.Continue.style.display = DisplayStyle.None;
+					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
+					_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
+					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 0.05f)
 					{
-						this._deathScreenHud.Curtain.style.opacity = i;
+						_deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
 					}
-					this._sender.SetToggle(true);
-					this._sender.SetStateForm(StateForm.Action);
-					this._sender.Send(PathConnection.System);
-					this._sender.Send(PathConnection.Character);
-					this._sender.SetStateForm(StateForm.State);
-					this._sender.Send(PathConnection.Item);
-					for (float i = 1f; this._deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
+					_sender.SetToggle(true);
+					_sender.SetStateForm(StateForm.Action);
+					_sender.Send(PathConnection.System);
+					_sender.Send(PathConnection.Character);
+					_sender.SetStateForm(StateForm.State);
+					_sender.Send(PathConnection.Item);
+					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
 					{
-						this._deathScreenHud.Curtain.style.opacity = i;
+						_deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
 					}
-					this._sender.Send(PathConnection.Character);
-					this._sender.SetStateForm(StateForm.None);
-					this._sender.Send(PathConnection.Enemy);
+					_sender.Send(PathConnection.Character);
+					_sender.SetStateForm(StateForm.None);
+					_sender.Send(PathConnection.Enemy);
 					ConfigurationController.Instance.SetActive(true);
-					if (this._deathScreenHud)
+					if (_deathScreenHud)
 					{
-						this._deathScreenHud.Continue.clicked -= this.Continue;
-						this._deathScreenHud.OutLevel.clicked -= this.OutLevel;
-						this._deathScreenHud.GameOver.clicked -= this.GameOver;
-						Destroy(this._deathScreenHud.gameObject);
+						_deathScreenHud.Continue.clicked -= Continue;
+						_deathScreenHud.OutLevel.clicked -= OutLevel;
+						_deathScreenHud.GameOver.clicked -= GameOver;
+						Destroy(_deathScreenHud.gameObject);
 					}
 				}
 			}
 		};
-		private Action OutLevel => () => this.GetComponent<Transitioner>().Transicion(this._levelSelectorScene);
+		private Action OutLevel => () => GetComponent<Transitioner>().Transicion(_levelSelectorScene);
 		private Action GameOver => () =>
 		{
 			SaveController.RefreshData();
-			this.GetComponent<Transitioner>().Transicion();
+			GetComponent<Transitioner>().Transicion();
 		};
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				this._deathScreenHud = Instantiate(this._deathScreenHudObject, this.transform);
-				this._deathScreenHud.Continue.clicked += this.Continue;
-				this._deathScreenHud.OutLevel.clicked += this.OutLevel;
-				this._deathScreenHud.GameOver.clicked += this.GameOver;
+				_deathScreenHud = Instantiate(_deathScreenHudObject, transform);
+				_deathScreenHud.Continue.clicked += Continue;
+				_deathScreenHud.OutLevel.clicked += OutLevel;
+				_deathScreenHud.GameOver.clicked += GameOver;
 				if (saveFile.lifes < 0f)
 				{
-					this._deathScreenHud.Text.text = "Fim de Jogo";
-					this._deathScreenHud.Continue.style.display = DisplayStyle.None;
-					this._deathScreenHud.OutLevel.style.display = DisplayStyle.None;
-					this._deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
+					_deathScreenHud.Text.text = "Fim de Jogo";
+					_deathScreenHud.Continue.style.display = DisplayStyle.None;
+					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+					_deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
 				}
 			}
 		}
