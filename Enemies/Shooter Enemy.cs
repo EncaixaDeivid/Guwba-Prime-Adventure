@@ -25,112 +25,110 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Verify()
 		{
 			bool hasTarget = false;
-			float originDirection = this._collider.bounds.extents.x * (this.transform.localScale.x < 0f ? -1f : 1f);
-			Vector2 origin = new(this.transform.position.x + originDirection, this.transform.position.y);
-			Vector2 direction = Quaternion.AngleAxis(this._statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
-			if (this._statistics.TurnRay)
-				direction *= this.transform.localScale.x < 0f ? -1f : 1f;
-			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
-			float perceptionDistance = this._statistics.PerceptionDistance;
-			if (this._statistics.CircularDetection)
+			if (_statistics.CircularDetection)
 			{
-				Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, perceptionDistance, targetLayer);
+				Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer);
 				foreach (Collider2D collider in colliders)
 					if (collider.TryGetComponent<IDestructible>(out _))
 					{
-						if (Physics2D.Linecast(this.transform.position, collider.transform.position, this._statistics.Physics.GroundLayer))
+						if (Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
 							continue;
-						this._targetDirection = (collider.transform.position - this.transform.position).normalized;
+						_targetDirection = (collider.transform.position - transform.position).normalized;
 						hasTarget = true;
 					}
 			}
 			else
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, perceptionDistance, targetLayer))
+			{
+				Vector2 origin = new(transform.position.x + _collider.bounds.extents.x * (transform.localScale.x < 0f ? -1f : 1f), transform.position.y);
+				Vector2 direction = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
+				if (_statistics.TurnRay)
+					direction *= transform.localScale.x < 0f ? -1f : 1f;
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 						hasTarget = true;
-			if ((hasTarget || this._statistics.ShootInfinity) && this._shootInterval <= 0f)
+			}
+			if ((hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
 			{
-				this._shootInterval = this._statistics.IntervalToShoot;
-				if (this._statistics.InvencibleShoot)
+				_shootInterval = _statistics.IntervalToShoot;
+				if (_statistics.InvencibleShoot)
 				{
-					this._sender.SetStateForm(StateForm.Action);
-					this._sender.SetToggle(true);
-					this._sender.Send(PathConnection.Enemy);
+					_sender.SetStateForm(StateForm.Action);
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
 				}
-				if (this._statistics.Stop)
+				if (_statistics.Stop)
 				{
-					this._canShoot = true;
-					this._timeStop = this._statistics.StopTime;
-					this._isStopped = true;
-					this._sender.SetStateForm(StateForm.State);
-					this._sender.SetToggle(false);
-					this._sender.Send(PathConnection.Enemy);
-					if (this._statistics.Paralyze)
-						this._rigidybody.Sleep();
+					_canShoot = true;
+					_timeStop = _statistics.StopTime;
+					_isStopped = true;
+					_sender.SetStateForm(StateForm.State);
+					_sender.SetToggle(false);
+					_sender.Send(PathConnection.Enemy);
+					if (_statistics.Paralyze)
+						_rigidybody.Sleep();
 				}
 				else
-					this.Shoot();
+					Shoot();
 			}
 		}
 		private void Shoot()
 		{
-			foreach (EnemyProjectile projectile in this._statistics.Projectiles)
-				if (this._statistics.PureInstance)
-					Instantiate(projectile, this.transform.position, projectile.transform.rotation, this.transform);
+			foreach (EnemyProjectile projectile in _statistics.Projectiles)
+				if (_statistics.PureInstance)
+					Instantiate(projectile, transform.position, projectile.transform.rotation, transform);
 				else
 				{
-					Vector2 position = this.transform.position;
-					float angle = (Mathf.Atan2(this._targetDirection.y, this._targetDirection.x) * Mathf.Rad2Deg) - 90f;
-					Quaternion rotation = Quaternion.AngleAxis(this._statistics.RayAngleDirection, Vector3.forward);
-					if (this._statistics.CircularDetection)
-						rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-					if (!this._statistics.InstanceOnSelf)
+					Vector2 position = transform.position;
+					Quaternion rotation = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward);
+					if (_statistics.CircularDetection)
+						rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90f, Vector3.forward);
+					if (!_statistics.InstanceOnSelf)
 						position += (Vector2)(rotation * Vector2.up);
-					Instantiate(projectile, position, rotation, this.transform);
+					Instantiate(projectile, position, rotation, transform);
 				}
-			if (this._statistics.InvencibleShoot)
+			if (_statistics.InvencibleShoot)
 			{
-				this._sender.SetStateForm(StateForm.Action);
-				this._sender.SetToggle(false);
-				this._sender.Send(PathConnection.Enemy);
+				_sender.SetStateForm(StateForm.Action);
+				_sender.SetToggle(false);
+				_sender.Send(PathConnection.Enemy);
 			}
 		}
 		private void Update()
 		{
-			if (this._stopWorking || this.IsStunned)
+			if (_stopWorking || IsStunned)
 				return;
-			if (this._shootInterval > 0f && !this._isStopped)
-				this._shootInterval -= Time.deltaTime;
-			if (this._timeStop > 0f)
-				this._timeStop -= Time.deltaTime;
-			if (this._statistics.Stop && this._canShoot && this._timeStop <= this._statistics.StopTime / 2f)
+			if (_shootInterval > 0f && !_isStopped)
+				_shootInterval -= Time.deltaTime;
+			if (_timeStop > 0f)
+				_timeStop -= Time.deltaTime;
+			if (_statistics.Stop && _canShoot && _timeStop <= _statistics.StopTime / 2f)
 			{
-				this._canShoot = false;
-				this.Shoot();
+				_canShoot = false;
+				Shoot();
 			}
-			if (this._timeStop <= 0f && this._isStopped)
+			if (_timeStop <= 0f && _isStopped)
 			{
-				this._isStopped = false;
-				this._sender.SetStateForm(StateForm.State);
-				this._sender.SetToggle(true);
-				this._sender.Send(PathConnection.Enemy);
-				if (this._statistics.ReturnParalyze)
-					this._rigidybody.WakeUp();
+				_isStopped = false;
+				_sender.SetStateForm(StateForm.State);
+				_sender.SetToggle(true);
+				_sender.Send(PathConnection.Enemy);
+				if (_statistics.ReturnParalyze)
+					_rigidybody.WakeUp();
 			}
-			this.Verify();
+			Verify();
 		}
 		public new bool Hurt(ushort damage)
 		{
-			if (this._statistics.ShootDamaged)
-				this.Shoot();
+			if (_statistics.ShootDamaged)
+				Shoot();
 			return base.Hurt(damage);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if ((EnemyProvider[])additionalData != null)
 				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy == this && data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
-						this.Shoot();
+					if (enemy == this && data.StateForm == StateForm.Action && _statistics.ReactToDamage)
+						Shoot();
 		}
 	};
 };
