@@ -21,16 +21,16 @@ namespace GuwbaPrimeAdventure.Story
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.RootElement = root.Q<VisualElement>(this._rootElementVisual);
-			this.CharacterIcon = root.Q<VisualElement>(this._characterIcon);
-			this.CharacterName = root.Q<Label>(this._characterName);
-			this.CharacterSpeach = root.Q<Label>(this._characterSpeach);
-			this.AdvanceSpeach = root.Q<Button>(this._advanceSpeach);
+			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+			RootElement = root.Q<VisualElement>(_rootElementVisual);
+			CharacterIcon = root.Q<VisualElement>(_characterIcon);
+			CharacterName = root.Q<Label>(_characterName);
+			CharacterSpeach = root.Q<Label>(_characterSpeach);
+			AdvanceSpeach = root.Q<Button>(_advanceSpeach);
 		}
 	};
 };
