@@ -17,6 +17,7 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("User interface element.")] private string _generalVolumeToggle;
 		[SerializeField, Tooltip("User interface element.")] private string _effectsVolumeToggle;
 		[SerializeField, Tooltip("User interface element.")] private string _musicVolumeToggle;
+		[SerializeField, Tooltip("User interface element.")] private string _inifinityFPSToggle;
 		[SerializeField, Tooltip("User interface element.")] private string _dialogSpeed;
 		[SerializeField, Tooltip("User interface element.")] private string _screenBrightness;
 		[SerializeField, Tooltip("User interface element.")] private string _frameRate;
@@ -37,6 +38,7 @@ namespace GuwbaPrimeAdventure.Hud
 		internal Toggle GeneralVolumeToggle { get; private set; }
 		internal Toggle EffectsVolumeToggle { get; private set; }
 		internal Toggle MusicVolumeToggle { get; private set; }
+		internal Toggle InfinityFPS { get; private set; }
 		internal Slider DialogSpeed { get; private set; }
 		internal Slider ScreenBrightness { get; private set; }
 		internal SliderInt FrameRate { get; private set; }
@@ -66,6 +68,7 @@ namespace GuwbaPrimeAdventure.Hud
 			GeneralVolumeToggle = root.Q<Toggle>(_generalVolumeToggle);
 			EffectsVolumeToggle = root.Q<Toggle>(_effectsVolumeToggle);
 			MusicVolumeToggle = root.Q<Toggle>(_musicVolumeToggle);
+			InfinityFPS = root.Q<Toggle>(_inifinityFPSToggle);
 			DialogSpeed = root.Q<Slider>(_dialogSpeed);
 			ScreenBrightness = root.Q<Slider>(_screenBrightness);
 			FrameRate = root.Q<SliderInt>(_frameRate);
@@ -106,6 +109,7 @@ namespace GuwbaPrimeAdventure.Hud
 			GeneralVolumeToggle.value = settings.GeneralVolumeToggle;
 			EffectsVolumeToggle.value = settings.EffectsVolumeToggle;
 			MusicVolumeToggle.value = settings.MusicVolumeToggle;
+			InfinityFPS.value = settings.InfinityFPS;
 			DialogSpeed.value = settings.DialogSpeed;
 			ScreenBrightness.value = settings.ScreenBrightness;
 			FrameRate.value = settings.FrameRate;
