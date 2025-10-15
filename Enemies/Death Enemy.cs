@@ -12,39 +12,39 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.State);
-			this._sender.SetToggle(false);
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetToggle(false);
 		}
 		private void Update()
 		{
-			if (this._isDead && !this.IsStunned)
+			if (_isDead && !IsStunned)
 			{
-				this._deathTime += Time.deltaTime;
-				if (this._deathTime >= this._statistics.TimeToDie)
+				_deathTime += Time.deltaTime;
+				if (_deathTime >= _statistics.TimeToDie)
 				{
-					this._isDead = false;
-					if (this._statistics.ChildEnemy)
-						Instantiate(this._statistics.ChildEnemy, this.transform.position, Quaternion.identity);
-					if (this._statistics.ChildProjectile)
-						Instantiate(this._statistics.ChildProjectile, this.transform.position, Quaternion.identity);
-					Destroy(this.gameObject);
+					_isDead = false;
+					if (_statistics.ChildEnemy)
+						Instantiate(_statistics.ChildEnemy, transform.position, Quaternion.identity);
+					if (_statistics.ChildProjectile)
+						Instantiate(_statistics.ChildProjectile, transform.position, Quaternion.identity);
+					Destroy(gameObject);
 				}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
+			if (_statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 			{
-				this._sender.Send(PathConnection.Enemy);
-				this._isDead = true;
+				_sender.Send(PathConnection.Enemy);
+				_isDead = true;
 			}
 		}
 		public new bool Hurt(ushort damage)
 		{
-			if (this.Health - (short)damage <= 0f)
+			if (Health - (short)damage <= 0f)
 			{
-				this._sender.Send(PathConnection.Enemy);
-				return this._isDead = true;
+				_sender.Send(PathConnection.Enemy);
+				return _isDead = true;
 			}
 			return base.Hurt(damage);
 		}
