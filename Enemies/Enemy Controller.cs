@@ -12,101 +12,102 @@ namespace GuwbaPrimeAdventure.Enemy
 		private Rigidbody2D _rigidybody;
 		private short _vitality;
 		private short _armorResistance = 0;
+		private float _fadeTime = 0f;
 		private float _stunTimer = 0f;
 		private bool _stunned = false;
 		[Header("Enemy Statistics")]
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
-		internal EnemyStatistics ProvidenceStatistics => this._statistics;
+		internal EnemyStatistics ProvidenceStatistics => _statistics;
 		public PathConnection PathConnection => PathConnection.Enemy;
-		public short Health => this._vitality;
-		internal short Vitality { get => this._vitality; set => this._vitality = value; }
-		internal short ArmorResistance { get => this._armorResistance; set => this._armorResistance = value; }
-		internal float StunTimer { get => this._stunTimer; set => this._stunTimer = value; }
-		internal bool IsStunned { get => this._stunned; set => this._stunned = value; }
+		public short Health => _vitality;
+		internal short Vitality { get => _vitality; set => _vitality = value; }
+		internal short ArmorResistance { get => _armorResistance; set => _armorResistance = value; }
+		internal float StunTimer { get => _stunTimer; set => _stunTimer = value; }
+		internal bool IsStunned { get => _stunned; set => _stunned = value; }
 		private new void Awake()
 		{
 			base.Awake();
-			this._selfEnemies = this.GetComponents<EnemyProvider>();
-			this._rigidybody = this.GetComponent<Rigidbody2D>();
-			this._vitality = (short)this._statistics.Vitality;
-			this._armorResistance = (short)this._statistics.HitResistance;
-			if (this._statistics.FadeOverTime)
-				Destroy(this.gameObject, this._statistics.TimeToFadeAway);
+			_selfEnemies = GetComponents<EnemyProvider>();
+			_rigidybody = GetComponent<Rigidbody2D>();
+			_vitality = (short)_statistics.Vitality;
+			_armorResistance = (short)_statistics.HitResistance;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._statistics.SaveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (_statistics.SaveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
 			{
-				saveFile.generalObjects.Add(this.gameObject.name);
+				saveFile.generalObjects.Add(gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
 			Sender.Exclude(this);
 		}
-		private void OnEnable() => this._rigidybody.WakeUp();
-		private void OnDisable() => this._rigidybody.Sleep();
+		private void OnEnable() => _rigidybody.WakeUp();
+		private void OnDisable() => _rigidybody.Sleep();
 		private IEnumerator Start()
 		{
-			foreach (EnemyProvider enemy in this._selfEnemies)
+			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = false;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			foreach (EnemyProvider enemy in this._selfEnemies)
+			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
 		}
 		private void Update()
 		{
-			if (this._stunned)
+			if (_statistics.FadeOverTime && !_stunned)
 			{
-				this._stunTimer -= Time.deltaTime;
-				if (this._stunTimer <= 0f)
+				_fadeTime += Time.deltaTime;
+				if (_fadeTime <= 0)
+					Destroy(gameObject);
+			}
+			if (_stunned)
+			{
+				_stunTimer -= Time.deltaTime;
+				if (_stunTimer <= 0f)
 				{
-					this._stunned = false;
-					this._rigidybody.WakeUp();
+					_stunned = false;
+					_rigidybody.WakeUp();
 				}
 			}
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._statistics.Damage))
+			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
-				destructible.Stun(this._statistics.Damage, this._statistics.StunTime);
-				EffectsController.HitStop(this._statistics.Physics.HitStopTime, this._statistics.Physics.HitSlowTime);
+				destructible.Stun(_statistics.Damage, _statistics.StunTime);
+				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other) => this.OnTrigger(other.gameObject);
-		private void OnTriggerStay2D(Collider2D other) => this.OnTrigger(other.gameObject);
+		private void OnTriggerEnter2D(Collider2D other) => OnTrigger(other.gameObject);
+		private void OnTriggerStay2D(Collider2D other) => OnTrigger(other.gameObject);
 		public bool Hurt(ushort damage)
 		{
-			if (this._statistics.NoDamage || damage <= 0)
+			if (_statistics.NoDamage || damage <= 0)
 				return false;
 			ushort priority = 0;
-			for (ushort i = 0; i < this._selfEnemies.Length - 1f; i++)
-			{
-				if (this._selfEnemies[i + 1].DestructilbePriority > this._selfEnemies[i].DestructilbePriority)
+			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					priority = (ushort)(i + 1);
-			}
-			return this._selfEnemies[priority].Hurt(damage);
+			return _selfEnemies[priority].Hurt(damage);
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (this._stunned)
+			if (_stunned)
 				return;
 			ushort priority = 0;
-			for (ushort i = 0; i < this._selfEnemies.Length - 1f; i++)
-			{
-				if (this._selfEnemies[i + 1].DestructilbePriority > this._selfEnemies[i].DestructilbePriority)
+			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					priority = (ushort)(i + 1);
-			}
-			this._selfEnemies[priority].Stun(stunStength, stunTime);
+			_selfEnemies[priority].Stun(stunStength, stunTime);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
 			{
-				this._rigidybody.Sleep();
-				foreach (EnemyProvider enemy in this._selfEnemies)
+				_rigidybody.Sleep();
+				foreach (EnemyProvider enemy in _selfEnemies)
 					enemy.enabled = data.ToggleValue.Value;
 			}
 		}
