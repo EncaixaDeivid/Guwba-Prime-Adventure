@@ -432,7 +432,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (this._invencibility)
 			{
 				this._timerOfInvencibility -= Time.deltaTime;
-				this._invencibility = this._timerOfInvencibility <= 0f;
+				this._invencibility = this._timerOfInvencibility > 0f;
 			}
 			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0f && !this._downStairs && (this._lastGroundedTime > 0f || this._lastJumpTime > 0f))
 			{
