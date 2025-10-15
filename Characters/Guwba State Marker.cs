@@ -118,22 +118,15 @@ namespace GuwbaPrimeAdventure.Character
 			_guwbaVisualizer = GetComponentInChildren<GuwbaVisualizer>();
 			_guwbaDamagers = GetComponentsInChildren<GuwbaDamager>();
 			SaveController.Load(out SaveFile saveFile);
-			_guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
-			_guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
-			_vitality = (short)_guwbaVisualizer.Vitality.Length;
-			_stunResistance = (short)_guwbaVisualizer.StunResistance.Length;
+			(_guwbaVisualizer.LifeText.text, _guwbaVisualizer.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
+			(_vitality, _stunResistance) = ((short)_guwbaVisualizer.Vitality.Length, (short)_guwbaVisualizer.StunResistance.Length);
 			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 			{
 				guwbaDamager.DamagerHurt += Hurt;
 				guwbaDamager.DamagerStun += Stun;
 				guwbaDamager.DamagerAttack += Attack;
 			}
-			transform.localScale = new Vector3()
-			{
-				x = Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f),
-				y = transform.localScale.y,
-				z = transform.localScale.z
-			};
+			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 			_gravityScale = _rigidbody.gravityScale;
 			_normalOffset = _collider.offset;
 			_normalSize = _collider.size;
@@ -250,8 +243,7 @@ namespace GuwbaPrimeAdventure.Character
 				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
 				_lastJumpTime = 0f;
 			}
-			bool valid = !_dashActive && _isOnGround && (!_attackUsage || _comboAttackBuffer);
-			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && valid)
+			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && !_dashActive && _isOnGround && (!_attackUsage || _comboAttackBuffer))
 			{
 				StartCoroutine(Dash());
 				IEnumerator Dash()
@@ -259,12 +251,7 @@ namespace GuwbaPrimeAdventure.Character
 					_animator.SetBool(_dashSlide, _dashActive = true);
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
 					_dashMovement = _movementAction;
-					transform.localScale = new Vector3()
-					{
-						x = Mathf.Abs(transform.localScale.x) * _dashMovement,
-						y = transform.localScale.y,
-						z = transform.localScale.z
-					};
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _dashMovement, transform.localScale.y, transform.localScale.z);
 					Vector2 position;
 					Vector2 origin;
 					Vector2 size;
@@ -272,8 +259,7 @@ namespace GuwbaPrimeAdventure.Character
 					float dashLocation = transform.position.x;
 					bool onWall = false;
 					bool block = false;
-					bool distanceValidation = false;
-					while (onWall || !(distanceValidation || !_dashActive || block || !_isOnGround || _isJumping))
+					while (onWall || !(Mathf.Abs(transform.position.x - dashLocation) >= _dashDistance || !_dashActive || block || !_isOnGround || _isJumping))
 					{
 						position = (Vector2)transform.position + _collider.offset;
 						origin = new Vector2(position.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, position.y);
@@ -281,7 +267,6 @@ namespace GuwbaPrimeAdventure.Character
 						block = Physics2D.BoxCast(origin, size, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer);
 						wallOrigin = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 						onWall = Physics2D.BoxCast(wallOrigin, _normalSize, 0f, transform.up, _groundChecker, _groundLayer);
-						distanceValidation = Mathf.Abs(transform.position.x - dashLocation) >= _dashDistance;
 						_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => isActiveAndEnabled || _animator.GetBool(_stun));
@@ -304,9 +289,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
-			Vector2 point = (Vector2)transform.position + _normalOffset;
-			float angle = transform.eulerAngles.z;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(point, _normalSize, angle, _InteractionLayer))
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll((Vector2)transform.position + _normalOffset, _normalSize, transform.eulerAngles.z, _InteractionLayer))
 				if (collider.TryGetComponent<IInteractable>(out _))
 				{
 					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -443,7 +426,6 @@ namespace GuwbaPrimeAdventure.Character
 		private void FixedUpdate()
 		{
 			Vector2 position = (Vector2)transform.position + _collider.offset;
-			Vector2 direction = transform.right * _movementAction;
 			_downStairs = false;
 			if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f && !_dashActive)
 			{
@@ -546,12 +528,12 @@ namespace GuwbaPrimeAdventure.Character
 					float stairsOriginX = (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction;
 					Vector2 bottomOrigin = new(position.x + stairsOriginX, position.y - 1f * _bottomCheckerOffset);
 					Vector2 bottomSize = new(_groundChecker, 1f - _groundChecker);
-					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, _groundChecker, _groundLayer);
+					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, transform.right * _movementAction, _groundChecker, _groundLayer);
 					if (bottomCast)
 					{
 						Vector2 topOrigin = new(position.x + stairsOriginX, position.y + 1f * .5f);
 						Vector2 topSize = new(_groundChecker, 1f * _topWallChecker - _groundChecker);
-						if (!Physics2D.BoxCast(topOrigin, topSize, 0f, direction, _groundChecker, _groundLayer))
+						if (!Physics2D.BoxCast(topOrigin, topSize, 0f, transform.right * _movementAction, _groundChecker, _groundLayer))
 						{
 							Vector2 lineStart = new(position.x + stairsOriginX + _groundChecker / 2f * _movementAction, position.y + _collider.bounds.extents.y);
 							Vector2 lineEnd = new(position.x + stairsOriginX + _groundChecker / 2f * _movementAction, position.y - _collider.bounds.extents.y);
@@ -566,14 +548,8 @@ namespace GuwbaPrimeAdventure.Character
 					}
 				}
 				if (_movementAction != 0f)
-					transform.localScale = new Vector3()
-					{
-						x = Mathf.Abs(transform.localScale.x) * _movementAction,
-						y = transform.localScale.y,
-						z = transform.localScale.z
-					};
-				bool wallBlock = _movementAction != 0f && Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f;
-				_animator.SetFloat(_walkSpeed, wallBlock ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / speed);
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementAction, transform.localScale.y, transform.localScale.z);
+				_animator.SetFloat(_walkSpeed, _movementAction != 0f && Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / speed);
 				float speedDiferrence = speed * _movementAction - _rigidbody.linearVelocityX;
 				float accelerationRate = (Mathf.Abs(speed * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
 				_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, _velocityPower) * Mathf.Sign(speedDiferrence) * _rigidbody.mass);
@@ -607,8 +583,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			Vector2 position = (Vector2)transform.position + _collider.offset;
 			Vector2 groundOrigin = new(position.x, position.y + (_collider.bounds.extents.y + _groundChecker / 2f) * -transform.up.y);
-			Vector2 groundSize = new(_collider.size.x - _groundChecker, _groundChecker);
-			_isOnGround = Physics2D.BoxCast(groundOrigin, groundSize, 0f, -transform.up, _groundChecker, _groundLayer);
+			_isOnGround = Physics2D.BoxCast(groundOrigin, new Vector2(_collider.size.x - _groundChecker, _groundChecker), 0f, -transform.up, _groundChecker, _groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
@@ -618,8 +593,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
-				_guwbaVisualizer.LifeText.text = $"X {saveFile.lifes}";
-				_guwbaVisualizer.CoinText.text = $"X {saveFile.coins}";
+				(_guwbaVisualizer.LifeText.text, _guwbaVisualizer.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
 			}
 		}
 		public void Receive(DataConnection data, object additionalData)
@@ -641,12 +615,7 @@ namespace GuwbaPrimeAdventure.Character
 				for (ushort i = _bunnyHopBoost = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
 					_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
 				_isHoping = false;
-				transform.localScale = new Vector3()
-				{
-					x = Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f),
-					y = transform.localScale.y,
-					z = transform.localScale.z
-				};
+				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 				_animator.SetBool(_death, false);
 				_collider.size = _normalSize;
 			}
