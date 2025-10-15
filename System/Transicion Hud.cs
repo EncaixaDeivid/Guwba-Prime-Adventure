@@ -15,13 +15,13 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.RootVisualElement = root.Q<VisualElement>(this._rootElement);
-			this.LoadingBar = root.Q<ProgressBar>(this._loadingBarProgress);
+			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+			RootVisualElement = root.Q<VisualElement>(_rootElement);
+			LoadingBar = root.Q<ProgressBar>(_loadingBarProgress);
 		}
 	};
 };
