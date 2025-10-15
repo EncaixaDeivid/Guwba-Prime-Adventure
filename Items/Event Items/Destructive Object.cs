@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			this._sender.SetToggle(true);
 			SaveController.Load(out SaveFile saveFile);
 			if (this._saveOnSpecifics && saveFile.generalObjects.Contains(this.gameObject.name))
-				Destroy(this.gameObject, 0.001f);
+				Destroy(this.gameObject, 1e-3f);
 		}
 		public void Execute()
 		{
