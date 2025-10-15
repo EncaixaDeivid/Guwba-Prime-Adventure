@@ -13,20 +13,20 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
 		internal void GetTouch(ushort touchIndex, UnityAction<ushort> getTouch)
 		{
-			this._getTouch = getTouch;
-			this._touchIndex = touchIndex;
+			_getTouch = getTouch;
+			_touchIndex = touchIndex;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._hasTarget)
+			if (_hasTarget)
 			{
 				if (GuwbaCentralizer.EqualObject(other.gameObject))
-					this._getTouch.Invoke(this._touchIndex);
+					_getTouch.Invoke(_touchIndex);
 			}
 			else if (other.TryGetComponent<JumperEnemy>(out _))
-				this._getTouch.Invoke(this._touchIndex);
-			if (this._destroyAfter)
-				Destroy(this.gameObject);
+				_getTouch.Invoke(_touchIndex);
+			if (_destroyAfter)
+				Destroy(gameObject);
 		}
 	};
 };
