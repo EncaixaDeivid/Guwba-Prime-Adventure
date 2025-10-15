@@ -10,10 +10,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private EnemyProjectile _childProjectile;
 		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
 		[SerializeField, Tooltip("THe time to this enemy die.")] private float _timeToDie;
-		internal EnemyPhysics Physics => this._physics;
-		internal EnemyController ChildEnemy => this._childEnemy;
-		internal EnemyProjectile ChildProjectile => this._childProjectile;
-		internal bool OnTouch => this._onTouch;
-		internal float TimeToDie => this._timeToDie;
+		internal EnemyPhysics Physics => _physics;
+		internal EnemyController ChildEnemy => _childEnemy;
+		internal EnemyProjectile ChildProjectile => _childProjectile;
+		internal bool OnTouch => _onTouch;
+		internal float TimeToDie => _timeToDie;
 	};
 };
