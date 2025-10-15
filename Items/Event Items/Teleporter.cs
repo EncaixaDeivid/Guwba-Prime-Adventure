@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.Action);
+			this._sender.SetStateForm(StateForm.State);
 			this._sender.SetAdditionalData(this.gameObject);
 			this._active = !this._isReceptor;
 		}
