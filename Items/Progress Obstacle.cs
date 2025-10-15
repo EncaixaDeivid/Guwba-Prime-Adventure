@@ -13,15 +13,15 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			base.Awake();
 			SaveController.Load(out SaveFile saveFile);
-			bool levelCompleted = saveFile.levelsCompleted[this._progressIndex - 1];
-			if (this._isBossProgress ? saveFile.deafetedBosses[this._progressIndex - 1] : levelCompleted)
+			bool levelCompleted = saveFile.levelsCompleted[_progressIndex - 1];
+			if (_isBossProgress ? saveFile.deafetedBosses[_progressIndex - 1] : levelCompleted)
 			{
-				if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+				if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
 				{
-					saveFile.generalObjects.Add(this.gameObject.name);
+					saveFile.generalObjects.Add(gameObject.name);
 					SaveController.WriteSave(saveFile);
 				}
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 			}
 		}
 	};
