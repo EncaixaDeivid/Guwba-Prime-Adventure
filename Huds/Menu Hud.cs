@@ -29,26 +29,26 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.Buttons = root.Q<GroupBox>(this._buttonsGroup);
-			this.Play = root.Q<Button>(this._playButton);
-			this.Configurations = root.Q<Button>(this._configurationsButton);
-			this.Quit = root.Q<Button>(this._quitButton);
-			this.Saves = root.Q<GroupBox>(this._savesGroup);
-			this.Back = root.Q<Button>(this._backButton);
-			this.SaveName = new TextField[4];
-			for (ushort i = 0; i < this.SaveName.Length; i++)
-				this.SaveName[i] = root.Q<TextField>(this._saveNameTextField + $"{i + 1f}");
-			this.Load = new Button[4];
-			for (ushort i = 0; i < this.Load.Length; i++)
-				this.Load[i] = root.Q<Button>(this._loadButton + $"{i + 1f}");
-			this.Delete = new Button[4];
-			for (ushort i = 0; i < this.Delete.Length; i++)
-				this.Delete[i] = root.Q<Button>(this._deleteButton + $"{i + 1f}");
+			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+			Buttons = root.Q<GroupBox>(_buttonsGroup);
+			Play = root.Q<Button>(_playButton);
+			Configurations = root.Q<Button>(_configurationsButton);
+			Quit = root.Q<Button>(_quitButton);
+			Saves = root.Q<GroupBox>(_savesGroup);
+			Back = root.Q<Button>(_backButton);
+			SaveName = new TextField[4];
+			for (ushort i = 0; i < SaveName.Length; i++)
+				SaveName[i] = root.Q<TextField>(_saveNameTextField + $"{i + 1f}");
+			Load = new Button[4];
+			for (ushort i = 0; i < Load.Length; i++)
+				Load[i] = root.Q<Button>(_loadButton + $"{i + 1f}");
+			Delete = new Button[4];
+			for (ushort i = 0; i < Delete.Length; i++)
+				Delete[i] = root.Q<Button>(_deleteButton + $"{i + 1f}");
 		}
 	};
 };
