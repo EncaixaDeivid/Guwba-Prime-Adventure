@@ -21,7 +21,7 @@ namespace GuwbaPrimeAdventure.Item
 					saveFile.generalObjects.Add(this.gameObject.name);
 					SaveController.WriteSave(saveFile);
 				}
-				Destroy(this.gameObject, 0.001f);
+				Destroy(this.gameObject, 1e-3f);
 			}
 		}
 	};
