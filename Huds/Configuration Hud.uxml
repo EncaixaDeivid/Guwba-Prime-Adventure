@@ -41,7 +41,9 @@
                     <ui:Slider label="Screen Brightness" name="ScreenBrightness" />
                 </ui:GroupBox>
             </ui:GroupBox>
-            <ui:GroupBox name="RightPage" />
+            <ui:GroupBox name="RightPage" >
+                <ui:Toggle name="InfinityFPS" />
+            </ui:GroupBox> 
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
