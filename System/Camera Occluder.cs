@@ -19,13 +19,13 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			Camera camera = this.GetComponent<Camera>();
-			BoxCollider2D boxCollider = this.GetComponent<BoxCollider2D>();
-			this._positionDamping = this._cinemachineFollow.TrackerSettings.PositionDamping;
+			Camera camera = GetComponent<Camera>();
+			BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
+			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
 			float sizeY = camera.orthographicSize * 2f;
 			float sizeX = sizeY * camera.aspect;
 			boxCollider.size = new Vector2(sizeX, sizeY);
@@ -43,23 +43,23 @@ namespace GuwbaPrimeAdventure
 			if (gameObject.TryGetComponent<HiddenObject>(out var hiddenObject))
 				hiddenObject.Execution(activate);
 		}
-		private void OnTriggerEnter2D(Collider2D other) => this.SetOtherChildren(other.gameObject, true);
-		private void OnTriggerExit2D(Collider2D other) => this.SetOtherChildren(other.gameObject, false);
+		private void OnTriggerEnter2D(Collider2D other) => SetOtherChildren(other.gameObject, true);
+		private void OnTriggerExit2D(Collider2D other) => SetOtherChildren(other.gameObject, false);
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.Action)
 			{
-				this._cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
-				this.StartCoroutine(RestoreDamping());
+				_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
+				StartCoroutine(RestoreDamping());
 				IEnumerator RestoreDamping()
 				{
-					yield return new WaitTime(this, this._waitTime);
+					yield return new WaitTime(this, _waitTime);
 					float time = 0f;
-					while ((Vector2)this._cinemachineFollow.TrackerSettings.PositionDamping != this._positionDamping)
+					while ((Vector2)_cinemachineFollow.TrackerSettings.PositionDamping != _positionDamping)
 					{
-						this._cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, this._positionDamping, time);
+						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
-						yield return new WaitUntil(() => this.enabled);
+						yield return new WaitUntil(() => enabled);
 						yield return new WaitForEndOfFrame();
 					}
 				}
