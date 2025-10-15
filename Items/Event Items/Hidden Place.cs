@@ -32,57 +32,57 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._tilemap = this.GetComponent<Tilemap>();
-			this._collider = this.GetComponent<TilemapCollider2D>();
-			this._selfLight = this.GetComponent<Light2DBase>();
-			this._followLight = this.GetComponentInChildren<Light2DBase>();
-			this._sender.SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(this._hiddenObject);
-			this._activation = !this._fadeActivation;
+			_tilemap = GetComponent<Tilemap>();
+			_collider = GetComponent<TilemapCollider2D>();
+			_selfLight = GetComponent<Light2DBase>();
+			_followLight = GetComponentInChildren<Light2DBase>();
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetAdditionalData(_hiddenObject);
+			_activation = !_fadeActivation;
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			EffectsController.OffGlobalLight(this._selfLight);
+			EffectsController.OffGlobalLight(_selfLight);
 		}
 		private IEnumerator Fade(bool appear)
 		{
 			bool onFirst = false;
-			if (this._otherPlace)
-				if (onFirst = this._otherPlace._appearFirst && this._otherPlace._activation)
-					yield return this.StartCoroutine(this._otherPlace.Fade(true));
-				else if (onFirst = this._otherPlace._fadeFirst && !this._otherPlace._activation)
-					yield return this.StartCoroutine(this._otherPlace.Fade(false));
-			if (this._isReceptor)
-				this._activation = !this._activation;
+			if (_otherPlace)
+				if (onFirst = _otherPlace._appearFirst && _otherPlace._activation)
+					yield return StartCoroutine(_otherPlace.Fade(true));
+				else if (onFirst = _otherPlace._fadeFirst && !_otherPlace._activation)
+					yield return StartCoroutine(_otherPlace.Fade(false));
+			if (_isReceptor)
+				_activation = !_activation;
 			if (appear)
-				EffectsController.OffGlobalLight(this._selfLight);
+				EffectsController.OffGlobalLight(_selfLight);
 			else
-				EffectsController.OnGlobalLight(this._selfLight);
-			if (this._hasFollowLight && !appear)
-				this.StartCoroutine(FollowLight());
+				EffectsController.OnGlobalLight(_selfLight);
+			if (_hasFollowLight && !appear)
+				StartCoroutine(FollowLight());
 			IEnumerator FollowLight()
 			{
 				while (!appear)
 				{
-					this._followLight.transform.position = GuwbaCentralizer.Position;
+					_followLight.transform.position = GuwbaCentralizer.Position;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.isActiveAndEnabled);
+					yield return new WaitUntil(() => isActiveAndEnabled);
 				}
 			}
 			void HaveHidden()
 			{
-				if (this._haveHidden)
+				if (_haveHidden)
 				{
-					this._sender.SetToggle(appear);
-					this._sender.Send(PathConnection.System);
+					_sender.SetToggle(appear);
+					_sender.Send(PathConnection.System);
 				}
 			}
-			if (this._instantly)
+			if (_instantly)
 			{
-				Color color = this._tilemap.color;
+				Color color = _tilemap.color;
 				color.a = appear ? 1f : 0f;
-				this._tilemap.color = color;
+				_tilemap.color = color;
 				HaveHidden();
 			}
 			else
@@ -90,53 +90,53 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 				if (appear)
 				{
 					HaveHidden();
-					for (float i = 0f; this._tilemap.color.a < 1f; i += 0.1f)
+					for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
 						yield return OpacityLevel(i);
 				}
 				else
 				{
 					HaveHidden();
-					for (float i = 1f; this._tilemap.color.a > 0f; i -= 0.1f)
+					for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
 						yield return OpacityLevel(i);
 				}
 			}
 			IEnumerator OpacityLevel(float alpha)
 			{
 				yield return new WaitForEndOfFrame();
-				yield return new WaitUntil(() => this.isActiveAndEnabled);
-				Color color = this._tilemap.color;
+				yield return new WaitUntil(() => isActiveAndEnabled);
+				Color color = _tilemap.color;
 				color.a = alpha;
-				this._tilemap.color = color;
+				_tilemap.color = color;
 			}
-			if (this._haveColliders)
-				this._collider.enabled = appear;
-			if (this._otherPlace && !onFirst)
-				if (!this._otherPlace._appearFirst && this._otherPlace._activation)
-					this.StartCoroutine(this._otherPlace.Fade(true));
-				else if (!this._otherPlace._fadeFirst && !this._otherPlace._activation)
-					this.StartCoroutine(this._otherPlace.Fade(false));
+			if (_haveColliders)
+				_collider.enabled = appear;
+			if (_otherPlace && !onFirst)
+				if (!_otherPlace._appearFirst && _otherPlace._activation)
+					StartCoroutine(_otherPlace.Fade(true));
+				else if (!_otherPlace._fadeFirst && !_otherPlace._activation)
+					StartCoroutine(_otherPlace.Fade(false));
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
-				this.StartCoroutine(this.Fade(false));
+			if (!_isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
+				StartCoroutine(Fade(false));
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!this._isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
-				this.StartCoroutine(this.Fade(true));
+			if (!_isReceptor && GuwbaCentralizer.EqualObject(other.gameObject))
+				StartCoroutine(Fade(true));
 		}
 		public void Execute()
 		{
-			if (this._timeToFadeAppearAgain > 0f)
-				this.StartCoroutine(FadeTimed(this._activation));
+			if (_timeToFadeAppearAgain > 0f)
+				StartCoroutine(FadeTimed(_activation));
 			else
-				this.StartCoroutine(this.Fade(this._activation));
+				StartCoroutine(Fade(_activation));
 			IEnumerator FadeTimed(bool appear)
 			{
-				yield return this.Fade(appear);
-				yield return new WaitTime(this, this._timeToFadeAppearAgain);
-				this.StartCoroutine(this.Fade(!appear));
+				yield return Fade(appear);
+				yield return new WaitTime(this, _timeToFadeAppearAgain);
+				StartCoroutine(Fade(!appear));
 			}
 		}
 	};
