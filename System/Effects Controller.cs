@@ -15,41 +15,41 @@ namespace GuwbaPrimeAdventure
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			this._lightsStack = new List<Light2DBase>() { this.GetComponent<Light2DBase>() };
+			_lightsStack = new List<Light2DBase>() { GetComponent<Light2DBase>() };
 		}
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
-			if (this._canHitStop)
-				this.StartCoroutine(HitStop());
+			if (_canHitStop)
+				StartCoroutine(HitStop());
 			IEnumerator HitStop()
 			{
-				this._canHitStop = false;
+				_canHitStop = false;
 				Time.timeScale = slowTime;
 				yield return new WaitForSecondsRealtime(stopTime);
-				this._canHitStop = true;
+				_canHitStop = true;
 				Time.timeScale = 1f;
 			}
 		}
 		private void PrivateGlobalLight(Light2DBase globalLight, bool active)
 		{
-			if ((active && !this._lightsStack.Contains(globalLight) || !active && this._lightsStack.Contains(globalLight)) && globalLight)
+			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight)
 			{
-				foreach (Light2DBase light in this._lightsStack)
+				foreach (Light2DBase light in _lightsStack)
 					if (light)
 						light.enabled = false;
 				if (active)
 				{
 					globalLight.enabled = true;
-					this._lightsStack.Add(globalLight);
+					_lightsStack.Add(globalLight);
 				}
 				else
 				{
-					this._lightsStack.Remove(globalLight);
-					this._lightsStack[^1].enabled = true;
+					_lightsStack.Remove(globalLight);
+					_lightsStack[^1].enabled = true;
 				}
 			}
 		}
