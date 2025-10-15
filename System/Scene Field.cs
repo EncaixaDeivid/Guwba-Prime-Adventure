@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure
 		[SerializeField, Tooltip("The scene to be handled.")] private SceneAsset _sceneAsset;
 #endif
 		[SerializeField, Tooltip("The name of the scene.")] private string _sceneName;
-		public string SceneName => this._sceneName;
+		public string SceneName => _sceneName;
 		public static implicit operator string(SceneField sceneObject) => sceneObject.SceneName;
 	};
 #if UNITY_EDITOR
