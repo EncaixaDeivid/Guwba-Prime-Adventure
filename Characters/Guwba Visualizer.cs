@@ -59,9 +59,9 @@ namespace GuwbaPrimeAdventure.Character
 			LifeText = root.Q<Label>(_lifeTextObject);
 			CoinText = root.Q<Label>(_coinTextObject);
 			root.Q<GroupBox>(_iconsObject).style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement vitality = root.Q<VisualElement>($"{_vitalityVisual}");
+			VisualElement vitality = root.Q<VisualElement>(_vitalityVisual);
 			vitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement vitalityPiece = root.Q<VisualElement>($"{_vitalityPieceVisual}");
+			VisualElement vitalityPiece = root.Q<VisualElement>(_vitalityPieceVisual);
 			Vitality = new VisualElement[_vitality];
 			for (ushort i = 0; i < _vitality; i++)
 			{
@@ -79,9 +79,9 @@ namespace GuwbaPrimeAdventure.Character
 				Vitality[i] = vitality[i + 1];
 			}
 			vitality.Remove(vitalityPiece);
-			VisualElement recoverVitality = root.Q<VisualElement>($"{_recoverVitalityVisual}");
+			VisualElement recoverVitality = root.Q<VisualElement>(_recoverVitalityVisual);
 			recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement recoverVitalityPiece = root.Q<VisualElement>($"{_recoverVitalityPieceVisual}");
+			VisualElement recoverVitalityPiece = root.Q<VisualElement>(_recoverVitalityPieceVisual);
 			RecoverVitality = new VisualElement[_recoverVitality];
 			float recoverVitalityPieceWidth = _totalWidth / _recoverVitality - _borderWidth * 2f;
 			for (ushort i = 0; i < _recoverVitality; i++)
@@ -93,9 +93,9 @@ namespace GuwbaPrimeAdventure.Character
 				RecoverVitality[i] = recoverVitality[i + 1];
 			}
 			recoverVitality.Remove(recoverVitalityPiece);
-			VisualElement stunResistance = root.Q<VisualElement>($"{_stunResistanceVisual}");
+			VisualElement stunResistance = root.Q<VisualElement>(_stunResistanceVisual);
 			stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement stunResistancePiece = root.Q<VisualElement>($"{_stunResistancePieceVisual}");
+			VisualElement stunResistancePiece = root.Q<VisualElement>(_stunResistancePieceVisual);
 			StunResistance = new VisualElement[_stunResistance];
 			float stunResistancePieceWidth = _totalWidth / _stunResistance - _borderWidth * 2f;
 			for (ushort i = 0; i < _stunResistance; i++)
@@ -109,7 +109,7 @@ namespace GuwbaPrimeAdventure.Character
 			stunResistance.Remove(stunResistancePiece);
 			VisualElement bunnyHop = root.Q<VisualElement>(_bunnyHopVisual);
 			bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement bunnyHopPiece = root.Q<VisualElement>($"{_bunnyHopPieceVisual}");
+			VisualElement bunnyHopPiece = root.Q<VisualElement>(_bunnyHopPieceVisual);
 			BunnyHop = new VisualElement[_bunnyHop];
 			float bunnyHopPieceWidth = _totalWidth / _bunnyHop - _borderWidth * 2f;
 			for (ushort i = 0; i < _bunnyHop; i++)
