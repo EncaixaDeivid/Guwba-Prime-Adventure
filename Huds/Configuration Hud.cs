@@ -53,66 +53,66 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.Settings = root.Q<GroupBox>(this._settingsGroup);
-			this.Confirmation = root.Q<GroupBox>(this._confirmationGroup);
-			this.ScreenResolution = root.Q<DropdownField>(this._screenResolution);
-			this.FullScreenModes = root.Q<DropdownField>(this._fullScreenModes);
-			this.DialogToggle = root.Q<Toggle>(this._dialogToggle);
-			this.GeneralVolumeToggle = root.Q<Toggle>(this._generalVolumeToggle);
-			this.EffectsVolumeToggle = root.Q<Toggle>(this._effectsVolumeToggle);
-			this.MusicVolumeToggle = root.Q<Toggle>(this._musicVolumeToggle);
-			this.FrameRate = root.Q<SliderInt>(this._frameRate);
-			this.DialogSpeed = root.Q<Slider>(this._dialogSpeed);
-			this.ScreenBrightness = root.Q<Slider>(this._screenBrightness);
-			this.GeneralVolume = root.Q<SliderInt>(this._generalVolume);
-			this.EffectsVolume = root.Q<SliderInt>(this._effectsVolume);
-			this.MusicVolume = root.Q<SliderInt>(this._musicVolume);
-			this.Close = root.Q<Button>(this._closeButton);
-			this.OutLevel = root.Q<Button>(this._outLevelButton);
-			this.SaveGame = root.Q<Button>(this._saveGameButton);
-			this.Yes = root.Q<Button>(this._yesButton);
-			this.No = root.Q<Button>(this._noButton);
-			this.FrameRateText =  root.Q<Label>(this._frameRateText);
+			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+			Settings = root.Q<GroupBox>(_settingsGroup);
+			Confirmation = root.Q<GroupBox>(_confirmationGroup);
+			ScreenResolution = root.Q<DropdownField>(_screenResolution);
+			FullScreenModes = root.Q<DropdownField>(_fullScreenModes);
+			DialogToggle = root.Q<Toggle>(_dialogToggle);
+			GeneralVolumeToggle = root.Q<Toggle>(_generalVolumeToggle);
+			EffectsVolumeToggle = root.Q<Toggle>(_effectsVolumeToggle);
+			MusicVolumeToggle = root.Q<Toggle>(_musicVolumeToggle);
+			DialogSpeed = root.Q<Slider>(_dialogSpeed);
+			ScreenBrightness = root.Q<Slider>(_screenBrightness);
+			FrameRate = root.Q<SliderInt>(_frameRate);
+			GeneralVolume = root.Q<SliderInt>(_generalVolume);
+			EffectsVolume = root.Q<SliderInt>(_effectsVolume);
+			MusicVolume = root.Q<SliderInt>(_musicVolume);
+			Close = root.Q<Button>(_closeButton);
+			OutLevel = root.Q<Button>(_outLevelButton);
+			SaveGame = root.Q<Button>(_saveGameButton);
+			Yes = root.Q<Button>(_yesButton);
+			No = root.Q<Button>(_noButton);
+			FrameRateText =  root.Q<Label>(_frameRateText);
 			if (!SettingsController.FileExists())
 			{
 				SettingsController.Load(out Settings saveSettings);
 				SettingsController.WriteSave(saveSettings);
 			}
 			SettingsController.Load(out Settings settings);
-			this.FrameRate.highValue = 120;
-			this.DialogSpeed.highValue = .1f;
-			this.ScreenBrightness.highValue = 1f;
-			this.GeneralVolume.highValue = 100;
-			this.EffectsVolume.highValue = 100;
-			this.MusicVolume.highValue = 100;
-			this.FrameRate.lowValue = 30;
-			this.DialogSpeed.lowValue = 0f;
-			this.ScreenBrightness.lowValue = 0f;
-			this.GeneralVolume.lowValue = 0;
-			this.EffectsVolume.lowValue = 0;
-			this.MusicVolume.lowValue = 0;
+			DialogSpeed.highValue = .1f;
+			ScreenBrightness.highValue = 1f;
+			FrameRate.highValue = 120;
+			GeneralVolume.highValue = 100;
+			EffectsVolume.highValue = 100;
+			MusicVolume.highValue = 100;
+			DialogSpeed.lowValue = 0f;
+			ScreenBrightness.lowValue = 0f;
+			FrameRate.lowValue = 30;
+			GeneralVolume.lowValue = 0;
+			EffectsVolume.lowValue = 0;
+			MusicVolume.lowValue = 0;
 			foreach (Resolution resolution in SettingsController.PixelPerfectResolutions())
-				this.ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
+				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
-				this.FullScreenModes.choices.Add(mode.ToString());
-			this.ScreenResolution.value = $@"{settings.ScreenResolution.x} x {settings.ScreenResolution.y}";
-			this.FullScreenModes.value = settings.FullScreenMode.ToString();
-			this.DialogToggle.value = settings.DialogToggle;
-			this.GeneralVolumeToggle.value = settings.GeneralVolumeToggle;
-			this.EffectsVolumeToggle.value = settings.EffectsVolumeToggle;
-			this.MusicVolumeToggle.value = settings.MusicVolumeToggle;
-			this.DialogSpeed.value = settings.DialogSpeed;
-			this.ScreenBrightness.value = settings.ScreenBrightness;
-			this.FrameRate.value = settings.FrameRate;
-			this.GeneralVolume.value = settings.GeneralVolume;
-			this.EffectsVolume.value = settings.EffectsVolume;
-			this.MusicVolume.value = settings.MusicVolume;
-			this.FrameRateText.text = settings.FrameRate.ToString();
+				FullScreenModes.choices.Add(mode.ToString());
+			ScreenResolution.value = $@"{settings.ScreenResolution.x} x {settings.ScreenResolution.y}";
+			FullScreenModes.value = settings.FullScreenMode.ToString();
+			DialogToggle.value = settings.DialogToggle;
+			GeneralVolumeToggle.value = settings.GeneralVolumeToggle;
+			EffectsVolumeToggle.value = settings.EffectsVolumeToggle;
+			MusicVolumeToggle.value = settings.MusicVolumeToggle;
+			DialogSpeed.value = settings.DialogSpeed;
+			ScreenBrightness.value = settings.ScreenBrightness;
+			FrameRate.value = settings.FrameRate;
+			GeneralVolume.value = settings.GeneralVolume;
+			EffectsVolume.value = settings.EffectsVolume;
+			MusicVolume.value = settings.MusicVolume;
+			FrameRateText.text = settings.FrameRate.ToString();
 		}
 	};
 };
