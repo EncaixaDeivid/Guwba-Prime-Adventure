@@ -9,7 +9,7 @@ namespace GuwbaPrimeAdventure
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _rootElement;
 		[SerializeField, Tooltip("User interface element.")] private string _loadingBarProgress;
-		internal VisualElement RootVisualElement { get; private set; }
+		internal VisualElement RootElement { get; private set; }
 		internal ProgressBar LoadingBar { get; private set; }
 		private void Awake()
 		{
@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			RootVisualElement = root.Q<VisualElement>(_rootElement);
+			RootElement = root.Q<VisualElement>(_rootElement);
 			LoadingBar = root.Q<ProgressBar>(_loadingBarProgress);
 		}
 	};
