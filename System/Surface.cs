@@ -5,6 +5,6 @@ namespace GuwbaPrimeAdventure
 	public sealed class Surface : MonoBehaviour
 	{
 		[SerializeField] private bool _isScene;
-		public bool IsScene => this._isScene;
+		public bool IsScene => _isScene;
 	};
 };
