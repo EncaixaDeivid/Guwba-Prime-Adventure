@@ -32,23 +32,24 @@ namespace GuwbaPrimeAdventure.Data
 		public static bool FileExists() => File.Exists(SettingsPath);
 		public static void Load(out Settings settings)
 		{
-			settings = new Settings()
-			{
-				ScreenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
-				FullScreenMode = FullScreenMode.FullScreenWindow,
-				DialogToggle = true,
-				GeneralVolumeToggle = true,
-				EffectsVolumeToggle = true,
-				MusicVolumeToggle = true,
-				DialogSpeed = .05f,
-				ScreenBrightness = 1f,
-				FrameRate = 60,
-				GeneralVolume = 100,
-				EffectsVolume = 100,
-				MusicVolume = 100
-			};
 			if (File.Exists(SettingsPath))
 				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
+			else
+				settings = new Settings()
+				{
+					ScreenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
+					FullScreenMode = FullScreenMode.FullScreenWindow,
+					DialogToggle = true,
+					GeneralVolumeToggle = true,
+					EffectsVolumeToggle = true,
+					MusicVolumeToggle = true,
+					DialogSpeed = .05f,
+					ScreenBrightness = 1f,
+					FrameRate = 60,
+					GeneralVolume = 100,
+					EffectsVolume = 100,
+					MusicVolume = 100
+				};
 		}
 		public static void WriteSave(Settings settings) => ArchiveEncoder.WriteData(settings, SettingsPath);
 	};
