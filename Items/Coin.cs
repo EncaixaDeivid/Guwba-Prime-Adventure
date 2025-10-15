@@ -16,12 +16,12 @@ namespace GuwbaPrimeAdventure.Item
 		private new void Awake()
 		{
 			base.Awake();
-			this._spriteRenderer = this.GetComponent<SpriteRenderer>();
-			this._animator = this.GetComponent<Animator>();
-			this._collider = this.GetComponent<CircleCollider2D>();
+			_spriteRenderer = GetComponent<SpriteRenderer>();
+			_animator = GetComponent<Animator>();
+			_collider = GetComponent<CircleCollider2D>();
 		}
-		private void OnEnable() => this._animator.enabled = true;
-		private void OnDisable() => this._animator.enabled = false;
+		private void OnEnable() => _animator.enabled = true;
+		private void OnDisable() => _animator.enabled = false;
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
@@ -34,18 +34,18 @@ namespace GuwbaPrimeAdventure.Item
 			}
 			if (saveFile.lifes >= 100f && saveFile.coins >= 99f)
 				saveFile.coins = 100;
-			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
-				saveFile.generalObjects.Add(this.gameObject.name);
+			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
+				saveFile.generalObjects.Add(gameObject.name);
 			SaveController.WriteSave(saveFile);
-			this._spriteRenderer.enabled = false;
-			this._collider.enabled = false;
+			_spriteRenderer.enabled = false;
+			_collider.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				this._spriteRenderer.enabled = true;
-				this._collider.enabled = true;
+				_spriteRenderer.enabled = true;
+				_collider.enabled = true;
 			}
 		}
 	};
