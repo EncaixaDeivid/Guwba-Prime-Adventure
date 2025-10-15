@@ -21,55 +21,55 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(this.gameObject);
-			this._active = !this._isReceptor;
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetAdditionalData(gameObject);
+			_active = !_isReceptor;
 		}
 		private void Teleport()
 		{
-			this._sender.Send(PathConnection.System);
-			GuwbaCentralizer.Position = this._locations[this._index];
-			this._index = (ushort)(this._index < this._locations.Length - 1f ? this._index + 1f : 0f);
+			_sender.Send(PathConnection.System);
+			GuwbaCentralizer.Position = _locations[_index];
+			_index = (ushort)(_index < _locations.Length - 1f ? _index + 1f : 0f);
 		}
 		private IEnumerator Timer(bool activeValue)
 		{
-			yield return new WaitTime(this, this._timeToUse);
-			this._active = activeValue;
-			this._timerCoroutine = null;
+			yield return new WaitTime(this, _timeToUse);
+			_active = activeValue;
+			_timerCoroutine = null;
 		}
 		private IEnumerator Timer()
 		{
-			this._sender.SetToggle(false);
-			this._sender.Send(PathConnection.Hud);
-			yield return new WaitTime(this, this._timeToUse);
-			this.Teleport();
-			this._sender.SetToggle(true);
-			this._sender.Send(PathConnection.Hud);
+			_sender.SetToggle(false);
+			_sender.Send(PathConnection.Hud);
+			yield return new WaitTime(this, _timeToUse);
+			Teleport();
+			_sender.SetToggle(true);
+			_sender.Send(PathConnection.Hud);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._active && this._onCollision && this._useTimer)
-				this.StartCoroutine(this.Timer());
-			else if (this._active && this._onCollision && GuwbaCentralizer.EqualObject(other.gameObject))
-				this.Teleport();
+			if (_active && _onCollision && _useTimer)
+				StartCoroutine(Timer());
+			else if (_active && _onCollision && GuwbaCentralizer.EqualObject(other.gameObject))
+				Teleport();
 		}
 		public void Execute()
 		{
-			this._active = !this._active;
-			if (this._useTimer)
-				if (this._timerCoroutine == null)
-					this._timerCoroutine = this.StartCoroutine(this.Timer(this._active));
+			_active = !_active;
+			if (_useTimer)
+				if (_timerCoroutine == null)
+					_timerCoroutine = StartCoroutine(Timer(_active));
 				else
-					this.StopCoroutine(this._timerCoroutine);
+					StopCoroutine(_timerCoroutine);
 			else
-				this.Teleport();
+				Teleport();
 		}
 		public void Interaction()
 		{
-			if (this._active && this._isInteractive && this._useTimer)
-				this.StartCoroutine(this.Timer());
-			else if (this._active && this._isInteractive)
-				this.Teleport();
+			if (_active && _isInteractive && _useTimer)
+				StartCoroutine(Timer());
+			else if (_active && _isInteractive)
+				Teleport();
 		}
 	};
 };
