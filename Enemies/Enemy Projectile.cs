@@ -22,204 +22,193 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _breakInUse = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
-		public short Health => this._vitality;
+		public short Health => _vitality;
 		private void CommonInstance()
 		{
-			for (ushort i = 0; i < this._statistics.QuantityToSummon; i++)
+			Quaternion rotation;
+			for (ushort i = 0; i < _statistics.QuantityToSummon; i++)
 			{
-				Quaternion rotation;
-				if (this._statistics.UseSelfRotation)
-				{
-					float selfRotation = this.transform.eulerAngles.z + this._statistics.BaseAngle + this._statistics.SpreadAngle * i;
-					rotation = Quaternion.AngleAxis(selfRotation, Vector3.forward);
-				}
+				if (_statistics.UseSelfRotation)
+					rotation = Quaternion.AngleAxis(transform.eulerAngles.z + _statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
 				else
-					rotation = Quaternion.AngleAxis(this._statistics.BaseAngle + this._statistics.SpreadAngle * i, Vector3.forward);
-				Instantiate(this._statistics.SecondProjectile, this.transform.position, rotation);
+					rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
+				Instantiate(_statistics.SecondProjectile, transform.position, rotation);
 			}
 		}
 		private void CellInstance()
 		{
-			if (this._oldCellPosition != this._cellPosition)
+			if (_oldCellPosition != _cellPosition)
 			{
-				this._oldCellPosition = this._cellPosition;
-				if (this._pointToJump == 0f)
+				_oldCellPosition = _cellPosition;
+				if (_pointToJump == 0f)
 				{
-					if (this._pointToBreak >= this._internalBreakPoint)
-						if (this._pointToReturn++ >= this._internalReturnPoint)
+					if (_pointToBreak >= _internalBreakPoint)
+						if (_pointToReturn++ >= _internalReturnPoint)
 						{
-							this._pointToBreak = 0;
-							this._breakInUse = this._statistics.AlwaysBreak;
+							_pointToBreak = 0;
+							_breakInUse = _statistics.AlwaysBreak;
 						}
-					if (!this._breakInUse || this._pointToBreak < this._internalBreakPoint)
+					if (!_breakInUse || _pointToBreak < _internalBreakPoint)
 					{
-						if (this._breakInUse)
+						if (_breakInUse)
 						{
-							this._pointToBreak++;
-							this._pointToReturn = 0;
+							_pointToBreak++;
+							_pointToReturn = 0;
 						}
-						this._pointToJump = this._statistics.JumpPoints;
-						float angle = this._statistics.BaseAngle + this._statistics.SpreadAngle * this._angleMulti;
-						Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-						Vector2 position = new(this._cellPosition.x + .5f, this._cellPosition.y + .5f);
-						if (this._statistics.UseQuantity)
-							this._projectiles.Add(Instantiate(this._statistics.SecondProjectile, position, rotation));
+						_pointToJump = _statistics.JumpPoints;
+						Quaternion rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
+						if (_statistics.UseQuantity)
+							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + .5f, _cellPosition.y + .5f), rotation));
 						else
-							Instantiate(this._statistics.SecondProjectile, position, rotation);
-						this._angleMulti++;
+							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + .5f, _cellPosition.y + .5f), rotation);
+						_angleMulti++;
 					}
 				}
-				else if (this._pointToJump > 0f)
-					this._pointToJump--;
+				else if (_pointToJump > 0f)
+					_pointToJump--;
 			}
 		}
 		private void CellInstanceRange()
 		{
-			LayerMask groundLayer = this._statistics.GroundLayer;
-			float distanceRay = this._statistics.DistanceRay;
-			float distance = Physics2D.Raycast(this.transform.position, this.transform.up, distanceRay, groundLayer).distance;
-			if (this._statistics.UseQuantity)
-				distance = this._statistics.QuantityToSummon;
-			short xAxis = (short)this._cellPosition.x;
-			short yAxis = (short)this._cellPosition.y;
+			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, _statistics.GroundLayer).distance;
+			if (_statistics.UseQuantity)
+				distance = _statistics.QuantityToSummon;
+			short xAxis = (short)_cellPosition.x;
+			short yAxis = (short)_cellPosition.y;
 			for (ushort i = 0; i < distance; i++)
 			{
-				xAxis += (short)this.transform.up.x;
-				yAxis += (short)this.transform.up.y;
-				this._cellPosition = new Vector2Int(xAxis, yAxis);
-				this.CellInstance();
+				xAxis += (short)transform.up.x;
+				yAxis += (short)transform.up.y;
+				_cellPosition = new Vector2Int(xAxis, yAxis);
+				CellInstance();
 			}
 		}
 		private void ParabolicProjectile()
 		{
-			this.StartCoroutine(Parabola());
+			StartCoroutine(Parabola());
 			IEnumerator Parabola()
 			{
-				yield return new WaitUntil(() => this.isActiveAndEnabled);
+				yield return new WaitUntil(() => isActiveAndEnabled);
 				float time = 0f, x, y;
-				while (time > this._statistics.TimeToFade)
+				while (time > _statistics.TimeToFade)
 				{
 					time += Time.fixedDeltaTime;
-					x = this._statistics.MovementSpeed * time * Mathf.Cos(this._statistics.BaseAngle * Mathf.Deg2Rad);
-					y = this._statistics.MovementSpeed * time * Mathf.Sin(this._statistics.BaseAngle * Mathf.Deg2Rad);
-					this.transform.position = new Vector2(x, y - 0.5f * -Physics2D.gravity.y * Mathf.Pow(time, 2));
+					x = _statistics.MovementSpeed * time * Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
+					y = _statistics.MovementSpeed * time * Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
+					transform.position = new Vector2(x, y - 0.5f * -Physics2D.gravity.y * Mathf.Pow(time, 2));
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => this.isActiveAndEnabled && this._rigidbody.IsAwake());
+					yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
 				}
 			}
 		}
 		private new void Awake()
 		{
 			base.Awake();
-			this._rigidbody = this.GetComponent<Rigidbody2D>();
-			this._vitality = (short)this._statistics.Vitality;
-			this._pointToJump = this._statistics.JumpPoints;
-			this._breakInUse = this._statistics.UseBreak;
-			this._internalBreakPoint = this._statistics.BreakPoint;
-			this._internalReturnPoint = this._statistics.ReturnPoint;
-			if (this._statistics.RandomBreak)
+			_rigidbody = GetComponent<Rigidbody2D>();
+			_vitality = (short)_statistics.Vitality;
+			_pointToJump = _statistics.JumpPoints;
+			_breakInUse = _statistics.UseBreak;
+			_internalBreakPoint = _statistics.BreakPoint;
+			_internalReturnPoint = _statistics.ReturnPoint;
+			if (_statistics.RandomBreak)
 			{
-				float rangeMax = this._statistics.ReturnPoint - this._statistics.MinimumRandomValue;
-				bool valid = this._statistics.ExtrictRandom;
-				this._internalBreakPoint = (ushort)Random.Range(this._statistics.BreakPoint, rangeMax);
-				if (this._internalReturnPoint - this._internalBreakPoint < this._statistics.MinimumRandomValue)
-					for (ushort i = 0; i < this._statistics.MinimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
-						if (this._internalBreakPoint <= this._statistics.MinimumRandomValue)
-							this._internalReturnPoint++;
+				_internalBreakPoint = (ushort)Random.Range(_statistics.BreakPoint, _statistics.ReturnPoint - _statistics.MinimumRandomValue);
+				if (_internalReturnPoint - _internalBreakPoint < _statistics.MinimumRandomValue)
+					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
+						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+							_internalReturnPoint++;
 						else
-							this._internalBreakPoint--;
-				else if (valid && this._internalReturnPoint - this._internalBreakPoint > this._statistics.MinimumRandomValue)
-					for (ushort i = 0; i < this._statistics.MinimumRandomValue - (this._internalReturnPoint - this._internalBreakPoint); i++)
-						if (this._internalBreakPoint <= this._statistics.MinimumRandomValue)
-							this._internalBreakPoint++;
+							_internalBreakPoint--;
+				else if (_statistics.ExtrictRandom && _internalReturnPoint - _internalBreakPoint > _statistics.MinimumRandomValue)
+					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
+						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+							_internalBreakPoint++;
 						else
-							this._internalReturnPoint--;
+							_internalReturnPoint--;
 			}
-			this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
-			this._oldCellPosition = this._cellPosition;
-			if (this._statistics.SideMovement)
-				this.transform.rotation = Quaternion.AngleAxis(this._statistics.InvertSide ? 90f : -90f, Vector3.forward);
-			if (this._statistics.SecondProjectile && this._statistics.InCell && !this._statistics.ContinuosSummon)
-				this.CellInstanceRange();
-			else if (this._statistics.SecondProjectile && !this._statistics.InCell)
-				this.CommonInstance();
-			Destroy(this.gameObject, this._statistics.TimeToFade);
+			_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+			_oldCellPosition = _cellPosition;
+			if (_statistics.SideMovement)
+				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90f : -90f, Vector3.forward);
+			if (_statistics.SecondProjectile && _statistics.InCell && !_statistics.ContinuosSummon)
+				CellInstanceRange();
+			else if (_statistics.SecondProjectile && !_statistics.InCell)
+				CommonInstance();
+			Destroy(gameObject, _statistics.TimeToFade);
 		}
 		private void Start()
 		{
-			float movementSpeed = this._statistics.MovementSpeed;
-			if (!this._statistics.StayInPlace)
-				if (this._statistics.UseForce)
+			if (!_statistics.StayInPlace)
+				if (_statistics.UseForce)
 				{
-					Vector2 force = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
-					this._rigidbody.AddForce(force, this._statistics.ForceMode);
+					Vector2 force = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
+					_rigidbody.AddForce(force, _statistics.ForceMode);
 				}
 				else
-					this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
+					_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
 		private void Update()
 		{
-			if (this._rigidbody.IsSleeping())
+			if (_rigidbody.IsSleeping())
 			{
-				this._stunTimer -= Time.deltaTime;
-				if (this._stunTimer <= 0f)
-					this._rigidbody.WakeUp();
+				_stunTimer -= Time.deltaTime;
+				if (_stunTimer <= 0f)
+					_rigidbody.WakeUp();
 			}
 		}
 		private void FixedUpdate()
 		{
-			if (this._rigidbody.IsSleeping())
+			if (_rigidbody.IsSleeping())
 				return;
-			float movementSpeed = this._statistics.MovementSpeed;
-			if (this._statistics.SecondProjectile && this._statistics.InCell && this._statistics.ContinuosSummon)
+			if (_statistics.SecondProjectile && _statistics.InCell && _statistics.ContinuosSummon)
 			{
-				if (this._statistics.UseQuantity && this._statistics.QuantityToSummon == this._projectiles.Count || this._statistics.StayInPlace)
+				if (_statistics.UseQuantity && _statistics.QuantityToSummon == _projectiles.Count || _statistics.StayInPlace)
 					return;
-				this._cellPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
-				this.CellInstance();
+				_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+				CellInstance();
 			}
-			this._rigidbody.rotation += this._statistics.RotationSpeed * movementSpeed * Time.fixedDeltaTime;
-			if (this._statistics.ParabolicMovement)
-				this.ParabolicProjectile();
-			else if (!this._statistics.StayInPlace && this._statistics.RotationMatter)
-				this._rigidbody.linearVelocity = (this._statistics.InvertSide ? -this.transform.up : this.transform.up) * movementSpeed;
+			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
+			if (_statistics.ParabolicMovement)
+				ParabolicProjectile();
+			else if (!_statistics.StayInPlace && _statistics.RotationMatter)
+				_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._statistics.IsInoffensive)
+			if (_statistics.IsInoffensive)
 				return;
-			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(this._statistics.Damage))
+			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
-				destructible.Stun(this._statistics.Damage, this._statistics.StunTime);
-				EffectsController.HitStop(this._statistics.Physics.HitStopTime, this._statistics.Physics.HitSlowTime);
+				destructible.Stun(_statistics.Damage, _statistics.StunTime);
+				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
 			else
 			{
-				if (this._statistics.InDeath)
-					if (this._statistics.EnemyOnDeath)
-						Instantiate(this._statistics.EnemyOnDeath, this.transform.position, this._statistics.EnemyOnDeath.transform.rotation);
-					else if (this._statistics.SecondProjectile)
-						if (this._statistics.InCell)
-							this.CellInstanceRange();
+				if (_statistics.InDeath)
+					if (_statistics.EnemyOnDeath)
+						Instantiate(_statistics.EnemyOnDeath, transform.position, _statistics.EnemyOnDeath.transform.rotation);
+					else if (_statistics.SecondProjectile)
+						if (_statistics.InCell)
+							CellInstanceRange();
 						else
-							this.CommonInstance();
-				Destroy(this.gameObject);
+							CommonInstance();
+				Destroy(gameObject);
 			}
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (this._statistics.IsInoffensive || damage <= 0 || this._statistics.Vitality <= 0f)
+			if (_statistics.IsInoffensive || damage <= 0 || _statistics.Vitality <= 0f)
 				return false;
-			if ((this._vitality -= (short)damage) <= 0f)
-				Destroy(this.gameObject);
+			if ((_vitality -= (short)damage) <= 0f)
+				Destroy(gameObject);
 			return true;
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (this._rigidbody.IsSleeping())
+			if (_rigidbody.IsSleeping())
 				return;
-			this._rigidbody.Sleep();
-			this._stunTimer = stunTime;
+			_rigidbody.Sleep();
+			_stunTimer = stunTime;
 		}
 	};
 };
