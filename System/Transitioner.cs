@@ -13,31 +13,31 @@ namespace GuwbaPrimeAdventure
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		public void Transicion(SceneField scene = null)
 		{
-			this.StartCoroutine(SceneTransicion());
+			StartCoroutine(SceneTransicion());
 			IEnumerator SceneTransicion()
 			{
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
-				TransicionHud transicionHud = Instantiate(this._transicionHud);
+				TransicionHud transicionHud = Instantiate(_transicionHud);
 				for (float i = 0f; transicionHud.RootVisualElement.style.opacity.value < 1f; i += 0.1f)
 				{
 					transicionHud.RootVisualElement.style.opacity = i;
 					yield return new WaitForEndOfFrame();
 				}
-				SceneField newScene = scene ?? this._sceneTransicion;
-				if (newScene != this.gameObject.scene.name)
+				SceneField newScene = scene ?? _sceneTransicion;
+				if (newScene != gameObject.scene.name)
 					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
 						if (newScene.SceneName.Contains($"{i}"))
 							saveFile.lastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
-				if (newScene != this._menuScene)
+				if (newScene != _menuScene)
 					yield return new WaitUntil(() => asyncOperation.isDone);
 				else
 				{
-					this._transicionHud.LoadingBar.highValue = 100f;
+					_transicionHud.LoadingBar.highValue = 100f;
 					while (!asyncOperation.isDone)
 					{
-						this._transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
+						_transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
 						yield return new WaitForEndOfFrame();
 					}
 				}
