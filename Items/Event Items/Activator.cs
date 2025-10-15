@@ -16,45 +16,45 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The receptors that will receive the signal.")] private Receptor[] _receptors;
 		[SerializeField, Tooltip("The activator only can be activeted one time.")] private bool _oneActivation;
 		[SerializeField, Tooltip("If this object have been activeted before it will always be activeted.")] private bool _saveOnSpecifics;
-		protected bool Usable => this._usable;
+		protected bool Usable => _usable;
 		private new void Awake()
 		{
 			base.Awake();
-			this._animator = this.GetComponent<Animator>();
+			_animator = GetComponent<Animator>();
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveOnSpecifics && saveFile.generalObjects.Contains(this.gameObject.name))
-				this.Activation();
+			if (_saveOnSpecifics && saveFile.generalObjects.Contains(gameObject.name))
+				Activation();
 		}
 		private void OnEnable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 1f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 1f);
 		}
 		private void OnDisable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 0f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 0f);
 		}
 		protected void Activation()
 		{
-			if (this._oneActivation && this._usedOne)
+			if (_oneActivation && _usedOne)
 				return;
-			this._used = !this._used;
-			if (this._oneActivation)
-				this._usable = false;
-			if (this._animator)
-				if (this._used)
-					this._animator.SetTrigger(this._use);
+			_used = !_used;
+			if (_oneActivation)
+				_usable = false;
+			if (_animator)
+				if (_used)
+					_animator.SetTrigger(_use);
 				else
-					this._animator.SetTrigger(this._useAgain);
-			foreach (Receptor receptor in this._receptors)
+					_animator.SetTrigger(_useAgain);
+			foreach (Receptor receptor in _receptors)
 				if (receptor)
 					receptor.ReceiveSignal(this);
-			this._usedOne = true;
+			_usedOne = true;
 			SaveController.Load(out SaveFile saveFile);
-			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
+			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
 			{
-				saveFile.generalObjects.Add(this.gameObject.name);
+				saveFile.generalObjects.Add(gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
 		}
