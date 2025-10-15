@@ -14,12 +14,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		protected new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.State);
-			this.transform.localScale = new Vector3()
+			_sender.SetStateForm(StateForm.State);
+			transform.localScale = new Vector3()
 			{
-				x = (this._movementSide = (short)(this._invertMovementSide ? -1 : 1)) * Mathf.Abs(this.transform.localScale.x),
-				y = this.transform.localScale.y,
-				z = this.transform.localScale.z
+				x = Mathf.Abs(transform.localScale.x) * (_movementSide = (short)(_invertMovementSide ? -1 : 1)),
+				y = transform.localScale.y,
+				z = transform.localScale.z
 			};
 			Sender.Include(this);
 		}
@@ -30,18 +30,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		protected bool SurfacePerception()
 		{
-			float groundChecker = this._moving.Physics.GroundChecker;
-			float yOrigin = this._collider.offset.y + (this._collider.bounds.extents.y + groundChecker / 2f) * -this.transform.up.y;
-			Vector2 origin = new(this.transform.position.x + this._collider.offset.x, this.transform.position.y + yOrigin);
-			Vector2 size = new(this._collider.bounds.size.x - groundChecker, groundChecker);
-			return Physics2D.BoxCast(origin, size, 0f, -this.transform.up, groundChecker, this._moving.Physics.GroundLayer);
+			float originY = (_collider.bounds.extents.y + _moving.Physics.GroundChecker / 2f) * -transform.up.y;
+			Vector2 origin = new(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y + originY);
+			Vector2 size = new(_collider.bounds.size.x - _moving.Physics.GroundChecker, _moving.Physics.GroundChecker);
+			return Physics2D.BoxCast(origin, size, 0f, -transform.up, _moving.Physics.GroundChecker, _moving.Physics.GroundLayer);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if ((EnemyProvider[])additionalData != null)
 				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 					if (enemy == this && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-						this._stopWorking = !data.ToggleValue.Value;
+						_stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
