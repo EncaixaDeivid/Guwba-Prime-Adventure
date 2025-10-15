@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					this._isDashing = true;
 			maxDistanceDelta = Time.fixedDeltaTime * (this._isDashing ? this._statistics.DashSpeed : this._statistics.MovementSpeed);
 			this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
-			if (this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= 0.001f)
+			if (this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= 1e-3f)
 				if (this._statistics.DetectionStop)
 				{
 					this._stopWorking = this._afterDash = true;
@@ -72,18 +72,18 @@ namespace GuwbaPrimeAdventure.Enemy
 				Vector2 target = this._trail.points[this._pointIndex];
 				if (this._repeatWay)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0.001f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
 						this._pointIndex = (ushort)(this._pointIndex < this._trail.points.Length - 1f ? this._pointIndex + 1f : 0f);
 				}
 				else if (this._normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0.001f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
 						this._pointIndex += 1;
 					this._normal = this._pointIndex != this._trail.points.Length - 1f;
 				}
 				else if (!this._normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 0.001f)
+					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
 						this._pointIndex -= 1;
 					this._normal = this._pointIndex == 0f;
 				}
