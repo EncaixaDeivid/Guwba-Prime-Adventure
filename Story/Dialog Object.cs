@@ -15,15 +15,15 @@ namespace GuwbaPrimeAdventure.Story
 		[SerializeField, Tooltip("If the object will destruct.")] private bool _activateDestroy;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		[SerializeField, Tooltip("The amount of time to wait to destroy after the speach.")] private float _timeToDestroy;
-		internal SceneField SceneToTransition => this._sceneToTransition;
-		internal Speach[] Speachs => this._speach;
-		internal string Animation => this._animation;
-		internal bool ActivateTransition => this._activateTransition;
-		internal bool DesactiveInteraction => this._desactiveInteraction;
-		internal bool ActivateAnimation => this._activateAnimation;
-		internal bool ActivateDestroy => this._activateDestroy;
-		internal bool SaveOnEspecific => this._saveOnSpecifics;
-		internal float TimeToDestroy => this._timeToDestroy;
+		internal SceneField SceneToTransition => _sceneToTransition;
+		internal Speach[] Speachs => _speach;
+		internal string Animation => _animation;
+		internal bool ActivateTransition => _activateTransition;
+		internal bool DesactiveInteraction => _desactiveInteraction;
+		internal bool ActivateAnimation => _activateAnimation;
+		internal bool ActivateDestroy => _activateDestroy;
+		internal bool SaveOnEspecific => _saveOnSpecifics;
+		internal float TimeToDestroy => _timeToDestroy;
 		[Serializable]
 		internal struct Speach
 		{
@@ -32,10 +32,10 @@ namespace GuwbaPrimeAdventure.Story
 			[SerializeField, Tooltip("The name of the character that is speaking.")] private string _characterName;
 			[SerializeField, TextArea(1, 12), Tooltip("The speach of the character that is speaking.")] private string _speachText;
 			[SerializeField, Tooltip("If after the speach the next slide of story scene have to come.")] private bool _nextSlide;
-			internal readonly Sprite Model => this._model;
-			internal readonly string CharacterName => this._characterName;
-			internal readonly string SpeachText => this._speachText;
-			internal readonly bool NextSlide => this._nextSlide;
+			internal readonly Sprite Model => _model;
+			internal readonly string CharacterName => _characterName;
+			internal readonly string SpeachText => _speachText;
+			internal readonly bool NextSlide => _nextSlide;
 		};
 	};
 };
