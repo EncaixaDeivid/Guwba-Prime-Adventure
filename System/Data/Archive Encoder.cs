@@ -15,14 +15,12 @@ namespace GuwbaPrimeAdventure.Data
 		}
 		internal static StructData ReadData<StructData>(string path) where StructData : struct
 		{
-			string scriptedData = File.ReadAllText(path, Encoding.UTF8);
-			string dataJSON = ScriptData(scriptedData);
+			string dataJSON = ScriptData(File.ReadAllText(path, Encoding.UTF8));
 			return JsonUtility.FromJson<StructData>(dataJSON);
 		}
 		internal static void WriteData<StructData>(StructData structData, string path) where StructData : struct
 		{
-			string dataJSON = JsonUtility.ToJson(structData);
-			string scriptedData = ScriptData(dataJSON);
+			string scriptedData = ScriptData(JsonUtility.ToJson(structData));
 			if (File.Exists(path))
 				File.Delete(path);
 			File.WriteAllText(path, scriptedData, Encoding.UTF8);
