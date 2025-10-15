@@ -12,8 +12,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._sender.SetStateForm(StateForm.State);
-			this._timeOperation = this._statistics.TimeToInvencible;
+			_sender.SetStateForm(StateForm.State);
+			_timeOperation = _statistics.TimeToInvencible;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -23,30 +23,30 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (this._stopWorking || this.IsStunned || !this._statistics.UseAlternatedTime && !this._invencible)
+			if (_stopWorking || IsStunned || !_statistics.UseAlternatedTime && !_invencible)
 				return;
-			if (this._timeOperation > 0f)
-				this._timeOperation -= Time.deltaTime;
-			if (this._timeOperation <= 0f)
+			if (_timeOperation > 0f)
+				_timeOperation -= Time.deltaTime;
+			if (_timeOperation <= 0f)
 			{
-				if (this._invencible)
+				if (_invencible)
 				{
-					this._invencible = false;
-					this._timeOperation = this._statistics.TimeToInvencible;
-					if (this._statistics.InvencibleStop)
+					_invencible = false;
+					_timeOperation = _statistics.TimeToInvencible;
+					if (_statistics.InvencibleStop)
 					{
-						this._sender.SetToggle(true);
-						this._sender.Send(PathConnection.Enemy);
+						_sender.SetToggle(true);
+						_sender.Send(PathConnection.Enemy);
 					}
 				}
 				else
 				{
-					this._invencible = true;
-					this._timeOperation = this._statistics.TimeToDestructible;
-					if (this._statistics.InvencibleStop)
+					_invencible = true;
+					_timeOperation = _statistics.TimeToDestructible;
+					if (_statistics.InvencibleStop)
 					{
-						this._sender.SetToggle(false);
-						this._sender.Send(PathConnection.Enemy);
+						_sender.SetToggle(false);
+						_sender.Send(PathConnection.Enemy);
 					}
 				}
 			}
@@ -54,16 +54,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		public new bool Hurt(ushort damage)
 		{
 			bool isHurted = false;
-			if (!this._invencible && damage >= this._statistics.BiggerDamage)
+			if (!_invencible && damage >= _statistics.BiggerDamage)
 				isHurted = base.Hurt(damage);
-			if (this._statistics.InvencibleHurted && isHurted)
+			if (_statistics.InvencibleHurted && isHurted)
 			{
-				this._timeOperation = this._statistics.TimeToDestructible;
-				this._invencible = true;
-				if (this._statistics.InvencibleStop)
+				_timeOperation = _statistics.TimeToDestructible;
+				_invencible = true;
+				if (_statistics.InvencibleStop)
 				{
-					this._sender.SetToggle(true);
-					this._sender.Send(PathConnection.Enemy);
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
 				}
 			}
 			return isHurted;
@@ -75,14 +75,14 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (enemy != this)
 						return;
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
-				if (this._statistics.UseAlternatedTime && data.ToggleValue.Value)
-					this._invencible = true;
+				if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
+					_invencible = true;
 				else
-					this._invencible = data.ToggleValue.Value;
-			if (this._statistics.InvencibleStop)
+					_invencible = data.ToggleValue.Value;
+			if (_statistics.InvencibleStop)
 			{
-				this._sender.SetToggle(!this._invencible);
-				this._sender.Send(PathConnection.Enemy);
+				_sender.SetToggle(!_invencible);
+				_sender.Send(PathConnection.Enemy);
 			}
 		}
 	};
