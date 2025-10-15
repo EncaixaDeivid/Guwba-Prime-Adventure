@@ -5,10 +5,10 @@ namespace GuwbaPrimeAdventure.Connection
 	{
 		private Sender()
 		{
-			this._stateForm = StateForm.None;
-			this._additionalData = null;
-			this._toggleValue = null;
-			this._numberValue = null;
+			_stateForm = StateForm.None;
+			_additionalData = null;
+			_toggleValue = null;
+			_numberValue = null;
 		}
 		private static readonly List<IConnector> _connectors = new();
 		private StateForm _stateForm;
@@ -26,16 +26,16 @@ namespace GuwbaPrimeAdventure.Connection
 				_connectors.Remove(connector);
 		}
 		public static Sender Create() => new();
-		public void SetAdditionalData(object additionalData) => this._additionalData = additionalData;
-		public void SetStateForm(StateForm stateForm) => this._stateForm = stateForm;
-		public void SetToggle(bool value) => this._toggleValue = value;
-		public void SetNumber(int value) => this._numberValue = (uint)(value < 0f ? -value : value);
+		public void SetAdditionalData(object additionalData) => _additionalData = additionalData;
+		public void SetStateForm(StateForm stateForm) => _stateForm = stateForm;
+		public void SetToggle(bool value) => _toggleValue = value;
+		public void SetNumber(int value) => _numberValue = (uint)(value < 0f ? -value : value);
 		public void Send(PathConnection path)
 		{
-			DataConnection dataConnection = new(this._stateForm, this._toggleValue, this._numberValue);
+			DataConnection dataConnection = new(_stateForm, _toggleValue, _numberValue);
 			foreach (IConnector connector in _connectors)
 				if (connector.PathConnection == path)
-					connector.Receive(dataConnection, this._additionalData);
+					connector.Receive(dataConnection, _additionalData);
 		}
 	};
 };
