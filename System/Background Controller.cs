@@ -23,60 +23,60 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 1e-3f);
+				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
 			base.Awake();
-			this._childrenTransforms = new Transform[this._backgroundImages.Length];
-			this._childrenRenderers = new SpriteRenderer[this._backgroundImages.Length];
-			for (ushort ia = 0; ia < this._backgroundImages.Length; ia++)
+			_childrenTransforms = new Transform[_backgroundImages.Length];
+			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
+			for (ushort ia = 0; ia < _backgroundImages.Length; ia++)
 			{
-				this._childrenTransforms[ia] = Instantiate(this._backgroundTransform, this.transform);
-				this._childrenRenderers[ia] = this._childrenTransforms[ia].GetComponent<SpriteRenderer>();
-				Sprite sprite = this._backgroundHandler.GetSprite(this._backgroundImages[ia]);
-				this._childrenRenderers[ia].sprite = sprite;
-				this._childrenRenderers[ia].sortingOrder = this._backgroundImages.Length - 1 - ia;
-				this._childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = this._childrenRenderers[ia].sortingOrder;
-				float centerX = this._childrenTransforms[ia].position.x;
-				float centerY = this._childrenTransforms[ia].position.y;
-				Vector2 imageSize = this._childrenRenderers[ia].sprite.bounds.size;
+				_childrenTransforms[ia] = Instantiate(_backgroundTransform, transform);
+				_childrenRenderers[ia] = _childrenTransforms[ia].GetComponent<SpriteRenderer>();
+				Sprite sprite = _backgroundHandler.GetSprite(_backgroundImages[ia]);
+				_childrenRenderers[ia].sprite = sprite;
+				_childrenRenderers[ia].sortingOrder = _backgroundImages.Length - 1 - ia;
+				_childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = _childrenRenderers[ia].sortingOrder;
+				float centerX = _childrenTransforms[ia].position.x;
+				float centerY = _childrenTransforms[ia].position.y;
+				Vector2 imageSize = _childrenRenderers[ia].sprite.bounds.size;
 				float right = centerX + imageSize.x;
 				float left = centerX - imageSize.x;
 				float top = centerY + imageSize.y;
 				float bottom = centerY - imageSize.y;
-				this._childrenTransforms[ia].GetChild(0).position = new Vector2(left, top);
-				this._childrenTransforms[ia].GetChild(1).position = new Vector2(centerX, top);
-				this._childrenTransforms[ia].GetChild(2).position = new Vector2(right, top);
-				this._childrenTransforms[ia].GetChild(3).position = new Vector2(left, centerY);
-				this._childrenTransforms[ia].GetChild(4).position = new Vector2(right, centerY);
-				this._childrenTransforms[ia].GetChild(5).position = new Vector2(left, bottom);
-				this._childrenTransforms[ia].GetChild(6).position = new Vector2(centerX, bottom);
-				this._childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
-				for (ushort ib = 0; ib < this._childrenTransforms[ia].childCount; ib++)
-					this._childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = sprite;
+				_childrenTransforms[ia].GetChild(0).position = new Vector2(left, top);
+				_childrenTransforms[ia].GetChild(1).position = new Vector2(centerX, top);
+				_childrenTransforms[ia].GetChild(2).position = new Vector2(right, top);
+				_childrenTransforms[ia].GetChild(3).position = new Vector2(left, centerY);
+				_childrenTransforms[ia].GetChild(4).position = new Vector2(right, centerY);
+				_childrenTransforms[ia].GetChild(5).position = new Vector2(left, bottom);
+				_childrenTransforms[ia].GetChild(6).position = new Vector2(centerX, bottom);
+				_childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
+				for (ushort ib = 0; ib < _childrenTransforms[ia].childCount; ib++)
+					_childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = sprite;
 			}
 		}
 		private void FixedUpdate()
 		{
-			for (ushort i = 0; i < this._backgroundImages.Length; i++)
+			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
-				float axisX = 1f - (this._horizontalBackgroundSpeed - (i * this._slowHorizontal));
-				float axisY = 1f - (this._verticalBackgroundSpeed - (i * this._slowVertical));
-				float movementAxisX = this.transform.position.x * axisX;
-				float movementAxisY = this.transform.position.y * axisY;
-				this._childrenTransforms[i].position = new Vector2(this._startPosition.x + movementAxisX, this._startPosition.y + movementAxisY);
-				Vector2 imageSize = this._childrenRenderers[i].sprite.bounds.size;
-				float distanceAxisX = this.transform.position.x * (1f - axisX);
-				float distanceAxisY = this.transform.position.y * (1f - axisY);
-				if (distanceAxisX > this._startPosition.x + imageSize.x)
-					this._startPosition = new Vector2(this._startPosition.x + imageSize.x, this._startPosition.y);
-				else if (distanceAxisX < this._startPosition.x - imageSize.x)
-					this._startPosition = new Vector2(this._startPosition.x - imageSize.x, this._startPosition.y);
-				if (distanceAxisY > this._startPosition.y + imageSize.y)
-					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y + imageSize.y);
-				else if (distanceAxisY < this._startPosition.y - imageSize.y)
-					this._startPosition = new Vector2(this._startPosition.x, this._startPosition.y - imageSize.y);
+				float axisX = 1f - (_horizontalBackgroundSpeed - (i * _slowHorizontal));
+				float axisY = 1f - (_verticalBackgroundSpeed - (i * _slowVertical));
+				float movementAxisX = transform.position.x * axisX;
+				float movementAxisY = transform.position.y * axisY;
+				_childrenTransforms[i].position = new Vector2(_startPosition.x + movementAxisX, _startPosition.y + movementAxisY);
+				Vector2 imageSize = _childrenRenderers[i].sprite.bounds.size;
+				float distanceAxisX = transform.position.x * (1f - axisX);
+				float distanceAxisY = transform.position.y * (1f - axisY);
+				if (distanceAxisX > _startPosition.x + imageSize.x)
+					_startPosition = new Vector2(_startPosition.x + imageSize.x, _startPosition.y);
+				else if (distanceAxisX < _startPosition.x - imageSize.x)
+					_startPosition = new Vector2(_startPosition.x - imageSize.x, _startPosition.y);
+				if (distanceAxisY > _startPosition.y + imageSize.y)
+					_startPosition = new Vector2(_startPosition.x, _startPosition.y + imageSize.y);
+				else if (distanceAxisY < _startPosition.y - imageSize.y)
+					_startPosition = new Vector2(_startPosition.x, _startPosition.y - imageSize.y);
 			}
 		}
 	};
