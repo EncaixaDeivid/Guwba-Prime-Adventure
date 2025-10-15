@@ -9,8 +9,8 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (this._activate)
-				this.Activation();
+			if (_activate)
+				Activation();
 		}
 	};
 };
