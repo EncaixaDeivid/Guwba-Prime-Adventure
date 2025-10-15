@@ -19,19 +19,19 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
 		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _followReact;
 		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
-		internal JumpPointStructure[] JumpPointStructures => this._jumpPointStructures;
-		internal JumpStats[] TimedJumps => this._timedJumps;
-		internal Vector2 OtherTarget => this._otherTarget;
-		internal bool CircularDetection => this._circularDetection;
-		internal bool SequentialTimmedJumps => this._sequentialTimmedJumps;
-		internal bool RepeatTimmedJumps => this._repeatTimmedJumps;
-		internal bool UseTarget => this._useTarget;
-		internal bool RandomFollow => this._randomFollow;
-		internal float JumpStrenght => this._jumpStrenght;
-		internal float DistanceToTarget => this._distanceToTarget;
-		internal ushort StrenghtReact => this._strenghtReact;
-		internal bool FollowReact => this._followReact;
-		internal bool StopMoveReact => this._stopMoveReact;
+		internal JumpPointStructure[] JumpPointStructures => _jumpPointStructures;
+		internal JumpStats[] TimedJumps => _timedJumps;
+		internal Vector2 OtherTarget => _otherTarget;
+		internal bool CircularDetection => _circularDetection;
+		internal bool SequentialTimmedJumps => _sequentialTimmedJumps;
+		internal bool RepeatTimmedJumps => _repeatTimmedJumps;
+		internal bool UseTarget => _useTarget;
+		internal bool RandomFollow => _randomFollow;
+		internal float JumpStrenght => _jumpStrenght;
+		internal float DistanceToTarget => _distanceToTarget;
+		internal ushort StrenghtReact => _strenghtReact;
+		internal bool FollowReact => _followReact;
+		internal bool StopMoveReact => _stopMoveReact;
 	};
 	[System.Serializable]
 	internal struct JumpStats
@@ -42,12 +42,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this is a follow jump.")] private bool _follow;
 		[SerializeField, Tooltip("If for this jump it will use the other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("The amount of time for this jump to execute.")] private float _timeToExecute;
-		internal readonly Vector2 OtherTarget => this._otherTarget;
-		internal readonly ushort Strength => this._strength;
-		internal readonly bool StopMove => this._stopMove;
-		internal readonly bool Follow => this._follow;
-		internal readonly bool UseTarget => this._useTarget;
-		internal readonly float TimeToExecute => this._timeToExecute;
+		internal readonly Vector2 OtherTarget => _otherTarget;
+		internal readonly ushort Strength => _strength;
+		internal readonly bool StopMove => _stopMove;
+		internal readonly bool Follow => _follow;
+		internal readonly bool UseTarget => _useTarget;
+		internal readonly float TimeToExecute => _timeToExecute;
 	};
 	[System.Serializable]
 	internal struct JumpPointStructure
@@ -56,10 +56,10 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
 		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
 		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
-		internal readonly JumpPoint JumpPointObject => this._jumpPointObject;
-		internal readonly JumpStats JumpStats => this._jumpStats;
-		internal readonly Vector2 Point => this._point;
-		internal readonly ushort JumpCount => (ushort)Random.Range(this._jumpCountMaxMin.x, this._jumpCountMaxMin.y);
+		internal readonly JumpPoint JumpPointObject => _jumpPointObject;
+		internal readonly JumpStats JumpStats => _jumpStats;
+		internal readonly Vector2 Point => _point;
+		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
 		internal short RemovalJumpCount { get; set; }
 	};
 };
