@@ -13,118 +13,113 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _dashTime = 0f;
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
-		private void Start() => this._timeRun = this._statistics.TimesToRun;
+		private void Start() => _timeRun = _statistics.TimesToRun;
 		private void Update()
 		{
-			if (this.IsStunned)
+			if (IsStunned)
 				return;
-			if (this._statistics.DetectionStop && this._stopWorking)
+			if (_statistics.DetectionStop && _stopWorking)
 			{
-				this._stoppedTime += Time.deltaTime;
-				if (this._stoppedTime >= this._statistics.StopTime)
+				_stoppedTime += Time.deltaTime;
+				if (_stoppedTime >= _statistics.StopTime)
 				{
-					this._stoppedTime = 0f;
-					this._stopWorking = false;
-					this._isDashing = true;
-					this._sender.SetToggle(this._statistics.JumpDash);
-					this._sender.Send(PathConnection.Enemy);
+					_stoppedTime = 0f;
+					_stopWorking = false;
+					_isDashing = true;
+					_sender.SetToggle(_statistics.JumpDash);
+					_sender.Send(PathConnection.Enemy);
 				}
 				return;
 			}
-			if (this._stopWorking)
+			if (_stopWorking)
 				return;
-			if (this._statistics.TimedDash && !this._isDashing)
+			if (_statistics.TimedDash && !_isDashing)
 			{
-				this._dashTime += Time.deltaTime;
-				if (this._dashTime >= this._statistics.TimeToDash)
+				_dashTime += Time.deltaTime;
+				if (_dashTime >= _statistics.TimeToDash)
 				{
-					this._dashTime = 0f;
-					this._isDashing = true;
+					_dashTime = 0f;
+					_isDashing = true;
 				}
 			}
-			if (this._statistics.RunFromTarget)
+			if (_statistics.RunFromTarget)
 			{
-				if (this._timeRun > 0f)
+				if (_timeRun > 0f)
 				{
-					this._timeRun -= Time.deltaTime;
-					this._isDashing = true;
+					_timeRun -= Time.deltaTime;
+					_isDashing = true;
 				}
-				if (this._timeRun <= 0f && this._isDashing)
+				if (_timeRun <= 0f && _isDashing)
 				{
-					if (this._statistics.RunTowardsAfter && this._runnedTimes >= this._statistics.TimesToRun)
+					if (_statistics.RunTowardsAfter && _runnedTimes >= _statistics.TimesToRun)
 					{
-						this._runnedTimes = 0;
-						this._runTowards = true;
+						_runnedTimes = 0;
+						_runTowards = true;
 					}
-					else if (this._statistics.RunTowardsAfter)
-						this._runnedTimes++;
-					this._isDashing = false;
+					else if (_statistics.RunTowardsAfter)
+						_runnedTimes++;
+					_isDashing = false;
 				}
 			}
-			if (this._isDashing)
+			if (_isDashing)
 			{
-				this._dashedTime += Time.deltaTime;
-				if (this._dashedTime >= this._statistics.TimeDashing)
+				_dashedTime += Time.deltaTime;
+				if (_dashedTime >= _statistics.TimeDashing)
 				{
-					this._detected = false;
-					this._dashedTime = 0f;
-					this._isDashing = false;
-					this._sender.SetToggle(true);
-					this._sender.Send(PathConnection.Enemy);
+					_detected = false;
+					_dashedTime = 0f;
+					_isDashing = false;
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
 				}
 			}
 		}
 		private void FixedUpdate()
 		{
-			if (this.IsStunned)
+			if (IsStunned)
 				return;
-			if (this._statistics.DetectionStop && this._detected && !this._isDashing && this.SurfacePerception())
-				this._rigidybody.linearVelocityX = 0f;
-			if (this._stopWorking)
+			if (_statistics.DetectionStop && _detected && !_isDashing && SurfacePerception())
+				_rigidybody.linearVelocityX = 0f;
+			if (_stopWorking)
 				return;
-			Vector2 right = this.transform.right * this._movementSide;
-			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
-			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
-			float groundChecker = this._statistics.Physics.GroundChecker;
-			if (this._statistics.LookPerception && !this._detected)
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(this.transform.position, right, this._statistics.LookDistance, targetLayer))
+			if (_statistics.LookPerception && !_detected)
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, transform.right * _movementSide, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
-						this._detected = true;
+						_detected = true;
 						break;
 					}
-			float xOrigin = (this._collider.bounds.extents.x + groundChecker / 2f) * right.x;
-			Vector2 origin = new(this.transform.position.x + xOrigin, this.transform.position.y);
-			Vector2 size = new(groundChecker, this._collider.bounds.size.y - groundChecker);
-			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, right, groundChecker, groundLayer);
-			bool blockPerception = blockCast && blockCast.collider.CanContact(this._collider);
-			if (this._statistics.RunFromTarget && this._timeRun <= 0f && this._detected)
+			float originX = (_collider.bounds.extents.x + _statistics.Physics.GroundChecker / 2f) * (transform.right * _movementSide).x;
+			Vector2 origin = new(transform.position.x + originX, transform.position.y);
+			Vector2 size = new(_statistics.Physics.GroundChecker, _collider.bounds.size.y - _statistics.Physics.GroundChecker);
+			RaycastHit2D blockCast = Physics2D.BoxCast(origin, size, 0f, transform.right * _movementSide, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
+			if (_statistics.RunFromTarget && _timeRun <= 0f && _detected)
 			{
-				this._timeRun = this._statistics.RunOfTime;
-				if (this._runTowards)
-					this._runTowards = false;
+				_timeRun = _statistics.RunOfTime;
+				if (_runTowards)
+					_runTowards = false;
 				else
-					this._movementSide *= -1;
+					_movementSide *= -1;
 			}
-			float xAxis = this.transform.position.x + this._collider.bounds.extents.x * right.x;
-			float yAxis = this.transform.position.y + this._collider.bounds.extents.y * -this.transform.up.y;
-			bool valid = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -this.transform.up, groundChecker, groundLayer);
-			if (this.SurfacePerception() && !this._statistics.TurnOffEdge && valid || blockPerception)
-				this._movementSide *= -1;
-			if (this._statistics.DetectionStop && this._detected && !this._isDashing)
+			float xAxis = transform.position.x + _collider.bounds.extents.x * (transform.right * _movementSide).x;
+			float yAxis = transform.position.y + _collider.bounds.extents.y * -transform.up.y;
+			bool valid = !Physics2D.Raycast(new Vector2(xAxis, yAxis), -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
+			if (SurfacePerception() && !_statistics.TurnOffEdge && valid || blockCast && blockCast.collider.CanContact(_collider))
+				_movementSide *= -1;
+			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
-				this._stopWorking = true;
-				this._sender.SetToggle(false);
-				this._sender.Send(PathConnection.Enemy);
+				_stopWorking = true;
+				_sender.SetToggle(false);
+				_sender.Send(PathConnection.Enemy);
 				return;
 			}
-			this.transform.localScale = new Vector3()
+			transform.localScale = new Vector3()
 			{
-				x = this._movementSide * Mathf.Abs(this.transform.localScale.x),
-				y = this.transform.localScale.y,
-				z = this.transform.localScale.z
+				x = Mathf.Abs(transform.localScale.x) * _movementSide,
+				y = transform.localScale.y,
+				z = transform.localScale.z
 			};
-			this._rigidybody.linearVelocityX = right.x * (this._detected ? this._statistics.DashSpeed : this._statistics.MovementSpeed);
+			_rigidybody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
@@ -134,18 +129,18 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (enemy != this)
 						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
-				this._rigidybody.linearVelocityX = 0f;
-			else if (data.StateForm == StateForm.Action && this._statistics.ReactToDamage)
+				_rigidybody.linearVelocityX = 0f;
+			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage)
 			{
 				Vector2 targetPosition = GuwbaCentralizer.Position;
-				if (this._statistics.UseOtherTarget)
-					targetPosition = this._statistics.OtherTarget;
-				this._movementSide = (short)(targetPosition.x < this.transform.position.x ? -1f : 1f);
-				if (this._statistics.DetectionStop)
+				if (_statistics.UseOtherTarget)
+					targetPosition = _statistics.OtherTarget;
+				_movementSide = (short)(targetPosition.x < transform.position.x ? -1f : 1f);
+				if (_statistics.DetectionStop)
 				{
-					this._stopWorking = true;
-					this._sender.SetToggle(this._statistics.JumpDash);
-					this._sender.Send(PathConnection.Enemy);
+					_stopWorking = true;
+					_sender.SetToggle(_statistics.JumpDash);
+					_sender.Send(PathConnection.Enemy);
 				}
 			}
 		}
