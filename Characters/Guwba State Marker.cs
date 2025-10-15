@@ -43,9 +43,9 @@ namespace GuwbaPrimeAdventure.Character
 		private short _stunResistance;
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
+		private float _timerOfInvencibility = 0f;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
-		private float _yVelocity = 0f;
 		private float _dashMovement = 0f;
 		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
@@ -190,8 +190,6 @@ namespace GuwbaPrimeAdventure.Character
 			this.EnableInputs();
 			if (this._dashActive)
 				this._dashMovement = this._guardDashMovement;
-			this._rigidbody.gravityScale = this._gravityScale;
-			this._rigidbody.linearVelocityY = this._yVelocity;
 		}
 		private void OnDisable()
 		{
@@ -202,13 +200,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._animator.SetFloat(this._walkSpeed, 0f);
 			this.DisableInputs();
 			if (this._dashActive)
-			{
-				this._guardDashMovement = this._dashMovement;
-				this._dashMovement = 0f;
-			}
-			this._yVelocity = this._rigidbody.linearVelocityY;
-			this._rigidbody.gravityScale = 0f;
-			this._rigidbody.linearVelocity = Vector2.zero;
+				(this._guardDashMovement, this._dashMovement) = (this._dashMovement, 0f);
 		}
 		private void EnableInputs()
 		{
@@ -237,14 +229,13 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!this.isActiveAndEnabled || this._animator.GetBool(this._stun))
 				return;
-			Vector2 movementValue = movement.ReadValue<Vector2>();
 			this._movementAction = 0f;
-			if (Mathf.Abs(movementValue.x) > 0.5f)
-				if (movementValue.x > 0f)
+			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 0.5f)
+				if (movement.ReadValue<Vector2>().x > 0f)
 					this._movementAction = 1f;
-				else if (movementValue.x < 0f)
+				else if (movement.ReadValue<Vector2>().x < 0f)
 					this._movementAction = -1f;
-			if (movementValue.y > 0.25f)
+			if (movement.ReadValue<Vector2>().y > 0.25f)
 			{
 				this._lastJumpTime = this._jumpBufferTime;
 				if (!this._isOnGround && movement.performed && !this.gameObject.scene.name.Contains(this._hubbyWorldScene))
@@ -253,14 +244,14 @@ namespace GuwbaPrimeAdventure.Character
 					else
 						this._bunnyHopBoost += 1;
 			}
-			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movementValue.y < 0.25f)
+			if (this._isJumping && this._rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
 			{
 				this._isJumping = false;
 				this._rigidbody.AddForceY(this._rigidbody.linearVelocityY * this._jumpCut * -this._rigidbody.mass, ForceMode2D.Impulse);
 				this._lastJumpTime = 0f;
 			}
 			bool valid = !this._dashActive && this._isOnGround && (!this._attackUsage || this._comboAttackBuffer);
-			if (this._movementAction != 0f && movementValue.y < -0.25f && valid)
+			if (this._movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && valid)
 			{
 				this.StartCoroutine(Dash());
 				IEnumerator Dash()
@@ -274,32 +265,29 @@ namespace GuwbaPrimeAdventure.Character
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
-					Vector2 direction = this.transform.right * this._dashMovement;
+					Vector2 position;
+					Vector2 origin;
+					Vector2 size;
+					Vector2 wallOrigin;
 					float dashLocation = this.transform.position.x;
-					bool isActive = true;
 					bool onWall = false;
-					while (isActive || onWall)
+					bool block = false;
+					bool distanceValidation = false;
+					while (onWall || !(distanceValidation || !this._dashActive || block || !this._isOnGround || this._isJumping))
 					{
-						Vector2 position = (Vector2)this.transform.position + this._collider.offset;
-						float xAxisOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement;
-						Vector2 origin = new(position.x + xAxisOrigin, position.y);
-						Vector2 size = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-						bool block = Physics2D.BoxCast(origin, size, 0f, direction, this._groundChecker, this._groundLayer);
+						position = (Vector2)this.transform.position + this._collider.offset;
+						origin = new Vector2(position.x + (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._dashMovement, position.y);
+						size = new Vector2(this._groundChecker, this._collider.size.y - this._groundChecker);
+						block = Physics2D.BoxCast(origin, size, 0f, this.transform.right * this._dashMovement, this._groundChecker, this._groundLayer);
+						wallOrigin = new Vector2(this.transform.position.x + this._normalOffset.x, this.transform.position.y + this._normalOffset.y + this._groundChecker);
+						onWall = Physics2D.BoxCast(wallOrigin, this._normalSize, 0f, this.transform.up, this._groundChecker, this._groundLayer);
+						distanceValidation = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
 						this._rigidbody.linearVelocityX = this._dashSpeed * this._dashMovement;
-						bool valid = Mathf.Abs(this.transform.position.x - dashLocation) >= this._dashDistance;
-						float yOrigin = this.transform.position.y + this._normalOffset.y + this._groundChecker;
-						Vector2 wallOrigin = new(this.transform.position.x + this._normalOffset.x, yOrigin);
-						Vector2 wallSize = this._normalSize;
-						Vector2 upDirection = this.transform.up;
-						onWall = Physics2D.BoxCast(wallOrigin, wallSize, 0f, upDirection, this._groundChecker, this._groundLayer);
-						if (!onWall && (valid || !this._dashActive || block || !this._isOnGround || this._isJumping))
-						{
-							this._animator.SetBool(this._dashSlide, isActive = this._dashActive = false);
-							this._animator.SetBool(this._attackSlide, false);
-						}
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => this.isActiveAndEnabled || this._animator.GetBool(this._stun));
 					}
+					this._animator.SetBool(this._dashSlide, this._dashActive = false);
+					this._animator.SetBool(this._attackSlide, false);
 				}
 			}
 		};
@@ -326,11 +314,21 @@ namespace GuwbaPrimeAdventure.Character
 					return;
 				}
 		};
+		private IEnumerator VisualEffect()
+		{
+			while (this._invencibility)
+			{
+				foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+					guwbaDamager.Alpha = guwbaDamager.Alpha >= 1f ? this._invencibilityValue : 1f;
+				yield return new WaitTime(this, this._timeStep);
+			}
+			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
+				guwbaDamager.Alpha = 1f;
+		}
 		public Predicate<ushort> Hurt => damage =>
 		{
 			if (this._invencibility || damage <= 0f)
 				return false;
-			this._invencibility = true;
 			this._vitality -= (short)damage;
 			for (ushort i = (ushort)this._guwbaVisualizer.Vitality.Length; i > (this._vitality >= 0f ? this._vitality : 0f); i--)
 			{
@@ -340,6 +338,9 @@ namespace GuwbaPrimeAdventure.Character
 				this._guwbaVisualizer.Vitality[i - 1].style.borderRightColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 				this._guwbaVisualizer.Vitality[i - 1].style.borderTopColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 			}
+			this._timerOfInvencibility = this._invencibilityTime;
+			this._invencibility = true;
+			this.StartCoroutine(this.VisualEffect());
 			if (this._vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
@@ -361,14 +362,12 @@ namespace GuwbaPrimeAdventure.Character
 				this._sender.Send(PathConnection.Enemy);
 				return true;
 			}
-			this.StartCoroutine(this.Invencibility());
 			return true;
 		};
 		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
 		{
 			this._stunResistance -= (short)stunStrength;
-			bool condition = this._stunResistance >= 0f;
-			for (ushort i = (ushort)this._guwbaVisualizer.StunResistance.Length; i > (condition ? this._stunResistance : 0f); i--)
+			for (ushort i = (ushort)this._guwbaVisualizer.StunResistance.Length; i > (this._stunResistance >= 0f ? this._stunResistance : 0f); i--)
 				this._guwbaVisualizer.StunResistance[i - 1].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 			if (this._stunResistance <= 0f)
 				this.StartCoroutine(StunTimer());
@@ -376,10 +375,9 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				this._animator.SetBool(this._stun, true);
 				this._animator.SetFloat(this._isOn, 100f);
-				Color stunResistanceColor = this._guwbaVisualizer.StunResistanceColor;
 				this._stunResistance = (short)this._guwbaVisualizer.StunResistance.Length;
 				for (ushort i = 0; i < this._stunResistance; i++)
-					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(stunResistanceColor);
+					this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
 				this._dashActive = false;
 				this.DisableInputs();
 				yield return new WaitTime(this, stunTime);
@@ -397,37 +395,32 @@ namespace GuwbaPrimeAdventure.Character
 				this.StartCoroutine(RecoverVitality());
 				IEnumerator RecoverVitality()
 				{
-					Color backgroundColor = this._guwbaVisualizer.BackgroundColor;
-					Color borderColor = this._guwbaVisualizer.BorderColor;
-					Color stunResistanceColor = this._guwbaVisualizer.StunResistanceColor;
-					Color missingColor = this._guwbaVisualizer.MissingColor;
-					short damageDifference = (short)(guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health));
-					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : damageDifference); amount++)
+					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
 					{
 						bool valid = this._vitality < this._guwbaVisualizer.Vitality.Length;
 						if (this._recoverVitality >= this._guwbaVisualizer.RecoverVitality.Length && valid)
 						{
 							this._recoverVitality = 0;
 							for (ushort i = 0; i < this._guwbaVisualizer.RecoverVitality.Length; i++)
-								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(missingColor);
+								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.MissingColor);
 							this._vitality += 1;
 							for (ushort i = 0; i < this._vitality; i++)
 							{
-								this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(backgroundColor);
-								this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(borderColor);
-								this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BackgroundColor);
+								this._guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(this._guwbaVisualizer.BorderColor);
+								this._guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(this._guwbaVisualizer.BorderColor);
 							}
 							this._stunResistance += 1;
 							for (ushort i = 0; i < this._stunResistance; i++)
-								this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(stunResistanceColor);
+								this._guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.StunResistanceColor);
 						}
 						else if (this._recoverVitality < this._guwbaVisualizer.RecoverVitality.Length)
 						{
 							this._recoverVitality += 1;
 							for (ushort i = 0; i < this._recoverVitality; i++)
-								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(borderColor);
+								this._guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BorderColor);
 						}
 						yield return new WaitTime(this, this._recoverRate);
 					}
@@ -436,7 +429,12 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private void Update()
 		{
-			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0 && !this._downStairs)
+			if (this._invencibility)
+			{
+				this._timerOfInvencibility -= Time.deltaTime;
+				this._invencibility = this._timerOfInvencibility <= 0f;
+			}
+			if (!this._dashActive && !this._isOnGround && this._rigidbody.linearVelocityY != 0f && !this._downStairs && (this._lastGroundedTime > 0f || this._lastJumpTime > 0f))
 			{
 				this._lastGroundedTime -= Time.deltaTime;
 				this._lastJumpTime -= Time.deltaTime;
@@ -449,8 +447,7 @@ namespace GuwbaPrimeAdventure.Character
 			this._downStairs = false;
 			if (!this._isOnGround && this._canDownStairs && this._movementAction != 0f && this._lastJumpTime <= 0f && !this._dashActive)
 			{
-				float xOrigin = position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction;
-				Vector2 downRayOrigin = new(xOrigin, position.y - this._collider.bounds.extents.y);
+				Vector2 downRayOrigin = new(position.x - (this._collider.bounds.extents.x - this._groundChecker) * this._movementAction, position.y - this._collider.bounds.extents.y);
 				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -this.transform.up, 1f + this._groundChecker, this._groundLayer);
 				if (this._downStairs = downRay)
 					this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - downRay.distance);
@@ -543,29 +540,28 @@ namespace GuwbaPrimeAdventure.Character
 			float BunnyHop(float callBackValue) => this._bunnyHopBoost > 0f ? this._bunnyHopBoost * callBackValue : 1f;
 			if (!this._dashActive)
 			{
+				float speed = this._longJumping ? this._dashSpeed : this._movementSpeed + BunnyHop(this._velocityBoost);
 				if (this._isOnGround && this._movementAction != 0f)
 				{
-					float stairsXOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-					Vector2 bottomOrigin = new(position.x + stairsXOrigin, position.y - 1f * this._bottomCheckerOffset);
+					float stairsOriginX = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
+					Vector2 bottomOrigin = new(position.x + stairsOriginX, position.y - 1f * this._bottomCheckerOffset);
 					Vector2 bottomSize = new(this._groundChecker, 1f - this._groundChecker);
 					RaycastHit2D bottomCast = Physics2D.BoxCast(bottomOrigin, bottomSize, 0f, direction, this._groundChecker, this._groundLayer);
-					Vector2 topOrigin = new(position.x + stairsXOrigin, position.y + 1f * .5f);
-					Vector2 topSize = new(this._groundChecker, 1f * this._topWallChecker - this._groundChecker);
-					bool topCast = !Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, this._groundLayer);
-					float walkSpeed = Mathf.Abs(this._rigidbody.linearVelocityX) / this._movementSpeed;
-					this._animator.SetFloat(this._walkSpeed, topCast ? walkSpeed : 1f);
-					if (bottomCast && topCast)
+					if (bottomCast)
 					{
-						float topCorner = position.y + this._collider.bounds.extents.y;
-						float bottomCorner = position.y - this._collider.bounds.extents.y;
-						Vector2 lineStart = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, topCorner);
-						Vector2 lineEnd = new(position.x + stairsXOrigin + this._groundChecker / 2f * this._movementAction, bottomCorner);
-						RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
-						if (lineWall.collider == bottomCast.collider)
+						Vector2 topOrigin = new(position.x + stairsOriginX, position.y + 1f * .5f);
+						Vector2 topSize = new(this._groundChecker, 1f * this._topWallChecker - this._groundChecker);
+						if (!Physics2D.BoxCast(topOrigin, topSize, 0f, direction, this._groundChecker, this._groundLayer))
 						{
-							float yDistance = position.y + (lineWall.point.y - bottomCorner);
-							this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
-							this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+							Vector2 lineStart = new(position.x + stairsOriginX + this._groundChecker / 2f * this._movementAction, position.y + this._collider.bounds.extents.y);
+							Vector2 lineEnd = new(position.x + stairsOriginX + this._groundChecker / 2f * this._movementAction, position.y - this._collider.bounds.extents.y);
+							RaycastHit2D lineWall = Physics2D.Linecast(lineStart, lineEnd, this._groundLayer);
+							if (lineWall.collider == bottomCast.collider)
+							{
+								float yDistance = position.y + (lineWall.point.y - (position.y - this._collider.bounds.extents.y));
+								this.transform.position = new Vector2(position.x + this._groundChecker * this._movementAction, yDistance);
+								this._rigidbody.linearVelocityX = this._movementSpeed * this._movementAction;
+							}
 						}
 					}
 				}
@@ -576,18 +572,11 @@ namespace GuwbaPrimeAdventure.Character
 						y = this.transform.localScale.y,
 						z = this.transform.localScale.z
 					};
-				float xOrigin = (this._collider.bounds.extents.x + this._groundChecker / 2f) * this._movementAction;
-				Vector2 wallOrigin = new(position.x + xOrigin, position.y);
-				Vector2 wallSize = new(this._groundChecker, this._collider.size.y - this._groundChecker);
-				bool wallBlock = Physics2D.BoxCast(wallOrigin, wallSize, 0f, direction, this._groundChecker, this._groundLayer);
-				float speed = this._longJumping ? this._dashSpeed : this._movementSpeed + BunnyHop(this._velocityBoost);
+				bool wallBlock = this._movementAction != 0f && Mathf.Abs(this._rigidbody.linearVelocityX) <= 1e-3f;
 				this._animator.SetFloat(this._walkSpeed, wallBlock ? 1f : Mathf.Abs(this._rigidbody.linearVelocityX) / speed);
-				float targetSpeed = speed * this._movementAction;
-				float speedDiferrence = targetSpeed - this._rigidbody.linearVelocityX;
-				float accelerationRate = Mathf.Abs(targetSpeed) > 0f ? this._acceleration : this._decceleration;
-				accelerationRate += BunnyHop(this._potencyBoost);
-				float movement = Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence);
-				this._rigidbody.AddForceX(movement * this._rigidbody.mass);
+				float speedDiferrence = speed * this._movementAction - this._rigidbody.linearVelocityX;
+				float accelerationRate = (Mathf.Abs(speed * this._movementAction) > 0f ? this._acceleration : this._decceleration) + BunnyHop(this._potencyBoost);
+				this._rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(speedDiferrence) * accelerationRate, this._velocityPower) * Mathf.Sign(speedDiferrence) * this._rigidbody.mass);
 				if (this._attackUsage)
 					this._rigidbody.linearVelocityX *= this._attackVelocityCut;
 			}
@@ -607,36 +596,17 @@ namespace GuwbaPrimeAdventure.Character
 				if (this._bunnyHopBoost > 0f)
 				{
 					this._isHoping = true;
-					Color bunnyHopColor = this._guwbaVisualizer.BunnyHopColor;
 					for (ushort i = 0; i < this._bunnyHopBoost; i++)
-						this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(bunnyHopColor);
+						this._guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(this._guwbaVisualizer.BunnyHopColor);
 				}
 				this._rigidbody.AddForceY((this._jumpStrenght + BunnyHop(this._jumpBoost)) * this._rigidbody.mass, ForceMode2D.Impulse);
 			}
 			this._isOnGround = false;
 		}
-		private IEnumerator Invencibility()
-		{
-			this.StartCoroutine(VisualEffect());
-			IEnumerator VisualEffect()
-			{
-				while (this._invencibility)
-				{
-					foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
-						guwbaDamager.Alpha = guwbaDamager.Alpha >= 1f ? this._invencibilityValue : 1f;
-					yield return new WaitTime(this, this._timeStep);
-				}
-			}
-			yield return new WaitTime(this, this._invencibilityTime);
-			this._invencibility = false;
-			foreach (GuwbaDamager guwbaDamager in this._guwbaDamagers)
-				guwbaDamager.Alpha = 1f;
-		}
 		private void GroundCheck()
 		{
 			Vector2 position = (Vector2)this.transform.position + this._collider.offset;
-			float yOriginSize = this._collider.bounds.extents.y + this._groundChecker / 2f;
-			Vector2 groundOrigin = new(position.x, position.y + yOriginSize * -this.transform.up.y);
+			Vector2 groundOrigin = new(position.x, position.y + (this._collider.bounds.extents.y + this._groundChecker / 2f) * -this.transform.up.y);
 			Vector2 groundSize = new(this._collider.size.x - this._groundChecker, this._groundChecker);
 			this._isOnGround = Physics2D.BoxCast(groundOrigin, groundSize, 0f, -this.transform.up, this._groundChecker, this._groundLayer);
 		}
@@ -682,8 +652,9 @@ namespace GuwbaPrimeAdventure.Character
 			}
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
+				this._timerOfInvencibility = this._invencibilityTime;
 				this._invencibility = true;
-				this.StartCoroutine(this.Invencibility());
+				this.StartCoroutine(this.VisualEffect());
 				this.OnEnable();
 			}
 		}
