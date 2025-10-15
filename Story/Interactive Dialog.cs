@@ -111,12 +111,12 @@ namespace GuwbaPrimeAdventure.Story
 		}
 		public void Interaction()
 		{
-			_sender.SetToggle(false);
-			_sender.Send(PathConnection.Hud);
-			StateController.SetState(false);
 			SettingsController.Load(out Settings settings);
 			if (settings.DialogToggle && _dialogObject && _dialogHudObject)
 			{
+				_sender.SetToggle(false);
+				_sender.Send(PathConnection.Hud);
+				StateController.SetState(false);
 				_dialogHud = Instantiate(_dialogHudObject, transform);
 				_dialogTime = settings.DialogSpeed;
 				_dialogHud.AdvanceSpeach.clicked += AdvanceSpeach;
