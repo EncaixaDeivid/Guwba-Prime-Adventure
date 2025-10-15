@@ -27,13 +27,13 @@ namespace GuwbaPrimeAdventure.Item
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.coins < 100f)
 				saveFile.coins += 1;
-			if (saveFile.lifes < 99f && saveFile.coins >= 100f)
+			if (saveFile.lifes < 100f && saveFile.coins >= 100f)
 			{
 				saveFile.coins = 0;
 				saveFile.lifes += 1;
 			}
-			if (saveFile.lifes >= 99f && saveFile.coins >= 99f)
-				saveFile.coins = 99;
+			if (saveFile.lifes >= 100f && saveFile.coins >= 99f)
+				saveFile.coins = 100;
 			if (this._saveOnSpecifics && !saveFile.generalObjects.Contains(this.gameObject.name))
 				saveFile.generalObjects.Add(this.gameObject.name);
 			SaveController.WriteSave(saveFile);
