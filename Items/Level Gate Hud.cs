@@ -14,10 +14,10 @@ namespace GuwbaPrimeAdventure.Item
 		internal Button Scenes { get; private set; }
 		private void Awake()
 		{
-			VisualElement root = this.GetComponent<UIDocument>().rootVisualElement;
-			this.Level = root.Q<Button>(this._levelButton);
-			this.Boss = root.Q<Button>(this._bossButton);
-			this.Scenes = root.Q<Button>(this._scenesButton);
+			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+			Level = root.Q<Button>(_levelButton);
+			Boss = root.Q<Button>(_bossButton);
+			Scenes = root.Q<Button>(_scenesButton);
 		}
 	};
 };
