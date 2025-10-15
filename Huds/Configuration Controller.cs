@@ -58,18 +58,19 @@ namespace GuwbaPrimeAdventure.Hud
 			_configurationHud.Close.clicked -= CloseConfigurations;
 			_configurationHud.OutLevel.clicked -= OutLevel;
 			_configurationHud.SaveGame.clicked -= SaveGame;
-			_configurationHud.ScreenResolution.UnregisterValueChangedCallback<string>(ScreenResolution);
-			_configurationHud.FullScreenModes.UnregisterValueChangedCallback<string>(FullScreenModes);
-			_configurationHud.DialogToggle.UnregisterValueChangedCallback<bool>(DialogToggle);
-			_configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback<bool>(GeneralVolumeToggle);
-			_configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback<bool>(EffectsVolumeToggle);
-			_configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback<bool>(MusicVolumeToggle);
-			_configurationHud.DialogSpeed.UnregisterValueChangedCallback<float>(DialogSpeed);
-			_configurationHud.ScreenBrightness.UnregisterValueChangedCallback<float>(ScreenBrightness);
-			_configurationHud.FrameRate.UnregisterValueChangedCallback<int>(FrameRate);
-			_configurationHud.GeneralVolume.UnregisterValueChangedCallback<int>(GeneralVolume);
-			_configurationHud.EffectsVolume.UnregisterValueChangedCallback<int>(EffectsVolume);
-			_configurationHud.MusicVolume.UnregisterValueChangedCallback<int>(MusicVolume);
+			_configurationHud.ScreenResolution.UnregisterValueChangedCallback(ScreenResolution);
+			_configurationHud.FullScreenModes.UnregisterValueChangedCallback(FullScreenModes);
+			_configurationHud.DialogToggle.UnregisterValueChangedCallback(DialogToggle);
+			_configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback(GeneralVolumeToggle);
+			_configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback(EffectsVolumeToggle);
+			_configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback(MusicVolumeToggle);
+			_configurationHud.InfinityFPS.UnregisterValueChangedCallback(InfinityFPS);
+			_configurationHud.DialogSpeed.UnregisterValueChangedCallback(DialogSpeed);
+			_configurationHud.ScreenBrightness.UnregisterValueChangedCallback(ScreenBrightness);
+			_configurationHud.FrameRate.UnregisterValueChangedCallback(FrameRate);
+			_configurationHud.GeneralVolume.UnregisterValueChangedCallback(GeneralVolume);
+			_configurationHud.EffectsVolume.UnregisterValueChangedCallback(EffectsVolume);
+			_configurationHud.MusicVolume.UnregisterValueChangedCallback(MusicVolume);
 			_configurationHud.Yes.clicked -= YesBackLevel;
 			_configurationHud.No.clicked -= NoBackLevel;
 			Destroy(_configurationHud.gameObject);
@@ -119,6 +120,13 @@ namespace GuwbaPrimeAdventure.Hud
 			settings.MusicVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
 		};
+		private EventCallback<ChangeEvent<bool>> InfinityFPS => toggle =>
+		{
+			SettingsController.Load(out Settings settings);
+			settings.InfinityFPS = toggle.newValue;
+			Application.targetFrameRate = settings.InfinityFPS ? -1 : settings.FrameRate;
+			SettingsController.WriteSave(settings);
+		};
 		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
 		{
 			SettingsController.Load(out Settings settings);
@@ -134,6 +142,8 @@ namespace GuwbaPrimeAdventure.Hud
 		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
 		{
 			SettingsController.Load(out Settings settings);
+			if (settings.InfinityFPS)
+				return;
 			Application.targetFrameRate = settings.FrameRate = (ushort)frameRate.newValue;
 			_configurationHud.FrameRateText.text = frameRate.newValue.ToString();
 			SettingsController.WriteSave(settings);
@@ -195,18 +205,19 @@ namespace GuwbaPrimeAdventure.Hud
 				_configurationHud.Close.clicked += CloseConfigurations;
 				_configurationHud.OutLevel.clicked += OutLevel;
 				_configurationHud.SaveGame.clicked += SaveGame;
-				_configurationHud.ScreenResolution.RegisterValueChangedCallback<string>(ScreenResolution);
-				_configurationHud.FullScreenModes.RegisterValueChangedCallback<string>(FullScreenModes);
-				_configurationHud.DialogToggle.RegisterValueChangedCallback<bool>(DialogToggle);
-				_configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback<bool>(GeneralVolumeToggle);
-				_configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback<bool>(EffectsVolumeToggle);
-				_configurationHud.MusicVolumeToggle.RegisterValueChangedCallback<bool>(MusicVolumeToggle);
-				_configurationHud.ScreenBrightness.RegisterValueChangedCallback<float>(ScreenBrightness);
-				_configurationHud.DialogSpeed.RegisterValueChangedCallback<float>(DialogSpeed);
-				_configurationHud.FrameRate.RegisterValueChangedCallback<int>(FrameRate);
-				_configurationHud.GeneralVolume.RegisterValueChangedCallback<int>(GeneralVolume);
-				_configurationHud.EffectsVolume.RegisterValueChangedCallback<int>(EffectsVolume);
-				_configurationHud.MusicVolume.RegisterValueChangedCallback<int>(MusicVolume);
+				_configurationHud.ScreenResolution.RegisterValueChangedCallback(ScreenResolution);
+				_configurationHud.FullScreenModes.RegisterValueChangedCallback(FullScreenModes);
+				_configurationHud.DialogToggle.RegisterValueChangedCallback(DialogToggle);
+				_configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback(GeneralVolumeToggle);
+				_configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback(EffectsVolumeToggle);
+				_configurationHud.MusicVolumeToggle.RegisterValueChangedCallback(MusicVolumeToggle);
+				_configurationHud.InfinityFPS.RegisterValueChangedCallback(InfinityFPS);
+				_configurationHud.ScreenBrightness.RegisterValueChangedCallback(ScreenBrightness);
+				_configurationHud.DialogSpeed.RegisterValueChangedCallback(DialogSpeed);
+				_configurationHud.FrameRate.RegisterValueChangedCallback(FrameRate);
+				_configurationHud.GeneralVolume.RegisterValueChangedCallback(GeneralVolume);
+				_configurationHud.EffectsVolume.RegisterValueChangedCallback(EffectsVolume);
+				_configurationHud.MusicVolume.RegisterValueChangedCallback(MusicVolume);
 				_configurationHud.Yes.clicked += YesBackLevel;
 				_configurationHud.No.clicked += NoBackLevel;
 			}
