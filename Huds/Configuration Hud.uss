@@ -239,14 +239,14 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
     color: rgb(0, 0, 0);
     align-self: center;
 }
-#DropsDown Toggle {
-    width: 5%;
+Toggle {
+    width: 40px;
     height: 40px;
     align-self: center;
 }
-#DropsDown Toggle VisualElement {
-    width: 40px;
-    height: 40px;
+Toggle VisualElement {
+    width: 100%;
+    height: 100%;
     align-self: center;
     justify-content: center;
     align-content: center;
@@ -254,13 +254,13 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
     border-color: rgba(255, 255, 0, 0.5);
     background-color: rgba(255, 255, 0, 0.5);
 }
-#DropsDown Toggle #unity-checkmark {
+Toggle #unity-checkmark {
     width: 40px;
     height: 100%;
     align-self: center;
     border-radius: 10px;
 }
-#DropsDown Toggle VisualElement:checked {
+Toggle VisualElement:checked {
     background-color: rgb(255, 160, 0);
 }
 #Buttons {
@@ -283,7 +283,7 @@ DropdownField:hover PopupTextElement, DropdownField:active PopupTextElement {
 }
 #Confirmation {
     display: none;
-    width: 50%;
+    width: 60%;
     height: 50%;
     align-items: center;
     justify-content: space-around;
