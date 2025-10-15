@@ -10,18 +10,18 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If this point will destroy itself after use.")] private bool _destroyAfter;
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
-		internal void GetTouch(UnityAction getTouch) => this._getTouch = getTouch;
+		internal void GetTouch(UnityAction getTouch) => _getTouch = getTouch;
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (this._hasTarget)
+			if (_hasTarget)
 			{
 				if (GuwbaCentralizer.EqualObject(other.gameObject))
-					this._getTouch.Invoke();
+					_getTouch.Invoke();
 			}
 			else if (other.TryGetComponent<SummonerEnemy>(out _))
-				this._getTouch.Invoke();
-			if (this._destroyAfter)
-				Destroy(this.gameObject);
+				_getTouch.Invoke();
+			if (_destroyAfter)
+				Destroy(gameObject);
 		}
 	};
 };
