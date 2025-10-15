@@ -7,8 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Defender Enemy")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
-		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy")]
-		private bool _invencibleStop;
+		[SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy")] private bool _invencibleStop;
 		[SerializeField, Tooltip("If this enemy will become invencible when hurted.")] private bool _invencibleHurted;
 		[SerializeField, Tooltip("If this enemy will use time to become invencible/destructible.")] private bool _useAlternatedTime;
 		[SerializeField, Tooltip("The amount of time the enemy have to become destructible.")] private float _timeToDestructible;
