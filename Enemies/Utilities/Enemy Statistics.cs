@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[CreateAssetMenu(fileName = "Enemy Control", menuName = "Enemy Statistics/Control", order = 1)]
+	[CreateAssetMenu(fileName = "Provider Enemy", menuName = "Enemy Statistics/Provider", order = 1)]
 	internal sealed class EnemyStatistics : ScriptableObject
 	{
 		[Header("Providence Statistics")]
@@ -19,19 +19,19 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("The index to a event to a enemy make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		internal EnemyPhysics Physics => this._physics;
-		internal ushort Vitality => this._vitality;
-		internal ushort HitResistance => this._hitResistance;
-		internal ushort Damage => this._damage;
-		internal bool NoDamage => this._noDamage;
-		internal bool NoHit => this._noHit;
-		internal bool FadeOverTime => this._fadeOverTime;
-		internal float TimeToFadeAway => this._timeToFadeAway;
-		internal float StunTime => this._stunTime;
-		internal float StunnedTime => this._stunnedTime;
-		internal bool ReactToDamage => this._reactToDamage;
-		internal bool HasIndex => this._hasIndex;
-		internal ushort IndexEvent => this._indexEvent;
-		internal bool SaveOnSpecifics => this._saveOnSpecifics;
+		internal EnemyPhysics Physics => _physics;
+		internal ushort Vitality => _vitality;
+		internal ushort HitResistance => _hitResistance;
+		internal ushort Damage => _damage;
+		internal bool NoDamage => _noDamage;
+		internal bool NoHit => _noHit;
+		internal bool FadeOverTime => _fadeOverTime;
+		internal float TimeToFadeAway => _timeToFadeAway;
+		internal float StunTime => _stunTime;
+		internal float StunnedTime => _stunnedTime;
+		internal bool ReactToDamage => _reactToDamage;
+		internal bool HasIndex => _hasIndex;
+		internal ushort IndexEvent => _indexEvent;
+		internal bool SaveOnSpecifics => _saveOnSpecifics;
 	};
 };
