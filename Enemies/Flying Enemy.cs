@@ -19,165 +19,146 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			this._trail = this.GetComponent<PolygonCollider2D>();
-			this._pointOrigin = this.transform.position;
+			_trail = GetComponent<PolygonCollider2D>();
+			_pointOrigin = transform.position;
 		}
 		private void Chase()
 		{
-			float maxDistanceDelta;
-			if (this._returnDash)
+			if (_returnDash)
 			{
-				maxDistanceDelta = Time.fixedDeltaTime * this._statistics.ReturnSpeed;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, maxDistanceDelta);
-				this._returnDash = Vector2.Distance(this.transform.position, this._targetPoint) <= this._statistics.TargetDistance;
+				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed);
+				_returnDash = Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance;
 				return;
 			}
-			else if (!this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= this._statistics.TargetDistance)
-				if (this._statistics.DetectionStop)
+			else if (!_isDashing && Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance)
+				if (_statistics.DetectionStop)
 				{
-					this._stopWorking = true;
-					this._stoppedTime = this._statistics.StopTime;
+					_stopWorking = true;
+					_stoppedTime = _statistics.StopTime;
 					return;
 				}
 				else
-					this._isDashing = true;
-			maxDistanceDelta = Time.fixedDeltaTime * (this._isDashing ? this._statistics.DashSpeed : this._statistics.MovementSpeed);
-			this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
-			if (this._isDashing && Vector2.Distance(this.transform.position, this._targetPoint) <= 1e-3f)
-				if (this._statistics.DetectionStop)
+					_isDashing = true;
+			transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.fixedDeltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed));
+			if (_isDashing && Vector2.Distance(transform.position, _targetPoint) <= 1e-3f)
+				if (_statistics.DetectionStop)
 				{
-					this._stopWorking = this._afterDash = true;
-					this._stoppedTime = this._statistics.AfterTime;
+					_stopWorking = _afterDash = true;
+					_stoppedTime = _statistics.AfterTime;
 				}
 				else
-					this._isDashing = !(this._returnDash = true);
+					_isDashing = !(_returnDash = true);
 		}
 		private void Trail()
 		{
-			float maxDistanceDelta;
-			if ((Vector2)this.transform.position != this._pointOrigin)
+			if ((Vector2)transform.position != _pointOrigin)
 			{
-				bool valid = this._pointOrigin.x < this.transform.position.x;
-				this.transform.localScale = new Vector3()
+				transform.localScale = new Vector3()
 				{
-					x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
-					y = this.transform.localScale.y,
-					z = this.transform.localScale.z
+					x = Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < transform.position.x ? -1f : 1f),
+					y = transform.localScale.y,
+					z = transform.localScale.z
 				};
-				maxDistanceDelta = this._statistics.ReturnSpeed * Time.fixedDeltaTime;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, this._pointOrigin, maxDistanceDelta);
+				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed);
 			}
-			else if (this._trail.points.Length > 0f)
+			else if (_trail.points.Length > 0f)
 			{
-				Vector2 target = this._trail.points[this._pointIndex];
-				if (this._repeatWay)
+				if (_repeatWay)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
-						this._pointIndex = (ushort)(this._pointIndex < this._trail.points.Length - 1f ? this._pointIndex + 1f : 0f);
+					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+						_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
 				}
-				else if (this._normal)
+				else if (_normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
-						this._pointIndex += 1;
-					this._normal = this._pointIndex != this._trail.points.Length - 1f;
+					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+						_pointIndex += 1;
+					_normal = _pointIndex != _trail.points.Length - 1f;
 				}
-				else if (!this._normal)
+				else if (!_normal)
 				{
-					if ((ushort)Vector2.Distance(this.transform.localPosition, target) <= 1e-3f)
-						this._pointIndex -= 1;
-					this._normal = this._pointIndex == 0f;
+					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+						_pointIndex -= 1;
+					_normal = _pointIndex == 0f;
 				}
-				maxDistanceDelta = Time.fixedDeltaTime * this._statistics.MovementSpeed;
-				bool valid = target.x < this.transform.localPosition.x;
-				this.transform.localScale = new Vector3()
+				transform.localScale = new Vector3()
 				{
-					x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
-					y = this.transform.localScale.y,
-					z = this.transform.localScale.z
+					x = Mathf.Abs(transform.localScale.x) * (_trail.points[_pointIndex].x < transform.localPosition.x ? -1f : 1f),
+					y = transform.localScale.y,
+					z = transform.localScale.z
 				};
-				this.transform.localPosition = Vector2.MoveTowards(this.transform.localPosition, target, maxDistanceDelta);
-				this._pointOrigin = this.transform.position;
+				transform.localPosition = Vector2.MoveTowards(transform.localPosition, _trail.points[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed);
+				_pointOrigin = transform.position;
 			}
 		}
 		private void Update()
 		{
-			if (this._statistics.EndlessPursue)
+			if (_statistics.EndlessPursue)
 			{
-				this._fadeTime += Time.deltaTime;
-				if (this._fadeTime >= this._statistics.FadeTime)
-					Destroy(this.gameObject);
+				_fadeTime += Time.deltaTime;
+				if (_fadeTime >= _statistics.FadeTime)
+					Destroy(gameObject);
 			}
-			if (this.IsStunned)
+			if (IsStunned)
 				return;
-			if (this._statistics.DetectionStop && this._stopWorking)
+			if (_statistics.DetectionStop && _stopWorking)
 			{
-				this._stoppedTime -= Time.deltaTime;
-				if (this._stoppedTime <= 0f)
+				_stoppedTime -= Time.deltaTime;
+				if (_stoppedTime <= 0f)
 				{
-					this._stopWorking = false;
-					(this._isDashing, this._afterDash) = (!this._afterDash, false);
+					_stopWorking = false;
+					(_isDashing, _afterDash) = (!_afterDash, false);
 				}
 			}
 		}
 		private void FixedUpdate()
 		{
-			if (this._stopWorking || this.IsStunned)
+			if (_stopWorking || IsStunned)
 				return;
-			LayerMask groundLayer = this._statistics.Physics.GroundLayer;
-			LayerMask targetLayer = this._statistics.Physics.TargetLayer;
-			float maxDistanceDelta = Time.fixedDeltaTime * this._statistics.MovementSpeed;
-			if (this._statistics.Target)
+			if (_statistics.Target)
 			{
-				this._targetPoint = this._statistics.Target.transform.position;
-				this.transform.position = Vector2.MoveTowards(this.transform.position, this._targetPoint, maxDistanceDelta);
+				_targetPoint = _statistics.Target.transform.position;
+				transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.fixedDeltaTime * _statistics.MovementSpeed);
 				return;
 			}
-			if (this._statistics.EndlessPursue)
+			if (_statistics.EndlessPursue)
 			{
-				this.transform.position = Vector2.MoveTowards(this.transform.position, GuwbaCentralizer.Position, maxDistanceDelta);
+				transform.position = Vector2.MoveTowards(transform.position, GuwbaCentralizer.Position, Time.fixedDeltaTime * _statistics.MovementSpeed);
 				return;
 			}
-			if (!this._isDashing)
-				this._detected = false;
-			if (this._statistics.LookPerception && !this._isDashing)
-				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(this._pointOrigin, this._statistics.LookDistance, targetLayer))
+			if (!_isDashing)
+				_detected = false;
+			if (_statistics.LookPerception && !_isDashing)
+				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 					if (GuwbaCentralizer.EqualObject(verifyCollider.gameObject))
 					{
-						this._targetPoint = verifyCollider.transform.position;
-						this._detected = !Physics2D.Linecast(this.transform.position, this._targetPoint, groundLayer);
-						Vector2 overlapPoint = (Vector2)this.transform.position + this._collider.offset;
-						Vector2 direction = (this._targetPoint - overlapPoint).normalized;
-						float angle = this.transform.eulerAngles.z;
-						float distance = Vector2.Distance((Vector2)this.transform.position + this._collider.offset, this._targetPoint);
-						for (ushort i = 0; i < Mathf.FloorToInt(distance / this._statistics.DetectionFactor); i++)
+						_targetPoint = verifyCollider.transform.position;
+						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
+						Vector2 overlapPoint = (Vector2)transform.position + _collider.offset;
+						Vector2 direction = (_targetPoint - overlapPoint).normalized;
+						float distance = Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint);
+						for (ushort i = 0; i < Mathf.FloorToInt(distance / _statistics.DetectionFactor); i++)
 						{
-							if (this._collider is BoxCollider2D)
-								this._detected = !Physics2D.OverlapBox(overlapPoint, this._collider.bounds.size, angle, groundLayer);
-							else if (this._collider is CircleCollider2D)
-							{
-								float radius = (this._collider as CircleCollider2D).radius;
-								this._detected = !Physics2D.OverlapCircle(overlapPoint, radius, groundLayer);
-							}
-							else if (this._collider is CapsuleCollider2D)
-								this._detected = !Physics2D.OverlapBox(overlapPoint, this._collider.bounds.size, angle, groundLayer);
-							overlapPoint += this._statistics.DetectionFactor * Vector2.one * direction;
+							if (_collider is BoxCollider2D)
+								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, _statistics.Physics.GroundLayer);
+							else if (_collider is CircleCollider2D)
+								_detected = !Physics2D.OverlapCircle(overlapPoint, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
+							else if (_collider is CapsuleCollider2D)
+								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, _statistics.Physics.GroundLayer);
+							overlapPoint += _statistics.DetectionFactor * Vector2.one * direction;
 						}
-						if (this._detected)
-						{
-							bool valid = verifyCollider.transform.position.x < this.transform.position.x;
-							this.transform.localScale = new Vector3()
+						if (_detected)
+							transform.localScale = new Vector3()
 							{
-								x = Mathf.Abs(this.transform.localScale.x) * (valid ? -1f : 1f),
-								y = this.transform.localScale.y,
-								z = this.transform.localScale.z
+								x = Mathf.Abs(transform.localScale.x) * (verifyCollider.transform.position.x < transform.position.x ? -1f : 1f),
+								y = transform.localScale.y,
+								z = transform.localScale.z
 							};
-						}
 						break;
 					}
-			if (this._detected)
-				this.Chase();
+			if (_detected)
+				Chase();
 			else
-				this.Trail();
+				Trail();
 		}
 	};
 };
