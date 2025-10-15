@@ -9,9 +9,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		public short Health => 0;
 		public bool Hurt(ushort damage)
 		{
-			if (damage >= this._biggerDamage && this.Usable)
-				this.Activation();
-			return damage >= this._biggerDamage && this.Usable;
+			if (damage >= _biggerDamage && Usable)
+				Activation();
+			return damage >= _biggerDamage && Usable;
 		}
 		public void Stun(ushort stunStength, float stunTime) { }
 	};
