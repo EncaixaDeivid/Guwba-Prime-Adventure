@@ -13,7 +13,7 @@ namespace GuwbaPrimeAdventure.Story
 		{
 			if (_instance)
 			{
-				Destroy(this.gameObject, 0.001f);
+				Destroy(this.gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
