@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		private readonly List<GameObject> _itemsGenerated = new();
 		private float _timeGeneration = 0f;
 		private bool _continueGeneration = true;
-		private bool _stopGenerate = false;
 		[Header("Generation Statistics")]
 		[SerializeField, Tooltip("The item to be generated.")] private GameObject _generatedItem;
 		[SerializeField, Tooltip("The amount of items that have to be generated.")] private ushort _quantityToGenerate;
@@ -17,23 +16,21 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the items generated are to be keeped in existence.")] private bool _existentItems;
 		private void Update()
 		{
-			if (this._stopGenerate)
-				return;
-			if (this._continueGeneration)
-				if (this._timeGeneration > 0f)
-					this._timeGeneration -= Time.deltaTime;
-				else if (this._timeGeneration <= 0f)
+			if (_continueGeneration)
+				if (_timeGeneration > 0f)
+					_timeGeneration -= Time.deltaTime;
+				else if (_timeGeneration <= 0f)
 				{
-					this._timeGeneration = this._generationTime;
-					this._itemsGenerated.Add(Instantiate(this._generatedItem, this.transform.position, this.transform.rotation));
+					_timeGeneration = _generationTime;
+					_itemsGenerated.Add(Instantiate(_generatedItem, transform.position, transform.rotation));
 				}
-			if (this._existentItems && !this._especifiedGeneration)
+			if (_existentItems && !_especifiedGeneration)
 			{
-				this._itemsGenerated.RemoveAll(item => !item);
-				this._continueGeneration = this._quantityToGenerate != this._itemsGenerated.Count;
+				_itemsGenerated.RemoveAll(item => !item);
+				_continueGeneration = _quantityToGenerate != _itemsGenerated.Count;
 			}
-			else if (this._especifiedGeneration && !this._existentItems && this._quantityToGenerate == this._itemsGenerated.Count)
-				this._stopGenerate = true;
+			else if (_especifiedGeneration && !_existentItems && _quantityToGenerate == _itemsGenerated.Count)
+				enabled = false;
 		}
 	};
 };
