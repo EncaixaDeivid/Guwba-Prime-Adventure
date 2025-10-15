@@ -23,112 +23,112 @@ namespace GuwbaPrimeAdventure.Story
 		public PathConnection PathConnection => PathConnection.Story;
 		private void Awake()
 		{
-			this._storyTeller = this.GetComponent<StoryTeller>();
-			this._animator = this.GetComponent<Animator>();
-			this._sender.SetStateForm(StateForm.State);
-			this._sender.SetAdditionalData(this.gameObject);
+			_storyTeller = GetComponent<StoryTeller>();
+			_animator = GetComponent<Animator>();
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetAdditionalData(gameObject);
 		}
 		private void OnEnable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 1f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 1f);
 		}
 		private void OnDisable()
 		{
-			if (this._animator)
-				this._animator.SetFloat(this._isOn, 0f);
+			if (_animator)
+				_animator.SetFloat(_isOn, 0f);
 		}
 		private IEnumerator TextDigitation()
 		{
-			StyleBackground image = new(this._dialogObject.Speachs[this._speachIndex].Model);
-			this._dialogHud.CharacterIcon.style.backgroundImage = image;
-			this._dialogHud.CharacterName.text = this._dialogObject.Speachs[this._speachIndex].CharacterName;
-			this._text = this._dialogObject.Speachs[this._speachIndex].SpeachText;
-			this._dialogHud.CharacterSpeach.text = "";
-			if (this._nextSlide)
+			StyleBackground image = new(_dialogObject.Speachs[_speachIndex].Model);
+			_dialogHud.CharacterIcon.style.backgroundImage = image;
+			_dialogHud.CharacterName.text = _dialogObject.Speachs[_speachIndex].CharacterName;
+			_text = _dialogObject.Speachs[_speachIndex].SpeachText;
+			_dialogHud.CharacterSpeach.text = "";
+			if (_nextSlide)
 			{
-				this._nextSlide = false;
-				yield return this._storyTeller.NextSlide();
-				this._dialogHud.RootElement.style.display = DisplayStyle.Flex;
+				_nextSlide = false;
+				yield return _storyTeller.NextSlide();
+				_dialogHud.RootElement.style.display = DisplayStyle.Flex;
 			}
-			foreach (char letter in this._text.ToCharArray())
+			foreach (char letter in _text.ToCharArray())
 			{
-				this._dialogHud.CharacterSpeach.text += letter;
-				yield return new WaitForSeconds(this._dialogTime);
+				_dialogHud.CharacterSpeach.text += letter;
+				yield return new WaitForSeconds(_dialogTime);
 			}
 		}
 		private void AdvanceSpeach()
 		{
-			if (this._dialogHud.CharacterSpeach.text.Length == this._text.Length && this._dialogHud.CharacterSpeach.text == this._text)
+			if (_dialogHud.CharacterSpeach.text.Length == _text.Length && _dialogHud.CharacterSpeach.text == _text)
 			{
 				SettingsController.Load(out Settings settings);
-				this._dialogTime = settings.DialogSpeed;
-				if (this._speachIndex < this._dialogObject.Speachs.Length - 1f)
+				_dialogTime = settings.DialogSpeed;
+				if (_speachIndex < _dialogObject.Speachs.Length - 1f)
 				{
-					if (this._storyTeller && this._dialogObject.Speachs[this._speachIndex].NextSlide)
+					if (_storyTeller && _dialogObject.Speachs[_speachIndex].NextSlide)
 					{
-						this._nextSlide = true;
-						this._dialogHud.RootElement.style.display = DisplayStyle.None;
+						_nextSlide = true;
+						_dialogHud.RootElement.style.display = DisplayStyle.None;
 					}
-					this._speachIndex += 1;
-					this.StartCoroutine(this.TextDigitation());
+					_speachIndex += 1;
+					StartCoroutine(TextDigitation());
 				}
 				else
 				{
-					this._text = null;
-					this._speachIndex = 0;
-					this._dialogHud.CharacterIcon.style.backgroundImage = null;
-					this._dialogHud.CharacterName.text = "";
-					this._dialogHud.CharacterSpeach.text = "";
-					this._dialogHud.AdvanceSpeach.clicked -= this.AdvanceSpeach;
-					Destroy(this._dialogHud.gameObject);
+					_text = null;
+					_speachIndex = 0;
+					_dialogHud.CharacterIcon.style.backgroundImage = null;
+					_dialogHud.CharacterName.text = "";
+					_dialogHud.CharacterSpeach.text = "";
+					_dialogHud.AdvanceSpeach.clicked -= AdvanceSpeach;
+					Destroy(_dialogHud.gameObject);
 					StateController.SetState(true);
-					if (this._storyTeller)
-						this._storyTeller.CloseScene();
+					if (_storyTeller)
+						_storyTeller.CloseScene();
 					SaveController.Load(out SaveFile saveFile);
-					if (this._dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(this.gameObject.name))
+					if (_dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(gameObject.name))
 					{
-						saveFile.generalObjects.Add(this.gameObject.name);
+						saveFile.generalObjects.Add(gameObject.name);
 						SaveController.WriteSave(saveFile);
 					}
-					if (this._dialogObject.ActivateTransition)
-						this.GetComponent<Transitioner>().Transicion(this._dialogObject.SceneToTransition);
-					else if (this._dialogObject.ActivateAnimation)
-						this._animator.SetTrigger(this._dialogObject.Animation);
-					if (this._dialogObject.DesactiveInteraction)
+					if (_dialogObject.ActivateTransition)
+						GetComponent<Transitioner>().Transicion(_dialogObject.SceneToTransition);
+					else if (_dialogObject.ActivateAnimation)
+						_animator.SetTrigger(_dialogObject.Animation);
+					if (_dialogObject.DesactiveInteraction)
 					{
-						this._sender.SetAdditionalData(null);
+						_sender.SetAdditionalData(null);
 						Destroy(this);
 					}
-					if (!this._dialogObject.ActivateTransition && this._dialogObject.ActivateDestroy)
-						Destroy(this.gameObject, this._dialogObject.TimeToDestroy);
-					this._sender.SetToggle(true);
-					this._sender.Send(PathConnection.Hud);
+					if (!_dialogObject.ActivateTransition && _dialogObject.ActivateDestroy)
+						Destroy(gameObject, _dialogObject.TimeToDestroy);
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Hud);
 				}
 			}
 			else
-				this._dialogTime = 0f;
+				_dialogTime = 0f;
 		}
 		public void Interaction()
 		{
-			this._sender.SetToggle(false);
-			this._sender.Send(PathConnection.Hud);
+			_sender.SetToggle(false);
+			_sender.Send(PathConnection.Hud);
 			StateController.SetState(false);
 			SettingsController.Load(out Settings settings);
-			if (settings.DialogToggle && this._dialogObject && this._dialogHudObject)
+			if (settings.DialogToggle && _dialogObject && _dialogHudObject)
 			{
-				this._dialogHud = Instantiate(this._dialogHudObject, this.transform);
-				this._dialogTime = settings.DialogSpeed;
-				this._dialogHud.AdvanceSpeach.clicked += this.AdvanceSpeach;
-				this.StartCoroutine(this.TextDigitation());
-				if (this._storyTeller)
-					this._storyTeller.ShowScene();
+				_dialogHud = Instantiate(_dialogHudObject, transform);
+				_dialogTime = settings.DialogSpeed;
+				_dialogHud.AdvanceSpeach.clicked += AdvanceSpeach;
+				StartCoroutine(TextDigitation());
+				if (_storyTeller)
+					_storyTeller.ShowScene();
 			}
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && (GameObject)additionalData == this.gameObject)
-				this.Interaction();
+			if (data.StateForm == StateForm.Action && (GameObject)additionalData == gameObject)
+				Interaction();
 		}
 	};
 };
