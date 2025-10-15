@@ -43,9 +43,8 @@ namespace GuwbaPrimeAdventure.Data
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 			{
-				bool isDataEmpty1 = actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2);
-				bool isDataEmpty2 = actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4);
-				if (isDataEmpty1 && isDataEmpty2)
+				bool isDataEmpty = actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4);
+				if (actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2) && isDataEmpty)
 				{
 					File.Delete(actualPath);
 					return saveFile;
