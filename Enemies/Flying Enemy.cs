@@ -59,12 +59,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if ((Vector2)transform.position != _pointOrigin)
 			{
-				transform.localScale = new Vector3()
-				{
-					x = Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < transform.position.x ? -1f : 1f),
-					y = transform.localScale.y,
-					z = transform.localScale.z
-				};
+				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < transform.position.x ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.deltaTime * _statistics.ReturnSpeed);
 			}
 			else if (_trail.points.Length > 0f)
