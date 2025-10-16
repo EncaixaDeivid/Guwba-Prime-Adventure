@@ -54,7 +54,7 @@ namespace GuwbaPrimeAdventure.Character
 		private float _lastJumpTime = 0f;
 		private float _fallStart = 0f;
 		private float _fallDamage = 0f;
-		private float _delayAfterAttack = 0f;
+		private float _attackDelay = 0f;
 		private bool _isOnGround = false;
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
@@ -101,7 +101,7 @@ namespace GuwbaPrimeAdventure.Character
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack.")] private float _attackDelay;
+		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public PathConnection PathConnection => PathConnection.Character;
@@ -281,7 +281,7 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if (_delayAfterAttack > 0f || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if (_attackDelay > 0f || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
 			if (attackUse.started && !_attackUsage)
 				_animator.SetTrigger(_attack);
@@ -373,7 +373,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				destructible.Stun(guwbaDamager.AttackDamage, guwbaDamager.StunTime);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
-				_delayAfterAttack = _attackDelay;
+				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
 				{
 					bool valid = _vitality < _guwbaVisualizer.Vitality.Length;
@@ -435,8 +435,8 @@ namespace GuwbaPrimeAdventure.Character
 				_lastGroundedTime -= Time.deltaTime;
 				_lastJumpTime -= Time.deltaTime;
 			}
-			if (_delayAfterAttack > 0f)
-				_delayAfterAttack -= Time.deltaTime;
+			if (_attackDelay > 0f)
+				_attackDelay -= Time.deltaTime;
 			if (!_dashActive)
 				if (_isOnGround)
 				{
