@@ -115,8 +115,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (_statistics.ReturnParalyze)
 					_rigidybody.WakeUp();
 			}
-			Verify();
 		}
+		private void FixedUpdate() => Verify();
 		public new bool Hurt(ushort damage)
 		{
 			if (_statistics.ShootDamaged)
