@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -22,11 +23,16 @@ namespace GuwbaPrimeAdventure.Enemy
 			_trail = GetComponent<PolygonCollider2D>();
 			_pointOrigin = transform.position;
 		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			_fadeTime = _statistics.FadeTime;
+		}
 		private void Chase()
 		{
 			if (_returnDash)
 			{
-				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed);
+				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.deltaTime * _statistics.ReturnSpeed);
 				_returnDash = Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance;
 				return;
 			}
@@ -39,7 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 					_isDashing = true;
-			transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.fixedDeltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed));
+			transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.deltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed));
 			if (_isDashing && Vector2.Distance(transform.position, _targetPoint) <= 1e-3f)
 				if (_statistics.DetectionStop)
 				{
@@ -59,7 +65,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					y = transform.localScale.y,
 					z = transform.localScale.z
 				};
-				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed);
+				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.deltaTime * _statistics.ReturnSpeed);
 			}
 			else if (_trail.points.Length > 0f)
 			{
@@ -86,16 +92,16 @@ namespace GuwbaPrimeAdventure.Enemy
 					y = transform.localScale.y,
 					z = transform.localScale.z
 				};
-				transform.localPosition = Vector2.MoveTowards(transform.localPosition, _trail.points[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed);
+				transform.localPosition = Vector2.MoveTowards(transform.localPosition, _trail.points[_pointIndex], Time.deltaTime * _statistics.MovementSpeed);
 				_pointOrigin = transform.position;
 			}
 		}
 		private void Update()
 		{
-			if (_statistics.EndlessPursue)
+			if (_statistics.EndlessPursue && _fadeTime > 0f)
 			{
-				_fadeTime += Time.deltaTime;
-				if (_fadeTime >= _statistics.FadeTime)
+				_fadeTime -= Time.deltaTime;
+				if (_fadeTime <= 0f)
 					Destroy(gameObject);
 			}
 			if (IsStunned)
@@ -109,22 +115,28 @@ namespace GuwbaPrimeAdventure.Enemy
 					(_isDashing, _afterDash) = (!_afterDash, false);
 				}
 			}
-		}
-		private void FixedUpdate()
-		{
-			if (_stopWorking || IsStunned)
+			if (_stopWorking)
 				return;
 			if (_statistics.Target)
 			{
 				_targetPoint = _statistics.Target.transform.position;
-				transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.fixedDeltaTime * _statistics.MovementSpeed);
+				transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.deltaTime * _statistics.MovementSpeed);
 				return;
 			}
 			if (_statistics.EndlessPursue)
 			{
-				transform.position = Vector2.MoveTowards(transform.position, GuwbaCentralizer.Position, Time.fixedDeltaTime * _statistics.MovementSpeed);
+				transform.position = Vector2.MoveTowards(transform.position, GuwbaCentralizer.Position, Time.deltaTime * _statistics.MovementSpeed);
 				return;
 			}
+			if (_detected)
+				Chase();
+			else
+				Trail();
+		}
+		private void FixedUpdate()
+		{
+			if (_stopWorking || IsStunned || _statistics.Target || _statistics.EndlessPursue)
+				return;
 			if (!_isDashing)
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
@@ -153,12 +165,8 @@ namespace GuwbaPrimeAdventure.Enemy
 								y = transform.localScale.y,
 								z = transform.localScale.z
 							};
-						break;
+						return;
 					}
-			if (_detected)
-				Chase();
-			else
-				Trail();
 		}
 	};
 };
