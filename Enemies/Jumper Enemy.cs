@@ -31,12 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					yield return new WaitUntil(() => !SurfacePerception() && isActiveAndEnabled && IsStunned && !_stopJump);
 					_movementSide = (short)(target.x >= transform.position.x ? 1f : -1f);
-					transform.localScale = new Vector3()
-					{
-						x = Mathf.Abs(transform.localScale.x) * _movementSide,
-						y = transform.localScale.y,
-						z = transform.localScale.z
-					};
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
 					while (!SurfacePerception())
 					{
 						if (Mathf.Abs(target.x - transform.position.x) > _statistics.DistanceToTarget)
@@ -61,12 +56,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				else if (useTarget)
 					targetPosition = otherTarget.x;
 				_movementSide = (short)(targetPosition > transform.position.x ? 1f : -1f);
-				transform.localScale = new Vector3()
-				{
-					x = Mathf.Abs(transform.localScale.x) * _movementSide,
-					y = transform.localScale.y,
-					z = transform.localScale.z
-				};
+				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
 				float xStart = transform.position.x;
 				float distance = Mathf.Abs(targetPosition - xStart);
 				float remainingDistance = distance;
@@ -74,7 +64,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					transform.position = new Vector2(Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance), transform.position.y);
 					if (Mathf.Abs(targetPosition - transform.position.x) > _statistics.DistanceToTarget)
-						remainingDistance -= _statistics.MovementSpeed * Time.fixedDeltaTime;
+						remainingDistance -= _statistics.MovementSpeed * Time.deltaTime;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && IsStunned);
 				}
@@ -132,8 +122,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					StartCoroutine(TimedJump(jumpStats));
 			IEnumerator TimedJump(JumpStats stats)
 			{
-				bool valid = !_detected && isActiveAndEnabled && IsStunned && !_stopJump;
-				yield return new WaitUntil(() => SurfacePerception() && valid);
+				yield return new WaitUntil(() => SurfacePerception() && !_detected && isActiveAndEnabled && IsStunned && !_stopJump);
 				yield return new WaitTime(this, stats.TimeToExecute);
 				if (stats.StopMove)
 				{
@@ -162,7 +151,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (_stopWorking)
 				return;
-			Vector2 right = transform.right * (transform.localScale.x > 0f ? 1f : -1f);
 			if (!_detected && _statistics.LookPerception && SurfacePerception())
 				if (_statistics.CircularDetection)
 				{
@@ -174,12 +162,15 @@ namespace GuwbaPrimeAdventure.Enemy
 						}
 				}
 				else
+				{
+					Vector2 right = transform.right * (transform.localScale.x < 0f ? -1f : 1f);
 					foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, right, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
 							BasicJump(ray.collider.transform.position);
 							return;
 						}
+				}
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
