@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D;
+using System.Collections;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
@@ -21,15 +22,19 @@ namespace GuwbaPrimeAdventure
 		[SerializeField, Tooltip("The amount to slow vertically for each layer that is after the first.")] private float _slowVertical;
 		private new void Awake()
 		{
+			base.Awake();
 			if (_instance)
 			{
 				Destroy(gameObject, 1e-3f);
 				return;
 			}
 			_instance = this;
-			base.Awake();
 			_childrenTransforms = new Transform[_backgroundImages.Length];
 			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			for (ushort ia = 0; ia < _backgroundImages.Length; ia++)
 			{
 				_childrenTransforms[ia] = Instantiate(_backgroundTransform, transform);
