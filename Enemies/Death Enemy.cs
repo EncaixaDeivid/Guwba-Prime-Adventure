@@ -19,8 +19,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_isDead && !IsStunned)
 			{
-				_deathTime += Time.deltaTime;
-				if (_deathTime >= _statistics.TimeToDie)
+				_deathTime -= Time.deltaTime;
+				if (_deathTime <= 0f)
 				{
 					_isDead = false;
 					if (_statistics.ChildEnemy)
@@ -36,6 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (_statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 			{
 				_sender.Send(PathConnection.Enemy);
+				_deathTime = _statistics.TimeToDie;
 				_isDead = true;
 			}
 		}
@@ -44,6 +45,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (Health - (short)damage <= 0f)
 			{
 				_sender.Send(PathConnection.Enemy);
+				_deathTime = _statistics.TimeToDie;
 				return _isDead = true;
 			}
 			return base.Hurt(damage);
