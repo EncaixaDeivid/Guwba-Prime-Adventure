@@ -113,12 +113,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_sender.Send(PathConnection.Enemy);
 				return;
 			}
-			transform.localScale = new Vector3()
-			{
-				x = Mathf.Abs(transform.localScale.x) * _movementSide,
-				y = transform.localScale.y,
-				z = transform.localScale.z
-			};
+			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
 			_rigidybody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
 		}
 		public new void Receive(DataConnection data, object additionalData)
