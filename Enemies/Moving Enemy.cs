@@ -15,12 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_sender.SetStateForm(StateForm.State);
-			transform.localScale = new Vector3()
-			{
-				x = Mathf.Abs(transform.localScale.x) * (_movementSide = (short)(_invertMovementSide ? -1 : 1)),
-				y = transform.localScale.y,
-				z = transform.localScale.z
-			};
+			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_movementSide = (short)(_invertMovementSide ? -1 : 1)), transform.localScale.y, transform.localScale.z);
 			Sender.Include(this);
 		}
 		protected new void OnDestroy()
