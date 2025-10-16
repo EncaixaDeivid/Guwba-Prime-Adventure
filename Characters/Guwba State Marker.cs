@@ -281,7 +281,7 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if (_attackDelay > 0f || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if ((_attackDelay > 0f && !_comboAttackBuffer) || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
 			if (attackUse.started && !_attackUsage)
 				_animator.SetTrigger(_attack);
