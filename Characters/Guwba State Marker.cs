@@ -44,6 +44,8 @@ namespace GuwbaPrimeAdventure.Character
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
 		private float _timerOfInvencibility = 0f;
+		private float _stunTimer = 0f;
+		private float _fadeTimer = 0f;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _dashMovement = 0f;
@@ -52,6 +54,7 @@ namespace GuwbaPrimeAdventure.Character
 		private float _lastJumpTime = 0f;
 		private float _fallStart = 0f;
 		private float _fallDamage = 0f;
+		private float _delayAfterAttack = 0f;
 		private bool _isOnGround = false;
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
@@ -98,7 +101,7 @@ namespace GuwbaPrimeAdventure.Character
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, Tooltip("The amount of time the recover's charge of the attack will recover.")] private float _recoverRate;
+		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack.")] private float _attackDelay;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public PathConnection PathConnection => PathConnection.Character;
@@ -278,7 +281,7 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if (_dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if (_delayAfterAttack > 0f || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
 			if (attackUse.started && !_attackUsage)
 				_animator.SetTrigger(_attack);
@@ -353,20 +356,15 @@ namespace GuwbaPrimeAdventure.Character
 			for (ushort i = (ushort)_guwbaVisualizer.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
 				_guwbaVisualizer.StunResistance[i - 1].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
 			if (_stunResistance <= 0f)
-				StartCoroutine(StunTimer());
-			IEnumerator StunTimer()
 			{
 				_animator.SetBool(_stun, true);
 				_animator.SetFloat(_isOn, 100f);
+				_stunTimer = stunTime;
 				_stunResistance = (short)_guwbaVisualizer.StunResistance.Length;
 				for (ushort i = 0; i < _stunResistance; i++)
 					_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
 				_dashActive = false;
 				DisableInputs();
-				yield return new WaitTime(this, stunTime);
-				_animator.SetBool(_stun, false);
-				_animator.SetFloat(_isOn, 1f);
-				EnableInputs();
 			}
 		};
 		private UnityAction<GuwbaDamager, IDestructible> Attack => (guwbaDamager, destructible) =>
@@ -375,37 +373,33 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				destructible.Stun(guwbaDamager.AttackDamage, guwbaDamager.StunTime);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
-				StartCoroutine(RecoverVitality());
-				IEnumerator RecoverVitality()
+				_delayAfterAttack = _attackDelay;
+				for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
 				{
-					for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
+					bool valid = _vitality < _guwbaVisualizer.Vitality.Length;
+					if (_recoverVitality >= _guwbaVisualizer.RecoverVitality.Length && valid)
 					{
-						bool valid = _vitality < _guwbaVisualizer.Vitality.Length;
-						if (_recoverVitality >= _guwbaVisualizer.RecoverVitality.Length && valid)
+						_recoverVitality = 0;
+						for (ushort i = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
+							_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+						_vitality += 1;
+						for (ushort i = 0; i < _vitality; i++)
 						{
-							_recoverVitality = 0;
-							for (ushort i = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
-								_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
-							_vitality += 1;
-							for (ushort i = 0; i < _vitality; i++)
-							{
-								_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
-								_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
-								_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
-								_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
-								_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
-							}
-							_stunResistance += 1;
-							for (ushort i = 0; i < _stunResistance; i++)
-								_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
+							_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
+							_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
+							_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
+							_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
+							_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
 						}
-						else if (_recoverVitality < _guwbaVisualizer.RecoverVitality.Length)
-						{
-							_recoverVitality += 1;
-							for (ushort i = 0; i < _recoverVitality; i++)
-								_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BorderColor);
-						}
-						yield return new WaitTime(this, _recoverRate);
+						_stunResistance += 1;
+						for (ushort i = 0; i < _stunResistance; i++)
+							_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
+					}
+					else if (_recoverVitality < _guwbaVisualizer.RecoverVitality.Length)
+					{
+						_recoverVitality += 1;
+						for (ushort i = 0; i < _recoverVitality; i++)
+							_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BorderColor);
 					}
 				}
 			}
@@ -417,23 +411,32 @@ namespace GuwbaPrimeAdventure.Character
 				_timerOfInvencibility -= Time.deltaTime;
 				_invencibility = _timerOfInvencibility > 0f;
 			}
+			if (_animator.GetBool(_stun))
+			{
+				_stunTimer -= Time.deltaTime;
+				if (_stunTimer <= 0f)
+				{
+					_animator.SetBool(_stun, false);
+					_animator.SetFloat(_isOn, 1f);
+					EnableInputs();
+				}
+			}
+			if (_fadeTimer > 0f)
+			{
+				_fadeTimer -= Time.deltaTime;
+				if (_fadeTimer <= 0f)
+				{
+					_guwbaVisualizer.FallDamageText.style.opacity = 0f;
+					_guwbaVisualizer.FallDamageText.text = $"X 0";
+				}
+			}
 			if (!_dashActive && !_isOnGround && _rigidbody.linearVelocityY != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 			{
 				_lastGroundedTime -= Time.deltaTime;
 				_lastJumpTime -= Time.deltaTime;
 			}
-		}
-		private void FixedUpdate()
-		{
-			Vector2 position = (Vector2)transform.position + _collider.offset;
-			_downStairs = false;
-			if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f && !_dashActive)
-			{
-				Vector2 downRayOrigin = new(position.x - (_collider.bounds.extents.x - _groundChecker) * _movementAction, position.y - _collider.bounds.extents.y);
-				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -transform.up, 1f + _groundChecker, _groundLayer);
-				if (_downStairs = downRay)
-					transform.position = new Vector2(transform.position.x, transform.position.y - downRay.distance);
-			}
+			if (_delayAfterAttack > 0f)
+				_delayAfterAttack -= Time.deltaTime;
 			if (!_dashActive)
 				if (_isOnGround)
 				{
@@ -458,22 +461,16 @@ namespace GuwbaPrimeAdventure.Character
 						Hurt.Invoke((ushort)Mathf.Floor(_fallDamage / _fallDamageDistance));
 						_fallStarted = false;
 						_fallDamage = 0f;
-						if (_invencibility)
-							StartCoroutine(KeepShow());
+						if (_invencibility && _fadeTimer <= 0f)
+							_fadeTimer = _timeToFadeShow;
 						else
 						{
 							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
 							_guwbaVisualizer.FallDamageText.text = $"X 0";
 						}
-						IEnumerator KeepShow()
-						{
-							yield return new WaitTime(this, _timeToFadeShow);
-							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							_guwbaVisualizer.FallDamageText.text = $"X 0";
-						}
 					}
 				}
-				else if (_rigidbody.linearVelocityY != 0f && !_downStairs)
+				else if (Mathf.Abs(_rigidbody.linearVelocityY) >= 1e-3f && !_downStairs)
 				{
 					_animator.SetBool(_idle, false);
 					_animator.SetBool(_walk, false);
@@ -519,6 +516,18 @@ namespace GuwbaPrimeAdventure.Character
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
 					_canDownStairs = false;
 				}
+		}
+		private void FixedUpdate()
+		{
+			Vector2 position = (Vector2)transform.position + _collider.offset;
+			_downStairs = false;
+			if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f && !_dashActive)
+			{
+				Vector2 downRayOrigin = new(position.x - (_collider.bounds.extents.x - _groundChecker) * _movementAction, position.y - _collider.bounds.extents.y);
+				RaycastHit2D downRay = Physics2D.Raycast(downRayOrigin, -transform.up, 1f + _groundChecker, _groundLayer);
+				if (_downStairs = downRay)
+					transform.position = new Vector2(transform.position.x, transform.position.y - downRay.distance);
+			}
 			float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
 			if (!_dashActive)
 			{
