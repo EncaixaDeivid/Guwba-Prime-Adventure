@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
@@ -12,17 +13,16 @@ namespace GuwbaPrimeAdventure
 		private void Awake()
 		{
 			GetComponent<BoxCollider2D>().enabled = !_offCollision;
-			SceneInitiator.RegisterTrancision(EndTransicion);
-			void EndTransicion()
-			{
-				if (!_initialActive)
-					for (ushort i = 0; i < transform.childCount; i++)
-						transform.GetChild(i).gameObject.SetActive(false);
-				SceneInitiator.UnregisterTrancision(EndTransicion);
-			}
 			Sender.Include(this);
 		}
 		private void OnDestroy() => Sender.Exclude(this);
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			if (!_initialActive)
+				for (ushort i = 0; i < transform.childCount; i++)
+					transform.GetChild(i).gameObject.SetActive(false);
+		}
 		internal void Execution(bool activate)
 		{
 			for (ushort i = 0; i < transform.childCount; i++)
