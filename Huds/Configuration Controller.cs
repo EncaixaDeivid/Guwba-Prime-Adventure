@@ -51,7 +51,12 @@ namespace GuwbaPrimeAdventure.Hud
 			_inputController.Commands.HideHud.Disable();
 			_inputController.Dispose();
 		}
-		private IEnumerator Start() => new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
+		private IEnumerator Start()
+		{
+			if (!Instance || Instance != this)
+				yield break;
+			yield return new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
+		}
 		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
