@@ -20,8 +20,16 @@ namespace GuwbaPrimeAdventure.Item
 			_animator = GetComponent<Animator>();
 			_collider = GetComponent<CircleCollider2D>();
 		}
-		private void OnEnable() => _animator.enabled = true;
-		private void OnDisable() => _animator.enabled = false;
+		private void OnEnable()
+		{
+			if (_spriteRenderer.enabled)
+				_animator.enabled = true;
+		}
+		private void OnDisable()
+		{
+			if (_spriteRenderer.enabled)
+				_animator.enabled = false;
+		}
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
@@ -37,16 +45,12 @@ namespace GuwbaPrimeAdventure.Item
 			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
 				saveFile.generalObjects.Add(gameObject.name);
 			SaveController.WriteSave(saveFile);
-			_spriteRenderer.enabled = false;
-			_collider.enabled = false;
+			_collider.enabled = _animator.enabled = _spriteRenderer.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
-			{
-				_spriteRenderer.enabled = true;
-				_collider.enabled = true;
-			}
+				_collider.enabled = _animator.enabled = _spriteRenderer.enabled = true;
 		}
 	};
 };
