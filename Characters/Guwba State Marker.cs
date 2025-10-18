@@ -120,31 +120,6 @@ namespace GuwbaPrimeAdventure.Character
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
 			_guwbaVisualizer = GetComponentInChildren<GuwbaVisualizer>();
 			_guwbaDamagers = GetComponentsInChildren<GuwbaDamager>();
-			SaveController.Load(out SaveFile saveFile);
-			(_guwbaVisualizer.LifeText.text, _guwbaVisualizer.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
-			(_vitality, _stunResistance) = ((short)_guwbaVisualizer.Vitality.Length, (short)_guwbaVisualizer.StunResistance.Length);
-			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
-			{
-				guwbaDamager.DamagerHurt += Hurt;
-				guwbaDamager.DamagerStun += Stun;
-				guwbaDamager.DamagerAttack += Attack;
-			}
-			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
-			_gravityScale = _rigidbody.gravityScale;
-			_normalOffset = _collider.offset;
-			_normalSize = _collider.size;
-			if (gameObject.scene.name.Contains(_hubbyWorldScene))
-			{
-				foreach (VisualElement vitality in _guwbaVisualizer.Vitality)
-					vitality.style.display = DisplayStyle.None;
-				foreach (VisualElement recoverVitality in _guwbaVisualizer.RecoverVitality)
-					recoverVitality.style.display = DisplayStyle.None;
-				foreach (VisualElement stunResistance in _guwbaVisualizer.StunResistance)
-					stunResistance.style.display = DisplayStyle.None;
-				foreach (VisualElement bunnyHop in _guwbaVisualizer.BunnyHop)
-					bunnyHop.style.display = DisplayStyle.None;
-				_guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
-			}
 			_inputController = new InputController();
 			_inputController.Commands.Movement.started += Movement;
 			_inputController.Commands.Movement.performed += Movement;
@@ -219,6 +194,31 @@ namespace GuwbaPrimeAdventure.Character
 				yield break;
 			DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			SaveController.Load(out SaveFile saveFile);
+			(_guwbaVisualizer.LifeText.text, _guwbaVisualizer.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
+			(_vitality, _stunResistance) = ((short)_guwbaVisualizer.Vitality.Length, (short)_guwbaVisualizer.StunResistance.Length);
+			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
+			{
+				guwbaDamager.DamagerHurt += Hurt;
+				guwbaDamager.DamagerStun += Stun;
+				guwbaDamager.DamagerAttack += Attack;
+			}
+			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
+			_gravityScale = _rigidbody.gravityScale;
+			_normalOffset = _collider.offset;
+			_normalSize = _collider.size;
+			if (gameObject.scene.name.Contains(_hubbyWorldScene))
+			{
+				foreach (VisualElement vitality in _guwbaVisualizer.Vitality)
+					vitality.style.display = DisplayStyle.None;
+				foreach (VisualElement recoverVitality in _guwbaVisualizer.RecoverVitality)
+					recoverVitality.style.display = DisplayStyle.None;
+				foreach (VisualElement stunResistance in _guwbaVisualizer.StunResistance)
+					stunResistance.style.display = DisplayStyle.None;
+				foreach (VisualElement bunnyHop in _guwbaVisualizer.BunnyHop)
+					bunnyHop.style.display = DisplayStyle.None;
+				_guwbaVisualizer.FallDamageText.style.display = DisplayStyle.None;
+			}
 			EnableInputs();
 		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
