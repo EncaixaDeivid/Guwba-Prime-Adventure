@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Collections;
 namespace GuwbaPrimeAdventure
@@ -7,9 +8,11 @@ namespace GuwbaPrimeAdventure
 	public sealed class SceneInitiator : MonoBehaviour
 	{
 		private static SceneInitiator _instance;
+		private static UnityAction _endTransicion;
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
 		[SerializeField, Tooltip("The sub scenes to be lodaed.")] private SceneField[] _subScenes;
-		public static bool IsInTrancision() => _instance;
+		public static void RegisterTrancision(UnityAction endTransicionEvent) => _endTransicion += endTransicionEvent;
+		public static void UnregisterTrancision(UnityAction endTransicionEvent) => _endTransicion -= endTransicionEvent;
 		private void Awake()
 		{
 			if (_instance)
@@ -41,6 +44,7 @@ namespace GuwbaPrimeAdventure
 				transicionHud.LoadingBar.value += asyncOperation.progress;
 				asyncOperation.allowSceneActivation = true;
 			}
+			_endTransicion.Invoke();
 			Destroy(gameObject);
 		}
 	};
