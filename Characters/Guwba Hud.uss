@@ -13,23 +13,26 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    width: 432px;
+    width: 400px;
     height: 100px;
     margin-left: 20px;
 }
 #SubIcon {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    width: 150px;
+    justify-content: space-evenly;
+    width: 200px;
     height: 75px;
     align-self: flex-end;
 }
-#LifeIcon, #CoinIcon{
+#LifeIcon {
     width: 75px;
     height: 100%;
 }
 #CoinIcon {
+    width: 37.5px;
+    height: 50%;
+    align-self: center;
     background-image: url("project://database/Assets/Items/Designs/Coin Frame.png");
 }
 #LifeText, #CoinText {
@@ -40,7 +43,7 @@
     align-items: center;
     justify-content: flex-start;
     align-content: center;
-    width: 432px;
+    width: 450px;
     height: 150px;
     margin-left: 20px;
 }
