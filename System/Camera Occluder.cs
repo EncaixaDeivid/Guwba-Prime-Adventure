@@ -24,11 +24,8 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			Camera camera = GetComponent<Camera>();
-			BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
+			GetComponent<BoxCollider2D>().size = new Vector2(camera.orthographicSize * 2f, camera.orthographicSize * 2f * camera.aspect);
 			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
-			float sizeY = camera.orthographicSize * 2f;
-			float sizeX = sizeY * camera.aspect;
-			boxCollider.size = new Vector2(sizeX, sizeY);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -59,7 +56,7 @@ namespace GuwbaPrimeAdventure
 					{
 						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
-						yield return new WaitUntil(() => enabled);
+						yield return new WaitUntil(() => isActiveAndEnabled);
 						yield return new WaitForEndOfFrame();
 					}
 				}
