@@ -99,7 +99,7 @@ namespace GuwbaPrimeAdventure.Hud
 			MusicVolume.highValue = 100;
 			DialogSpeed.lowValue = 0f;
 			ScreenBrightness.lowValue = 0f;
-			FrameRate.lowValue = 30;
+			FrameRate.lowValue = 10;
 			GeneralVolume.lowValue = 0;
 			EffectsVolume.lowValue = 0;
 			MusicVolume.lowValue = 0;
