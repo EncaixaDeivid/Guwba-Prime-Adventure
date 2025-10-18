@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Hud
 {
@@ -81,15 +82,16 @@ namespace GuwbaPrimeAdventure.Hud
 			Yes = root.Q<Button>(_yesButton);
 			No = root.Q<Button>(_noButton);
 			FrameRateText =  root.Q<Label>(_frameRateText);
-			if (!SettingsController.FileExists())
-			{
-				SettingsController.Load(out Settings saveSettings);
-				SettingsController.WriteSave(saveSettings);
-			}
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SettingsController.Load(out Settings settings);
+			if (!SettingsController.FileExists())
+				SettingsController.WriteSave(settings);
 			DialogSpeed.highValue = .1f;
 			ScreenBrightness.highValue = 1f;
-			FrameRate.highValue = 120;
+			FrameRate.highValue = 240;
 			GeneralVolume.highValue = 100;
 			EffectsVolume.highValue = 100;
 			MusicVolume.highValue = 100;
