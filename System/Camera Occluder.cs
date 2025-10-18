@@ -24,7 +24,7 @@ namespace GuwbaPrimeAdventure
 			}
 			_instance = this;
 			Camera camera = GetComponent<Camera>();
-			GetComponent<BoxCollider2D>().size = new Vector2(camera.orthographicSize * 2f, camera.orthographicSize * 2f * camera.aspect);
+			GetComponent<BoxCollider2D>().size = new Vector2(camera.orthographicSize * 2f * camera.aspect, camera.orthographicSize * 2f);
 			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
 			Sender.Include(this);
 		}
