@@ -31,6 +31,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			_rigidybody = GetComponent<Rigidbody2D>();
 			_vitality = (short)_statistics.Vitality;
 			_armorResistance = (short)_statistics.HitResistance;
+			_fadeTime = _statistics.TimeToFadeAway;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -56,9 +57,9 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (_statistics.FadeOverTime && !_stunned)
+			if (_statistics.FadeOverTime)
 			{
-				_fadeTime += Time.deltaTime;
+				_fadeTime -= Time.deltaTime;
 				if (_fadeTime <= 0)
 					Destroy(gameObject);
 			}
