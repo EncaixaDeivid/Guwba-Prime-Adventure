@@ -86,12 +86,11 @@ namespace GuwbaPrimeAdventure.Character
 			recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement recoverVitalityPiece = RootElement.Q<VisualElement>(_recoverVitalityPieceVisual);
 			RecoverVitality = new VisualElement[_recoverVitality];
-			float recoverVitalityPieceWidth = _totalWidth / _recoverVitality - _borderWidth * 2f;
 			for (ushort i = 0; i < _recoverVitality; i++)
 			{
 				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
 				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
-				recoverVitalityPieceClone.style.width = new StyleLength(new Length(recoverVitalityPieceWidth, LengthUnit.Pixel));
+				recoverVitalityPieceClone.style.width = new StyleLength(new Length(_totalWidth / _recoverVitality - _borderWidth * 2f, LengthUnit.Pixel));
 				recoverVitality.Add(recoverVitalityPieceClone);
 				RecoverVitality[i] = recoverVitality[i + 1];
 			}
@@ -100,12 +99,11 @@ namespace GuwbaPrimeAdventure.Character
 			stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement stunResistancePiece = RootElement.Q<VisualElement>(_stunResistancePieceVisual);
 			StunResistance = new VisualElement[_stunResistance];
-			float stunResistancePieceWidth = _totalWidth / _stunResistance - _borderWidth * 2f;
 			for (ushort i = 0; i < _stunResistance; i++)
 			{
 				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
 				stunResistancePieceClone.style.backgroundColor = new StyleColor(_stunResistanceColor);
-				stunResistancePieceClone.style.width = new StyleLength(new Length(stunResistancePieceWidth, LengthUnit.Pixel));
+				stunResistancePieceClone.style.width = new StyleLength(new Length(_totalWidth / _stunResistance - _borderWidth * 2f, LengthUnit.Pixel));
 				stunResistance.Add(stunResistancePieceClone);
 				StunResistance[i] = stunResistance[i + 1];
 			}
@@ -114,13 +112,12 @@ namespace GuwbaPrimeAdventure.Character
 			bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement bunnyHopPiece = RootElement.Q<VisualElement>(_bunnyHopPieceVisual);
 			BunnyHop = new VisualElement[_bunnyHop];
-			float bunnyHopPieceWidth = _totalWidth / _bunnyHop - _borderWidth * 2f;
 			for (ushort i = 0; i < _bunnyHop; i++)
 			{
-				VisualElement bunnyHopClone = new() { name = bunnyHopPiece.name };
-				bunnyHopClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
-				bunnyHopClone.style.width = new StyleLength(new Length(bunnyHopPieceWidth, LengthUnit.Pixel));
-				bunnyHop.Add(bunnyHopClone);
+				VisualElement bunnyHopPieceClone = new() { name = bunnyHopPiece.name };
+				bunnyHopPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
+				bunnyHopPieceClone.style.width = new StyleLength(new Length(_totalWidth / _bunnyHop - _borderWidth * 2f, LengthUnit.Pixel));
+				bunnyHop.Add(bunnyHopPieceClone);
 				BunnyHop[i] = bunnyHop[i + 1];
 			}
 			bunnyHop.Remove(bunnyHopPiece);
