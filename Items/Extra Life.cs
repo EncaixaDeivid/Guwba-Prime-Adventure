@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
@@ -7,12 +8,12 @@ namespace GuwbaPrimeAdventure.Item
 	{
 		[Header("Condition")]
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		private new void Awake()
+		private IEnumerator Start()
 		{
-			base.Awake();
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.lifesAcquired.Contains(gameObject.name))
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject);
 		}
 		public void Collect()
 		{
