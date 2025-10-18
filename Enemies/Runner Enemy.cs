@@ -13,43 +13,36 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _dashTime = 0f;
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
-		private void Start() => _timeRun = _statistics.TimesToRun;
+		private void Start()
+		{
+			_timeRun = _statistics.RunOfTime;
+			_dashTime = _statistics.TimeToDash;
+		}
 		private void Update()
 		{
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopWorking)
-			{
-				_stoppedTime += Time.deltaTime;
-				if (_stoppedTime >= _statistics.StopTime)
+				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 				{
-					_stoppedTime = 0f;
-					_stopWorking = false;
-					_isDashing = true;
+					_dashedTime = _statistics.TimeDashing;
+					_isDashing = !(_stopWorking = false);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
 				}
-				return;
-			}
 			if (_stopWorking)
 				return;
 			if (_statistics.TimedDash && !_isDashing)
-			{
-				_dashTime += Time.deltaTime;
-				if (_dashTime >= _statistics.TimeToDash)
+				if ((_dashTime -= Time.deltaTime) <= 0f)
 				{
-					_dashTime = 0f;
+					_dashedTime = _statistics.TimeDashing;
 					_isDashing = true;
 				}
-			}
 			if (_statistics.RunFromTarget)
 			{
 				if (_timeRun > 0f)
-				{
-					_timeRun -= Time.deltaTime;
 					_isDashing = true;
-				}
-				if (_timeRun <= 0f && _isDashing)
+				if ((_timeRun -= Time.deltaTime) <= 0f && _isDashing)
 				{
 					if (_statistics.RunTowardsAfter && _runnedTimes >= _statistics.TimesToRun)
 					{
@@ -62,17 +55,12 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 			}
 			if (_isDashing)
-			{
-				_dashedTime += Time.deltaTime;
-				if (_dashedTime >= _statistics.TimeDashing)
+				if ((_dashedTime -= Time.deltaTime) <= 0f)
 				{
-					_detected = false;
-					_dashedTime = 0f;
-					_isDashing = false;
-					_sender.SetToggle(true);
+					_dashTime = _statistics.TimeToDash;
+					_sender.SetToggle(!(_detected = _isDashing = false));
 					_sender.Send(PathConnection.Enemy);
 				}
-			}
 		}
 		private void FixedUpdate()
 		{
@@ -108,6 +96,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_movementSide *= -1;
 			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
+				_stoppedTime = _statistics.StopTime;
 				_stopWorking = true;
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
@@ -133,6 +122,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_movementSide = (short)(targetPosition.x < transform.position.x ? -1f : 1f);
 				if (_statistics.DetectionStop)
 				{
+					_stoppedTime = _statistics.StopTime;
 					_stopWorking = true;
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
