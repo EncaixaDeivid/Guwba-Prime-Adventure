@@ -8,7 +8,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class PlaceEnemy : EnemyProvider, IConnector
 	{
 		private Tilemap _tilemap;
-		private TilemapCollider2D _tilemapCollider2D;
+		private TilemapCollider2D _tilemapCollider;
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If anything can be hurt.")] private bool _hurtEveryone;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
@@ -16,7 +16,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_tilemap = GetComponent<Tilemap>();
-			_tilemapCollider2D = GetComponent<TilemapCollider2D>();
+			_tilemapCollider = GetComponent<TilemapCollider2D>();
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -35,7 +35,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					color.a = alpha;
 					_tilemap.color = color;
 					yield return new WaitForEndOfFrame();
-					yield return new WaitUntil(() => isActiveAndEnabled && !_rigidybody.IsSleeping());
+					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
 				if (appear)
 					for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
@@ -43,7 +43,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
 						yield return Opacity(i);
-				_tilemapCollider2D.enabled = appear;
+				_tilemapCollider.enabled = appear;
 			}
 			if ((EnemyProvider[])additionalData != null)
 				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
