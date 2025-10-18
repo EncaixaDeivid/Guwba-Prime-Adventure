@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure
 	{
 		private static TransicionHud _instance;
 		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _rootElement;
 		[SerializeField, Tooltip("User interface element.")] private string _loadingBarProgress;
 		internal VisualElement RootElement { get; private set; }
 		internal ProgressBar LoadingBar { get; private set; }
@@ -19,9 +18,8 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			RootElement = root.Q<VisualElement>(_rootElement);
-			LoadingBar = root.Q<ProgressBar>(_loadingBarProgress);
+			RootElement = GetComponent<UIDocument>().rootVisualElement;
+			LoadingBar = RootElement.Q<ProgressBar>(_loadingBarProgress);
 		}
 	};
 };
