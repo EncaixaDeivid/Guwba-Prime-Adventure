@@ -85,6 +85,8 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private IEnumerator Start()
 		{
+			if (!_instance || _instance != this)
+				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SettingsController.Load(out Settings settings);
 			if (!SettingsController.FileExists())
