@@ -8,7 +8,6 @@ namespace GuwbaPrimeAdventure.Character
 	{
 		private static GuwbaVisualizer _instance;
 		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _rootElementObject;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _recoverVitalityVisual;
