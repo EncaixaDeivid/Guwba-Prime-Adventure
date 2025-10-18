@@ -17,7 +17,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _bunnyHopPieceVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _fallDamageTextObject;
-		[SerializeField, Tooltip("User interface element.")] private string _iconsObject;
 		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
 		[Header("Vitality Visual")]
@@ -57,7 +56,6 @@ namespace GuwbaPrimeAdventure.Character
 			FallDamageText = RootElement.Q<Label>(_fallDamageTextObject);
 			LifeText = RootElement.Q<Label>(_lifeTextObject);
 			CoinText = RootElement.Q<Label>(_coinTextObject);
-			RootElement.Q<GroupBox>(_iconsObject).style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 		}
 		private IEnumerator Start()
 		{
