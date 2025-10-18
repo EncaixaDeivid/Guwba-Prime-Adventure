@@ -461,7 +461,7 @@ namespace GuwbaPrimeAdventure.Character
 						{
 							_fallDamage = Mathf.Abs(transform.position.y - _fallStart);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
-								(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (1f, $"X {_fallDamage / _fallDamageDistance}");
+								(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (1f, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
 							else if (!_invencibility)
 								(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (0f, $"X 0");
 						}
