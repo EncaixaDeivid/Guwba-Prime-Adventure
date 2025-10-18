@@ -375,9 +375,7 @@ namespace GuwbaPrimeAdventure.Character
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
-				{
-					bool valid = _vitality < _guwbaVisualizer.Vitality.Length;
-					if (_recoverVitality >= _guwbaVisualizer.RecoverVitality.Length && valid)
+					if (_recoverVitality >= _guwbaVisualizer.RecoverVitality.Length && _vitality < _guwbaVisualizer.Vitality.Length)
 					{
 						_recoverVitality = 0;
 						for (ushort i = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
@@ -401,40 +399,24 @@ namespace GuwbaPrimeAdventure.Character
 						for (ushort i = 0; i < _recoverVitality; i++)
 							_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BorderColor);
 					}
-				}
 			}
 		};
 		private void Update()
 		{
 			if (_invencibility)
-			{
-				_timerOfInvencibility -= Time.deltaTime;
-				_invencibility = _timerOfInvencibility > 0f;
-			}
+				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f;
 			if (_animator.GetBool(_stun))
-			{
-				_stunTimer -= Time.deltaTime;
-				if (_stunTimer <= 0f)
+				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
 					_animator.SetBool(_stun, false);
 					_animator.SetFloat(_isOn, 1f);
 					EnableInputs();
 				}
-			}
 			if (_fadeTimer > 0f)
-			{
-				_fadeTimer -= Time.deltaTime;
-				if (_fadeTimer <= 0f)
-				{
-					_guwbaVisualizer.FallDamageText.style.opacity = 0f;
-					_guwbaVisualizer.FallDamageText.text = $"X 0";
-				}
-			}
+				if ((_fadeTimer -= Time.deltaTime) <= 0f)
+					(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (0f, $"X 0");
 			if (!_dashActive && !_isOnGround && _rigidbody.linearVelocityY != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
-			{
-				_lastGroundedTime -= Time.deltaTime;
-				_lastJumpTime -= Time.deltaTime;
-			}
+				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
 				_attackDelay -= Time.deltaTime;
 			if (!_dashActive)
@@ -445,9 +427,7 @@ namespace GuwbaPrimeAdventure.Character
 					_animator.SetBool(_jump, false);
 					_animator.SetBool(_fall, false);
 					_lastGroundedTime = _jumpCoyoteTime;
-					_canDownStairs = true;
-					_isJumping = false;
-					_longJumping = false;
+					_longJumping = _isJumping = !(_canDownStairs = true);
 					_bunnyHopBoost = _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f;
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
@@ -459,15 +439,11 @@ namespace GuwbaPrimeAdventure.Character
 					{
 						_screenShaker.GenerateImpulseWithForce(_fallDamage / _fallDamageDistance);
 						Hurt.Invoke((ushort)Mathf.Floor(_fallDamage / _fallDamageDistance));
-						_fallStarted = false;
-						_fallDamage = 0f;
+						(_fallStarted, _fallDamage) = (false, 0f);
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
 						else
-						{
-							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							_guwbaVisualizer.FallDamageText.text = $"X 0";
-						}
+							(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (0f, $"X 0");
 					}
 				}
 				else if (Mathf.Abs(_rigidbody.linearVelocityY) >= 1e-3f && !_downStairs)
@@ -485,32 +461,18 @@ namespace GuwbaPrimeAdventure.Character
 						{
 							_fallDamage = Mathf.Abs(transform.position.y - _fallStart);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
-							{
-								_guwbaVisualizer.FallDamageText.style.opacity = 1f;
-								_guwbaVisualizer.FallDamageText.text = $"X {_fallDamage / _fallDamageDistance}";
-							}
+								(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (1f, $"X {_fallDamage / _fallDamageDistance}");
 							else if (!_invencibility)
-							{
-								_guwbaVisualizer.FallDamageText.style.opacity = 0f;
-								_guwbaVisualizer.FallDamageText.text = $"X 0";
-							}
+								(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (0f, $"X 0");
 						}
 						else
-						{
-							_fallStarted = true;
-							_fallStart = transform.position.y;
-							_fallDamage = 0f;
-						}
+							(_fallStarted, _fallStart, _fallDamage) = (true, transform.position.y, 0f);
 					}
 					else
 					{
 						if (!_invencibility)
-						{
-							_guwbaVisualizer.FallDamageText.style.opacity = 0f;
-							_guwbaVisualizer.FallDamageText.text = $"X 0";
-						}
-						_rigidbody.gravityScale = _gravityScale;
-						_fallDamage = 0f;
+							(_guwbaVisualizer.FallDamageText.style.opacity, _guwbaVisualizer.FallDamageText.text) = (0f, $"X 0");
+						(_rigidbody.gravityScale, _fallDamage) = (_gravityScale, 0f);
 					}
 					if (_attackUsage)
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
@@ -623,10 +585,8 @@ namespace GuwbaPrimeAdventure.Character
 					_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
 				for (ushort i = _bunnyHopBoost = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
 					_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
-				_isHoping = false;
+				_animator.SetBool(_death, _isHoping = false);
 				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
-				_animator.SetBool(_death, false);
-				_collider.size = _normalSize;
 			}
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
