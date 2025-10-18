@@ -42,13 +42,13 @@ namespace GuwbaPrimeAdventure.Hud
 			Back = root.Q<Button>(_backButton);
 			SaveName = new TextField[4];
 			for (ushort i = 0; i < SaveName.Length; i++)
-				SaveName[i] = root.Q<TextField>(_saveNameTextField + $"{i + 1f}");
+				SaveName[i] = root.Q<TextField>(_saveNameTextField + $"{i + 1}");
 			Load = new Button[4];
 			for (ushort i = 0; i < Load.Length; i++)
-				Load[i] = root.Q<Button>(_loadButton + $"{i + 1f}");
+				Load[i] = root.Q<Button>(_loadButton + $"{i + 1}");
 			Delete = new Button[4];
 			for (ushort i = 0; i < Delete.Length; i++)
-				Delete[i] = root.Q<Button>(_deleteButton + $"{i + 1f}");
+				Delete[i] = root.Q<Button>(_deleteButton + $"{i + 1}");
 		}
 	};
 };
