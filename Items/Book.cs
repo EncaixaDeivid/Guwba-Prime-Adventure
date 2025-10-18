@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
@@ -7,15 +8,15 @@ namespace GuwbaPrimeAdventure.Item
 	{
 		[Header("Conditions")]
 		[SerializeField, Tooltip("The sprite to show when the book gor cacthed.")] private Sprite _bookCacthed;
-		private new void Awake()
+		private IEnumerator Start()
 		{
-			base.Awake();
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.books.ContainsKey(gameObject.name))
 			{
 				if (saveFile.books[gameObject.name])
 					GetComponent<SpriteRenderer>().sprite = _bookCacthed;
-				return;
+				yield break;
 			}
 			saveFile.books.Add(gameObject.name, false);
 		}
