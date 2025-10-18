@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D;
+using System.Collections;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
@@ -32,46 +33,45 @@ namespace GuwbaPrimeAdventure
 			_childrenTransforms = new Transform[_backgroundImages.Length];
 			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
 			_isInTrancision = true;
-			SceneInitiator.RegisterTrancision(EndTransicion);
-			void EndTransicion()
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			Sprite sprite;
+			Vector2 imageSize;
+			float centerX;
+			float centerY;
+			float right;
+			float left;
+			float top;
+			float bottom;
+			for (ushort ia = 0; ia < _backgroundImages.Length; ia++)
 			{
-				Sprite sprite;
-				Vector2 imageSize;
-				float centerX;
-				float centerY;
-				float right;
-				float left;
-				float top;
-				float bottom;
-				for (ushort ia = 0; ia < _backgroundImages.Length; ia++)
-				{
-					_childrenTransforms[ia] = Instantiate(_backgroundTransform, transform);
-					_childrenRenderers[ia] = _childrenTransforms[ia].GetComponent<SpriteRenderer>();
-					sprite = _backgroundHandler.GetSprite(_backgroundImages[ia]);
-					_childrenRenderers[ia].sprite = sprite;
-					_childrenRenderers[ia].sortingOrder = _backgroundImages.Length - 1 - ia;
-					_childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = _childrenRenderers[ia].sortingOrder;
-					centerX = _childrenTransforms[ia].position.x;
-					centerY = _childrenTransforms[ia].position.y;
-					imageSize = _childrenRenderers[ia].sprite.bounds.size;
-					right = centerX + imageSize.x;
-					left = centerX - imageSize.x;
-					top = centerY + imageSize.y;
-					bottom = centerY - imageSize.y;
-					_childrenTransforms[ia].GetChild(0).position = new Vector2(left, top);
-					_childrenTransforms[ia].GetChild(1).position = new Vector2(centerX, top);
-					_childrenTransforms[ia].GetChild(2).position = new Vector2(right, top);
-					_childrenTransforms[ia].GetChild(3).position = new Vector2(left, centerY);
-					_childrenTransforms[ia].GetChild(4).position = new Vector2(right, centerY);
-					_childrenTransforms[ia].GetChild(5).position = new Vector2(left, bottom);
-					_childrenTransforms[ia].GetChild(6).position = new Vector2(centerX, bottom);
-					_childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
-					for (ushort ib = 0; ib < _childrenTransforms[ia].childCount; ib++)
-						_childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = sprite;
-				}
-				_isInTrancision = false;
-				SceneInitiator.UnregisterTrancision(EndTransicion);
+				_childrenTransforms[ia] = Instantiate(_backgroundTransform, transform);
+				_childrenRenderers[ia] = _childrenTransforms[ia].GetComponent<SpriteRenderer>();
+				sprite = _backgroundHandler.GetSprite(_backgroundImages[ia]);
+				_childrenRenderers[ia].sprite = sprite;
+				_childrenRenderers[ia].sortingOrder = _backgroundImages.Length - 1 - ia;
+				_childrenTransforms[ia].GetComponent<SortingGroup>().sortingOrder = _childrenRenderers[ia].sortingOrder;
+				centerX = _childrenTransforms[ia].position.x;
+				centerY = _childrenTransforms[ia].position.y;
+				imageSize = _childrenRenderers[ia].sprite.bounds.size;
+				right = centerX + imageSize.x;
+				left = centerX - imageSize.x;
+				top = centerY + imageSize.y;
+				bottom = centerY - imageSize.y;
+				_childrenTransforms[ia].GetChild(0).position = new Vector2(left, top);
+				_childrenTransforms[ia].GetChild(1).position = new Vector2(centerX, top);
+				_childrenTransforms[ia].GetChild(2).position = new Vector2(right, top);
+				_childrenTransforms[ia].GetChild(3).position = new Vector2(left, centerY);
+				_childrenTransforms[ia].GetChild(4).position = new Vector2(right, centerY);
+				_childrenTransforms[ia].GetChild(5).position = new Vector2(left, bottom);
+				_childrenTransforms[ia].GetChild(6).position = new Vector2(centerX, bottom);
+				_childrenTransforms[ia].GetChild(7).position = new Vector2(right, bottom);
+				for (ushort ib = 0; ib < _childrenTransforms[ia].childCount; ib++)
+					_childrenTransforms[ia].GetChild(ib).GetComponent<SpriteRenderer>().sprite = sprite;
 			}
+			_isInTrancision = false;
 		}
 		private void FixedUpdate()
 		{
