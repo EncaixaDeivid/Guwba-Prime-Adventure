@@ -58,11 +58,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				if (_statistics.Stop)
 				{
-					_canShoot = true;
 					_timeStop = _statistics.StopTime;
-					_isStopped = true;
 					_sender.SetStateForm(StateForm.State);
-					_sender.SetToggle(false);
+					_sender.SetToggle(!(_isStopped = _canShoot = true));
 					_sender.Send(PathConnection.Enemy);
 					if (_statistics.Paralyze)
 						_rigidybody.Sleep();
