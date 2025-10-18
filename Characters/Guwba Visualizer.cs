@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Collections;
 namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
@@ -60,72 +59,73 @@ namespace GuwbaPrimeAdventure.Character
 			LifeText = root.Q<Label>(_lifeTextObject);
 			CoinText = root.Q<Label>(_coinTextObject);
 			root.Q<GroupBox>(_iconsObject).style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-		}
-		private IEnumerator Start()
-		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			VisualElement vitality = RootElement.Q<VisualElement>(_vitalityVisual);
-			vitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement vitalityPiece = RootElement.Q<VisualElement>(_vitalityPieceVisual);
-			Vitality = new VisualElement[_vitality];
-			for (ushort i = 0; i < _vitality; i++)
+			SceneInitiator.RegisterTrancision(EndTransicion);
+			void EndTransicion()
 			{
-				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
-				vitalityPieceClone.style.backgroundColor = new StyleColor(_backgroundColor);
-				vitalityPieceClone.style.borderBottomColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderLeftColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderRightColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderTopColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderBottomWidth = new StyleFloat(_borderWidth);
-				vitalityPieceClone.style.borderLeftWidth = new StyleFloat(_borderWidth);
-				vitalityPieceClone.style.borderRightWidth = new StyleFloat(_borderWidth);
-				vitalityPieceClone.style.borderTopWidth = new StyleFloat(_borderWidth);
-				vitality.Add(vitalityPieceClone);
-				Vitality[i] = vitality[i + 1];
+				VisualElement vitality = root.Q<VisualElement>(_vitalityVisual);
+				vitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
+				VisualElement vitalityPiece = root.Q<VisualElement>(_vitalityPieceVisual);
+				Vitality = new VisualElement[_vitality];
+				for (ushort i = 0; i < _vitality; i++)
+				{
+					VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
+					vitalityPieceClone.style.backgroundColor = new StyleColor(_backgroundColor);
+					vitalityPieceClone.style.borderBottomColor = new StyleColor(_borderColor);
+					vitalityPieceClone.style.borderLeftColor = new StyleColor(_borderColor);
+					vitalityPieceClone.style.borderRightColor = new StyleColor(_borderColor);
+					vitalityPieceClone.style.borderTopColor = new StyleColor(_borderColor);
+					vitalityPieceClone.style.borderBottomWidth = new StyleFloat(_borderWidth);
+					vitalityPieceClone.style.borderLeftWidth = new StyleFloat(_borderWidth);
+					vitalityPieceClone.style.borderRightWidth = new StyleFloat(_borderWidth);
+					vitalityPieceClone.style.borderTopWidth = new StyleFloat(_borderWidth);
+					vitality.Add(vitalityPieceClone);
+					Vitality[i] = vitality[i + 1];
+				}
+				vitality.Remove(vitalityPiece);
+				VisualElement recoverVitality = root.Q<VisualElement>(_recoverVitalityVisual);
+				recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
+				VisualElement recoverVitalityPiece = root.Q<VisualElement>(_recoverVitalityPieceVisual);
+				RecoverVitality = new VisualElement[_recoverVitality];
+				float recoverVitalityPieceWidth = _totalWidth / _recoverVitality - _borderWidth * 2f;
+				for (ushort i = 0; i < _recoverVitality; i++)
+				{
+					VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
+					recoverVitalityPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
+					recoverVitalityPieceClone.style.width = new StyleLength(new Length(recoverVitalityPieceWidth, LengthUnit.Pixel));
+					recoverVitality.Add(recoverVitalityPieceClone);
+					RecoverVitality[i] = recoverVitality[i + 1];
+				}
+				recoverVitality.Remove(recoverVitalityPiece);
+				VisualElement stunResistance = root.Q<VisualElement>(_stunResistanceVisual);
+				stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
+				VisualElement stunResistancePiece = root.Q<VisualElement>(_stunResistancePieceVisual);
+				StunResistance = new VisualElement[_stunResistance];
+				float stunResistancePieceWidth = _totalWidth / _stunResistance - _borderWidth * 2f;
+				for (ushort i = 0; i < _stunResistance; i++)
+				{
+					VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
+					stunResistancePieceClone.style.backgroundColor = new StyleColor(_stunResistanceColor);
+					stunResistancePieceClone.style.width = new StyleLength(new Length(stunResistancePieceWidth, LengthUnit.Pixel));
+					stunResistance.Add(stunResistancePieceClone);
+					StunResistance[i] = stunResistance[i + 1];
+				}
+				stunResistance.Remove(stunResistancePiece);
+				VisualElement bunnyHop = root.Q<VisualElement>(_bunnyHopVisual);
+				bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
+				VisualElement bunnyHopPiece = root.Q<VisualElement>(_bunnyHopPieceVisual);
+				BunnyHop = new VisualElement[_bunnyHop];
+				float bunnyHopPieceWidth = _totalWidth / _bunnyHop - _borderWidth * 2f;
+				for (ushort i = 0; i < _bunnyHop; i++)
+				{
+					VisualElement bunnyHopClone = new() { name = bunnyHopPiece.name };
+					bunnyHopClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
+					bunnyHopClone.style.width = new StyleLength(new Length(bunnyHopPieceWidth, LengthUnit.Pixel));
+					bunnyHop.Add(bunnyHopClone);
+					BunnyHop[i] = bunnyHop[i + 1];
+				}
+				bunnyHop.Remove(bunnyHopPiece);
+				SceneInitiator.UnregisterTrancision(EndTransicion);
 			}
-			vitality.Remove(vitalityPiece);
-			VisualElement recoverVitality = RootElement.Q<VisualElement>(_recoverVitalityVisual);
-			recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement recoverVitalityPiece = RootElement.Q<VisualElement>(_recoverVitalityPieceVisual);
-			RecoverVitality = new VisualElement[_recoverVitality];
-			float recoverVitalityPieceWidth = _totalWidth / _recoverVitality - _borderWidth * 2f;
-			for (ushort i = 0; i < _recoverVitality; i++)
-			{
-				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
-				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
-				recoverVitalityPieceClone.style.width = new StyleLength(new Length(recoverVitalityPieceWidth, LengthUnit.Pixel));
-				recoverVitality.Add(recoverVitalityPieceClone);
-				RecoverVitality[i] = recoverVitality[i + 1];
-			}
-			recoverVitality.Remove(recoverVitalityPiece);
-			VisualElement stunResistance = RootElement.Q<VisualElement>(_stunResistanceVisual);
-			stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement stunResistancePiece = RootElement.Q<VisualElement>(_stunResistancePieceVisual);
-			StunResistance = new VisualElement[_stunResistance];
-			float stunResistancePieceWidth = _totalWidth / _stunResistance - _borderWidth * 2f;
-			for (ushort i = 0; i < _stunResistance; i++)
-			{
-				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
-				stunResistancePieceClone.style.backgroundColor = new StyleColor(_stunResistanceColor);
-				stunResistancePieceClone.style.width = new StyleLength(new Length(stunResistancePieceWidth, LengthUnit.Pixel));
-				stunResistance.Add(stunResistancePieceClone);
-				StunResistance[i] = stunResistance[i + 1];
-			}
-			stunResistance.Remove(stunResistancePiece);
-			VisualElement bunnyHop = RootElement.Q<VisualElement>(_bunnyHopVisual);
-			bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement bunnyHopPiece = RootElement.Q<VisualElement>(_bunnyHopPieceVisual);
-			BunnyHop = new VisualElement[_bunnyHop];
-			float bunnyHopPieceWidth = _totalWidth / _bunnyHop - _borderWidth * 2f;
-			for (ushort i = 0; i < _bunnyHop; i++)
-			{
-				VisualElement bunnyHopClone = new() { name = bunnyHopPiece.name };
-				bunnyHopClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
-				bunnyHopClone.style.width = new StyleLength(new Length(bunnyHopPieceWidth, LengthUnit.Pixel));
-				bunnyHop.Add(bunnyHopClone);
-				BunnyHop[i] = bunnyHop[i + 1];
-			}
-			bunnyHop.Remove(bunnyHopPiece);
 		}
 	};
 };
