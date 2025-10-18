@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
@@ -9,9 +10,9 @@ namespace GuwbaPrimeAdventure.Item
 		[SerializeField, Tooltip("The index that this object will check if theres anything completed.")] private ushort _progressIndex;
 		[SerializeField, Tooltip("If the index is about the boss.")] private bool _isBossProgress;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		private new void Awake()
+		private IEnumerator Start()
 		{
-			base.Awake();
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			bool levelCompleted = saveFile.levelsCompleted[_progressIndex - 1];
 			if (_isBossProgress ? saveFile.deafetedBosses[_progressIndex - 1] : levelCompleted)
@@ -21,7 +22,7 @@ namespace GuwbaPrimeAdventure.Item
 					saveFile.generalObjects.Add(gameObject.name);
 					SaveController.WriteSave(saveFile);
 				}
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject);
 			}
 		}
 	};
