@@ -7,7 +7,6 @@ namespace GuwbaPrimeAdventure.Story
 	{
 		static private DialogHud _instance;
 		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _rootElementVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _characterIcon;
 		[SerializeField, Tooltip("User interface element.")] private string _characterName;
 		[SerializeField, Tooltip("User interface element.")] private string _characterSpeach;
@@ -25,12 +24,11 @@ namespace GuwbaPrimeAdventure.Story
 				return;
 			}
 			_instance = this;
-			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			RootElement = root.Q<VisualElement>(_rootElementVisual);
-			CharacterIcon = root.Q<VisualElement>(_characterIcon);
-			CharacterName = root.Q<Label>(_characterName);
-			CharacterSpeach = root.Q<Label>(_characterSpeach);
-			AdvanceSpeach = root.Q<Button>(_advanceSpeach);
+			RootElement = GetComponent<UIDocument>().rootVisualElement;
+			CharacterIcon = RootElement.Q<VisualElement>(_characterIcon);
+			CharacterName = RootElement.Q<Label>(_characterName);
+			CharacterSpeach = RootElement.Q<Label>(_characterSpeach);
+			AdvanceSpeach = RootElement.Q<Button>(_advanceSpeach);
 		}
 	};
 };
