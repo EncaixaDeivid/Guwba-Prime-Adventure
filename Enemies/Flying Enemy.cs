@@ -140,9 +140,12 @@ namespace GuwbaPrimeAdventure.Enemy
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
+						LayerMask groundLayer = _statistics.Physics.GroundLayer;
 						Vector2 overlapPoint = (Vector2)transform.position + _collider.offset;
 						Vector2 direction = (_targetPoint - overlapPoint).normalized;
 						float distance = Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint);
+						if (!_detected)
+							return;
 						for (ushort i = 0; i < Mathf.FloorToInt(distance / _statistics.DetectionFactor); i++)
 						{
 							if (_collider is BoxCollider2D)
@@ -150,7 +153,9 @@ namespace GuwbaPrimeAdventure.Enemy
 							else if (_collider is CircleCollider2D)
 								_detected = !Physics2D.OverlapCircle(overlapPoint, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
 							else if (_collider is CapsuleCollider2D)
-								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, _statistics.Physics.GroundLayer);
+								_detected = !Physics2D.OverlapCapsule(overlapPoint, _collider.bounds.size, (_collider as CapsuleCollider2D).direction, transform.eulerAngles.z, groundLayer);
+							if (!_detected)
+								return;
 							overlapPoint += _statistics.DetectionFactor * Vector2.one * direction;
 						}
 						if (_detected)
