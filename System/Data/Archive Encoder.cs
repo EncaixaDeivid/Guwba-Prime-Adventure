@@ -13,17 +13,12 @@ namespace GuwbaPrimeAdventure.Data
 				scriptedData += (char)(data[i] ^ ScriptPassword[i % ScriptPassword.Length]);
 			return scriptedData;
 		}
-		internal static StructData ReadData<StructData>(string path) where StructData : struct
-		{
-			string dataJSON = ScriptData(File.ReadAllText(path, Encoding.UTF8));
-			return JsonUtility.FromJson<StructData>(dataJSON);
-		}
+		internal static StructData ReadData<StructData>(string path) where StructData : struct => JsonUtility.FromJson<StructData>(ScriptData(File.ReadAllText(path, Encoding.UTF8)));
 		internal static void WriteData<StructData>(StructData structData, string path) where StructData : struct
 		{
-			string scriptedData = ScriptData(JsonUtility.ToJson(structData));
 			if (File.Exists(path))
 				File.Delete(path);
-			File.WriteAllText(path, scriptedData, Encoding.UTF8);
+			File.WriteAllText(path, ScriptData(JsonUtility.ToJson(structData)), Encoding.UTF8);
 		}
 	};
 };
