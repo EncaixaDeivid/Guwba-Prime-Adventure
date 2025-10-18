@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System;
+using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Character;
@@ -27,6 +28,19 @@ namespace GuwbaPrimeAdventure.Item
 			_sender.SetStateForm(StateForm.Action);
 			_sender.SetAdditionalData(gameObject);
 			_levelGate = Instantiate(_levelGateObject, transform);
+		}
+		private void OnDestroy()
+		{
+			SaveController.Load(out SaveFile saveFile);
+			_levelGate.Level.clicked -= EnterLevel;
+			if (saveFile.levelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+				_levelGate.Boss.clicked -= EnterBoss;
+			if (saveFile.deafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+				_levelGate.Scenes.clicked -= ShowScenes;
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_levelGate.transform.localPosition = _offsetPosition;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
@@ -38,15 +52,6 @@ namespace GuwbaPrimeAdventure.Item
 			_levelGate.Boss.SetEnabled(false);
 			_levelGate.Scenes.SetEnabled(false);
 			_defaultPriority = (short)_gateCamera.Priority.Value;
-		}
-		private void OnDestroy()
-		{
-			SaveController.Load(out SaveFile saveFile);
-			_levelGate.Level.clicked -= EnterLevel;
-			if (saveFile.levelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
-				_levelGate.Boss.clicked -= EnterBoss;
-			if (saveFile.deafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
-				_levelGate.Scenes.clicked -= ShowScenes;
 		}
 		private Action EnterLevel => () => GetComponent<Transitioner>().Transicion(_levelScene);
 		private Action EnterBoss => () => GetComponent<Transitioner>().Transicion(_bossScene);
