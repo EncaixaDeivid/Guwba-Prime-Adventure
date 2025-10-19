@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_hasTarget)
 			{
-				if (GuwbaCentralizer.EqualObject(other.gameObject))
+				if (GuwbaStateMarker.EqualObject(other.gameObject))
 					_getTouch.Invoke(_touchIndex);
 			}
 			else if (other.TryGetComponent<JumperEnemy>(out _))
