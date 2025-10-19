@@ -11,11 +11,10 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
-	[RequireComponent(typeof(CinemachineImpulseSource))]
-	public sealed class GuwbaStateMarker : StateController, IConnector
+	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
+	public sealed class GuwbaAstralMarker : StateController, IConnector
 	{
-		private static GuwbaStateMarker _instance;
+		private static GuwbaAstralMarker _instance;
 		private GuwbaVisualizer _guwbaVisualizer;
 		private GuwbaDamager[] _guwbaDamagers;
 		private Animator _animator;
