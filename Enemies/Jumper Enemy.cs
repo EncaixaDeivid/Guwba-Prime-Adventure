@@ -50,9 +50,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				yield return new WaitUntil(() => !SurfacePerception() && isActiveAndEnabled && !IsStunned && !_stopJump);
 				_rigidybody.linearVelocityX = 0f;
-				float targetPosition = GuwbaCentralizer.Position.x;
+				float targetPosition = GuwbaStateMarker.Localization.x;
 				if (_statistics.RandomFollow)
-					targetPosition = Random.Range(-1, 1) >= 0f ? GuwbaCentralizer.Position.x : otherTarget.x;
+					targetPosition = Random.Range(-1, 1) >= 0f ? GuwbaStateMarker.Localization.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
 				_movementSide = (short)(targetPosition > transform.position.x ? 1f : -1f);
