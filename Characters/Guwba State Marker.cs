@@ -74,8 +74,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
 		[SerializeField, Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
 		[SerializeField, Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")]
-		private float _fallDamageShowMultiply;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
 		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
@@ -104,15 +103,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
-		public static Vector2 Localization
-		{
-			get => _instance ? _instance.transform.position : Vector2.zero;
-			set
-			{
-				if (_instance)
-					_instance.transform.position = value;
-			}
-		}
+		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
 		public static bool Attacked => _instance ? _instance._attackUsage : false;
 		public static bool Hurted => _instance ? _instance._invencibility : false;
