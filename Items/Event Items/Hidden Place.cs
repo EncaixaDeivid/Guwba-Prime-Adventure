@@ -65,7 +65,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			{
 				while (!appear)
 				{
-					_followLight.transform.position = GuwbaStateMarker.Localization;
+					_followLight.transform.position = GuwbaAstralMarker.Localization;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled);
 				}
@@ -118,12 +118,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!_isReceptor && GuwbaStateMarker.EqualObject(other.gameObject))
+			if (!_isReceptor && GuwbaAstralMarker.EqualObject(other.gameObject))
 				StartCoroutine(Fade(false));
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!_isReceptor && GuwbaStateMarker.EqualObject(other.gameObject))
+			if (!_isReceptor && GuwbaAstralMarker.EqualObject(other.gameObject))
 				StartCoroutine(Fade(true));
 		}
 		public void Execute()
