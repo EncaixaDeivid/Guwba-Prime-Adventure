@@ -44,6 +44,16 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			_sender.SetStateForm(StateForm.State);
 			_gravityScale = _rigidybody.gravityScale;
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			foreach (SummonPointStructure summonStructure in _statistics.SummonPointStructures)
 				Instantiate(summonStructure.SummonPointObject, summonStructure.Point, Quaternion.identity).GetTouch(() => Summon(summonStructure.Summon));
 			if (_statistics.RandomTimedSummons)
@@ -72,12 +82,6 @@ namespace GuwbaPrimeAdventure.Enemy
 						StartCoroutine(TimedSummon(summon));
 				}
 			}
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
