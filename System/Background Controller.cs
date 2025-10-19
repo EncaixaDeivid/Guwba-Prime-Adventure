@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure
 		private SpriteRenderer[] _childrenRenderers;
 		private bool _isInTrancision = false;
 		private float _startPosition = 0f;
+		private float _movementX = 0f;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
@@ -55,14 +56,13 @@ namespace GuwbaPrimeAdventure
 		{
 			if (_isInTrancision)
 				return;
-			float axisX;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
-				axisX = 1f - (_backgroundSpeed - (i * _slowSpeed));
-				_childrenTransforms[i].position = new Vector2(_startPosition + transform.position.x * axisX, transform.position.y);
-				if (transform.position.x * (1f - axisX) > _startPosition + _childrenRenderers[i].sprite.bounds.size.x)
+				_movementX = 1f - (_backgroundSpeed - (i * _slowSpeed));
+				_childrenTransforms[i].position = new Vector2(_startPosition + transform.position.x * _movementX, transform.position.y);
+				if (transform.position.x * (1f - _movementX) > _startPosition + _childrenRenderers[i].sprite.bounds.size.x)
 					_startPosition += _childrenRenderers[i].sprite.bounds.size.x;
-				else if (transform.position.x * (1f - axisX) < _startPosition - _childrenRenderers[i].sprite.bounds.size.x)
+				else if (transform.position.x * (1f - _movementX) < _startPosition - _childrenRenderers[i].sprite.bounds.size.x)
 					_startPosition -= _childrenRenderers[i].sprite.bounds.size.x;
 			}
 		}
