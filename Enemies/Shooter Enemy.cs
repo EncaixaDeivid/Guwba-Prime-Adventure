@@ -27,8 +27,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			bool hasTarget = false;
 			if (_statistics.CircularDetection)
 			{
-				Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer);
-				foreach (Collider2D collider in colliders)
+				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
 					if (collider.TryGetComponent<IDestructible>(out _))
 					{
 						if (Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
