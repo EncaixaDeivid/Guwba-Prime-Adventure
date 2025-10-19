@@ -21,14 +21,15 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
-			_sender.SetAdditionalData(gameObject);
 			_active = !_isReceptor;
 		}
 		private void Teleport()
 		{
+			_sender.SetStateForm(StateForm.Action);
+			_sender.SetAdditionalData(_locations[_index]);
+			_sender.SetToggle(false);
 			_sender.Send(PathConnection.System);
-			GuwbaAstralMarker.Localization = _locations[_index];
+			_sender.Send(PathConnection.Character);
 			_index = (ushort)(_index < _locations.Length - 1f ? _index + 1f : 0f);
 		}
 		private IEnumerator Timer(bool activeValue)
@@ -39,10 +40,14 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private IEnumerator Timer()
 		{
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetAdditionalData(gameObject);
 			_sender.SetToggle(false);
 			_sender.Send(PathConnection.Hud);
 			yield return new WaitTime(this, _timeToUse);
 			Teleport();
+			_sender.SetStateForm(StateForm.State);
+			_sender.SetAdditionalData(gameObject);
 			_sender.SetToggle(true);
 			_sender.Send(PathConnection.Hud);
 		}
