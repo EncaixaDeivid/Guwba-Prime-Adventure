@@ -104,9 +104,6 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
-		public static bool Attacked => _instance ? _instance._attackUsage : false;
-		public static bool Hurted => _instance ? _instance._invencibility : false;
-		public static bool Stunned => _instance ? _instance._stunTimer > 0f : false;
 		private new void Awake()
 		{
 			base.Awake();
