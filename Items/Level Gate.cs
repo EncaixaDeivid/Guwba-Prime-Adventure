@@ -58,7 +58,7 @@ namespace GuwbaPrimeAdventure.Item
 		private Action ShowScenes => () => _sender.Send(PathConnection.Story);
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!_isOnInteraction || !GuwbaStateMarker.EqualObject(other.gameObject))
+			if (!_isOnInteraction || !GuwbaAstralMarker.EqualObject(other.gameObject))
 				return;
 			_isOnInteraction = false;
 			_gateCamera.Priority.Value = _defaultPriority;
