@@ -259,15 +259,15 @@ namespace GuwbaPrimeAdventure.Character
 					_dashMovement = _movementAction;
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _dashMovement, transform.localScale.y, transform.localScale.z);
 					_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
-					_originCast = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
+					Vector2 wallOrigin = new(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 					float dashLocation = transform.position.x;
-					while (Physics2D.BoxCast(_originCast, _normalSize, 0f, transform.up, _groundChecker, _groundLayer) || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
+					while (Physics2D.BoxCast(wallOrigin, _normalSize, 0f, transform.up, _groundChecker, _groundLayer) || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
 					{
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
 						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer) || !_dashActive || !_isOnGround || _isJumping)
 							break;
-						_originCast = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
+						wallOrigin = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => isActiveAndEnabled && !_animator.GetBool(_stun));
 					}
@@ -427,11 +427,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				if (_isOnGround)
 				{
-					if (_animator.GetBool(_jump))
-						_animator.SetBool(_jump, false);
-					if (_animator.GetBool(_fall))
-						_animator.SetBool(_fall, false);
-					if (_movementAction == 0f && Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
+					if (_movementAction == 0f && (_animator.GetBool(_fall) || Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f))
 						_animator.SetBool(_idle, true);
 					else if (_animator.GetBool(_idle))
 						_animator.SetBool(_idle, false);
@@ -439,6 +435,10 @@ namespace GuwbaPrimeAdventure.Character
 						_animator.SetBool(_walk, true);
 					else if (_movementAction == 0f && _animator.GetBool(_walk))
 						_animator.SetBool(_walk, false);
+					if (_animator.GetBool(_jump))
+						_animator.SetBool(_jump, false);
+					if (_animator.GetBool(_fall))
+						_animator.SetBool(_fall, false);
 					_lastGroundedTime = _jumpCoyoteTime;
 					_longJumping = _isJumping = false;
 					_bunnyHopBoost = _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f;
