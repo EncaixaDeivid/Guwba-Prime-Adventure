@@ -102,7 +102,15 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
-		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
+		public static Vector2 Localization
+		{
+			get => _instance ? _instance.transform.position : Vector2.zero;
+			set
+			{
+				if (_instance)
+					_instance.transform.position = value;
+			}
+		}
 		public PathConnection PathConnection => PathConnection.Character;
 		public static bool Attacked => _instance ? _instance._attackUsage : false;
 		public static bool Hurted => _instance ? _instance._invencibility : false;
