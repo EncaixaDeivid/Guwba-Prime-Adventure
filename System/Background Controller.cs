@@ -11,7 +11,7 @@ namespace GuwbaPrimeAdventure
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
 		private bool _isInTrancision = false;
-		private float _startPosition;
+		private float _startPosition = 0f;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
@@ -31,7 +31,6 @@ namespace GuwbaPrimeAdventure
 			_childrenTransforms = new Transform[_backgroundImages.Length];
 			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
 			_isInTrancision = true;
-			_startPosition = transform.position.x;
 		}
 		private IEnumerator Start()
 		{
