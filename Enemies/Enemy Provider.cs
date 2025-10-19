@@ -28,17 +28,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		public bool Hurt(ushort damage)
 		{
 			if (_controller.ProvidenceStatistics.ReactToDamage)
+			{
 				if (_controller.ProvidenceStatistics.HasIndex)
-				{
-					_sender.SetStateForm(StateForm.Action);
 					_sender.SetNumber(_controller.ProvidenceStatistics.IndexEvent);
-					_sender.Send(PathConnection.Enemy);
-				}
-				else
-				{
-					_sender.SetStateForm(StateForm.Action);
-					_sender.Send(PathConnection.Enemy);
-				}
+				_sender.SetStateForm(StateForm.Action);
+				_sender.Send(PathConnection.Enemy);
+			}
 			if ((_controller.Vitality -= (short)damage) <= 0f)
 				Destroy(gameObject);
 			return true;
