@@ -4,9 +4,9 @@ using System.Collections;
 namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	internal sealed class GuwbaVisualizer : MonoBehaviour
+	internal sealed class GuwbaCanvas : MonoBehaviour
 	{
-		private static GuwbaVisualizer _instance;
+		private static GuwbaCanvas _instance;
 		[Header("Elements")]
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityVisual;
 		[SerializeField, Tooltip("User interface element.")] private string _vitalityPieceVisual;
