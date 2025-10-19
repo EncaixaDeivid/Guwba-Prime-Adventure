@@ -7,8 +7,8 @@ namespace GuwbaPrimeAdventure.Character
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	internal sealed class PointSetter : StateController, IConnector
 	{
-		private static Vector2 _checkpointIndex = new();
-		private bool _isChecked = false;
+		private static PointSetter _instance;
+		private readonly Sender _sender = Sender.Create();
 		[Header("Hubby World Interaction")]
 		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
@@ -16,6 +16,9 @@ namespace GuwbaPrimeAdventure.Character
 		private new void Awake()
 		{
 			base.Awake();
+			_sender.SetStateForm(StateForm.Action);
+			_sender.SetAdditionalData(transform.position);
+			_sender.SetToggle(false);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -29,20 +32,17 @@ namespace GuwbaPrimeAdventure.Character
 			SaveController.Load(out SaveFile saveFile);
 			if (gameObject.scene.name == _levelSelectorScene && saveFile.lastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.lastLevelEntered[^1]}") == _selfIndex)
-					GuwbaAstralMarker.Localization = transform.position;
+					_sender.Send(PathConnection.Character);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!_isChecked && GuwbaAstralMarker.EqualObject(other.gameObject))
-			{
-				_isChecked = true;
-				_checkpointIndex = transform.position;
-			}
+			if (GuwbaAstralMarker.EqualObject(other.gameObject) && this != _instance)
+				_instance = this;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (_isChecked && data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				GuwbaAstralMarker.Localization = _checkpointIndex;
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value && this == _instance)
+				_sender.Send(PathConnection.Character);
 		}
 	};
 };
