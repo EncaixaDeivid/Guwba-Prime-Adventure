@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_hasTarget)
 			{
-				if (GuwbaStateMarker.EqualObject(other.gameObject))
+				if (GuwbaAstralMarker.EqualObject(other.gameObject))
 					_getTouch.Invoke();
 			}
 			else if (other.TryGetComponent<TeleporterEnemy>(out _))
