@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Item
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!GuwbaCentralizer.EqualObject(other.gameObject))
+			if (!GuwbaStateMarker.EqualObject(other.gameObject))
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
