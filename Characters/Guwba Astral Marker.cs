@@ -102,15 +102,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
-		public static Vector2 Localization
-		{
-			get => _instance ? _instance.transform.position : Vector2.zero;
-			set
-			{
-				if (_instance)
-					_instance.transform.position = value;
-			}
-		}
+		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
 		public static bool Attacked => _instance ? _instance._attackUsage : false;
 		public static bool Hurted => _instance ? _instance._invencibility : false;
@@ -587,25 +579,28 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value)
-			{
-				for (ushort i = 0; i < (_vitality = (short)_guwbaVisualizer.Vitality.Length); i++)
+			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+				if (data.ToggleValue.Value)
 				{
-					_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
-					_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
-					_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
-					_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
-					_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
+					for (ushort i = 0; i < (_vitality = (short)_guwbaVisualizer.Vitality.Length); i++)
+					{
+						_guwbaVisualizer.Vitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.BackgroundColor);
+						_guwbaVisualizer.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaVisualizer.BorderColor);
+						_guwbaVisualizer.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaVisualizer.BorderColor);
+						_guwbaVisualizer.Vitality[i].style.borderRightColor = new StyleColor(_guwbaVisualizer.BorderColor);
+						_guwbaVisualizer.Vitality[i].style.borderTopColor = new StyleColor(_guwbaVisualizer.BorderColor);
+					}
+					for (ushort i = _recoverVitality = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
+						_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+					for (ushort i = 0; i < (_stunResistance = (short)_guwbaVisualizer.StunResistance.Length); i++)
+						_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
+					for (ushort i = _bunnyHopBoost = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
+						_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
+					_animator.SetBool(_death, _isHoping = false);
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 				}
-				for (ushort i = _recoverVitality = 0; i < _guwbaVisualizer.RecoverVitality.Length; i++)
-					_guwbaVisualizer.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
-				for (ushort i = 0; i < (_stunResistance = (short)_guwbaVisualizer.StunResistance.Length); i++)
-					_guwbaVisualizer.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.StunResistanceColor);
-				for (ushort i = _bunnyHopBoost = 0; i < _guwbaVisualizer.BunnyHop.Length; i++)
-					_guwbaVisualizer.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaVisualizer.MissingColor);
-				_animator.SetBool(_death, _isHoping = false);
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
-			}
+				else if (!data.ToggleValue.Value && (Vector2)additionalData != null)
+					transform.position = (Vector2)additionalData;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				_timerOfInvencibility = _invencibilityTime;
