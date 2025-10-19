@@ -116,7 +116,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_rigidybody.linearVelocityX = 0f;
 			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage)
 			{
-				Vector2 targetPosition = GuwbaStateMarker.Localization;
+				Vector2 targetPosition = GuwbaAstralMarker.Localization;
 				if (_statistics.UseOtherTarget)
 					targetPosition = _statistics.OtherTarget;
 				_movementSide = (short)(targetPosition.x < transform.position.x ? -1f : 1f);
