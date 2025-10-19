@@ -120,7 +120,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			if (_statistics.EndlessPursue)
 			{
-				transform.position = Vector2.MoveTowards(transform.position, GuwbaCentralizer.Position, Time.deltaTime * _statistics.MovementSpeed);
+				transform.position = Vector2.MoveTowards(transform.position, GuwbaStateMarker.Localization, Time.deltaTime * _statistics.MovementSpeed);
 				return;
 			}
 			if (_detected)
@@ -136,7 +136,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
 				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
-					if (GuwbaCentralizer.EqualObject(verifyCollider.gameObject))
+					if (GuwbaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
