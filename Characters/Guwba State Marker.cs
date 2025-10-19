@@ -10,10 +10,10 @@ using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Character
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(GuwbaCentralizer), typeof(Animator))]
-	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(SortingGroup))]
-	[RequireComponent(typeof(CircleCollider2D), typeof(CinemachineImpulseSource))]
-	internal sealed class GuwbaStateMarker : StateController, IConnector
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
+	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D))]
+	[RequireComponent(typeof(CinemachineImpulseSource))]
+	public sealed class GuwbaStateMarker : StateController, IConnector
 	{
 		private static GuwbaStateMarker _instance;
 		private GuwbaVisualizer _guwbaVisualizer;
@@ -104,7 +104,19 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
+		public static Vector2 Localization
+		{
+			get => _instance ? _instance.transform.position : Vector2.zero;
+			set
+			{
+				if (_instance)
+					_instance.transform.position = value;
+			}
+		}
 		public PathConnection PathConnection => PathConnection.Character;
+		public static bool Attacked => _instance ? _instance._attackUsage : false;
+		public static bool Hurted => _instance ? _instance._invencibility : false;
+		public static bool Stunned => _instance ? _instance._stunTimer > 0f : false;
 		private new void Awake()
 		{
 			base.Awake();
@@ -566,6 +578,14 @@ namespace GuwbaPrimeAdventure.Character
 				SaveController.Load(out SaveFile saveFile);
 				(_guwbaVisualizer.LifeText.text, _guwbaVisualizer.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
 			}
+		}
+		public static bool EqualObject(params GameObject[] othersObjects)
+		{
+			if (_instance)
+				foreach (GameObject other in othersObjects)
+					if (other == _instance.gameObject)
+						return true;
+			return false;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
