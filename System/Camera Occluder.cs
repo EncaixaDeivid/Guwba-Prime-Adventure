@@ -52,7 +52,7 @@ namespace GuwbaPrimeAdventure
 				{
 					yield return new WaitTime(this, _waitTime);
 					float time = 0f;
-					while ((Vector2)_cinemachineFollow.TrackerSettings.PositionDamping != _positionDamping)
+					while (time < 1f)
 					{
 						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
