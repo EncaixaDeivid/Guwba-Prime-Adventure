@@ -21,6 +21,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		private float _retreatLocation = 0f;
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
+		private new void Awake()
+		{
+			base.Awake();
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
 		private void Start()
 		{
 			_timeRun = _statistics.RunOfTime;
