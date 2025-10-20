@@ -39,8 +39,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			else if (!_isDashing && Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance)
 				if (_statistics.DetectionStop)
 				{
-					_stopWorking = true;
-					_stoppedTime = _statistics.StopTime;
+					(_stopWorking, _stoppedTime) = (true, _statistics.StopTime);
 					return;
 				}
 				else
@@ -48,10 +47,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.deltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed));
 			if (_isDashing && Vector2.Distance(transform.position, _targetPoint) <= 1e-3f)
 				if (_statistics.DetectionStop)
-				{
-					_stopWorking = _afterDash = true;
-					_stoppedTime = _statistics.AfterTime;
-				}
+					(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
 				else
 					_isDashing = !(_returnDash = true);
 		}
@@ -94,22 +90,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		private void Update()
 		{
 			if (_statistics.EndlessPursue && _fadeTime > 0f)
-			{
-				_fadeTime -= Time.deltaTime;
-				if (_fadeTime <= 0f)
+				if ((_fadeTime -= Time.deltaTime) <= 0f)
 					Destroy(gameObject);
-			}
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopWorking)
-			{
-				_stoppedTime -= Time.deltaTime;
-				if (_stoppedTime <= 0f)
-				{
-					_stopWorking = false;
-					(_isDashing, _afterDash) = (!_afterDash, false);
-				}
-			}
+				if ((_stoppedTime -= Time.deltaTime) <= 0f)
+					(_isDashing, _afterDash, _stopWorking) = (!_afterDash, false, false);
 			if (_stopWorking)
 				return;
 			if (_statistics.Target)
@@ -123,7 +110,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				transform.position = Vector2.MoveTowards(transform.position, GuwbaAstralMarker.Localization, Time.deltaTime * _statistics.MovementSpeed);
 				return;
 			}
-			if (_detected)
+			if (_detected || _returnDash)
 				Chase();
 			else
 				Trail();
@@ -138,20 +125,19 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 					if (GuwbaAstralMarker.EqualObject(verifyCollider.gameObject))
 					{
-						_targetPoint = verifyCollider.transform.position;
-						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
 						LayerMask groundLayer = _statistics.Physics.GroundLayer;
+						_targetPoint = verifyCollider.transform.position;
+						_detected = !Physics2D.Linecast(transform.position, _targetPoint, groundLayer);
 						Vector2 overlapPoint = (Vector2)transform.position + _collider.offset;
 						Vector2 direction = (_targetPoint - overlapPoint).normalized;
-						float distance = Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint);
 						if (!_detected)
 							return;
-						for (ushort i = 0; i < Mathf.FloorToInt(distance / _statistics.DetectionFactor); i++)
+						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
 							if (_collider is BoxCollider2D)
-								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, _statistics.Physics.GroundLayer);
+								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, groundLayer);
 							else if (_collider is CircleCollider2D)
-								_detected = !Physics2D.OverlapCircle(overlapPoint, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
+								_detected = !Physics2D.OverlapCircle(overlapPoint, (_collider as CircleCollider2D).radius, groundLayer);
 							else if (_collider is CapsuleCollider2D)
 								_detected = !Physics2D.OverlapCapsule(overlapPoint, _collider.bounds.size, (_collider as CapsuleCollider2D).direction, transform.eulerAngles.z, groundLayer);
 							if (!_detected)
