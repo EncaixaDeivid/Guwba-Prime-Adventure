@@ -14,6 +14,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		[SerializeField, Tooltip("The strenght of the basic jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The angle of the detection ray.")] private float _detectionAngle;
 		[SerializeField, Tooltip("The distance this enemy will be to the follow target.")] private float _distanceToTarget;
 		[Header("Reaction")]
 		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
@@ -28,6 +29,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal bool UseTarget => _useTarget;
 		internal bool RandomFollow => _randomFollow;
 		internal float JumpStrenght => _jumpStrenght;
+		internal float DetectionAngle => _detectionAngle;
 		internal float DistanceToTarget => _distanceToTarget;
 		internal ushort StrenghtReact => _strenghtReact;
 		internal bool FollowReact => _followReact;
