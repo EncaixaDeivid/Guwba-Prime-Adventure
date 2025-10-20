@@ -9,6 +9,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private PolygonCollider2D _trail;
 		private Vector2 _pointOrigin = new();
 		private Vector2 _targetPoint = new();
+		private Vector2 _overlapPoint;
 		private bool _normal = true;
 		private bool _afterDash = false;
 		private bool _returnDash = false;
@@ -125,32 +126,24 @@ namespace GuwbaPrimeAdventure.Enemy
 				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 					if (GuwbaAstralMarker.EqualObject(verifyCollider.gameObject))
 					{
-						LayerMask groundLayer = _statistics.Physics.GroundLayer;
 						_targetPoint = verifyCollider.transform.position;
-						_detected = !Physics2D.Linecast(transform.position, _targetPoint, groundLayer);
-						Vector2 overlapPoint = (Vector2)transform.position + _collider.offset;
-						Vector2 direction = (_targetPoint - overlapPoint).normalized;
+						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
+						_overlapPoint = (Vector2)transform.position + _collider.offset;
 						if (!_detected)
 							return;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							if (_collider is BoxCollider2D)
-								_detected = !Physics2D.OverlapBox(overlapPoint, _collider.bounds.size, transform.eulerAngles.z, groundLayer);
-							else if (_collider is CircleCollider2D)
-								_detected = !Physics2D.OverlapCircle(overlapPoint, (_collider as CircleCollider2D).radius, groundLayer);
-							else if (_collider is CapsuleCollider2D)
-								_detected = !Physics2D.OverlapCapsule(overlapPoint, _collider.bounds.size, (_collider as CapsuleCollider2D).direction, transform.eulerAngles.z, groundLayer);
+							_detected = !Physics2D.OverlapCircle(_overlapPoint, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
 							if (!_detected)
 								return;
-							overlapPoint += _statistics.DetectionFactor * Vector2.one * direction;
+							_overlapPoint += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _overlapPoint).normalized;
 						}
-						if (_detected)
-							transform.localScale = new Vector3()
-							{
-								x = Mathf.Abs(transform.localScale.x) * (verifyCollider.transform.position.x < transform.position.x ? -1f : 1f),
-								y = transform.localScale.y,
-								z = transform.localScale.z
-							};
+						transform.localScale = new Vector3()
+						{
+							x = Mathf.Abs(transform.localScale.x) * (verifyCollider.transform.position.x < transform.position.x ? -1f : 1f),
+							y = transform.localScale.y,
+							z = transform.localScale.z
+						};
 						return;
 					}
 		}
