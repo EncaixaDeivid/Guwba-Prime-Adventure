@@ -8,12 +8,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
 		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("If this enemy will use input.")] private bool _useInput;
 		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circularDetection;
+		[SerializeField, Tooltip("If this enemy will not follow the target in the basic jump.")] private bool _unFollow;
 		[SerializeField, Tooltip("If the timmed jumps will be executed in a sequence.")] private bool _sequentialTimmedJumps;
 		[SerializeField, Tooltip("If the sequential timmed jumps will be repeated again over again.")] private bool _repeatTimmedJumps;
 		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
 		[SerializeField, Tooltip("The strenght of the basic jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of time to jump again.")] private float _timeToJump;
 		[SerializeField, Tooltip("The angle of the detection ray.")] private float _detectionAngle;
 		[SerializeField, Tooltip("The distance this enemy will be to the follow target.")] private float _distanceToTarget;
 		[Header("Reaction")]
@@ -23,12 +26,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal JumpPointStructure[] JumpPointStructures => _jumpPointStructures;
 		internal JumpStats[] TimedJumps => _timedJumps;
 		internal Vector2 OtherTarget => _otherTarget;
+		internal bool UseInput => _useInput;
 		internal bool CircularDetection => _circularDetection;
+		internal bool UnFollow => _unFollow;
 		internal bool SequentialTimmedJumps => _sequentialTimmedJumps;
 		internal bool RepeatTimmedJumps => _repeatTimmedJumps;
 		internal bool UseTarget => _useTarget;
 		internal bool RandomFollow => _randomFollow;
 		internal float JumpStrenght => _jumpStrenght;
+		internal float TimeToJump => _timeToJump;
 		internal float DetectionAngle => _detectionAngle;
 		internal float DistanceToTarget => _distanceToTarget;
 		internal ushort StrenghtReact => _strenghtReact;
