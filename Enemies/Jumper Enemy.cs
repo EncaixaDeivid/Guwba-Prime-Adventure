@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Character;
@@ -7,8 +9,10 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
+		private InputController _inputController;
 		private bool _isJumping = false;
 		private bool _stopJump = false;
+		private float _jumpTime = 0f;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
 		private void BasicJump(Vector2 target)
@@ -26,7 +30,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				_isJumping = true;
 				_rigidybody.AddForceY(_rigidybody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
-				StartCoroutine(FollowSide());
+				if (_statistics.UnFollow)
+					StartCoroutine(FollowSide());
 				IEnumerator FollowSide()
 				{
 					yield return new WaitUntil(() => !SurfacePerception() && isActiveAndEnabled && !IsStunned && !_stopJump);
@@ -52,7 +57,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_rigidybody.linearVelocityX = 0f;
 				float targetPosition = GuwbaAstralMarker.Localization.x;
 				if (_statistics.RandomFollow)
-					targetPosition = Random.Range(-1, 1) >= 0f ? GuwbaAstralMarker.Localization.x : otherTarget.x;
+					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GuwbaAstralMarker.Localization.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
 				_movementSide = (short)(targetPosition > transform.position.x ? 1f : -1f);
@@ -75,6 +80,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_sender.SetStateForm(StateForm.State);
+			if (_statistics.UseInput)
+			{
+				_inputController = new InputController();
+				_inputController.Commands.Movement.started += JumpMovement;
+				_inputController.Commands.Movement.Enable();
+			}
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
 				JumpPoint jumpPointInstance = Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity);
@@ -97,10 +108,7 @@ namespace GuwbaPrimeAdventure.Enemy
 							_isJumping = true;
 							_rigidybody.AddForceY(_statistics.JumpPointStructures[index].JumpStats.Strength * _rigidybody.mass, ForceMode2D.Impulse);
 							if (_statistics.JumpPointStructures[index].JumpStats.Follow)
-							{
-								bool useTarget = _statistics.JumpPointStructures[index].JumpStats.UseTarget;
-								FollowJump(_statistics.JumpPointStructures[index].JumpStats.OtherTarget, useTarget);
-							}
+								FollowJump(_statistics.JumpPointStructures[index].JumpStats.OtherTarget, _statistics.JumpPointStructures[index].JumpStats.UseTarget);
 							_statistics.JumpPointStructures[index].RemovalJumpCount = (short)_statistics.JumpPointStructures[index].JumpCount;
 						}
 					}
@@ -137,6 +145,31 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (!_statistics.SequentialTimmedJumps)
 					StartCoroutine(TimedJump(stats));
 			}
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			if (_statistics.UseInput)
+			{
+				_inputController.Commands.Movement.started -= JumpMovement;
+				_inputController.Commands.Movement.Disable();
+				_inputController.Disable();
+			}
+			Sender.Exclude(this);
+		}
+		private Action<InputAction.CallbackContext> JumpMovement => jumpMovement =>
+		{
+			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
+			{
+				_jumpTime = _statistics.TimeToJump;
+				BasicJump(GuwbaAstralMarker.Localization);
+			}
+		};
+		private void Update()
+		{
+			if (!IsStunned && _jumpTime > 0f)
+				_jumpTime -= Time.deltaTime;
 		}
 		private void FixedUpdate()
 		{
@@ -163,7 +196,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 				{
-					Vector2 right = transform.right * (transform.localScale.x < 0f ? -1f : 1f);
+					Vector2 right = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
 					foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, right, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
