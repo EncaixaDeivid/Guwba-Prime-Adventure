@@ -17,7 +17,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			base.Awake();
 			_sender.SetStateForm(StateForm.Action);
-			_sender.SetAdditionalData(transform.position);
+			_sender.SetAdditionalData((Vector2)transform.position);
 			_sender.SetToggle(false);
 			Sender.Include(this);
 		}
