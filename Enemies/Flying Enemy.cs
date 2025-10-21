@@ -7,9 +7,8 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
 		private PolygonCollider2D _trail;
-		private Vector2 _pointOrigin = new();
-		private Vector2 _targetPoint = new();
-		private Vector2 _overlapPoint;
+		private Vector2 _pointOrigin;
+		private Vector2 _targetPoint;
 		private bool _normal = true;
 		private bool _afterDash = false;
 		private bool _returnDash = false;
@@ -128,15 +127,15 @@ namespace GuwbaPrimeAdventure.Enemy
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
-						_overlapPoint = (Vector2)transform.position + _collider.offset;
+						_originCast = (Vector2)transform.position + _collider.offset;
 						if (!_detected)
 							return;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							_detected = !Physics2D.OverlapCircle(_overlapPoint, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
+							_detected = !Physics2D.OverlapCircle(_originCast, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
 							if (!_detected)
 								return;
-							_overlapPoint += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _overlapPoint).normalized;
+							_originCast += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _originCast).normalized;
 						}
 						transform.localScale = new Vector3()
 						{
