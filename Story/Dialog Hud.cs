@@ -24,7 +24,7 @@ namespace GuwbaPrimeAdventure.Story
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement;
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
 			CharacterIcon = RootElement.Q<VisualElement>(_characterIcon);
 			CharacterName = RootElement.Q<Label>(_characterName);
 			CharacterSpeach = RootElement.Q<Label>(_characterSpeach);
