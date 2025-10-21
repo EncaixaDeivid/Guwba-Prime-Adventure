@@ -16,7 +16,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of distance to run in the retreat.")] private float _retreatDistance;
 		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
 		[SerializeField, Tooltip("The amount of time this enemy will be dashing upon the target.")] private float _timeDashing;
-		[SerializeField, Tooltip("The amount of speed this enemy will run when reacting to a hit.")] private float _reactSpeed;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
 		internal bool TurnOffEdge => _turnOffEdge;
 		internal bool TimedDash => _timedDash;
