@@ -1,7 +1,6 @@
 using UnityEngine;
 using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Character;
-using System.Collections;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -43,6 +42,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (_statistics.DetectionStop && _stopWorking)
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 				{
+					_retreatTime = _statistics.TimeToRetreat;
 					_dashedTime = _statistics.TimeDashing;
 					_isDashing = !(_stopWorking = false);
 					_sender.SetToggle(_statistics.JumpDash);
@@ -87,7 +87,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_statistics.DetectionStop && _detected && !_isDashing && SurfacePerception())
+			if (_statistics.DetectionStop && _detected && !_isDashing && SurfacePerception() && !_retreat)
 				_rigidybody.linearVelocityX = 0f;
 			if (_stopWorking)
 				return;
@@ -110,21 +110,39 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					_movementSide *= -1;
 			}
-			_originCast = transform.position;
-			_originCast += new Vector2(_collider.bounds.extents.x + (transform.right * _movementSide).x, _collider.bounds.extents.y * -transform.up.y);
-			bool valid = !Physics2D.Raycast(_originCast, -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
-			if (SurfacePerception() && !_statistics.TurnOffEdge && valid || _boxCast && _boxCast.collider.CanContact(_collider))
-				if (_retreat)
+			void RetreatUse()
+			{
+				_retreat = false;
+				if (_statistics.DetectionStop)
 				{
-					_retreat = false;
 					_stoppedTime = _statistics.StopTime;
 					_stopWorking = true;
 					_rigidybody.linearVelocityX = 0f;
 				}
 				else
+				{
+					_retreatTime = _statistics.TimeToRetreat;
+					_dashedTime = _statistics.TimeDashing;
+					_isDashing = !(_stopWorking = false);
+					_sender.SetToggle(_statistics.JumpDash);
+					_sender.Send(PathConnection.Enemy);
+				}
+			}
+			_originCast = transform.position;
+			_originCast += new Vector2(_collider.bounds.extents.x + (transform.right * _movementSide).x, _collider.bounds.extents.y * -transform.up.y);
+			bool valid = !Physics2D.Raycast(_originCast, -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
+			if (SurfacePerception() && !_statistics.TurnOffEdge && valid || _boxCast && _boxCast.collider.CanContact(_collider))
+				if (_retreat)
+					RetreatUse();
+				else
 					_movementSide *= -1;
 			if (_retreat)
+			{
+				_rigidybody.linearVelocityX = (transform.right * _movementSide).x * -_statistics.RetreatSpeed;
+				if (Mathf.Abs(transform.position.x - _retreatLocation) >= _statistics.RetreatDistance)
+					RetreatUse();
 				return;
+			}
 			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
 				_stoppedTime = _statistics.StopTime;
@@ -149,24 +167,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				_canRetreat = !(_retreat = true);
 				_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f);
-				StartCoroutine(RetreatMovement());
+				_retreatLocation = transform.position.x;
+				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
+				_sender.SetToggle(false);
+				_sender.Send(PathConnection.Enemy);
 				return false;
-				IEnumerator RetreatMovement()
-				{
-					_retreatLocation = transform.position.x;
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
-					_rigidybody.linearVelocityX = (transform.right * _movementSide).x * -_statistics.RetreatSpeed;
-					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
-					while (_retreat && Mathf.Abs(transform.position.x - _retreatLocation) < _statistics.RetreatDistance)
-						yield return new WaitForFixedUpdate();
-					_retreat = false;
-					_retreatTime = _statistics.TimeToRetreat;
-					_dashedTime = _statistics.TimeDashing;
-					_isDashing = !(_stopWorking = false);
-					_sender.SetToggle(_statistics.JumpDash);
-					_sender.Send(PathConnection.Enemy);
-				}
 			}
 			return base.Hurt(damage);
 		}
