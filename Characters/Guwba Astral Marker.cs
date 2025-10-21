@@ -33,9 +33,9 @@ namespace GuwbaPrimeAdventure.Character
 		private readonly int _idle = Animator.StringToHash("Idle");
 		private readonly int _walk = Animator.StringToHash("Walk");
 		private readonly int _walkSpeed = Animator.StringToHash("WalkSpeed");
-		private readonly int _dashSlide = Animator.StringToHash("DashSlide");
 		private readonly int _jump = Animator.StringToHash("Jump");
 		private readonly int _fall = Animator.StringToHash("Fall");
+		private readonly int _dashSlide = Animator.StringToHash("DashSlide");
 		private readonly int _attack = Animator.StringToHash("Attack");
 		private readonly int _attackCombo = Animator.StringToHash("AttackCombo");
 		private readonly int _attackJump = Animator.StringToHash("AttackJump");
@@ -208,9 +208,7 @@ namespace GuwbaPrimeAdventure.Character
 				guwbaDamager.DamagerAttack += Attack;
 			}
 			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
-			_gravityScale = _rigidbody.gravityScale;
-			_normalOffset = _collider.offset;
-			_normalSize = _collider.size;
+			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
 			if (gameObject.scene.name.Contains(_hubbyWorldScene))
 			{
 				foreach (VisualElement vitality in _guwbaCanvas.Vitality)
@@ -246,9 +244,8 @@ namespace GuwbaPrimeAdventure.Character
 			}
 			if (_isJumping && _rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
 			{
-				_isJumping = false;
+				(_isJumping, _lastJumpTime) = (false, 0f);
 				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
-				_lastJumpTime = 0f;
 			}
 			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && !_dashActive && _isOnGround && (!_attackUsage || _comboAttackBuffer))
 			{
@@ -329,13 +326,20 @@ namespace GuwbaPrimeAdventure.Character
 			if (_vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				saveFile.lifes -= 1;
-				_guwbaCanvas.LifeText.text = $"X {saveFile.lifes}";
+				_guwbaCanvas.LifeText.text = $"X {saveFile.lifes -= 1}";
 				SaveController.WriteSave(saveFile);
 				StopAllCoroutines();
 				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 					guwbaDamager.Alpha = 1f;
 				OnDisable();
+				_animator.SetBool(_idle, false);
+				_animator.SetBool(_walk, false);
+				_animator.SetBool(_jump, false);
+				_animator.SetBool(_fall, false);
+				_animator.SetBool(_dashSlide, false);
+				_animator.SetBool(_attackJump, false);
+				_animator.SetBool(_attackSlide, false);
+				_animator.SetBool(_stun, false);
 				_animator.SetBool(_death, true);
 				_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
 				_sender.SetToggle(false);
@@ -439,9 +443,7 @@ namespace GuwbaPrimeAdventure.Character
 						_animator.SetBool(_jump, false);
 					if (_animator.GetBool(_fall))
 						_animator.SetBool(_fall, false);
-					_lastGroundedTime = _jumpCoyoteTime;
-					_longJumping = _isJumping = false;
-					_bunnyHopBoost = _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f;
+					(_lastGroundedTime, _longJumping, _bunnyHopBoost) = (_jumpCoyoteTime, _isJumping = false, _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
 						_isHoping = false;
@@ -619,12 +621,11 @@ namespace GuwbaPrimeAdventure.Character
 					_animator.SetBool(_death, _isHoping = false);
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 				}
-				else if (!data.ToggleValue.Value && (Vector2)additionalData != null)
-					transform.position = (Vector2)additionalData;
+				else if (!data.ToggleValue.Value && additionalData is Vector2 position)
+					transform.position = position;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
-				_timerOfInvencibility = _invencibilityTime;
-				_invencibility = true;
+				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 				StartCoroutine(VisualEffect());
 				OnEnable();
 			}
