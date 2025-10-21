@@ -4,6 +4,8 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	internal abstract class MovingEnemy : EnemyProvider, IConnector
 	{
+		protected Vector2 _originCast;
+		protected Vector2 _sizeCast;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
 		protected float _stoppedTime = 0f;
@@ -23,12 +25,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		protected bool SurfacePerception()
+		protected bool GroundCheck()
 		{
-			float originY = (_collider.bounds.extents.y + _moving.Physics.GroundChecker / 2f) * -transform.up.y;
-			Vector2 origin = new(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y + originY);
-			Vector2 size = new(_collider.bounds.size.x - _moving.Physics.GroundChecker, _moving.Physics.GroundChecker);
-			return Physics2D.BoxCast(origin, size, 0f, -transform.up, _moving.Physics.GroundChecker, _moving.Physics.GroundLayer);
+			_originCast = new Vector2(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
+			_originCast += new Vector2(0f, (_collider.bounds.extents.y + _moving.Physics.GroundChecker / 2f) * -transform.up.y);
+			_sizeCast = new Vector2(_collider.bounds.size.x - _moving.Physics.GroundChecker, _moving.Physics.GroundChecker);
+			return Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, _moving.Physics.GroundChecker, _moving.Physics.GroundLayer);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
