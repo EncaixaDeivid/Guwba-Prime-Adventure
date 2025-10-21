@@ -10,6 +10,7 @@ namespace GuwbaPrimeAdventure.Enemy
     {
 		private EnemyProvider[] _selfEnemies;
 		private Rigidbody2D _rigidybody;
+		private IDestructible _destructibleEnemy;
 		private short _vitality;
 		private short _armorResistance = 0;
 		private float _fadeTime = 0f;
@@ -54,6 +55,11 @@ namespace GuwbaPrimeAdventure.Enemy
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
+			ushort priority = 0;
+			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
+					priority = (ushort)(i + 1);
+			_destructibleEnemy = _selfEnemies[priority];
 		}
 		private void Update()
 		{
@@ -87,21 +93,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_statistics.NoDamage || damage <= 0)
 				return false;
-			ushort priority = 0;
-			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
-				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
-					priority = (ushort)(i + 1);
-			return _selfEnemies[priority].Hurt(damage);
+			return _destructibleEnemy.Hurt(damage);
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
 			if (_stunned)
 				return;
-			ushort priority = 0;
-			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
-				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
-					priority = (ushort)(i + 1);
-			_selfEnemies[priority].Stun(stunStength, stunTime);
+			_destructibleEnemy.Stun(stunStength, stunTime);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
