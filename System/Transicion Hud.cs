@@ -18,7 +18,7 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement;
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
 			LoadingBar = RootElement.Q<ProgressBar>(_loadingBarProgress);
 		}
 	};
