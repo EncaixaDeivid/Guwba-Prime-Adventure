@@ -52,7 +52,7 @@ namespace GuwbaPrimeAdventure.Character
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement;
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
 			FallDamageText = RootElement.Q<Label>(_fallDamageTextObject);
 			LifeText = RootElement.Q<Label>(_lifeTextObject);
 			CoinText = RootElement.Q<Label>(_coinTextObject);
