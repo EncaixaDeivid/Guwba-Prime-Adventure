@@ -6,9 +6,8 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class RunnerEnemy : MovingEnemy, IConnector, IDestructible
 	{
-		private Vector2 _originCast;
-		private Vector2 _sizeCast;
-		private RaycastHit2D _boxCast;
+		private RaycastHit2D _blockCast;
+		private bool _edgeCast = false;
 		private bool _canRetreat = true;
 		private bool _retreat = false;
 		private bool _runTowards = false;
@@ -87,7 +86,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_statistics.DetectionStop && _detected && !_isDashing && SurfacePerception() && !_retreat)
+			if (_statistics.DetectionStop && _detected && !_isDashing && GroundCheck() && !_retreat)
 				_rigidybody.linearVelocityX = 0f;
 			if (_stopWorking)
 				return;
@@ -99,9 +98,9 @@ namespace GuwbaPrimeAdventure.Enemy
 						break;
 					}
 			_originCast = transform.position;
-			_originCast += new Vector2((_collider.bounds.extents.x + _statistics.Physics.GroundChecker / 2f) * (transform.right * _movementSide).x, 0f);
+			_originCast += new Vector2((_collider.bounds.extents.x + _statistics.Physics.GroundChecker / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, 0f);
 			_sizeCast = new Vector2(_statistics.Physics.GroundChecker, _collider.bounds.size.y - _statistics.Physics.GroundChecker);
-			_boxCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
+			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
 			if (_statistics.RunFromTarget && _timeRun <= 0f && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
@@ -129,9 +128,9 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 			}
 			_originCast = transform.position;
-			_originCast += new Vector2(_collider.bounds.extents.x + (transform.right * _movementSide).x, _collider.bounds.extents.y * -transform.up.y);
-			bool valid = !Physics2D.Raycast(_originCast, -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
-			if (SurfacePerception() && !_statistics.TurnOffEdge && valid || _boxCast && _boxCast.collider.CanContact(_collider))
+			_originCast += new Vector2(_collider.bounds.extents.x + ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
+			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
+			if (GroundCheck() && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
 				if (_retreat)
 					RetreatUse();
 				else
@@ -177,11 +176,11 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			base.Receive(data, additionalData);
 			if ((EnemyProvider[])additionalData != null)
 				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 					if (enemy != this)
 						return;
+			base.Receive(data, additionalData);
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 				_rigidybody.linearVelocityX = 0f;
 		}
