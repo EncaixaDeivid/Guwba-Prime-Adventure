@@ -12,7 +12,7 @@ namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
-	public sealed class GuwbaAstralMarker : StateController, IConnector
+	public sealed class GuwbaAstralMarker : StateController, ILoader, IConnector
 	{
 		private static GuwbaAstralMarker _instance;
 		private GuwbaCanvas _guwbaCanvas;
@@ -199,6 +199,10 @@ namespace GuwbaPrimeAdventure.Character
 				yield break;
 			DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			EnableInputs();
+		}
+		public IEnumerator Load()
+		{
 			yield return _guwbaCanvas.StartUI();
 			SaveController.Load(out SaveFile saveFile);
 			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
@@ -223,7 +227,7 @@ namespace GuwbaPrimeAdventure.Character
 					bunnyHop.style.display = DisplayStyle.None;
 				_guwbaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
-			EnableInputs();
+			yield return new WaitForEndOfFrame();
 		}
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
