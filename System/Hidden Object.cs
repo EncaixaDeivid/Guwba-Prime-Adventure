@@ -19,6 +19,7 @@ namespace GuwbaPrimeAdventure
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			yield return new WaitForSeconds(1e-3f);
 			if (!_initialActive)
 				for (ushort i = 0; i < transform.childCount; i++)
 					transform.GetChild(i).gameObject.SetActive(false);
