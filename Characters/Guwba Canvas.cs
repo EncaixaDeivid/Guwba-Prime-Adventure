@@ -53,17 +53,19 @@ namespace GuwbaPrimeAdventure.Character
 			}
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			Vitality = new VisualElement[_vitality];
+			RecoverVitality = new VisualElement[_recoverVitality];
+			StunResistance = new VisualElement[_stunResistance];
+			BunnyHop = new VisualElement[_bunnyHop];
 			FallDamageText = RootElement.Q<Label>(_fallDamageTextObject);
 			LifeText = RootElement.Q<Label>(_lifeTextObject);
 			CoinText = RootElement.Q<Label>(_coinTextObject);
 		}
-		private IEnumerator Start()
+		internal IEnumerator StartUI()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			VisualElement vitality = RootElement.Q<VisualElement>(_vitalityVisual);
 			vitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement vitalityPiece = RootElement.Q<VisualElement>(_vitalityPieceVisual);
-			Vitality = new VisualElement[_vitality];
 			for (ushort i = 0; i < _vitality; i++)
 			{
 				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
@@ -83,7 +85,6 @@ namespace GuwbaPrimeAdventure.Character
 			VisualElement recoverVitality = RootElement.Q<VisualElement>(_recoverVitalityVisual);
 			recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement recoverVitalityPiece = RootElement.Q<VisualElement>(_recoverVitalityPieceVisual);
-			RecoverVitality = new VisualElement[_recoverVitality];
 			for (ushort i = 0; i < _recoverVitality; i++)
 			{
 				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
@@ -96,7 +97,6 @@ namespace GuwbaPrimeAdventure.Character
 			VisualElement stunResistance = RootElement.Q<VisualElement>(_stunResistanceVisual);
 			stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement stunResistancePiece = RootElement.Q<VisualElement>(_stunResistancePieceVisual);
-			StunResistance = new VisualElement[_stunResistance];
 			for (ushort i = 0; i < _stunResistance; i++)
 			{
 				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
@@ -109,7 +109,6 @@ namespace GuwbaPrimeAdventure.Character
 			VisualElement bunnyHop = RootElement.Q<VisualElement>(_bunnyHopVisual);
 			bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
 			VisualElement bunnyHopPiece = RootElement.Q<VisualElement>(_bunnyHopPieceVisual);
-			BunnyHop = new VisualElement[_bunnyHop];
 			for (ushort i = 0; i < _bunnyHop; i++)
 			{
 				VisualElement bunnyHopPieceClone = new() { name = bunnyHopPiece.name };
@@ -119,6 +118,7 @@ namespace GuwbaPrimeAdventure.Character
 				BunnyHop[i] = bunnyHop[i + 1];
 			}
 			bunnyHop.Remove(bunnyHopPiece);
+			yield return new WaitForEndOfFrame();
 		}
 	};
 };
