@@ -1,3 +1,4 @@
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEngine;
 using System.IO;
@@ -5,6 +6,10 @@ using System.Runtime.CompilerServices;
 #endif
 namespace GuwbaPrimeAdventure
 {
+	public interface ILoader
+	{
+		public IEnumerator Load();
+	};
 	public interface IDestructible
 	{
 		public short Health { get; }
