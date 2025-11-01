@@ -6,7 +6,7 @@ namespace GuwbaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
 	[RequireComponent(typeof(EnemyProvider))]
-	internal sealed class EnemyController : StateController, IConnector, IDestructible
+	internal sealed class EnemyController : StateController, ILoader, IConnector, IDestructible
     {
 		private EnemyProvider[] _selfEnemies;
 		private Rigidbody2D _rigidybody;
@@ -55,11 +55,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
-			ushort priority = 0;
-			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
-				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
-					priority = (ushort)(i + 1);
-			_destructibleEnemy = _selfEnemies[priority];
 		}
 		private void Update()
 		{
@@ -89,6 +84,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other) => OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => OnTrigger(other.gameObject);
+		public IEnumerator Load()
+		{
+			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
+					_destructibleEnemy = _selfEnemies[i + 1];
+			yield return new WaitForEndOfFrame();
+		}
 		public bool Hurt(ushort damage)
 		{
 			if (_statistics.NoDamage || damage <= 0)
