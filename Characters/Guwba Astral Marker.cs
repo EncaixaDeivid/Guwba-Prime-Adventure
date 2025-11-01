@@ -159,7 +159,8 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			_guwbaCanvas.RootElement.style.display = DisplayStyle.Flex;
+			if (_guwbaCanvas.RootElement != null)
+				_guwbaCanvas.RootElement.style.display = DisplayStyle.Flex;
 			_animator.SetFloat(_isOn, 1f);
 			_animator.SetFloat(_walkSpeed, 1f);
 			EnableInputs();
@@ -198,6 +199,7 @@ namespace GuwbaPrimeAdventure.Character
 				yield break;
 			DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			yield return _guwbaCanvas.StartUI();
 			SaveController.Load(out SaveFile saveFile);
 			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
 			(_vitality, _stunResistance) = ((short)_guwbaCanvas.Vitality.Length, (short)_guwbaCanvas.StunResistance.Length);
