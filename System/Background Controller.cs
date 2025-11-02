@@ -5,7 +5,7 @@ using System.Collections;
 namespace GuwbaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
-	internal sealed class BackgroundController : StateController
+	internal sealed class BackgroundController : StateController, ILoader
 	{
 		private static BackgroundController _instance;
 		private Transform[] _childrenTransforms;
@@ -33,9 +33,8 @@ namespace GuwbaPrimeAdventure
 			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
 			_isInTrancision = true;
 		}
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			Vector2 imageSize;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
@@ -51,6 +50,7 @@ namespace GuwbaPrimeAdventure
 					_childrenTransforms[i].GetChild(childIndex).GetComponent<SpriteRenderer>().sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
 			}
 			_isInTrancision = false;
+			yield return new WaitForEndOfFrame();
 		}
 		private void FixedUpdate()
 		{
