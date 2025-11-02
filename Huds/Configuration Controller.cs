@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -27,12 +29,14 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			Instance = this;
+			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
 		{
 			if (!Instance || Instance != this)
 				return;
+			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
@@ -58,6 +62,7 @@ namespace GuwbaPrimeAdventure.Hud
 			yield return new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
 			DontDestroyOnLoad(gameObject);
 		}
+		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) => _isActive = true;
 		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
@@ -176,7 +181,7 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			CloseConfigurations.Invoke();
 			_isActive = false;
-			if (gameObject.scene.name != _levelSelectorScene)
+			if (SceneManager.GetActiveScene().name != _levelSelectorScene)
 				GetComponent<Transitioner>().Transicion(_levelSelectorScene);
 			else
 				GetComponent<Transitioner>().Transicion(_menuScene);
@@ -194,16 +199,17 @@ namespace GuwbaPrimeAdventure.Hud
 				CloseConfigurations.Invoke();
 			else
 			{
-				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				_configurationHud = Instantiate(_configurationHudObject, transform);
-				if (gameObject.scene.name == _menuScene)
+				if (SceneManager.GetActiveScene().name != _levelSelectorScene)
+					_configurationHud.SaveGame.style.display = DisplayStyle.None;
+				if (SceneManager.GetActiveScene().name == _menuScene)
 				{
 					_configurationHud.OutLevel.style.display = DisplayStyle.None;
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
-				for (ushort i = 1; i <= 12f; i++)
-					if (gameObject.scene.name.Contains($"{i}"))
+				for (ushort i = 1; i <= 10f; i++)
+					if (SceneManager.GetActiveScene().name.Contains($"{i}"))
 					{
 						_configurationHud.SaveGame.style.display = DisplayStyle.None;
 						break;
