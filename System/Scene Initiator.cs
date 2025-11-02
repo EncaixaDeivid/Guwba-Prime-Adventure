@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 namespace GuwbaPrimeAdventure
 {
@@ -8,7 +7,7 @@ namespace GuwbaPrimeAdventure
 	{
 		private static SceneInitiator _instance;
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
-		[SerializeField, Tooltip("The sub scenes to be lodaed.")] private SceneField[] _subScenes;
+		[SerializeField, Tooltip("The objects to be lodaed.")] private ObjectLoader[] _objectLoaders;
 		public static bool IsInTrancision() => _instance;
 		private void Awake()
 		{
@@ -25,21 +24,11 @@ namespace GuwbaPrimeAdventure
 				yield break;
 			TransicionHud transicionHud = Instantiate(_transicionHud, transform);
 			transicionHud.RootElement.style.opacity = 1f;
-			transicionHud.LoadingBar.highValue = _subScenes.Length;
-			AsyncOperation asyncOperation;
-			float stillProgress;
-			foreach (SceneField scene in _subScenes)
+			transicionHud.LoadingBar.highValue = _objectLoaders.Length * 2f;
+			for (ushort i = 0; i < _objectLoaders.Length; i++)
 			{
-				asyncOperation = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
-				while (!asyncOperation.isDone)
-				{
-					transicionHud.LoadingBar.value += asyncOperation.progress;
-					stillProgress = asyncOperation.progress;
-					yield return new WaitForEndOfFrame();
-					transicionHud.LoadingBar.value -= stillProgress;
-				}
-				transicionHud.LoadingBar.value += asyncOperation.progress;
-				asyncOperation.allowSceneActivation = true;
+				yield return StartCoroutine(Instantiate(_objectLoaders[i]).Load(transicionHud.LoadingBar, (ushort)transicionHud.LoadingBar.highValue));
+				transicionHud.LoadingBar.value += i;
 			}
 			Destroy(gameObject);
 		}
