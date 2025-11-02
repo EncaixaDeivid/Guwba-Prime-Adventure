@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
@@ -131,6 +132,7 @@ namespace GuwbaPrimeAdventure.Character
 			_inputController.Commands.AttackUse.started += AttackUse;
 			_inputController.Commands.AttackUse.canceled += AttackUse;
 			_inputController.Commands.Interaction.started += Interaction;
+			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -153,6 +155,7 @@ namespace GuwbaPrimeAdventure.Character
 			_inputController.Commands.AttackUse.canceled -= AttackUse;
 			_inputController.Commands.Interaction.started -= Interaction;
 			_inputController.Dispose();
+			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
 		private void OnEnable()
@@ -200,9 +203,12 @@ namespace GuwbaPrimeAdventure.Character
 			DisableInputs();
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			EnableInputs();
+			DontDestroyOnLoad(gameObject);
 		}
 		public IEnumerator Load()
 		{
+			if (!_instance || _instance != this)
+				yield break;
 			yield return _guwbaCanvas.StartUI();
 			SaveController.Load(out SaveFile saveFile);
 			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
@@ -215,7 +221,28 @@ namespace GuwbaPrimeAdventure.Character
 			}
 			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
-			if (gameObject.scene.name.Contains(_hubbyWorldScene))
+			SceneLoaded.Invoke(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+			yield return new WaitForEndOfFrame();
+		}
+		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		{
+			if (!_instance || _instance != this)
+				return;
+			if (scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+			{
+				Destroy(gameObject);
+				return;
+			}
+			StartCoroutine(ResetPosition());
+			IEnumerator ResetPosition()
+			{
+				while (SceneInitiator.IsInTrancision())
+				{
+					transform.position = Vector2.zero;
+					yield return new WaitForEndOfFrame();
+				}
+			}
+			if (scene.name == _hubbyWorldScene)
 			{
 				foreach (VisualElement vitality in _guwbaCanvas.Vitality)
 					vitality.style.display = DisplayStyle.None;
@@ -227,8 +254,7 @@ namespace GuwbaPrimeAdventure.Character
 					bunnyHop.style.display = DisplayStyle.None;
 				_guwbaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
-			yield return new WaitForEndOfFrame();
-		}
+		};
 		private Action<InputAction.CallbackContext> Movement => movement =>
 		{
 			if (!isActiveAndEnabled || _animator.GetBool(_stun))
@@ -242,7 +268,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (movement.ReadValue<Vector2>().y > 0.25f)
 			{
 				_lastJumpTime = _jumpBufferTime;
-				if (!_isOnGround && movement.performed && !gameObject.scene.name.Contains(_hubbyWorldScene))
+				if (!_isOnGround && movement.performed && !(SceneManager.GetActiveScene().name == _hubbyWorldScene))
 					if (_bunnyHopBoost >= _guwbaCanvas.BunnyHop.Length)
 						_bunnyHopBoost = (ushort)_guwbaCanvas.BunnyHop.Length;
 					else
@@ -262,11 +288,11 @@ namespace GuwbaPrimeAdventure.Character
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
 					_dashMovement = _movementAction;
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _dashMovement, transform.localScale.y, transform.localScale.z);
-					_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
 					_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 					float dashLocation = transform.position.x;
 					while (Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, _groundChecker, _groundLayer) || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
 					{
+						_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
 						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer) || !_dashActive || !_isOnGround || _isJumping)
@@ -431,6 +457,8 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private void FixedUpdate()
 		{
+			if (!_instance || _instance != this)
+				return;
 			_downStairs = false;
 			float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
 			if (!_dashActive)
@@ -456,7 +484,7 @@ namespace GuwbaPrimeAdventure.Character
 						for (ushort i = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
 							_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 					}
-					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && !gameObject.scene.name.Contains(_hubbyWorldScene))
+					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && !(SceneManager.GetActiveScene().name == _hubbyWorldScene))
 					{
 						_screenShaker.GenerateImpulseWithForce(_fallDamage / _fallDamageDistance);
 						Hurt.Invoke((ushort)Mathf.Floor(_fallDamage / _fallDamageDistance));
@@ -548,7 +576,10 @@ namespace GuwbaPrimeAdventure.Character
 				if (_movementAction != 0f)
 				{
 					if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
-						transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_rigidbody.linearVelocityX > 0f ? 1f : -1f), transform.localScale.y, transform.localScale.z);
+					{
+						_jokerValue.y = _rigidbody.linearVelocityX > 0f ? 1f : -1f;
+						transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _jokerValue.y, transform.localScale.y, transform.localScale.z);
+					}
 					else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
 						transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementAction, transform.localScale.y, transform.localScale.z);
 					if (_isOnGround && !_dashActive)
@@ -583,6 +614,8 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private void GroundCheck()
 		{
+			if (!_instance || _instance != this)
+				return;
 			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + _groundChecker / 2f) * -transform.up.y);
 			_isOnGround = Physics2D.BoxCast(_originCast, new Vector2(_collider.size.x - _groundChecker, _groundChecker), 0f, -transform.up, _groundChecker, _groundLayer);
 		}
