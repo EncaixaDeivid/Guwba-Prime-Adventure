@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Camera))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class SceneInitiator : MonoBehaviour
 	{
 		private static SceneInitiator _instance;
