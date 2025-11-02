@@ -76,7 +76,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
-			if (collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
+			if (!_statistics.NoHit && collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
@@ -99,7 +99,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			if (_stunned)
+			if (_statistics.NoStun || _stunned)
 				return;
 			_destructibleEnemy.Stun(stunStength, stunTime);
 		}
