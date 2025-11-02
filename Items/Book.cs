@@ -4,13 +4,12 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
-	internal sealed class Book : StateController, ICollectable
+	internal sealed class Book : StateController, ILoader, ICollectable
 	{
 		[Header("Conditions")]
 		[SerializeField, Tooltip("The sprite to show when the book gor cacthed.")] private Sprite _bookCacthed;
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.books.ContainsKey(gameObject.name))
 			{
@@ -19,6 +18,7 @@ namespace GuwbaPrimeAdventure.Item
 				yield break;
 			}
 			saveFile.books.Add(gameObject.name, false);
+			yield return new WaitForEndOfFrame();
 		}
 		public void Collect()
 		{
