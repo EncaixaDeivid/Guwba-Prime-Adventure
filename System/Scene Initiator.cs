@@ -31,6 +31,7 @@ namespace GuwbaPrimeAdventure
 				transicionHud.LoadingBar.value += i;
 			}
 			Destroy(gameObject);
+			StateController.SetState(true);
 		}
 	};
 };
