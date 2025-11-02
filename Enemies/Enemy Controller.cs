@@ -63,7 +63,6 @@ namespace GuwbaPrimeAdventure.Enemy
 					_destructibleEnemy = _selfEnemies[i + 1];
 			yield return new WaitForEndOfFrame();
 		}
-		public IEnumerator Reload() => null;
 		private void Update()
 		{
 			if (_statistics.FadeOverTime)
