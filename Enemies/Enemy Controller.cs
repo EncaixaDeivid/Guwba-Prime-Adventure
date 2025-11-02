@@ -56,6 +56,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
 		}
+		public IEnumerator Load()
+		{
+			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
+					_destructibleEnemy = _selfEnemies[i + 1];
+			yield return new WaitForEndOfFrame();
+		}
+		public IEnumerator Reload() => null;
 		private void Update()
 		{
 			if (_statistics.FadeOverTime)
@@ -84,13 +92,6 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other) => OnTrigger(other.gameObject);
 		private void OnTriggerStay2D(Collider2D other) => OnTrigger(other.gameObject);
-		public IEnumerator Load()
-		{
-			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
-				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
-					_destructibleEnemy = _selfEnemies[i + 1];
-			yield return new WaitForEndOfFrame();
-		}
 		public bool Hurt(ushort damage)
 		{
 			if (_statistics.NoDamage || damage <= 0)
