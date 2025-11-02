@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System;
@@ -25,6 +26,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
+			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
 		private void OnDestroy()
@@ -37,6 +39,7 @@ namespace GuwbaPrimeAdventure.Hud
 				_deathScreenHud.OutLevel.clicked -= OutLevel;
 				_deathScreenHud.GameOver.clicked -= GameOver;
 			}
+			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
 		private IEnumerator Start()
@@ -46,6 +49,20 @@ namespace GuwbaPrimeAdventure.Hud
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			DontDestroyOnLoad(gameObject);
 		}
+		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		{
+			if (scene.name == _levelSelectorScene || scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+			{
+				if (_deathScreenHud)
+				{
+					_deathScreenHud.Continue.clicked -= Continue;
+					_deathScreenHud.OutLevel.clicked -= OutLevel;
+					_deathScreenHud.GameOver.clicked -= GameOver;
+					Destroy(_deathScreenHud.gameObject);
+				}
+				Destroy(gameObject);
+			}
+		};
 		private Action Continue => () =>
 		{
 			if (SceneManager.GetActiveScene().name.ContainsInvariantCultureIgnoreCase("Boss"))
