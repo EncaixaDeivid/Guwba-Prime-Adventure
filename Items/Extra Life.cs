@@ -4,16 +4,20 @@ using GuwbaPrimeAdventure.Data;
 namespace GuwbaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
-	internal sealed class ExtraLife : StateController, ICollectable
+	internal sealed class ExtraLife : StateController, ILoader, ICollectable
 	{
 		[Header("Condition")]
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.lifesAcquired.Contains(gameObject.name))
 				Destroy(gameObject);
+			yield return new WaitForEndOfFrame();
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 		}
 		public void Collect()
 		{
