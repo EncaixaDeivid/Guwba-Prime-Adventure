@@ -56,6 +56,7 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!Instance || Instance != this)
 				yield break;
 			yield return new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
+			DontDestroyOnLoad(gameObject);
 		}
 		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
