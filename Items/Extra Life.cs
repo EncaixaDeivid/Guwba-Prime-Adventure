@@ -15,7 +15,6 @@ namespace GuwbaPrimeAdventure.Item
 				Destroy(gameObject);
 			yield return new WaitForEndOfFrame();
 		}
-		public IEnumerator Reload() => null;
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
