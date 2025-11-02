@@ -226,8 +226,6 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
-			if (!_instance || _instance != this)
-				return;
 			if (scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
 			{
 				Destroy(gameObject);
