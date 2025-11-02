@@ -34,10 +34,10 @@ namespace GuwbaPrimeAdventure
 					yield return new WaitUntil(() => asyncOperation.isDone);
 				else
 				{
-					_transicionHud.LoadingBar.highValue = 100f;
+					transicionHud.LoadingBar.highValue = 100f;
 					while (!asyncOperation.isDone)
 					{
-						_transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
+						transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
 						yield return new WaitForEndOfFrame();
 					}
 				}
