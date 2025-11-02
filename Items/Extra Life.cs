@@ -15,10 +15,6 @@ namespace GuwbaPrimeAdventure.Item
 				Destroy(gameObject);
 			yield return new WaitForEndOfFrame();
 		}
-		private IEnumerator Start()
-		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-		}
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
