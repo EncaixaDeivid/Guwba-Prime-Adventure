@@ -239,7 +239,7 @@ namespace GuwbaPrimeAdventure.Character
 				while (SceneInitiator.IsInTrancision())
 				{
 					transform.position = Vector2.zero;
-					yield return new WaitForEndOfFrame();
+					yield return new WaitForFixedUpdate();
 				}
 			}
 			if (scene.name == _hubbyWorldScene)
