@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
+using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(Rigidbody2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CinemachineCamera), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
 	internal sealed class CameraOccluder : StateController, IConnector
 	{
@@ -23,9 +26,7 @@ namespace GuwbaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			Camera camera = GetComponent<Camera>();
-			GetComponent<BoxCollider2D>().size = new Vector2(camera.orthographicSize * 2f * camera.aspect, camera.orthographicSize * 2f);
-			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
+			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -33,10 +34,28 @@ namespace GuwbaPrimeAdventure
 			base.OnDestroy();
 			if (!_instance || _instance != this)
 				return;
+			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
+		private IEnumerator Start()
+		{
+			if (!_instance || _instance != this)
+				yield break;
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			CinemachineCamera camera = GetComponent<CinemachineCamera>();
+			GetComponent<BoxCollider2D>().size = new Vector2(camera.Lens.OrthographicSize * 2f * camera.Lens.Aspect, camera.Lens.OrthographicSize * 2f);
+			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
+			DontDestroyOnLoad(gameObject);
+		}
+		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		{
+			if (scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+				Destroy(gameObject);
+		};
 		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
+			if (!_instance || _instance != this)
+				return;
 			if (gameObject.TryGetComponent<HiddenObject>(out var hiddenObject))
 				hiddenObject.Execution(activate);
 		}
