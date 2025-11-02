@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
@@ -15,7 +16,6 @@ namespace GuwbaPrimeAdventure.Hud
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
-		[SerializeField, Tooltip("The scene of this level, if it's a boss scene.")] private SceneField _bossScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -39,10 +39,17 @@ namespace GuwbaPrimeAdventure.Hud
 			}
 			Sender.Exclude(this);
 		}
+		private IEnumerator Start()
+		{
+			if (!_instance || _instance != this)
+				yield break;
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			DontDestroyOnLoad(gameObject);
+		}
 		private Action Continue => () =>
 		{
-			if (gameObject.scene.name.Contains("Boss"))
-				GetComponent<Transitioner>().Transicion(_bossScene);
+			if (SceneManager.GetActiveScene().name.ContainsInvariantCultureIgnoreCase("Boss"))
+				GetComponent<Transitioner>().Transicion(sceneName: SceneManager.GetActiveScene().name);
 			else
 			{
 				StartCoroutine(Curtain());
