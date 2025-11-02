@@ -20,7 +20,6 @@ namespace GuwbaPrimeAdventure.Item
 			saveFile.books.Add(gameObject.name, false);
 			yield return new WaitForEndOfFrame();
 		}
-		public IEnumerator Reload() => null;
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
