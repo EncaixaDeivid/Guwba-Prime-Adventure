@@ -59,10 +59,11 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!Instance || Instance != this)
 				yield break;
-			yield return new WaitWhile(() => !(_isActive = !SceneInitiator.IsInTrancision()));
+			yield return StartCoroutine(StartLoad());
 			DontDestroyOnLoad(gameObject);
 		}
-		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) => _isActive = true;
+		private IEnumerator StartLoad() => new WaitUntil(() => _isActive = !SceneInitiator.IsInTrancision());
+		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) => StartCoroutine(StartLoad());
 		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
