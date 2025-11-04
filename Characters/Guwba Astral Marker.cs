@@ -59,6 +59,7 @@ namespace GuwbaPrimeAdventure.Character
 		private float _fallStart = 0f;
 		private float _fallDamage = 0f;
 		private float _attackDelay = 0f;
+		private bool _didStart = false;
 		private bool _isOnGround = false;
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
@@ -200,10 +201,19 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				yield break;
-			DisableInputs();
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			EnableInputs();
+			yield return StartCoroutine(StartLoad());
+			_didStart = true;
 			DontDestroyOnLoad(gameObject);
+		}
+		public IEnumerator StartLoad()
+		{
+			DisableInputs();
+			yield return new WaitWhile(() =>
+			{
+				transform.position = Vector2.zero;
+				return SceneInitiator.IsInTrancision();
+			});
+			EnableInputs();
 		}
 		public IEnumerator Load()
 		{
@@ -231,15 +241,8 @@ namespace GuwbaPrimeAdventure.Character
 				Destroy(gameObject);
 				return;
 			}
-			StartCoroutine(ResetPosition());
-			IEnumerator ResetPosition()
-			{
-				while (SceneInitiator.IsInTrancision())
-				{
-					transform.position = Vector2.zero;
-					yield return new WaitForFixedUpdate();
-				}
-			}
+			if (_didStart)
+				StartCoroutine(StartLoad());
 			if (scene.name == _hubbyWorldScene)
 			{
 				foreach (VisualElement vitality in _guwbaCanvas.Vitality)
