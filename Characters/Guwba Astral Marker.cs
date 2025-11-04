@@ -53,7 +53,6 @@ namespace GuwbaPrimeAdventure.Character
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
 		private float _dashMovement = 0f;
-		private float _guardDashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
 		private float _fallStart = 0f;
@@ -168,8 +167,6 @@ namespace GuwbaPrimeAdventure.Character
 			_animator.SetFloat(_isOn, 1f);
 			_animator.SetFloat(_walkSpeed, 1f);
 			EnableInputs();
-			if (_dashActive)
-				_dashMovement = _guardDashMovement;
 		}
 		private void OnDisable()
 		{
@@ -179,8 +176,6 @@ namespace GuwbaPrimeAdventure.Character
 			_animator.SetFloat(_isOn, 0f);
 			_animator.SetFloat(_walkSpeed, 0f);
 			DisableInputs();
-			if (_dashActive)
-				(_guardDashMovement, _dashMovement) = (_dashMovement, 0f);
 		}
 		private void EnableInputs()
 		{
@@ -287,20 +282,18 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					_animator.SetBool(_dashSlide, _dashActive = true);
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
-					_dashMovement = _movementAction;
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _dashMovement, transform.localScale.y, transform.localScale.z);
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_dashMovement = _movementAction), transform.localScale.y, transform.localScale.z);
 					_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 					float dashLocation = transform.position.x;
 					while (Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, _groundChecker, _groundLayer) || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
 					{
-						_rigidbody.linearVelocityX = _dashSpeed * _dashMovement;
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
 						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer) || !_dashActive || !_isOnGround || _isJumping)
 							break;
 						_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => isActiveAndEnabled && !_animator.GetBool(_stun));
+						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled && !_animator.GetBool(_stun) ? _dashSpeed * _dashMovement : 0f) > 0f);
 					}
 					_animator.SetBool(_dashSlide, _dashActive = false);
 					_animator.SetBool(_attackSlide, false);
