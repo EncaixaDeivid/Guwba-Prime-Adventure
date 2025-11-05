@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
@@ -22,10 +21,6 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.Awake();
 			_trail = GetComponent<PolygonCollider2D>();
 			_pointOrigin = transform.position;
-		}
-		private IEnumerator Start()
-		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_fadeTime = _statistics.FadeTime;
 		}
 		private void Chase()
@@ -126,14 +121,12 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (GuwbaAstralMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
-						_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer);
-						_originCast = (Vector2)transform.position + _collider.offset;
-						if (!_detected)
+						if (!(_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer)))
 							return;
+						_originCast = (Vector2)transform.position + _collider.offset;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							_detected = !Physics2D.OverlapCircle(_originCast, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer);
-							if (!_detected)
+							if (!(_detected = !Physics2D.OverlapCircle(_originCast, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer)))
 								return;
 							_originCast += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _originCast).normalized;
 						}
