@@ -4,8 +4,7 @@ using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
-	[RequireComponent(typeof(EnemyProvider))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(EnemyProvider))]
 	internal sealed class EnemyController : StateController, ILoader, IConnector, IDestructible
     {
 		private EnemyProvider[] _selfEnemies;
@@ -58,6 +57,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		public IEnumerator Load()
 		{
+			_destructibleEnemy = _selfEnemies[0];
 			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
 				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					_destructibleEnemy = _selfEnemies[i + 1];
@@ -65,21 +65,17 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
+			if (SceneInitiator.IsInTrancision())
+				return;
 			if (_statistics.FadeOverTime)
-			{
-				_fadeTime -= Time.deltaTime;
-				if (_fadeTime <= 0)
+				if ((_fadeTime -= Time.deltaTime) <= 0)
 					Destroy(gameObject);
-			}
 			if (_stunned)
-			{
-				_stunTimer -= Time.deltaTime;
-				if (_stunTimer <= 0f)
+				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
 					_stunned = false;
 					_rigidybody.WakeUp();
 				}
-			}
 		}
 		private void OnTrigger(GameObject collisionObject)
 		{
