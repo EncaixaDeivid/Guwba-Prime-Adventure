@@ -88,9 +88,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
-				JumpPoint jumpPointInstance = Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity);
-				_statistics.JumpPointStructures[i].RemovalJumpCount = (short)_statistics.JumpPointStructures[i].JumpCount;
-				jumpPointInstance.GetTouch(i, index =>
+				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(i, index =>
 				{
 					StartCoroutine(WaitToHitSurface());
 					IEnumerator WaitToHitSurface()
@@ -113,6 +111,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						}
 					}
 				});
+				_statistics.JumpPointStructures[i].RemovalJumpCount = (short)_statistics.JumpPointStructures[i].JumpCount;
 			}
 			if (_statistics.SequentialTimmedJumps)
 			{
