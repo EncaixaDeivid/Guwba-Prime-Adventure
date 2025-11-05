@@ -10,7 +10,6 @@ namespace GuwbaPrimeAdventure
 		private static BackgroundController _instance;
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
-		private bool _isInTrancision = false;
 		private float _startPosition = 0f;
 		private float _movementX = 0f;
 		[Header("Background Objects")]
@@ -31,7 +30,6 @@ namespace GuwbaPrimeAdventure
 			_instance = this;
 			_childrenTransforms = new Transform[_backgroundImages.Length];
 			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
-			_isInTrancision = true;
 		}
 		public IEnumerator Load()
 		{
@@ -49,12 +47,11 @@ namespace GuwbaPrimeAdventure
 				for (ushort childIndex = 0; childIndex < _childrenTransforms[i].childCount; childIndex++)
 					_childrenTransforms[i].GetChild(childIndex).GetComponent<SpriteRenderer>().sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
 			}
-			_isInTrancision = false;
 			yield return new WaitForEndOfFrame();
 		}
-		private void FixedUpdate()
+		private void LateUpdate()
 		{
-			if (_isInTrancision)
+			if (SceneInitiator.IsInTrancision())
 				return;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
