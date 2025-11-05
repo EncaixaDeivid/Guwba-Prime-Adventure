@@ -58,10 +58,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				Instantiate(summonStructure.SummonPointObject, summonStructure.Point, Quaternion.identity).GetTouch(() => Summon(summonStructure.Summon));
 			if (_statistics.RandomTimedSummons)
 			{
+				ushort randomIndex;
 				StartCoroutine(RandomTimedSummon());
 				IEnumerator RandomTimedSummon()
 				{
-					ushort randomIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
+					randomIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
 					yield return TimedSummon(_statistics.TimedSummons[randomIndex]);
 					yield return new WaitTime(this, _statistics.TimedSummons[randomIndex].PostSummonTime);
 					StartCoroutine(RandomTimedSummon());
@@ -93,10 +94,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_stopSummon = !data.ToggleValue.Value;
 			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage && _statistics.EventSummons.Length > 0f)
 				if (_statistics.RandomReactSummons)
-				{
-					ushort randomIndex = (ushort)Random.Range(0f, _statistics.EventSummons.Length - 1f);
-					Summon(_statistics.EventSummons[randomIndex]);
-				}
+					Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
 				else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
 					Summon(_statistics.EventSummons[data.NumberValue.Value]);
 		}
