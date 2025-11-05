@@ -5,9 +5,12 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class ShooterEnemy : EnemyProvider, IConnector, IDestructible
 	{
+		private Vector2 _originCast;
+		private Vector2 _directionCast;
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
+		private bool _hasTarget = false;
 		private bool _canShoot = false;
 		private bool _isStopped = false;
 		[Header("Shooter Enemy")]
@@ -24,29 +27,29 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Verify()
 		{
-			bool hasTarget = false;
+			_hasTarget = false;
 			if (_statistics.CircularDetection)
 			{
 				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
 					if (collider.TryGetComponent<IDestructible>(out _))
-					{
-						if (Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
-							continue;
-						_targetDirection = (collider.transform.position - transform.position).normalized;
-						hasTarget = true;
-					}
+						if (!Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
+						{
+							_targetDirection = (collider.transform.position - transform.position).normalized;
+							_hasTarget = true;
+						}
 			}
 			else
 			{
-				Vector2 origin = new(transform.position.x + _collider.bounds.extents.x * (transform.localScale.x < 0f ? -1f : 1f), transform.position.y);
-				Vector2 direction = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
+				_originCast = (Vector2)transform.position + _collider.offset;
+				_originCast += new Vector2(_collider.bounds.extents.x * (transform.localScale.x < 0f ? -1f : 1f), 0f);
+				_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
 				if (_statistics.TurnRay)
-					direction *= transform.localScale.x < 0f ? -1f : 1f;
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(origin, direction, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
+					_directionCast *= transform.localScale.x < 0f ? -1f : 1f;
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
-						hasTarget = true;
+						_hasTarget = true;
 			}
-			if ((hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
+			if ((_hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
 			{
 				_shootInterval = _statistics.IntervalToShoot;
 				if (_statistics.InvencibleShoot)
