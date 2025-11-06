@@ -10,6 +10,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
 	{
 		private InputController _inputController;
+		Vector2 _direction;
 		private bool _isJumping = false;
 		private bool _stopJump = false;
 		private float _jumpTime = 0f;
@@ -195,8 +196,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 				{
-					Vector2 right = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
-					foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, right, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+					_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
+					foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, _direction, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
 							BasicJump(ray.collider.transform.position);
