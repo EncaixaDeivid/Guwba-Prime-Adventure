@@ -5,6 +5,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
+		private CircleCollider2D _selfCollider;
 		private PolygonCollider2D _trail;
 		private Vector2 _pointOrigin;
 		private Vector2 _targetPoint;
@@ -19,6 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
+			_selfCollider = _collider as CircleCollider2D;
 			_trail = GetComponent<PolygonCollider2D>();
 			_pointOrigin = transform.position;
 			_fadeTime = _statistics.FadeTime;
@@ -55,23 +57,19 @@ namespace GuwbaPrimeAdventure.Enemy
 			}
 			else if (_trail.points.Length > 0f)
 			{
-				if (_repeatWay)
-				{
-					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
-						_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
-				}
-				else if (_normal)
-				{
-					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+				if (Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+					if (_repeatWay)
+							_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
+					else if (_normal)
+					{
 						_pointIndex += 1;
-					_normal = _pointIndex != _trail.points.Length - 1f;
-				}
-				else if (!_normal)
-				{
-					if ((ushort)Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+						_normal = _pointIndex != _trail.points.Length - 1;
+					}
+					else if (!_normal)
+					{
 						_pointIndex -= 1;
-					_normal = _pointIndex == 0f;
-				}
+						_normal = _pointIndex == 0f;
+					}
 				transform.localScale = new Vector3()
 				{
 					x = Mathf.Abs(transform.localScale.x) * (_trail.points[_pointIndex].x < transform.localPosition.x ? -1f : 1f),
@@ -114,7 +112,16 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_stopWorking || IsStunned || _statistics.Target || _statistics.EndlessPursue)
 				return;
-			if (!_isDashing)
+			if (_isDashing)
+			{
+				_originCast = (Vector2)transform.position + _selfCollider.offset + (_targetPoint - _originCast).normalized * 5e-1f;
+				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, _statistics.Physics.GroundLayer))
+					if (_statistics.DetectionStop)
+						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
+					else
+						_isDashing = !(_returnDash = true);
+			}
+			else
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
 				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
@@ -123,10 +130,10 @@ namespace GuwbaPrimeAdventure.Enemy
 						_targetPoint = verifyCollider.transform.position;
 						if (!(_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer)))
 							return;
-						_originCast = (Vector2)transform.position + _collider.offset;
-						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _collider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
+						_originCast = (Vector2)transform.position + _selfCollider.offset;
+						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							if (!(_detected = !Physics2D.OverlapCircle(_originCast, (_collider as CircleCollider2D).radius, _statistics.Physics.GroundLayer)))
+							if (!(_detected = !Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.GroundLayer)))
 								return;
 							_originCast += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _originCast).normalized;
 						}
