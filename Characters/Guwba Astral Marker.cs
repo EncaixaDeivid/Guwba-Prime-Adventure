@@ -64,6 +64,7 @@ namespace GuwbaPrimeAdventure.Character
 		private bool _downStairs = false;
 		private bool _isJumping = false;
 		private bool _longJumping = false;
+		private bool _hopActive = false;
 		private bool _isHoping = false;
 		private bool _dashActive = false;
 		private bool _fallStarted = false;
@@ -264,11 +265,14 @@ namespace GuwbaPrimeAdventure.Character
 			if (movement.ReadValue<Vector2>().y > 0.25f)
 			{
 				_lastJumpTime = _jumpBufferTime;
-				if (!_isOnGround && movement.performed && !(SceneManager.GetActiveScene().name == _hubbyWorldScene))
+				if (!_isOnGround && movement.performed && !_hopActive && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+				{
+					_hopActive = true;
 					if (_bunnyHopBoost >= _guwbaCanvas.BunnyHop.Length)
 						_bunnyHopBoost = (ushort)_guwbaCanvas.BunnyHop.Length;
 					else
 						_bunnyHopBoost += 1;
+				}
 			}
 			if (_isJumping && _rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
 			{
@@ -444,17 +448,16 @@ namespace GuwbaPrimeAdventure.Character
 			if (_fadeTimer > 0f)
 				if ((_fadeTimer -= Time.deltaTime) <= 0f)
 					(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
-			if (!_dashActive && !_isOnGround && _rigidbody.linearVelocityY != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
+			if (!_dashActive && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
 				_attackDelay -= Time.deltaTime;
 		}
+		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
 		private void FixedUpdate()
 		{
 			if (!_instance || _instance != this)
 				return;
-			_downStairs = false;
-			float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
 			if (!_dashActive)
 			{
 				if (_isOnGround)
@@ -474,14 +477,14 @@ namespace GuwbaPrimeAdventure.Character
 					(_lastGroundedTime, _longJumping, _bunnyHopBoost) = (_jumpCoyoteTime, _isJumping = false, _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
-						_isHoping = false;
+						_hopActive = _isHoping = false;
 						for (ushort i = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
 							_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 					}
-					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && !(SceneManager.GetActiveScene().name == _hubbyWorldScene))
+					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
 						_screenShaker.GenerateImpulseWithForce(_fallDamage / _fallDamageDistance);
-						Hurt.Invoke((ushort)Mathf.Floor(_fallDamage / _fallDamageDistance));
+						Hurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
 						(_fallStarted, _fallDamage) = (false, 0f);
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
@@ -489,7 +492,7 @@ namespace GuwbaPrimeAdventure.Character
 							(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
 					}
 				}
-				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_downStairs)
+				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f)
 				{
 					if (_animator.GetBool(_idle))
 						_animator.SetBool(_idle, false);
@@ -532,6 +535,7 @@ namespace GuwbaPrimeAdventure.Character
 					if (_attackUsage)
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
 				}
+				_downStairs = false;
 				if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f)
 				{
 					_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _groundChecker) * _movementAction, Local.y - _collider.bounds.extents.y);
@@ -592,7 +596,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				if (_comboAttackBuffer)
 					_animator.SetBool(_attackJump, true);
-				_isJumping = true;
+				_isJumping = !(_hopActive = false);
 				_longJumping = _dashActive;
 				_rigidbody.gravityScale = _gravityScale;
 				_rigidbody.linearVelocityY = 0f;
@@ -651,7 +655,7 @@ namespace GuwbaPrimeAdventure.Character
 						_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
 					for (ushort i = _bunnyHopBoost = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
 						_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
-					_animator.SetBool(_death, _isHoping = false);
+					_animator.SetBool(_death, _hopActive = _isHoping = false);
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
 				}
 				else if (!data.ToggleValue.Value && additionalData is Vector2 position)
