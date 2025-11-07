@@ -11,12 +11,6 @@ namespace GuwbaPrimeAdventure.Story
 		[Header("Scene Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the story scene.")] private StorySceneHud _storySceneHudObject;
 		[SerializeField, Tooltip("The object that carry the scene settings.")] private SceneObject _sceneObject;
-		private void UpdateImage()
-		{
-			_imageIndex = (ushort)(_imageIndex < _sceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
-			Texture2D texture = _sceneObject.SceneComponents[_imageIndex].Image;
-			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(texture);
-		}
 		private IEnumerator FadeImage(bool appear)
 		{
 			if (appear)
@@ -29,14 +23,14 @@ namespace GuwbaPrimeAdventure.Story
 		internal void ShowScene()
 		{
 			_storySceneHud = Instantiate(_storySceneHudObject, transform);
-			Texture2D texture = _sceneObject.SceneComponents[_imageIndex].Image;
-			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(texture);
+			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_sceneObject.SceneComponents[_imageIndex].Image);
 			StartCoroutine(FadeImage(true));
 		}
 		internal IEnumerator NextSlide()
 		{
 			yield return FadeImage(false);
-			UpdateImage();
+			_imageIndex = (ushort)(_imageIndex < _sceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
+			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_sceneObject.SceneComponents[_imageIndex].Image);
 			yield return FadeImage(true);
 			while (_sceneObject.SceneComponents[_imageIndex].OffDialog)
 			{
