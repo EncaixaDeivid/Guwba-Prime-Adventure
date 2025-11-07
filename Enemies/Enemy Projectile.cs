@@ -73,13 +73,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, _statistics.GroundLayer).distance;
 			if (_statistics.UseQuantity)
 				distance = _statistics.QuantityToSummon;
-			short xAxis = (short)_cellPosition.x;
-			short yAxis = (short)_cellPosition.y;
 			for (ushort i = 0; i < distance; i++)
 			{
-				xAxis += (short)transform.up.x;
-				yAxis += (short)transform.up.y;
-				_cellPosition = new Vector2Int(xAxis, yAxis);
+				_cellPosition += new Vector2Int((short)transform.up.x, (short)transform.up.y);
 				CellInstance();
 			}
 		}
@@ -88,14 +84,14 @@ namespace GuwbaPrimeAdventure.Enemy
 			StartCoroutine(Parabola());
 			IEnumerator Parabola()
 			{
-				yield return new WaitUntil(() => isActiveAndEnabled);
+				yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
 				float time = 0f, x, y;
 				while (time > _statistics.TimeToFade)
 				{
 					time += Time.fixedDeltaTime;
-					x = _statistics.MovementSpeed * time * Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
-					y = _statistics.MovementSpeed * time * Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
-					transform.position = new Vector2(x, y - 0.5f * -Physics2D.gravity.y * Mathf.Pow(time, 2));
+					x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
+					y = Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
+					_rigidbody.MovePosition(new Vector2(_statistics.MovementSpeed * time * x, _statistics.MovementSpeed * time * y - 5e-1f * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
 				}
@@ -140,21 +136,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (!_statistics.StayInPlace)
 				if (_statistics.UseForce)
-				{
-					Vector2 force = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
-					_rigidbody.AddForce(force, _statistics.ForceMode);
-				}
+					_rigidbody.AddForce((_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed, _statistics.ForceMode);
 				else
 					_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
 		private void Update()
 		{
 			if (_rigidbody.IsSleeping())
-			{
-				_stunTimer -= Time.deltaTime;
-				if (_stunTimer <= 0f)
+				if ((_stunTimer -= Time.deltaTime) <= 0f)
 					_rigidbody.WakeUp();
-			}
 		}
 		private void FixedUpdate()
 		{
@@ -189,7 +179,10 @@ namespace GuwbaPrimeAdventure.Enemy
 						Instantiate(_statistics.EnemyOnDeath, transform.position, _statistics.EnemyOnDeath.transform.rotation);
 					else if (_statistics.SecondProjectile)
 						if (_statistics.InCell)
+						{
+							_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
 							CellInstanceRange();
+						}
 						else
 							CommonInstance();
 				Destroy(gameObject);
