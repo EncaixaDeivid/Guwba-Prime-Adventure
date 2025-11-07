@@ -38,12 +38,12 @@ namespace GuwbaPrimeAdventure.Enemy
 					yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
 					_movementSide = (short)(target.x >= transform.position.x ? 1f : -1f);
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
-					while (!GroundCheck())
+					while (!GroundCheck() && !_stopJump)
 					{
 						if (Mathf.Abs(target.x - transform.position.x) > _statistics.DistanceToTarget)
 							_rigidybody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned && !_stopJump);
+						yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 					}
 					_rigidybody.linearVelocityX = 0f;
 				}
@@ -66,13 +66,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				float xStart = transform.position.x;
 				float distance = Mathf.Abs(targetPosition - xStart);
 				float remainingDistance = distance;
-				while (!GroundCheck())
+				while (!GroundCheck() && !_stopJump)
 				{
 					transform.position = new Vector2(Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance), transform.position.y);
 					if (Mathf.Abs(targetPosition - transform.position.x) > _statistics.DistanceToTarget)
 						remainingDistance -= _statistics.MovementSpeed * Time.deltaTime;
 					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned && !_stopJump);
+					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
 				_rigidybody.linearVelocityX = 0f;
 			}
