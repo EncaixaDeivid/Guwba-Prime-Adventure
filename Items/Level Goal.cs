@@ -27,10 +27,9 @@ namespace GuwbaPrimeAdventure.Item
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
-			ushort sceneIndex = ushort.Parse($"{gameObject.scene.name[^1]}");
-			if (!saveFile.levelsCompleted[sceneIndex - 1])
+			if (!saveFile.levelsCompleted[ushort.Parse($"{gameObject.scene.name[^1]}") - 1])
 			{
-				saveFile.levelsCompleted[sceneIndex - 1] = true;
+				saveFile.levelsCompleted[ushort.Parse($"{gameObject.scene.name[^1]}") - 1] = true;
 				SaveController.WriteSave(saveFile);
 			}
 			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
@@ -40,7 +39,7 @@ namespace GuwbaPrimeAdventure.Item
 			}
 			if (_enterInDialog && settings.DialogToggle)
 				GetComponent<IInteractable>().Interaction();
-			else if (sceneIndex - 1 >= 0f && !saveFile.deafetedBosses[sceneIndex - 1])
+			else if (ushort.Parse($"{gameObject.scene.name[^1]}") - 1 >= 0f && !saveFile.deafetedBosses[ushort.Parse($"{gameObject.scene.name[^1]}") - 1])
 				GetComponent<Transitioner>().Transicion(_goToBoss);
 			else
 				GetComponent<Transitioner>().Transicion();
