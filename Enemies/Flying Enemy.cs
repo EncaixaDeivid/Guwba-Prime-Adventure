@@ -59,7 +59,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				if (Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
 					if (_repeatWay)
-							_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
+						_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
 					else if (_normal)
 					{
 						_pointIndex += 1;
