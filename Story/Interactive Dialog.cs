@@ -40,8 +40,7 @@ namespace GuwbaPrimeAdventure.Story
 		}
 		private IEnumerator TextDigitation()
 		{
-			StyleBackground image = new(_dialogObject.Speachs[_speachIndex].Model);
-			_dialogHud.CharacterIcon.style.backgroundImage = image;
+			_dialogHud.CharacterIcon.style.backgroundImage = new StyleBackground(_dialogObject.Speachs[_speachIndex].Model);
 			_dialogHud.CharacterName.text = _dialogObject.Speachs[_speachIndex].CharacterName;
 			_text = _dialogObject.Speachs[_speachIndex].SpeachText;
 			_dialogHud.CharacterSpeach.text = "";
