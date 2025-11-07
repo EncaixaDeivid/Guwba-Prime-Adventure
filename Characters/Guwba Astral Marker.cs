@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
@@ -36,6 +36,7 @@ namespace GuwbaPrimeAdventure.Character
 		private readonly int _walkSpeed = Animator.StringToHash("WalkSpeed");
 		private readonly int _jump = Animator.StringToHash("Jump");
 		private readonly int _fall = Animator.StringToHash("Fall");
+		private readonly int _airJump = Animator.StringToHash("AirJump");
 		private readonly int _dashSlide = Animator.StringToHash("DashSlide");
 		private readonly int _attack = Animator.StringToHash("Attack");
 		private readonly int _attackCombo = Animator.StringToHash("AttackCombo");
@@ -63,10 +64,10 @@ namespace GuwbaPrimeAdventure.Character
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
+		private bool _canAirJump = true;
 		private bool _longJumping = false;
 		private bool _hopActive = false;
 		private bool _isHoping = false;
-		private bool _dashActive = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
 		[Header("Control Statistics")]
@@ -98,6 +99,7 @@ namespace GuwbaPrimeAdventure.Character
 		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
 		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump on the air.")] private float _airJumpStrenght;
 		[SerializeField, Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
 		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
@@ -130,6 +132,8 @@ namespace GuwbaPrimeAdventure.Character
 			_inputController.Commands.Movement.started += Movement;
 			_inputController.Commands.Movement.performed += Movement;
 			_inputController.Commands.Movement.canceled += Movement;
+			_inputController.Commands.Jump.started += Jump;
+			_inputController.Commands.Jump.canceled += Jump;
 			_inputController.Commands.AttackUse.started += AttackUse;
 			_inputController.Commands.AttackUse.canceled += AttackUse;
 			_inputController.Commands.Interaction.started += Interaction;
@@ -152,6 +156,8 @@ namespace GuwbaPrimeAdventure.Character
 			_inputController.Commands.Movement.started -= Movement;
 			_inputController.Commands.Movement.performed -= Movement;
 			_inputController.Commands.Movement.canceled -= Movement;
+			_inputController.Commands.Jump.started -= Jump;
+			_inputController.Commands.Jump.canceled -= Jump;
 			_inputController.Commands.AttackUse.started -= AttackUse;
 			_inputController.Commands.AttackUse.canceled -= AttackUse;
 			_inputController.Commands.Interaction.started -= Interaction;
@@ -181,6 +187,7 @@ namespace GuwbaPrimeAdventure.Character
 		private void EnableInputs()
 		{
 			_inputController.Commands.Movement.Enable();
+			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
 			_rigidbody.WakeUp();
@@ -188,6 +195,7 @@ namespace GuwbaPrimeAdventure.Character
 		private void DisableInputs()
 		{
 			_inputController.Commands.Movement.Disable();
+			_inputController.Commands.Jump.Disable();
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
 			_rigidbody.Sleep();
@@ -262,29 +270,35 @@ namespace GuwbaPrimeAdventure.Character
 					_movementAction = 1f;
 				else if (movement.ReadValue<Vector2>().x < 0f)
 					_movementAction = -1f;
-			if (movement.ReadValue<Vector2>().y > 0.25f)
+			if (_movementAction != 0f && movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
 			{
-				_lastJumpTime = _jumpBufferTime;
-				if (!_isOnGround && movement.performed && !_hopActive && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+				StartCoroutine(AirJump());
+				IEnumerator AirJump()
 				{
-					_hopActive = true;
-					if (_bunnyHopBoost >= _guwbaCanvas.BunnyHop.Length)
-						_bunnyHopBoost = (ushort)_guwbaCanvas.BunnyHop.Length;
-					else
-						_bunnyHopBoost += 1;
+					_animator.SetBool(_airJump, !(_canAirJump = false));
+					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_dashMovement = _movementAction), transform.localScale.y, transform.localScale.z);
+					while (!_isOnGround)
+					{
+						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
+						_sizeCast = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
+						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer) || _isJumping || _animator.GetBool(_stun))
+							break;
+						_lastGroundedTime = _jumpCoyoteTime;
+						yield return new WaitForFixedUpdate();
+						yield return new WaitUntil(() => isActiveAndEnabled);
+					}
+					_animator.SetBool(_airJump, false);
 				}
+				_rigidbody.linearVelocity = Vector2.zero;
+				_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
+				_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _dashMovement * _rigidbody.mass, ForceMode2D.Impulse);
 			}
-			if (_isJumping && _rigidbody.linearVelocityY > 0f && movement.ReadValue<Vector2>().y < 0.25f)
-			{
-				(_isJumping, _lastJumpTime) = (false, 0f);
-				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
-			}
-			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && !_dashActive && _isOnGround && (!_attackUsage || _comboAttackBuffer))
+			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround && (!_attackUsage || _comboAttackBuffer))
 			{
 				StartCoroutine(Dash());
 				IEnumerator Dash()
 				{
-					_animator.SetBool(_dashSlide, _dashActive = true);
+					_animator.SetBool(_dashSlide, true);
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
 					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_dashMovement = _movementAction), transform.localScale.y, transform.localScale.z);
 					_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
@@ -293,20 +307,40 @@ namespace GuwbaPrimeAdventure.Character
 					{
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(_groundChecker, _collider.size.y - _groundChecker);
-						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, _groundChecker, _groundLayer) || !_dashActive || !_isOnGround || _isJumping)
+						_jokerValue = transform.right * _dashMovement;
+						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, _groundChecker, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
 							break;
 						_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
 						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled && !_animator.GetBool(_stun) ? _dashSpeed * _dashMovement : 0f) > 0f);
+						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * _dashMovement : 0f) > 0f);
 					}
-					_animator.SetBool(_dashSlide, _dashActive = false);
+					_animator.SetBool(_dashSlide, false);
 					_animator.SetBool(_attackSlide, false);
 				}
 			}
 		};
+		private Action<InputAction.CallbackContext> Jump => jump =>
+		{
+			if (jump.started)
+			{
+				_lastJumpTime = _jumpBufferTime;
+				if (!_isOnGround && !_hopActive && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+				{
+					_hopActive = true;
+					_bunnyHopBoost += 1;
+					if (_bunnyHopBoost >= _guwbaCanvas.BunnyHop.Length)
+						_bunnyHopBoost = (ushort)_guwbaCanvas.BunnyHop.Length;
+				}
+			}
+			else if (jump.canceled && _isJumping && _rigidbody.linearVelocityY > 0f)
+			{
+				(_isJumping, _lastJumpTime) = (false, 0f);
+				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
+			}
+		};
 		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
 		{
-			if ((_attackDelay > 0f && !_comboAttackBuffer) || _dashActive || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if ((_attackDelay > 0f && !_comboAttackBuffer) || _animator.GetBool(_airJump) || _animator.GetBool(_dashSlide) || !isActiveAndEnabled || _animator.GetBool(_stun))
 				return;
 			if (attackUse.started && !_attackUsage)
 				_animator.SetTrigger(_attack);
@@ -366,6 +400,7 @@ namespace GuwbaPrimeAdventure.Character
 				_animator.SetBool(_walk, false);
 				_animator.SetBool(_jump, false);
 				_animator.SetBool(_fall, false);
+				_animator.SetBool(_airJump, false);
 				_animator.SetBool(_dashSlide, false);
 				_animator.SetBool(_attackJump, false);
 				_animator.SetBool(_attackSlide, false);
@@ -396,7 +431,6 @@ namespace GuwbaPrimeAdventure.Character
 				_stunResistance = (short)_guwbaCanvas.StunResistance.Length;
 				for (ushort i = 0; i < _stunResistance; i++)
 					_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
-				_dashActive = false;
 				DisableInputs();
 			}
 		};
@@ -448,7 +482,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (_fadeTimer > 0f)
 				if ((_fadeTimer -= Time.deltaTime) <= 0f)
 					(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
-			if (!_dashActive && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
+			if (!_animator.GetBool(_dashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
 				_attackDelay -= Time.deltaTime;
@@ -458,7 +492,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (!_dashActive)
+			if (!_animator.GetBool(_dashSlide))
 			{
 				if (_isOnGround)
 				{
@@ -474,7 +508,7 @@ namespace GuwbaPrimeAdventure.Character
 						_animator.SetBool(_jump, false);
 					if (_animator.GetBool(_fall))
 						_animator.SetBool(_fall, false);
-					(_lastGroundedTime, _longJumping, _bunnyHopBoost) = (_jumpCoyoteTime, _isJumping = false, _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
+					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
 						_hopActive = _isHoping = false;
@@ -492,7 +526,7 @@ namespace GuwbaPrimeAdventure.Character
 							(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
 					}
 				}
-				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f)
+				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(_airJump))
 				{
 					if (_animator.GetBool(_idle))
 						_animator.SetBool(_idle, false);
@@ -567,21 +601,24 @@ namespace GuwbaPrimeAdventure.Character
 						}
 					}
 				}
-				_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
-				_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
-				_jokerValue.z = (Mathf.Abs(_jokerValue.x * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
-				_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(_jokerValue.y) * _jokerValue.z, _velocityPower) * Mathf.Sign(_jokerValue.y) * _rigidbody.mass);
-				if (_movementAction != 0f)
+				if (!_animator.GetBool(_airJump))
 				{
-					if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
+					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
+					_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
+					_jokerValue.z = (Mathf.Abs(_jokerValue.x * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
+					_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(_jokerValue.y) * _jokerValue.z, _velocityPower) * Mathf.Sign(_jokerValue.y) * _rigidbody.mass);
+					if (_movementAction != 0f)
 					{
-						_jokerValue.y = _rigidbody.linearVelocityX > 0f ? 1f : -1f;
-						transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _jokerValue.y, transform.localScale.y, transform.localScale.z);
+						if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
+						{
+							_jokerValue.y = _rigidbody.linearVelocityX > 0f ? 1f : -1f;
+							transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _jokerValue.y, transform.localScale.y, transform.localScale.z);
+						}
+						else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
+							transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementAction, transform.localScale.y, transform.localScale.z);
+						if (_isOnGround)
+							_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 					}
-					else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
-						transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementAction, transform.localScale.y, transform.localScale.z);
-					if (_isOnGround && !_dashActive)
-						_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 				}
 				if (_attackUsage)
 					_rigidbody.linearVelocityX *= _attackVelocityCut;
@@ -597,7 +634,7 @@ namespace GuwbaPrimeAdventure.Character
 				if (_comboAttackBuffer)
 					_animator.SetBool(_attackJump, true);
 				_isJumping = !(_hopActive = false);
-				_longJumping = _dashActive;
+				_longJumping = _animator.GetBool(_dashSlide);
 				_rigidbody.gravityScale = _gravityScale;
 				_rigidbody.linearVelocityY = 0f;
 				if (_bunnyHopBoost > 0f)
