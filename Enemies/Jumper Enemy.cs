@@ -84,8 +84,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (_statistics.UseInput)
 			{
 				_inputController = new InputController();
-				_inputController.Commands.Movement.started += JumpMovement;
-				_inputController.Commands.Movement.Enable();
+				_inputController.Commands.Jump.started += Jump;
+				_inputController.Commands.Jump.Enable();
 			}
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
@@ -152,13 +152,13 @@ namespace GuwbaPrimeAdventure.Enemy
 			base.OnDestroy();
 			if (_statistics.UseInput)
 			{
-				_inputController.Commands.Movement.started -= JumpMovement;
-				_inputController.Commands.Movement.Disable();
-				_inputController.Disable();
+				_inputController.Commands.Jump.started -= Jump;
+				_inputController.Commands.Jump.Disable();
+				_inputController.Dispose();
 			}
 			Sender.Exclude(this);
 		}
-		private Action<InputAction.CallbackContext> JumpMovement => jumpMovement =>
+		private Action<InputAction.CallbackContext> Jump => jump =>
 		{
 			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
 			{
