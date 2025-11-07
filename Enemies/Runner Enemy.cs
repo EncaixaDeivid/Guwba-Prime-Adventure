@@ -166,8 +166,8 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				_stoppedTime = 0f;
 				_stopWorking = _canRetreat = !(_retreat = true);
-				_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f);
 				_retreatLocation = transform.position.x;
+				_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f);
 				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
