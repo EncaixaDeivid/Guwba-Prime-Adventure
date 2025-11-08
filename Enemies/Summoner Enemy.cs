@@ -3,7 +3,7 @@ using System.Collections;
 using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(SpriteRenderer))]
+	[DisallowMultipleComponent]
 	internal sealed class SummonerEnemy : EnemyProvider, IConnector
 	{
 		private float _gravityScale = 0f;
