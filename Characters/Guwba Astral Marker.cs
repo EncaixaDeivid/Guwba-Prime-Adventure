@@ -425,8 +425,9 @@ namespace GuwbaPrimeAdventure.Character
 				_guwbaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 			if (_stunResistance <= 0f)
 			{
-				_animator.SetBool(_stun, true);
+				_animator.SetBool(_stun, !(_invencibility = false));
 				_animator.SetFloat(_isOn, 100f);
+				StopCoroutine(VisualEffect());
 				_stunTimer = stunTime;
 				_stunResistance = (short)_guwbaCanvas.StunResistance.Length;
 				for (ushort i = 0; i < _stunResistance; i++)
@@ -475,8 +476,9 @@ namespace GuwbaPrimeAdventure.Character
 			if (_animator.GetBool(_stun))
 				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
-					_animator.SetBool(_stun, false);
+					_animator.SetBool(_stun, !(_invencibility = true));
 					_animator.SetFloat(_isOn, 1f);
+					StartCoroutine(VisualEffect());
 					EnableInputs();
 				}
 			if (_fadeTimer > 0f)
