@@ -6,14 +6,14 @@ namespace GuwbaPrimeAdventure.Enemy
 	internal sealed class FlyingEnemy : MovingEnemy
 	{
 		private CircleCollider2D _selfCollider;
-		private PolygonCollider2D _trail;
+		private Vector2[] _trail;
 		private Vector2 _pointOrigin;
 		private Vector2 _targetPoint;
 		private bool _normal = true;
+		private bool _returnOrigin = false;
 		private bool _afterDash = false;
 		private bool _returnDash = false;
 		private ushort _pointIndex = 0;
-		private float _fadeTime = 0f;
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The flying statitics of this enemy.")] private FlyingStatistics _statistics;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
@@ -21,19 +21,22 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_selfCollider = _collider as CircleCollider2D;
-			_trail = GetComponent<PolygonCollider2D>();
-			_pointOrigin = transform.position;
-			_fadeTime = _statistics.FadeTime;
+			PolygonCollider2D trail = GetComponent<PolygonCollider2D>();
+			_trail = new Vector2[trail.points.Length];
+			for (ushort i = 0; i < trail.points.Length; i++)
+				_trail[i] = transform.TransformPoint(trail.points[i] + trail.offset);
+			_pointOrigin = _rigidybody.position;
 		}
 		private void Chase()
 		{
+			_returnOrigin = true;
 			if (_returnDash)
 			{
-				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.deltaTime * _statistics.ReturnSpeed);
-				_returnDash = Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance;
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed));
+				_returnDash = Vector2.Distance(_rigidybody.position, _targetPoint) <= _statistics.TargetDistance;
 				return;
 			}
-			else if (!_isDashing && Vector2.Distance(transform.position, _targetPoint) <= _statistics.TargetDistance)
+			else if (!_isDashing && Vector2.Distance(_rigidybody.position, _targetPoint) <= _statistics.TargetDistance)
 				if (_statistics.DetectionStop)
 				{
 					(_stopWorking, _stoppedTime) = (true, _statistics.StopTime);
@@ -41,8 +44,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 					_isDashing = true;
-			transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.deltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed));
-			if (_isDashing && Vector2.Distance(transform.position, _targetPoint) <= 1e-3f)
+			_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _targetPoint, Time.fixedDeltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed)));
+			if (_isDashing && Vector2.Distance(_rigidybody.position, _targetPoint) <= 1e-3f)
 				if (_statistics.DetectionStop)
 					(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
 				else
@@ -50,20 +53,21 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void Trail()
 		{
-			if ((Vector2)transform.position != _pointOrigin)
+			if (_returnOrigin)
 			{
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < transform.position.x ? -1f : 1f), transform.localScale.y, transform.localScale.z);
-				transform.position = Vector2.MoveTowards(transform.position, _pointOrigin, Time.deltaTime * _statistics.ReturnSpeed);
+				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < _rigidybody.position.x ? -1f : 1f), transform.localScale.y, transform.localScale.z);
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed));
+				_returnOrigin = Vector2.Distance(_rigidybody.position, _pointOrigin) > 1e-3f;
 			}
-			else if (_trail.points.Length > 0f)
+			else if (_trail.Length > 0f)
 			{
-				if (Vector2.Distance(transform.localPosition, _trail.points[_pointIndex]) <= 1e-3f)
+				if (Vector2.Distance(_rigidybody.position, _trail[_pointIndex]) <= 1e-3f)
 					if (_repeatWay)
-						_pointIndex = (ushort)(_pointIndex < _trail.points.Length - 1f ? _pointIndex + 1f : 0f);
+						_pointIndex = (ushort)(_pointIndex < _trail.Length - 1f ? _pointIndex + 1f : 0f);
 					else if (_normal)
 					{
 						_pointIndex += 1;
-						_normal = _pointIndex != _trail.points.Length - 1;
+						_normal = _pointIndex != _trail.Length - 1;
 					}
 					else if (!_normal)
 					{
@@ -72,49 +76,40 @@ namespace GuwbaPrimeAdventure.Enemy
 					}
 				transform.localScale = new Vector3()
 				{
-					x = Mathf.Abs(transform.localScale.x) * (_trail.points[_pointIndex].x < transform.localPosition.x ? -1f : 1f),
+					x = Mathf.Abs(transform.localScale.x) * (_trail[_pointIndex].x < transform.position.x ? -1f : 1f),
 					y = transform.localScale.y,
 					z = transform.localScale.z
 				};
-				transform.localPosition = Vector2.MoveTowards(transform.localPosition, _trail.points[_pointIndex], Time.deltaTime * _statistics.MovementSpeed);
-				_pointOrigin = transform.position;
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _trail[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed));
+				_pointOrigin = _rigidybody.position;
 			}
 		}
 		private void Update()
 		{
-			if (_statistics.EndlessPursue && _fadeTime > 0f)
-				if ((_fadeTime -= Time.deltaTime) <= 0f)
-					Destroy(gameObject);
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopWorking)
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 					(_isDashing, _afterDash, _stopWorking) = (!_afterDash, false, false);
-			if (_stopWorking)
-				return;
-			if (_statistics.Target)
-			{
-				_targetPoint = _statistics.Target.transform.position;
-				transform.position = Vector2.MoveTowards(transform.position, _targetPoint, Time.deltaTime * _statistics.MovementSpeed);
-				return;
-			}
-			if (_statistics.EndlessPursue)
-			{
-				transform.position = Vector2.MoveTowards(transform.position, GuwbaAstralMarker.Localization, Time.deltaTime * _statistics.MovementSpeed);
-				return;
-			}
-			if (_detected || _returnDash)
-				Chase();
-			else
-				Trail();
 		}
 		private void FixedUpdate()
 		{
 			if (_stopWorking || IsStunned || _statistics.Target || _statistics.EndlessPursue)
 				return;
+			if (_statistics.Target)
+			{
+				_targetPoint = _statistics.Target.transform.position;
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _targetPoint, Time.fixedDeltaTime * _statistics.MovementSpeed));
+				return;
+			}
+			if (_statistics.EndlessPursue)
+			{
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, GuwbaAstralMarker.Localization, Time.fixedDeltaTime * _statistics.MovementSpeed));
+				return;
+			}
 			if (_isDashing)
 			{
-				_originCast = (Vector2)transform.position + _selfCollider.offset + (_targetPoint - _originCast).normalized * 5e-1f;
+				_originCast = _rigidybody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized * 5e-1f;
 				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, _statistics.Physics.GroundLayer))
 					if (_statistics.DetectionStop)
 						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
@@ -145,6 +140,10 @@ namespace GuwbaPrimeAdventure.Enemy
 						};
 						return;
 					}
+			if (_detected || _returnDash)
+				Chase();
+			else
+				Trail();
 		}
 	};
 };
