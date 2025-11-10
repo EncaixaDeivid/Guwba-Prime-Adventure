@@ -11,18 +11,18 @@ namespace GuwbaPrimeAdventure.Item
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.lifesAcquired.Contains(gameObject.name))
+			if (saveFile.LifesAcquired.Contains(gameObject.name))
 				Destroy(gameObject);
 			yield return new WaitForEndOfFrame();
 		}
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.lifes < 100f)
-				saveFile.lifes += 1;
-			saveFile.lifesAcquired.Add(gameObject.name);
-			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
-				saveFile.generalObjects.Add(gameObject.name);
+			if (saveFile.Lifes < 100f)
+				saveFile.Lifes += 1;
+			saveFile.LifesAcquired.Add(gameObject.name);
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+				saveFile.GeneralObjects.Add(gameObject.name);
 			SaveController.WriteSave(saveFile);
 			Destroy(gameObject);
 		}
