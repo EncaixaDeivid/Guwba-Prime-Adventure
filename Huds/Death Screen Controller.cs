@@ -120,7 +120,7 @@ namespace GuwbaPrimeAdventure.Hud
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				if (saveFile.lifes < 0f)
+				if (saveFile.Lifes < 0f)
 				{
 					_deathScreenHud.Text.text = "Game Over";
 					_deathScreenHud.Continue.style.display = DisplayStyle.None;
