@@ -226,7 +226,7 @@ namespace GuwbaPrimeAdventure.Character
 				yield break;
 			yield return _guwbaCanvas.StartUI();
 			SaveController.Load(out SaveFile saveFile);
-			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
+			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			(_vitality, _stunResistance) = ((short)_guwbaCanvas.Vitality.Length, (short)_guwbaCanvas.StunResistance.Length);
 			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
 			{
@@ -393,7 +393,7 @@ namespace GuwbaPrimeAdventure.Character
 			if (_vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				_guwbaCanvas.LifeText.text = $"X {saveFile.lifes -= 1}";
+				_guwbaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
 				StopAllCoroutines();
 				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
@@ -663,7 +663,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
-				(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.lifes}", $"X {saveFile.coins}");
+				(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			}
 		}
 		public static bool EqualObject(params GameObject[] othersObjects)
