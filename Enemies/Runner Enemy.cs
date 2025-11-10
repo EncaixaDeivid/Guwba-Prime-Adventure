@@ -118,6 +118,16 @@ namespace GuwbaPrimeAdventure.Enemy
 					_stopWorking = true;
 					_rigidybody.linearVelocityX = 0f;
 				}
+				else if (_statistics.EventRetreat)
+				{
+					_retreatTime = _statistics.TimeToRetreat;
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
+					_sender.SetStateForm(StateForm.Action);
+					_sender.SetNumber(_statistics.EventIndex);
+					_sender.Send(PathConnection.Enemy);
+					_sender.SetStateForm(StateForm.State);
+				}
 				else
 				{
 					_retreatTime = _statistics.TimeToRetreat;
@@ -157,7 +167,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_sender.SetToggle(_statistics.JumpDash);
 				_sender.Send(PathConnection.Enemy);
 			}
-			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
+			transform.TurnScaleX(_movementSide);
 			_rigidybody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
 		}
 		public new bool Hurt(ushort damage)
@@ -167,8 +177,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_stoppedTime = 0f;
 				_stopWorking = _canRetreat = !(_retreat = true);
 				_retreatLocation = transform.position.x;
-				_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f);
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
+				transform.TurnScaleX(_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f));
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				return false;
