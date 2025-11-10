@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure.Data
 		public bool GeneralVolumeToggle;
 		public bool EffectsVolumeToggle;
 		public bool MusicVolumeToggle;
+		public bool InfinityFPS;
 		public float DialogSpeed;
 		public float ScreenBrightness;
 		public ushort FrameRate;
@@ -33,7 +34,7 @@ namespace GuwbaPrimeAdventure.Data
 		public static void Load(out Settings settings)
 		{
 			if (File.Exists(SettingsPath))
-				settings = ArchiveEncoder.ReadData<Settings>(SettingsPath);
+				settings = FileEncoder.ReadData<Settings>(SettingsPath);
 			else
 				settings = new Settings()
 				{
@@ -43,6 +44,7 @@ namespace GuwbaPrimeAdventure.Data
 					GeneralVolumeToggle = true,
 					EffectsVolumeToggle = true,
 					MusicVolumeToggle = true,
+					InfinityFPS = false,
 					DialogSpeed = .05f,
 					ScreenBrightness = 1f,
 					FrameRate = 60,
@@ -51,6 +53,6 @@ namespace GuwbaPrimeAdventure.Data
 					MusicVolume = 100
 				};
 		}
-		public static void WriteSave(Settings settings) => ArchiveEncoder.WriteData(settings, SettingsPath);
+		public static void WriteSave(Settings settings) => FileEncoder.WriteData(settings, SettingsPath);
 	};
 };
