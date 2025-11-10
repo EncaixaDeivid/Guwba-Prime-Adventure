@@ -26,9 +26,9 @@ namespace GuwbaPrimeAdventure
 				}
 				string newScene = scene ?? sceneName ?? _sceneTransicion;
 				if (newScene != gameObject.scene.name)
-					for (ushort i = 0; i < saveFile.levelsCompleted.Length; i++)
+					for (ushort i = 0; i < saveFile.LevelsCompleted.Length; i++)
 						if (newScene.Contains($"{i}"))
-							saveFile.lastLevelEntered = newScene;
+							saveFile.LastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
 				if (newScene != _menuScene)
 					yield return new WaitUntil(() => asyncOperation.isDone);
