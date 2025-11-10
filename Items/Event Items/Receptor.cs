@@ -27,7 +27,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			SaveController.Load(out SaveFile saveFile);
 			if (_specificsObjects.Length > 0f)
 				foreach (string specificObject in _specificsObjects)
-					if (saveFile.generalObjects.Contains(specificObject))
+					if (saveFile.GeneralObjects.Contains(specificObject))
 						Activate();
 		}
 		private void Activate() => _receptor.Execute();
