@@ -33,9 +33,9 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked -= EnterLevel;
-			if (saveFile.levelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
 				_levelGate.Boss.clicked -= EnterBoss;
-			if (saveFile.deafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+			if (saveFile.DeafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
 				_levelGate.Scenes.clicked -= ShowScenes;
 		}
 		private IEnumerator Start()
@@ -44,9 +44,9 @@ namespace GuwbaPrimeAdventure.Item
 			_levelGate.transform.localPosition = _offsetPosition;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
-			if (saveFile.levelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
 				_levelGate.Boss.clicked += EnterBoss;
-			if (saveFile.deafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
+			if (saveFile.DeafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
 				_levelGate.Scenes.clicked += ShowScenes;
 			_levelGate.Level.SetEnabled(false);
 			_levelGate.Boss.SetEnabled(false);
