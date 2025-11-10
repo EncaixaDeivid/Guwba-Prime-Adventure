@@ -32,10 +32,9 @@ namespace GuwbaPrimeAdventure.Connection
 		public void SetNumber(int value) => _numberValue = (uint)(value < 0f ? -value : value);
 		public void Send(PathConnection path)
 		{
-			DataConnection dataConnection = new(_stateForm, _toggleValue, _numberValue);
-			foreach (IConnector connector in _connectors)
-				if (connector.PathConnection == path)
-					connector.Receive(dataConnection, _additionalData);
+			foreach (IConnector connector in _connectors.ToArray())
+				if (connector != null && connector.PathConnection == path)
+					connector.Receive(new DataConnection(_stateForm, _toggleValue, _numberValue), _additionalData);
 		}
 	};
 };
