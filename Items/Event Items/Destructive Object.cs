@@ -22,7 +22,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			_sender.SetAdditionalData(_hiddenObject);
 			_sender.SetToggle(true);
 			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && saveFile.generalObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(gameObject.name))
 				Destroy(gameObject, 1e-3f);
 		}
 		public void Execute()
@@ -35,9 +35,9 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		private void SaveObject()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
 			{
-				saveFile.generalObjects.Add(gameObject.name);
+				saveFile.GeneralObjects.Add(gameObject.name);
 				SaveController.WriteSave(saveFile);
 			}
 		}
