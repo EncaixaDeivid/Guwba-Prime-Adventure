@@ -11,23 +11,23 @@ namespace GuwbaPrimeAdventure.Item
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.books.ContainsKey(gameObject.name))
+			if (saveFile.Books.ContainsKey(gameObject.name))
 			{
-				if (saveFile.books[gameObject.name])
+				if (saveFile.Books[gameObject.name])
 					GetComponent<SpriteRenderer>().sprite = _bookCacthed;
 				yield break;
 			}
-			saveFile.books.Add(gameObject.name, false);
+			saveFile.Books.Add(gameObject.name, false);
 			yield return new WaitForEndOfFrame();
 		}
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (!saveFile.books[gameObject.name])
-				saveFile.books[gameObject.name] = true;
+			if (!saveFile.Books[gameObject.name])
+				saveFile.Books[gameObject.name] = true;
 			GetComponent<SpriteRenderer>().sprite = _bookCacthed;
-			if (!saveFile.generalObjects.Contains(gameObject.name))
-				saveFile.generalObjects.Add(gameObject.name);
+			if (!saveFile.GeneralObjects.Contains(gameObject.name))
+				saveFile.GeneralObjects.Add(gameObject.name);
 			SaveController.WriteSave(saveFile);
 		}
 	};
