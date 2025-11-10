@@ -31,6 +31,7 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("User interface element.")] private string _yesButton;
 		[SerializeField, Tooltip("User interface element.")] private string _noButton;
 		[SerializeField, Tooltip("User interface element.")] private string _frameRateText;
+		internal VisualElement RootElement { get; private set; }
 		internal GroupBox Settings { get; private set; }
 		internal GroupBox Confirmation { get; private set; }
 		internal DropdownField ScreenResolution { get; private set; }
@@ -60,28 +61,28 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			Settings = root.Q<GroupBox>(_settingsGroup);
-			Confirmation = root.Q<GroupBox>(_confirmationGroup);
-			ScreenResolution = root.Q<DropdownField>(_screenResolution);
-			FullScreenModes = root.Q<DropdownField>(_fullScreenModes);
-			DialogToggle = root.Q<Toggle>(_dialogToggle);
-			GeneralVolumeToggle = root.Q<Toggle>(_generalVolumeToggle);
-			EffectsVolumeToggle = root.Q<Toggle>(_effectsVolumeToggle);
-			MusicVolumeToggle = root.Q<Toggle>(_musicVolumeToggle);
-			InfinityFPS = root.Q<Toggle>(_inifinityFPSToggle);
-			DialogSpeed = root.Q<Slider>(_dialogSpeed);
-			ScreenBrightness = root.Q<Slider>(_screenBrightness);
-			FrameRate = root.Q<SliderInt>(_frameRate);
-			GeneralVolume = root.Q<SliderInt>(_generalVolume);
-			EffectsVolume = root.Q<SliderInt>(_effectsVolume);
-			MusicVolume = root.Q<SliderInt>(_musicVolume);
-			Close = root.Q<Button>(_closeButton);
-			OutLevel = root.Q<Button>(_outLevelButton);
-			SaveGame = root.Q<Button>(_saveGameButton);
-			Yes = root.Q<Button>(_yesButton);
-			No = root.Q<Button>(_noButton);
-			FrameRateText =  root.Q<Label>(_frameRateText);
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			Settings = RootElement.Q<GroupBox>(_settingsGroup);
+			Confirmation = RootElement.Q<GroupBox>(_confirmationGroup);
+			ScreenResolution = RootElement.Q<DropdownField>(_screenResolution);
+			FullScreenModes = RootElement.Q<DropdownField>(_fullScreenModes);
+			DialogToggle = RootElement.Q<Toggle>(_dialogToggle);
+			GeneralVolumeToggle = RootElement.Q<Toggle>(_generalVolumeToggle);
+			EffectsVolumeToggle = RootElement.Q<Toggle>(_effectsVolumeToggle);
+			MusicVolumeToggle = RootElement.Q<Toggle>(_musicVolumeToggle);
+			InfinityFPS = RootElement.Q<Toggle>(_inifinityFPSToggle);
+			DialogSpeed = RootElement.Q<Slider>(_dialogSpeed);
+			ScreenBrightness = RootElement.Q<Slider>(_screenBrightness);
+			FrameRate = RootElement.Q<SliderInt>(_frameRate);
+			GeneralVolume = RootElement.Q<SliderInt>(_generalVolume);
+			EffectsVolume = RootElement.Q<SliderInt>(_effectsVolume);
+			MusicVolume = RootElement.Q<SliderInt>(_musicVolume);
+			Close = RootElement.Q<Button>(_closeButton);
+			OutLevel = RootElement.Q<Button>(_outLevelButton);
+			SaveGame = RootElement.Q<Button>(_saveGameButton);
+			Yes = RootElement.Q<Button>(_yesButton);
+			No = RootElement.Q<Button>(_noButton);
+			FrameRateText =  RootElement.Q<Label>(_frameRateText);
 		}
 		private IEnumerator Start()
 		{
