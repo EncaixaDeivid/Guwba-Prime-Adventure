@@ -33,17 +33,17 @@ namespace GuwbaPrimeAdventure.Item
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.coins < 100f)
-				saveFile.coins += 1;
-			if (saveFile.lifes < 100f && saveFile.coins >= 100f)
+			if (saveFile.Coins < 100f)
+				saveFile.Coins += 1;
+			if (saveFile.Lifes < 100f && saveFile.Coins >= 100f)
 			{
-				saveFile.coins = 0;
-				saveFile.lifes += 1;
+				saveFile.Coins = 0;
+				saveFile.Lifes += 1;
 			}
-			if (saveFile.lifes >= 100f && saveFile.coins >= 99f)
-				saveFile.coins = 100;
-			if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
-				saveFile.generalObjects.Add(gameObject.name);
+			if (saveFile.Lifes >= 100f && saveFile.Coins >= 99f)
+				saveFile.Coins = 100;
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+				saveFile.GeneralObjects.Add(gameObject.name);
 			SaveController.WriteSave(saveFile);
 			_collider.enabled = _animator.enabled = _spriteRenderer.enabled = false;
 		}
