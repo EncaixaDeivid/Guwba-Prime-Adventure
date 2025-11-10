@@ -85,9 +85,9 @@ namespace GuwbaPrimeAdventure.Story
 					if (_storyTeller)
 						_storyTeller.CloseScene();
 					SaveController.Load(out SaveFile saveFile);
-					if (_dialogObject.SaveOnEspecific && !saveFile.generalObjects.Contains(gameObject.name))
+					if (_dialogObject.SaveOnEspecific && !saveFile.GeneralObjects.Contains(gameObject.name))
 					{
-						saveFile.generalObjects.Add(gameObject.name);
+						saveFile.GeneralObjects.Add(gameObject.name);
 						SaveController.WriteSave(saveFile);
 					}
 					if (_dialogObject.ActivateTransition)
