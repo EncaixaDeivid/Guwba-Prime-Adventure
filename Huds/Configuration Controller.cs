@@ -29,6 +29,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			Instance = this;
+			_configurationHud = Instantiate(_configurationHudObject, transform);
 			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
@@ -36,6 +37,24 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!Instance || Instance != this)
 				return;
+			_configurationHud.Close.clicked -= CloseConfigurations;
+			_configurationHud.OutLevel.clicked -= OutLevel;
+			_configurationHud.SaveGame.clicked -= SaveGame;
+			_configurationHud.ScreenResolution.UnregisterValueChangedCallback(ScreenResolution);
+			_configurationHud.FullScreenModes.UnregisterValueChangedCallback(FullScreenModes);
+			_configurationHud.DialogToggle.UnregisterValueChangedCallback(DialogToggle);
+			_configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback(GeneralVolumeToggle);
+			_configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback(EffectsVolumeToggle);
+			_configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback(MusicVolumeToggle);
+			_configurationHud.InfinityFPS.UnregisterValueChangedCallback(InfinityFPS);
+			_configurationHud.DialogSpeed.UnregisterValueChangedCallback(DialogSpeed);
+			_configurationHud.ScreenBrightness.UnregisterValueChangedCallback(ScreenBrightness);
+			_configurationHud.FrameRate.UnregisterValueChangedCallback(FrameRate);
+			_configurationHud.GeneralVolume.UnregisterValueChangedCallback(GeneralVolume);
+			_configurationHud.EffectsVolume.UnregisterValueChangedCallback(EffectsVolume);
+			_configurationHud.MusicVolume.UnregisterValueChangedCallback(MusicVolume);
+			_configurationHud.Yes.clicked -= YesBackLevel;
+			_configurationHud.No.clicked -= NoBackLevel;
 			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
@@ -60,32 +79,36 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!Instance || Instance != this)
 				yield break;
 			yield return StartCoroutine(StartLoad());
+			_configurationHud.Close.clicked += CloseConfigurations;
+			_configurationHud.OutLevel.clicked += OutLevel;
+			_configurationHud.SaveGame.clicked += SaveGame;
+			_configurationHud.ScreenResolution.RegisterValueChangedCallback(ScreenResolution);
+			_configurationHud.FullScreenModes.RegisterValueChangedCallback(FullScreenModes);
+			_configurationHud.DialogToggle.RegisterValueChangedCallback(DialogToggle);
+			_configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback(GeneralVolumeToggle);
+			_configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback(EffectsVolumeToggle);
+			_configurationHud.MusicVolumeToggle.RegisterValueChangedCallback(MusicVolumeToggle);
+			_configurationHud.InfinityFPS.RegisterValueChangedCallback(InfinityFPS);
+			_configurationHud.ScreenBrightness.RegisterValueChangedCallback(ScreenBrightness);
+			_configurationHud.DialogSpeed.RegisterValueChangedCallback(DialogSpeed);
+			_configurationHud.FrameRate.RegisterValueChangedCallback(FrameRate);
+			_configurationHud.GeneralVolume.RegisterValueChangedCallback(GeneralVolume);
+			_configurationHud.EffectsVolume.RegisterValueChangedCallback(EffectsVolume);
+			_configurationHud.MusicVolume.RegisterValueChangedCallback(MusicVolume);
+			_configurationHud.Yes.clicked += YesBackLevel;
+			_configurationHud.No.clicked += NoBackLevel;
 			DontDestroyOnLoad(gameObject);
 		}
-		private IEnumerator StartLoad() => new WaitUntil(() => _isActive = !SceneInitiator.IsInTrancision());
+		private IEnumerator StartLoad()
+		{
+			_configurationHud.RootElement.style.display = DisplayStyle.None;
+			yield return new WaitUntil(() => _isActive = !SceneInitiator.IsInTrancision());
+		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) => StartCoroutine(StartLoad());
 		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
 		private Action CloseConfigurations => () =>
 		{
-			_configurationHud.Close.clicked -= CloseConfigurations;
-			_configurationHud.OutLevel.clicked -= OutLevel;
-			_configurationHud.SaveGame.clicked -= SaveGame;
-			_configurationHud.ScreenResolution.UnregisterValueChangedCallback(ScreenResolution);
-			_configurationHud.FullScreenModes.UnregisterValueChangedCallback(FullScreenModes);
-			_configurationHud.DialogToggle.UnregisterValueChangedCallback(DialogToggle);
-			_configurationHud.GeneralVolumeToggle.UnregisterValueChangedCallback(GeneralVolumeToggle);
-			_configurationHud.EffectsVolumeToggle.UnregisterValueChangedCallback(EffectsVolumeToggle);
-			_configurationHud.MusicVolumeToggle.UnregisterValueChangedCallback(MusicVolumeToggle);
-			_configurationHud.InfinityFPS.UnregisterValueChangedCallback(InfinityFPS);
-			_configurationHud.DialogSpeed.UnregisterValueChangedCallback(DialogSpeed);
-			_configurationHud.ScreenBrightness.UnregisterValueChangedCallback(ScreenBrightness);
-			_configurationHud.FrameRate.UnregisterValueChangedCallback(FrameRate);
-			_configurationHud.GeneralVolume.UnregisterValueChangedCallback(GeneralVolume);
-			_configurationHud.EffectsVolume.UnregisterValueChangedCallback(EffectsVolume);
-			_configurationHud.MusicVolume.UnregisterValueChangedCallback(MusicVolume);
-			_configurationHud.Yes.clicked -= YesBackLevel;
-			_configurationHud.No.clicked -= NoBackLevel;
-			Destroy(_configurationHud.gameObject);
+			_configurationHud.RootElement.style.display = DisplayStyle.None;
 			StateController.SetState(true);
 		};
 		private Action OutLevel => () =>
@@ -196,12 +219,12 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!_isActive)
 				return;
-			if (_configurationHud)
+			if (DisplayStyle.Flex == _configurationHud.RootElement.style.display)
 				CloseConfigurations.Invoke();
 			else
 			{
+				_configurationHud.RootElement.style.display = DisplayStyle.Flex;
 				StateController.SetState(false);
-				_configurationHud = Instantiate(_configurationHudObject, transform);
 				if (SceneManager.GetActiveScene().name != _levelSelectorScene)
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				if (SceneManager.GetActiveScene().name == _menuScene)
@@ -215,24 +238,6 @@ namespace GuwbaPrimeAdventure.Hud
 						_configurationHud.SaveGame.style.display = DisplayStyle.None;
 						break;
 					}
-				_configurationHud.Close.clicked += CloseConfigurations;
-				_configurationHud.OutLevel.clicked += OutLevel;
-				_configurationHud.SaveGame.clicked += SaveGame;
-				_configurationHud.ScreenResolution.RegisterValueChangedCallback(ScreenResolution);
-				_configurationHud.FullScreenModes.RegisterValueChangedCallback(FullScreenModes);
-				_configurationHud.DialogToggle.RegisterValueChangedCallback(DialogToggle);
-				_configurationHud.GeneralVolumeToggle.RegisterValueChangedCallback(GeneralVolumeToggle);
-				_configurationHud.EffectsVolumeToggle.RegisterValueChangedCallback(EffectsVolumeToggle);
-				_configurationHud.MusicVolumeToggle.RegisterValueChangedCallback(MusicVolumeToggle);
-				_configurationHud.InfinityFPS.RegisterValueChangedCallback(InfinityFPS);
-				_configurationHud.ScreenBrightness.RegisterValueChangedCallback(ScreenBrightness);
-				_configurationHud.DialogSpeed.RegisterValueChangedCallback(DialogSpeed);
-				_configurationHud.FrameRate.RegisterValueChangedCallback(FrameRate);
-				_configurationHud.GeneralVolume.RegisterValueChangedCallback(GeneralVolume);
-				_configurationHud.EffectsVolume.RegisterValueChangedCallback(EffectsVolume);
-				_configurationHud.MusicVolume.RegisterValueChangedCallback(MusicVolume);
-				_configurationHud.Yes.clicked += YesBackLevel;
-				_configurationHud.No.clicked += NoBackLevel;
 			}
 		}
 		internal void SetActive(bool isActive) => _isActive = isActive;
