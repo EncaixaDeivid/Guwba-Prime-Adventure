@@ -26,6 +26,7 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
+			_deathScreenHud = Instantiate(_deathScreenHudObject, transform);
 			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
@@ -33,12 +34,9 @@ namespace GuwbaPrimeAdventure.Hud
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (_deathScreenHud)
-			{
-				_deathScreenHud.Continue.clicked -= Continue;
-				_deathScreenHud.OutLevel.clicked -= OutLevel;
-				_deathScreenHud.GameOver.clicked -= GameOver;
-			}
+			_deathScreenHud.Continue.clicked -= Continue;
+			_deathScreenHud.OutLevel.clicked -= OutLevel;
+			_deathScreenHud.GameOver.clicked -= GameOver;
 			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
@@ -47,20 +45,24 @@ namespace GuwbaPrimeAdventure.Hud
 			if (!_instance || _instance != this)
 				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			_deathScreenHud.Continue.clicked += Continue;
+			_deathScreenHud.OutLevel.clicked += OutLevel;
+			_deathScreenHud.GameOver.clicked += GameOver;
 			DontDestroyOnLoad(gameObject);
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
 			if (scene.name == _levelSelectorScene || scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
-			{
-				if (_deathScreenHud)
-				{
-					_deathScreenHud.Continue.clicked -= Continue;
-					_deathScreenHud.OutLevel.clicked -= OutLevel;
-					_deathScreenHud.GameOver.clicked -= GameOver;
-					Destroy(_deathScreenHud.gameObject);
-				}
 				Destroy(gameObject);
+			else
+			{
+				_deathScreenHud.Text.text = "You have died";
+				_deathScreenHud.Text.style.display = DisplayStyle.Flex;
+				_deathScreenHud.Continue.style.display = DisplayStyle.Flex;
+				_deathScreenHud.OutLevel.style.display = DisplayStyle.Flex;
+				_deathScreenHud.GameOver.style.display = DisplayStyle.None;
+				_deathScreenHud.Curtain.style.display = DisplayStyle.None;
+				_deathScreenHud.RootElement.style.display = DisplayStyle.None;
 			}
 		};
 		private Action Continue => () =>
@@ -77,7 +79,7 @@ namespace GuwbaPrimeAdventure.Hud
 					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
 					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
 					_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
-					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 0.05f)
+					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 5e-2f)
 					{
 						_deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
@@ -88,7 +90,7 @@ namespace GuwbaPrimeAdventure.Hud
 					_sender.Send(PathConnection.Character);
 					_sender.SetStateForm(StateForm.State);
 					_sender.Send(PathConnection.Item);
-					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 0.05f)
+					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 5e-2f)
 					{
 						_deathScreenHud.Curtain.style.opacity = i;
 						yield return new WaitForEndOfFrame();
@@ -97,13 +99,13 @@ namespace GuwbaPrimeAdventure.Hud
 					_sender.SetStateForm(StateForm.None);
 					_sender.Send(PathConnection.Enemy);
 					ConfigurationController.Instance.SetActive(true);
-					if (_deathScreenHud)
-					{
-						_deathScreenHud.Continue.clicked -= Continue;
-						_deathScreenHud.OutLevel.clicked -= OutLevel;
-						_deathScreenHud.GameOver.clicked -= GameOver;
-						Destroy(_deathScreenHud.gameObject);
-					}
+					_deathScreenHud.RootElement.style.display = DisplayStyle.None;
+					_deathScreenHud.Text.text = "You have died";
+					_deathScreenHud.Text.style.display = DisplayStyle.Flex;
+					_deathScreenHud.Continue.style.display = DisplayStyle.Flex;
+					_deathScreenHud.OutLevel.style.display = DisplayStyle.Flex;
+					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
+					_deathScreenHud.Curtain.style.display = DisplayStyle.None;
 				}
 			}
 		};
@@ -118,17 +120,14 @@ namespace GuwbaPrimeAdventure.Hud
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				_deathScreenHud = Instantiate(_deathScreenHudObject, transform);
-				_deathScreenHud.Continue.clicked += Continue;
-				_deathScreenHud.OutLevel.clicked += OutLevel;
-				_deathScreenHud.GameOver.clicked += GameOver;
 				if (saveFile.lifes < 0f)
 				{
-					_deathScreenHud.Text.text = "Fim de Jogo";
+					_deathScreenHud.Text.text = "Game Over";
 					_deathScreenHud.Continue.style.display = DisplayStyle.None;
 					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
 					_deathScreenHud.GameOver.style.display = DisplayStyle.Flex;
 				}
+				_deathScreenHud.RootElement.style.display = DisplayStyle.Flex;
 			}
 		}
 	};
