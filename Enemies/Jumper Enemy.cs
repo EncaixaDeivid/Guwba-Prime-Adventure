@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
 using GuwbaPrimeAdventure.Character;
+using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -36,8 +36,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				IEnumerator FollowSide()
 				{
 					yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
-					_movementSide = (short)(target.x >= transform.position.x ? 1f : -1f);
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
+					transform.TurnScaleX(_movementSide = (short)(target.x < transform.position.x ? -1f : 1f));
 					while (!GroundCheck() && !_stopJump)
 					{
 						if (Mathf.Abs(target.x - transform.position.x) > _statistics.DistanceToTarget)
@@ -61,8 +60,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GuwbaAstralMarker.Localization.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
-				_movementSide = (short)(targetPosition > transform.position.x ? 1f : -1f);
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
+				transform.TurnScaleX(_movementSide = (short)(targetPosition < transform.position.x ? -1f : 1f));
 				float xStart = transform.position.x;
 				float distance = Mathf.Abs(targetPosition - xStart);
 				float remainingDistance = distance;
