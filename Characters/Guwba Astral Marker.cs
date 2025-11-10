@@ -313,12 +313,10 @@ namespace GuwbaPrimeAdventure.Character
 						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, _groundChecker, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
 							break;
 						_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + _groundChecker);
-						_bottomCast = Physics2D.BoxCast(_jokerValue, new Vector2(_collider.size.x, _normalSize.y), 0f, transform.up, _groundChecker, _groundLayer);
+						_bottomCast = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, _groundChecker, _groundLayer);
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * _dashMovement : 0f) > 0f);
 					}
-					if (_movementAction == 0f)
-						_rigidbody.linearVelocityX = 0f;
 					_animator.SetBool(_dashSlide, false);
 					_animator.SetBool(_attackSlide, false);
 				}
