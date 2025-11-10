@@ -55,7 +55,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_returnOrigin)
 			{
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_pointOrigin.x < _rigidybody.position.x ? -1f : 1f), transform.localScale.y, transform.localScale.z);
+				transform.TurnScaleX(_pointOrigin.x < _rigidybody.position.x);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed));
 				_returnOrigin = Vector2.Distance(_rigidybody.position, _pointOrigin) > 1e-3f;
 			}
@@ -74,12 +74,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						_pointIndex -= 1;
 						_normal = _pointIndex == 0f;
 					}
-				transform.localScale = new Vector3()
-				{
-					x = Mathf.Abs(transform.localScale.x) * (_trail[_pointIndex].x < transform.position.x ? -1f : 1f),
-					y = transform.localScale.y,
-					z = transform.localScale.z
-				};
+				transform.TurnScaleX(_trail[_pointIndex].x < _rigidybody.position.x);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _trail[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed));
 				_pointOrigin = _rigidybody.position;
 			}
@@ -94,7 +89,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void FixedUpdate()
 		{
-			if (_stopWorking || IsStunned || _statistics.Target || _statistics.EndlessPursue)
+			if (_stopWorking || IsStunned)
 				return;
 			if (_statistics.Target)
 			{
@@ -123,22 +118,18 @@ namespace GuwbaPrimeAdventure.Enemy
 					if (GuwbaAstralMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
-						if (!(_detected = !Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer)))
-							return;
+						if (Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer))
+							break;
 						_originCast = (Vector2)transform.position + _selfCollider.offset;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							if (!(_detected = !Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.GroundLayer)))
-								return;
+							if (Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.GroundLayer))
+								break;
 							_originCast += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _originCast).normalized;
 						}
-						transform.localScale = new Vector3()
-						{
-							x = Mathf.Abs(transform.localScale.x) * (verifyCollider.transform.position.x < transform.position.x ? -1f : 1f),
-							y = transform.localScale.y,
-							z = transform.localScale.z
-						};
-						return;
+						transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1f : 1f);
+						_detected = true;
+						break;
 					}
 			if (_detected || _returnDash)
 				Chase();
