@@ -5,16 +5,16 @@ namespace GuwbaPrimeAdventure.Data
 {
 	public struct SaveFile
 	{
-		public ushort lifes;
-		public List<string> lifesAcquired;
-		public ushort coins;
-		public Dictionary<string, bool> books;
-		public List<string> booksName;
-		public List<bool> booksValue;
-		public List<string> generalObjects;
-		public string lastLevelEntered;
-		public bool[] levelsCompleted;
-		public bool[] deafetedBosses;
+		public ushort Lifes;
+		public List<string> LifesAcquired;
+		public ushort Coins;
+		public Dictionary<string, bool> Books;
+		public List<string> BooksName;
+		public List<bool> BooksValue;
+		public List<string> GeneralObjects;
+		public string LastLevelEntered;
+		public bool[] LevelsCompleted;
+		public bool[] DeafetedBosses;
 	};
 	public static class SaveController
 	{
@@ -26,16 +26,16 @@ namespace GuwbaPrimeAdventure.Data
 		{
 			SaveFile saveFile = new()
 			{
-				lifes = 10,
-				lifesAcquired = new List<string>(),
-				coins = 0,
-				books = new Dictionary<string, bool>(),
-				booksName = new List<string>(),
-				booksValue = new List<bool>(),
-				generalObjects = new List<string>(),
-				lastLevelEntered = "",
-				levelsCompleted = new bool[12],
-				deafetedBosses = new bool[12]
+				Lifes = 10,
+				LifesAcquired = new List<string>(),
+				Coins = 0,
+				Books = new Dictionary<string, bool>(),
+				BooksName = new List<string>(),
+				BooksValue = new List<bool>(),
+				GeneralObjects = new List<string>(),
+				LastLevelEntered = "",
+				LevelsCompleted = new bool[12],
+				DeafetedBosses = new bool[12]
 			};
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
@@ -49,10 +49,10 @@ namespace GuwbaPrimeAdventure.Data
 					File.Delete(actualPath);
 					return saveFile;
 				}
-				saveFile = ArchiveEncoder.ReadData<SaveFile>(actualPath);
-				saveFile.books = new Dictionary<string, bool>();
-				for (ushort i = 0; i < saveFile.booksName.Count; i++)
-					saveFile.books.Add(saveFile.booksName[i], saveFile.booksValue[i]);
+				saveFile = FileEncoder.ReadData<SaveFile>(actualPath);
+				saveFile.Books = new Dictionary<string, bool>();
+				for (ushort i = 0; i < saveFile.BooksName.Count; i++)
+					saveFile.Books.Add(saveFile.BooksName[i], saveFile.BooksValue[i]);
 			}
 			return saveFile;
 		}
@@ -73,9 +73,9 @@ namespace GuwbaPrimeAdventure.Data
 			string newSaveName = $@"{Application.persistentDataPath}\{newName}.txt";
 			if (File.Exists(actualPath))
 			{
-				SaveFile loadedData = ArchiveEncoder.ReadData<SaveFile>(actualPath);
+				SaveFile loadedData = FileEncoder.ReadData<SaveFile>(actualPath);
 				File.Delete(actualPath);
-				ArchiveEncoder.WriteData(loadedData, newSaveName);
+				FileEncoder.WriteData(loadedData, newSaveName);
 			}
 		}
 		public static string DeleteData(ushort actualSave)
@@ -95,17 +95,17 @@ namespace GuwbaPrimeAdventure.Data
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			SaveFile newSaveFile = new()
 			{
-				lifes = _saveFile.lifes,
-				lifesAcquired = _saveFile.lifesAcquired,
-				coins = _saveFile.coins,
-				booksName = new List<string>(_saveFile.books?.Count > 0f ? _saveFile.books.Keys : new List<string>()),
-				booksValue = new List<bool>(_saveFile.books?.Count > 0f ? _saveFile.books.Values : new List<bool>()),
-				generalObjects = _saveFile.generalObjects,
-				lastLevelEntered = _saveFile.lastLevelEntered,
-				levelsCompleted = _saveFile.levelsCompleted,
-				deafetedBosses = _saveFile.deafetedBosses
+				Lifes = _saveFile.Lifes,
+				LifesAcquired = _saveFile.LifesAcquired,
+				Coins = _saveFile.Coins,
+				BooksName = new List<string>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Keys : new List<string>()),
+				BooksValue = new List<bool>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Values : new List<bool>()),
+				GeneralObjects = _saveFile.GeneralObjects,
+				LastLevelEntered = _saveFile.LastLevelEntered,
+				LevelsCompleted = _saveFile.LevelsCompleted,
+				DeafetedBosses = _saveFile.DeafetedBosses
 			};
-			ArchiveEncoder.WriteData(newSaveFile, actualPath);
+			FileEncoder.WriteData(newSaveFile, actualPath);
 		}
 	};
 };
