@@ -92,7 +92,7 @@ namespace GuwbaPrimeAdventure.Enemy
 						return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				_stopSummon = !data.ToggleValue.Value;
-			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage && _statistics.EventSummons.Length > 0f)
+			else if (data.StateForm == StateForm.Action && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
 				if (_statistics.RandomReactSummons)
 					Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
 				else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
