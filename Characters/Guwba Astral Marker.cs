@@ -234,7 +234,7 @@ namespace GuwbaPrimeAdventure.Character
 				guwbaDamager.DamagerStun += Stun;
 				guwbaDamager.DamagerAttack += Attack;
 			}
-			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
+			transform.TurnScaleX(_turnLeft);
 			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
 			SceneLoaded.Invoke(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 			yield return new WaitForEndOfFrame();
@@ -278,7 +278,7 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					_animator.SetBool(_airJump, !(_canAirJump = false));
 					_animator.SetBool(_attackAirJump, _comboAttackBuffer);
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_dashMovement = _movementAction), transform.localScale.y, transform.localScale.z);
+					transform.TurnScaleX(_dashMovement = _movementAction);
 					while (!_isOnGround)
 					{
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _dashMovement, Local.y);
@@ -303,7 +303,7 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					_animator.SetBool(_dashSlide, true);
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_dashMovement = _movementAction), transform.localScale.y, transform.localScale.z);
+					transform.TurnScaleX(_dashMovement = _movementAction);
 					float dashLocation = transform.position.x;
 					while (_bottomCast || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
 					{
@@ -354,9 +354,9 @@ namespace GuwbaPrimeAdventure.Character
 		};
 		private Action<InputAction.CallbackContext> Interaction => interaction =>
 		{
-			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(_airJump) || _animator.GetBool(_dashSlide) || _animator.GetBool(_stun))
 				return;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll((Vector2)transform.position + _normalOffset, _normalSize, transform.eulerAngles.z, _InteractionLayer))
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, _InteractionLayer))
 				if (collider.TryGetComponent<IInteractable>(out _))
 				{
 					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -554,7 +554,7 @@ namespace GuwbaPrimeAdventure.Character
 							_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
 						if (_fallStarted)
 						{
-							_fallDamage = Mathf.Abs(transform.position.y - _fallStart);
+							_fallDamage = Mathf.Abs(_fallStart - transform.position.y);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
 								(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (1f, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
 							else if (!_invencibility)
@@ -616,12 +616,9 @@ namespace GuwbaPrimeAdventure.Character
 					if (_movementAction != 0f)
 					{
 						if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
-						{
-							_jokerValue.y = _rigidbody.linearVelocityX > 0f ? 1f : -1f;
-							transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _jokerValue.y, transform.localScale.y, transform.localScale.z);
-						}
+							transform.TurnScaleX(_rigidbody.linearVelocityX < 0f);
 						else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
-							transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementAction, transform.localScale.y, transform.localScale.z);
+							transform.TurnScaleX(_movementAction);
 						if (_isOnGround)
 							_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 					}
@@ -699,7 +696,7 @@ namespace GuwbaPrimeAdventure.Character
 					for (ushort i = _bunnyHopBoost = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
 						_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 					_animator.SetBool(_death, _hopActive = _isHoping = false);
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (_turnLeft ? -1f : 1f), transform.localScale.y, transform.localScale.z);
+					transform.TurnScaleX(_turnLeft);
 				}
 				else if (!data.ToggleValue.Value && additionalData is Vector2 position)
 					transform.position = position;
