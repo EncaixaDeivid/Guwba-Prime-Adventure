@@ -73,16 +73,14 @@ namespace GuwbaPrimeAdventure.Enemy
 					_rigidybody.WakeUp();
 				}
 		}
-		private void OnTrigger(GameObject collisionObject)
+		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!_statistics.NoHit && collisionObject.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
+			if (!_statistics.NoHit && other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
 		}
-		private void OnTriggerEnter2D(Collider2D other) => OnTrigger(other.gameObject);
-		private void OnTriggerStay2D(Collider2D other) => OnTrigger(other.gameObject);
 		public bool Hurt(ushort damage)
 		{
 			if (_statistics.NoDamage || damage <= 0)
