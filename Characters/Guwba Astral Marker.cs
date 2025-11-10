@@ -427,7 +427,7 @@ namespace GuwbaPrimeAdventure.Character
 			_stunResistance -= (short)stunStrength;
 			for (ushort i = (ushort)_guwbaCanvas.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
 				_guwbaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
-			if (_stunResistance <= 0f)
+			if (_stunResistance <= 0f && !_animator.GetBool(_death))
 			{
 				_animator.SetBool(_stun, !(_invencibility = false));
 				StopCoroutine(VisualEffect());
@@ -448,9 +448,6 @@ namespace GuwbaPrimeAdventure.Character
 				for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
 					if (_recoverVitality >= _guwbaCanvas.RecoverVitality.Length && _vitality < _guwbaCanvas.Vitality.Length)
 					{
-						_recoverVitality = 0;
-						for (ushort i = 0; i < _guwbaCanvas.RecoverVitality.Length; i++)
-							_guwbaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 						_vitality += 1;
 						for (ushort i = 0; i < _vitality; i++)
 						{
@@ -460,6 +457,9 @@ namespace GuwbaPrimeAdventure.Character
 							_guwbaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_guwbaCanvas.BorderColor);
 							_guwbaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_guwbaCanvas.BorderColor);
 						}
+						_recoverVitality = 0;
+						for (ushort i = 0; i < _guwbaCanvas.RecoverVitality.Length; i++)
+							_guwbaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
 						_stunResistance += 1;
 						for (ushort i = 0; i < _stunResistance; i++)
 							_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
