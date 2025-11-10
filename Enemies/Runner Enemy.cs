@@ -137,7 +137,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					_sender.Send(PathConnection.Enemy);
 				}
 			}
-			_originCast = transform.position;
+			_originCast = (Vector2)transform.position + _collider.offset;
 			_originCast += new Vector2(_collider.bounds.extents.x + ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
 			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, _statistics.Physics.GroundChecker, _statistics.Physics.GroundLayer);
 			if (GroundCheck() && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
