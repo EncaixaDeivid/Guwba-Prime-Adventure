@@ -5,7 +5,7 @@ using GuwbaPrimeAdventure.Connection;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(EnemyProvider))]
-	internal sealed class EnemyController : StateController, ILoader, IConnector, IDestructible
+	internal sealed class EnemyController : StateController, IConnector, IDestructible
     {
 		private EnemyProvider[] _selfEnemies;
 		private Rigidbody2D _rigidybody;
@@ -52,16 +52,12 @@ namespace GuwbaPrimeAdventure.Enemy
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = false;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			foreach (EnemyProvider enemy in _selfEnemies)
-				enemy.enabled = true;
-		}
-		public IEnumerator Load()
-		{
 			_destructibleEnemy = _selfEnemies[0];
 			for (ushort i = 0; i < _selfEnemies.Length - 1f; i++)
 				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					_destructibleEnemy = _selfEnemies[i + 1];
-			yield return new WaitForEndOfFrame();
+			foreach (EnemyProvider enemy in _selfEnemies)
+				enemy.enabled = true;
 		}
 		private void Update()
 		{
