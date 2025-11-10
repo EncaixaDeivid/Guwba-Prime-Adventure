@@ -12,14 +12,14 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The collection of the summon point structure.")] private SummonPointStructure[] _summonPointStructures;
 		[SerializeField, Tooltip("If this enemy will summon randomized in the react.")] private bool _randomReactSummons;
 		[SerializeField, Tooltip("If this enemy will summon randomized timed.")] private bool _randomTimedSummons;
-		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
+		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _hasEventSummon;
 		internal EnemyPhysics Physics => _physics;
 		internal SummonObject[] EventSummons => _eventSummons;
 		internal SummonObject[] TimedSummons => _timedSummons;
 		internal SummonPointStructure[] SummonPointStructures => _summonPointStructures;
 		internal bool RandomReactSummons => _randomReactSummons;
 		internal bool RandomTimedSummons => _randomTimedSummons;
-		internal bool ReactToDamage => _reactToDamage;
+		internal bool HasEventSummon => _hasEventSummon;
 	};
 	[Serializable]
 	internal struct SummonPointStructure
