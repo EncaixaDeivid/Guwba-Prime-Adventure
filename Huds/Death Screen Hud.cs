@@ -12,6 +12,7 @@ namespace GuwbaPrimeAdventure.Hud
 		[SerializeField, Tooltip("User interface element.")] private string _continueButton;
 		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
 		[SerializeField, Tooltip("User interface element.")] private string _gameOverButton;
+		internal VisualElement RootElement { get; private set; }
 		internal VisualElement Curtain { get; private set; }
 		internal Label Text { get; private set; }
 		internal Button Continue { get; private set; }
@@ -25,12 +26,12 @@ namespace GuwbaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			Curtain = root.Q<VisualElement>(_curtainVisual);
-			Text = root.Q<Label>(_textLabel);
-			Continue = root.Q<Button>(_continueButton);
-			OutLevel = root.Q<Button>(_outLevelButton);
-			GameOver = root.Q<Button>(_gameOverButton);
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			Curtain = RootElement.Q<VisualElement>(_curtainVisual);
+			Text = RootElement.Q<Label>(_textLabel);
+			Continue = RootElement.Q<Button>(_continueButton);
+			OutLevel = RootElement.Q<Button>(_outLevelButton);
+			GameOver = RootElement.Q<Button>(_gameOverButton);
 		}
 	};
 };
