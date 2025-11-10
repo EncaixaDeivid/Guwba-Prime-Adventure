@@ -14,11 +14,11 @@ namespace GuwbaPrimeAdventure.Item
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
-			if (_isBossProgress ? saveFile.deafetedBosses[_progressIndex - 1] : saveFile.levelsCompleted[_progressIndex - 1])
+			if (_isBossProgress ? saveFile.DeafetedBosses[_progressIndex - 1] : saveFile.LevelsCompleted[_progressIndex - 1])
 			{
-				if (_saveOnSpecifics && !saveFile.generalObjects.Contains(gameObject.name))
+				if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
 				{
-					saveFile.generalObjects.Add(gameObject.name);
+					saveFile.GeneralObjects.Add(gameObject.name);
 					SaveController.WriteSave(saveFile);
 				}
 				Destroy(gameObject);
