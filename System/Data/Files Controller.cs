@@ -15,7 +15,7 @@ namespace GuwbaPrimeAdventure.Data
 		private static FilesArchive LoadFiles()
 		{
 			if (File.Exists(FilesArchivePath))
-				return ArchiveEncoder.ReadData<FilesArchive>(FilesArchivePath);
+				return FileEncoder.ReadData<FilesArchive>(FilesArchivePath);
 			return new FilesArchive()
 			{
 				SaveFile1 = "Save File 1",
@@ -44,7 +44,7 @@ namespace GuwbaPrimeAdventure.Data
 				4 => newFilesArchive.SaveFile4 = set.newSaveName,
 				_ => null
 			};
-			ArchiveEncoder.WriteData(newFilesArchive, FilesArchivePath);
+			FileEncoder.WriteData(newFilesArchive, FilesArchivePath);
 			return newSaveName;
 		}
 	};
