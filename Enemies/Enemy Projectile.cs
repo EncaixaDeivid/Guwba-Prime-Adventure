@@ -20,6 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalReturnPoint = 0;
 		private float _stunTimer = 0f;
 		private bool _breakInUse = false;
+		private bool _parabolaCoroutine = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
 		public short Health => _vitality;
@@ -58,9 +59,9 @@ namespace GuwbaPrimeAdventure.Enemy
 						_pointToJump = _statistics.JumpPoints;
 						Quaternion rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
 						if (_statistics.UseQuantity)
-							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + .5f, _cellPosition.y + .5f), rotation));
+							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5e-1f, _cellPosition.y + 5e-1f), rotation));
 						else
-							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + .5f, _cellPosition.y + .5f), rotation);
+							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5e-1f, _cellPosition.y + 5e-1f), rotation);
 						_angleMulti++;
 					}
 				}
@@ -84,6 +85,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			StartCoroutine(Parabola());
 			IEnumerator Parabola()
 			{
+				_parabolaCoroutine = true;
 				yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
 				float time = 0f, x, y;
 				while (time > _statistics.TimeToFade)
@@ -95,6 +97,7 @@ namespace GuwbaPrimeAdventure.Enemy
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
 				}
+				_parabolaCoroutine = false;
 			}
 		}
 		private new void Awake()
@@ -106,6 +109,10 @@ namespace GuwbaPrimeAdventure.Enemy
 			_breakInUse = _statistics.UseBreak;
 			_internalBreakPoint = _statistics.BreakPoint;
 			_internalReturnPoint = _statistics.ReturnPoint;
+			Destroy(gameObject, _statistics.TimeToFade);
+		}
+		private void Start()
+		{
 			if (_statistics.RandomBreak)
 			{
 				_internalBreakPoint = (ushort)Random.Range(_statistics.BreakPoint, _statistics.ReturnPoint - _statistics.MinimumRandomValue);
@@ -130,10 +137,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				CellInstanceRange();
 			else if (_statistics.SecondProjectile && !_statistics.InCell)
 				CommonInstance();
-			Destroy(gameObject, _statistics.TimeToFade);
-		}
-		private void Start()
-		{
 			if (!_statistics.StayInPlace)
 				if (_statistics.UseForce)
 					_rigidbody.AddForce((_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed, _statistics.ForceMode);
@@ -158,7 +161,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				CellInstance();
 			}
 			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
-			if (_statistics.ParabolicMovement)
+			if (_statistics.ParabolicMovement && _parabolaCoroutine)
 				ParabolicProjectile();
 			else if (!_statistics.StayInPlace && _statistics.RotationMatter)
 				_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
