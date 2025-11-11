@@ -611,7 +611,7 @@ namespace GuwbaPrimeAdventure.Character
 					_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
 					_jokerValue.z = (Mathf.Abs(_jokerValue.x * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
 					_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(_jokerValue.y) * _jokerValue.z, _velocityPower) * Mathf.Sign(_jokerValue.y) * _rigidbody.mass);
-					if (_movementAction != 0f)
+					if (_movementAction != 0f && !_attackUsage)
 					{
 						if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
 							transform.TurnScaleX(_rigidbody.linearVelocityX < 0f);
