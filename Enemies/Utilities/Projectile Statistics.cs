@@ -7,7 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[Header("Projectile Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyController _enemyOnDeath;
+		[SerializeField, Tooltip("The enemy that will be instantiate on death.")] private EnemyController _enemyOnDeath;
 		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
