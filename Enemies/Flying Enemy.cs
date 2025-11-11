@@ -93,12 +93,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (_statistics.Target)
 			{
-				_targetPoint = _statistics.Target.transform.position;
-				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _targetPoint, Time.fixedDeltaTime * _statistics.MovementSpeed));
+				transform.TurnScaleX(_statistics.Target.transform.position.x < _rigidybody.position.x);
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _statistics.Target.transform.position, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				return;
 			}
 			if (_statistics.EndlessPursue)
 			{
+				transform.TurnScaleX(GuwbaAstralMarker.Localization.x < _rigidybody.position.x);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, GuwbaAstralMarker.Localization, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				return;
 			}
