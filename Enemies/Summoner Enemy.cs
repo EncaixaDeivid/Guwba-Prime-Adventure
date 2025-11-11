@@ -26,7 +26,8 @@ namespace GuwbaPrimeAdventure.Enemy
 				_rigidybody.gravityScale = _gravityScale;
 			}
 			Vector2 position;
-			ushort summonIndex = 0;
+			Vector2Int summonIndex = new();
+			InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
 			for (ushort i = 0; i < summon.QuantityToSummon; i++)
 			{ 
 				if (summon.Self)
@@ -34,9 +35,11 @@ namespace GuwbaPrimeAdventure.Enemy
 				else if (summon.Random)
 					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length - 1)];
 				else
-					position = summon.SummonPoints[summonIndex];
-				Instantiate(summon.Summons[summonIndex], position, summon.Summons[summonIndex].transform.rotation);
-				summonIndex = (ushort)(summonIndex >= summon.Summons.Length - 1f ? 0f : summonIndex + 1f);
+					position = summon.SummonPoints[summonIndex.y];
+				GameObject summonObject = Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters);
+				summonObject.transform.SetParent(null);
+				summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
+				summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
 			}
 		}
 		private new void Awake()
