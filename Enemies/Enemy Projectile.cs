@@ -18,6 +18,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private ushort _internalBreakPoint = 0;
 		private ushort _pointToReturn = 0;
 		private ushort _internalReturnPoint = 0;
+		private float _deathTimer = 0f;
 		private float _stunTimer = 0f;
 		private bool _breakInUse = false;
 		private bool _parabolaCoroutine = false;
@@ -109,7 +110,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			_breakInUse = _statistics.UseBreak;
 			_internalBreakPoint = _statistics.BreakPoint;
 			_internalReturnPoint = _statistics.ReturnPoint;
-			Destroy(gameObject, _statistics.TimeToFade);
+			_deathTimer = _statistics.TimeToFade;
 		}
 		private void Start()
 		{
@@ -143,11 +144,28 @@ namespace GuwbaPrimeAdventure.Enemy
 				else
 					_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
+		private void Death()
+		{
+			if (_statistics.InDeath)
+				if (_statistics.EnemyOnDeath)
+					Instantiate(_statistics.EnemyOnDeath, transform.position, _statistics.EnemyOnDeath.transform.rotation);
+				else if (_statistics.SecondProjectile)
+					if (_statistics.InCell)
+					{
+						_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+						CellInstanceRange();
+					}
+					else
+						CommonInstance();
+			Destroy(gameObject);
+		}
 		private void Update()
 		{
 			if (_rigidbody.IsSleeping())
 				if ((_stunTimer -= Time.deltaTime) <= 0f)
 					_rigidbody.WakeUp();
+			if ((_deathTimer -= Time.deltaTime) <= 0f)
+				Death();
 		}
 		private void FixedUpdate()
 		{
@@ -176,27 +194,14 @@ namespace GuwbaPrimeAdventure.Enemy
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
 			else
-			{
-				if (_statistics.InDeath)
-					if (_statistics.EnemyOnDeath)
-						Instantiate(_statistics.EnemyOnDeath, transform.position, _statistics.EnemyOnDeath.transform.rotation);
-					else if (_statistics.SecondProjectile)
-						if (_statistics.InCell)
-						{
-							_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-							CellInstanceRange();
-						}
-						else
-							CommonInstance();
-				Destroy(gameObject);
-			}
+				Death();
 		}
 		public bool Hurt(ushort damage)
 		{
 			if (_statistics.IsInoffensive || damage <= 0 || _statistics.Vitality <= 0f)
 				return false;
 			if ((_vitality -= (short)damage) <= 0f)
-				Destroy(gameObject);
+				Death();
 			return true;
 		}
 		public void Stun(ushort stunStength, float stunTime)
