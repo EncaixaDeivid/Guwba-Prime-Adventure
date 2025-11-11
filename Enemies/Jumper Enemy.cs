@@ -68,7 +68,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				{
 					transform.position = new Vector2(Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance), transform.position.y);
 					if (Mathf.Abs(targetPosition - transform.position.x) > _statistics.DistanceToTarget)
-						remainingDistance -= _statistics.MovementSpeed * Time.deltaTime;
+						remainingDistance -= _statistics.MovementSpeed * Time.fixedDeltaTime;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
@@ -85,6 +85,22 @@ namespace GuwbaPrimeAdventure.Enemy
 				_inputController.Commands.Jump.started += Jump;
 				_inputController.Commands.Jump.Enable();
 			}
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			if (_statistics.UseInput)
+			{
+				_inputController.Commands.Jump.started -= Jump;
+				_inputController.Commands.Jump.Disable();
+				_inputController.Dispose();
+			}
+			Sender.Exclude(this);
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
 				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(i, index =>
@@ -143,18 +159,6 @@ namespace GuwbaPrimeAdventure.Enemy
 				if (!_statistics.SequentialTimmedJumps)
 					StartCoroutine(TimedJump(stats));
 			}
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			if (_statistics.UseInput)
-			{
-				_inputController.Commands.Jump.started -= Jump;
-				_inputController.Commands.Jump.Disable();
-				_inputController.Dispose();
-			}
-			Sender.Exclude(this);
 		}
 		private Action<InputAction.CallbackContext> Jump => jump =>
 		{
