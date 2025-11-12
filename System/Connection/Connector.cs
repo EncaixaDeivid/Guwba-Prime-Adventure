@@ -1,4 +1,4 @@
-namespace GuwbaPrimeAdventure.Connection
+namespace GwambaPrimeAdventure.Connection
 {
 	public enum PathConnection
 	{
