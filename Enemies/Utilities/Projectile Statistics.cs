@@ -11,6 +11,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
+		[SerializeField, Tooltip("If this projectile will pursue the player endless.")] private bool _endlessPursue;
 		[SerializeField, Tooltip("If this projectile will use parabolic movement.")] private bool _parabolicMovement;
 		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
 		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
@@ -20,15 +21,15 @@ namespace GuwbaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
 		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
 		[SerializeField, Tooltip("The vitality of this projectile.")] private ushort _vitality;
-		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private ushort _movementSpeed;
 		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
 		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
-		[SerializeField, Tooltip("The amount of time this projectile will stun.")] private float _stunTime;
+		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private float _movementSpeed;
 		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
 		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
 		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
+		[SerializeField, Tooltip("The amount of time this projectile will stun.")] private float _stunTime;
 		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
-		[Header("Cell Statistics")]
+		[Header("Cell Projectile Statistics")]
 		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
 		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
 		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
@@ -46,6 +47,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal ForceMode2D ForceMode => _forceMode;
 		internal bool UseForce => _useForce;
 		internal bool StayInPlace => _stayInPlace;
+		internal bool EndlessPursue => _endlessPursue;
 		internal bool ParabolicMovement => _parabolicMovement;
 		internal bool SideMovement => _sideMovement;
 		internal bool InvertSide => _invertSide;
@@ -55,13 +57,13 @@ namespace GuwbaPrimeAdventure.Enemy
 		internal bool InDeath => _inDeath;
 		internal bool IsInoffensive => _isInoffensive;
 		internal ushort Vitality => _vitality;
-		internal ushort MovementSpeed => _movementSpeed;
 		internal ushort Damage => _damage;
 		internal ushort QuantityToSummon => _quantityToSummon;
-		internal float StunTime => _stunTime;
+		internal float MovementSpeed => _movementSpeed;
 		internal float RotationSpeed => _rotationSpeed;
 		internal float BaseAngle => _baseAngle;
 		internal float SpreadAngle => _spreadAngle;
+		internal float StunTime => _stunTime;
 		internal float TimeToFade => _timeToFade;
 		internal bool InCell => _inCell;
 		internal bool ContinuosSummon => _continuosSummon;
