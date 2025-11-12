@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
 	[CreateAssetMenu(fileName = "Flying Enemy", menuName = "Enemy Statistics/Flying", order = 4)]
 	internal sealed class FlyingStatistics : MovingStatistics
