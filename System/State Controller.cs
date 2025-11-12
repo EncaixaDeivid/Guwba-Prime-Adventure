@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	public abstract class StateController : MonoBehaviour
 	{
