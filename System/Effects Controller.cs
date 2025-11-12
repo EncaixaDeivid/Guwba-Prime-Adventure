@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.U2D;
 using System.Collections;
 using System.Collections.Generic;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
 	public sealed class EffectsController : StateController
