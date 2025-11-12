@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class JumpPoint : StateController
@@ -20,7 +20,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_hasTarget)
 			{
-				if (GuwbaAstralMarker.EqualObject(other.gameObject))
+				if (GwambaStateMarker.EqualObject(other.gameObject))
 					_getTouch.Invoke(_touchIndex);
 			}
 			else if (other.TryGetComponent<JumperEnemy>(out _))
