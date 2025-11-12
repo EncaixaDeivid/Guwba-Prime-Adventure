@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
-namespace GuwbaPrimeAdventure.Data
+namespace GwambaPrimeAdventure.Data
 {
 	public struct Settings
 	{
