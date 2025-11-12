@@ -13,11 +13,11 @@ namespace GuwbaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
-	public sealed class GuwbaAstralMarker : StateController, ILoader, IConnector
+	public sealed class GwambaStateMarker : StateController, ILoader, IConnector
 	{
-		private static GuwbaAstralMarker _instance;
-		private GuwbaCanvas _guwbaCanvas;
-		private GuwbaDamager[] _guwbaDamagers;
+		private static GwambaStateMarker _instance;
+		private GwambaCanvas _gwambaCanvas;
+		private GwambaDamager[] _gwambaDamagers;
 		private Animator _animator;
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
@@ -127,8 +127,8 @@ namespace GuwbaPrimeAdventure.Character
 			_rigidbody = GetComponent<Rigidbody2D>();
 			_collider = GetComponent<BoxCollider2D>();
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
-			_guwbaCanvas = GetComponentInChildren<GuwbaCanvas>();
-			_guwbaDamagers = GetComponentsInChildren<GuwbaDamager>();
+			_gwambaCanvas = GetComponentInChildren<GwambaCanvas>();
+			_gwambaDamagers = GetComponentsInChildren<GwambaDamager>();
 			_inputController = new InputController();
 			_inputController.Commands.Movement.started += Movement;
 			_inputController.Commands.Movement.performed += Movement;
@@ -147,12 +147,12 @@ namespace GuwbaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			StopAllCoroutines();
-			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
+			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
-				guwbaDamager.DamagerHurt -= Hurt;
-				guwbaDamager.DamagerStun -= Stun;
-				guwbaDamager.DamagerAttack -= Attack;
-				guwbaDamager.Alpha = 1f;
+				gwambaDamager.DamagerHurt -= Hurt;
+				gwambaDamager.DamagerStun -= Stun;
+				gwambaDamager.DamagerAttack -= Attack;
+				gwambaDamager.Alpha = 1f;
 			}
 			_inputController.Commands.Movement.started -= Movement;
 			_inputController.Commands.Movement.performed -= Movement;
@@ -170,8 +170,8 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (_guwbaCanvas.RootElement != null)
-				_guwbaCanvas.RootElement.style.display = DisplayStyle.Flex;
+			if (_gwambaCanvas.RootElement != null)
+				_gwambaCanvas.RootElement.style.display = DisplayStyle.Flex;
 			_animator.SetFloat(_isOn, 1f);
 			_animator.SetFloat(_walkSpeed, 1f);
 			EnableInputs();
@@ -180,7 +180,7 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			_guwbaCanvas.RootElement.style.display = DisplayStyle.None;
+			_gwambaCanvas.RootElement.style.display = DisplayStyle.None;
 			_animator.SetFloat(_isOn, 0f);
 			_animator.SetFloat(_walkSpeed, 0f);
 			DisableInputs();
@@ -224,15 +224,15 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				yield break;
-			yield return _guwbaCanvas.StartUI();
+			yield return _gwambaCanvas.StartUI();
 			SaveController.Load(out SaveFile saveFile);
-			(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
-			(_vitality, _stunResistance) = ((short)_guwbaCanvas.Vitality.Length, (short)_guwbaCanvas.StunResistance.Length);
-			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
+			(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
+			(_vitality, _stunResistance) = ((short)_gwambaCanvas.Vitality.Length, (short)_gwambaCanvas.StunResistance.Length);
+			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
-				guwbaDamager.DamagerHurt += Hurt;
-				guwbaDamager.DamagerStun += Stun;
-				guwbaDamager.DamagerAttack += Attack;
+				gwambaDamager.DamagerHurt += Hurt;
+				gwambaDamager.DamagerStun += Stun;
+				gwambaDamager.DamagerAttack += Attack;
 			}
 			transform.TurnScaleX(_turnLeft);
 			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
@@ -250,15 +250,15 @@ namespace GuwbaPrimeAdventure.Character
 				StartCoroutine(StartLoad());
 			if (scene.name == _hubbyWorldScene)
 			{
-				foreach (VisualElement vitality in _guwbaCanvas.Vitality)
+				foreach (VisualElement vitality in _gwambaCanvas.Vitality)
 					vitality.style.display = DisplayStyle.None;
-				foreach (VisualElement recoverVitality in _guwbaCanvas.RecoverVitality)
+				foreach (VisualElement recoverVitality in _gwambaCanvas.RecoverVitality)
 					recoverVitality.style.display = DisplayStyle.None;
-				foreach (VisualElement stunResistance in _guwbaCanvas.StunResistance)
+				foreach (VisualElement stunResistance in _gwambaCanvas.StunResistance)
 					stunResistance.style.display = DisplayStyle.None;
-				foreach (VisualElement bunnyHop in _guwbaCanvas.BunnyHop)
+				foreach (VisualElement bunnyHop in _gwambaCanvas.BunnyHop)
 					bunnyHop.style.display = DisplayStyle.None;
-				_guwbaCanvas.FallDamageText.style.display = DisplayStyle.None;
+				_gwambaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
 		};
 		private Action<InputAction.CallbackContext> Movement => movement =>
@@ -331,8 +331,8 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					_hopActive = true;
 					_bunnyHopBoost += 1;
-					if (_bunnyHopBoost >= _guwbaCanvas.BunnyHop.Length)
-						_bunnyHopBoost = (ushort)_guwbaCanvas.BunnyHop.Length;
+					if (_bunnyHopBoost >= _gwambaCanvas.BunnyHop.Length)
+						_bunnyHopBoost = (ushort)_gwambaCanvas.BunnyHop.Length;
 				}
 			}
 			else if (jump.canceled && _isJumping && _rigidbody.linearVelocityY > 0f)
@@ -366,26 +366,26 @@ namespace GuwbaPrimeAdventure.Character
 		{
 			while (_invencibility)
 			{
-				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
-					guwbaDamager.Alpha = guwbaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
+				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+					gwambaDamager.Alpha = gwambaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
 				yield return new WaitTime(this, _timeStep);
 				yield return new WaitUntil(() => isActiveAndEnabled);
 			}
-			foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
-				guwbaDamager.Alpha = 1f;
+			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+				gwambaDamager.Alpha = 1f;
 		}
 		public Predicate<ushort> Hurt => damage =>
 		{
 			if (_invencibility || damage <= 0f)
 				return false;
 			_vitality -= (short)damage;
-			for (ushort i = (ushort)_guwbaCanvas.Vitality.Length; i > (_vitality >= 0f ? _vitality : 0f); i--)
+			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0f ? _vitality : 0f); i--)
 			{
-				_guwbaCanvas.Vitality[i - 1].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
-				_guwbaCanvas.Vitality[i - 1].style.borderBottomColor = new StyleColor(_guwbaCanvas.MissingColor);
-				_guwbaCanvas.Vitality[i - 1].style.borderLeftColor = new StyleColor(_guwbaCanvas.MissingColor);
-				_guwbaCanvas.Vitality[i - 1].style.borderRightColor = new StyleColor(_guwbaCanvas.MissingColor);
-				_guwbaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_guwbaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.borderBottomColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.borderLeftColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.borderRightColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
 			}
 			_timerOfInvencibility = _invencibilityTime;
 			_invencibility = true;
@@ -393,11 +393,11 @@ namespace GuwbaPrimeAdventure.Character
 			if (_vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				_guwbaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
+				_gwambaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
 				StopAllCoroutines();
-				foreach (GuwbaDamager guwbaDamager in _guwbaDamagers)
-					guwbaDamager.Alpha = 1f;
+				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+					gwambaDamager.Alpha = 1f;
 				OnDisable();
 				_animator.SetBool(_idle, false);
 				_animator.SetBool(_walk, false);
@@ -425,50 +425,50 @@ namespace GuwbaPrimeAdventure.Character
 		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
 		{
 			_stunResistance -= (short)stunStrength;
-			for (ushort i = (ushort)_guwbaCanvas.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
-				_guwbaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
+			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
+				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 			if (_stunResistance <= 0f && !_animator.GetBool(_death))
 			{
 				_animator.SetBool(_stun, !(_invencibility = false));
 				StopCoroutine(VisualEffect());
 				_stunTimer = stunTime;
-				_stunResistance = (short)_guwbaCanvas.StunResistance.Length;
+				_stunResistance = (short)_gwambaCanvas.StunResistance.Length;
 				for (ushort i = 0; i < _stunResistance; i++)
-					_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
+					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 				DisableInputs();
 			}
 		};
-		private UnityAction<GuwbaDamager, IDestructible> Attack => (guwbaDamager, destructible) =>
+		private UnityAction<GwambaDamager, IDestructible> Attack => (gwambaDamager, destructible) =>
 		{
-			if (destructible.Hurt(guwbaDamager.AttackDamage))
+			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
-				destructible.Stun(guwbaDamager.AttackDamage, guwbaDamager.StunTime);
+				destructible.Stun(gwambaDamager.AttackDamage, gwambaDamager.StunTime);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				_attackDelay = _delayAfterAttack;
-				for (ushort amount = 0; amount < (destructible.Health >= 0f ? guwbaDamager.AttackDamage : guwbaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
-					if (_recoverVitality >= _guwbaCanvas.RecoverVitality.Length && _vitality < _guwbaCanvas.Vitality.Length)
+				for (ushort amount = 0; amount < (destructible.Health >= 0f ? gwambaDamager.AttackDamage : gwambaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
+					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
 					{
 						_vitality += 1;
 						for (ushort i = 0; i < _vitality; i++)
 						{
-							_guwbaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.BackgroundColor);
-							_guwbaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaCanvas.BorderColor);
-							_guwbaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaCanvas.BorderColor);
-							_guwbaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_guwbaCanvas.BorderColor);
-							_guwbaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_guwbaCanvas.BorderColor);
+							_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
+							_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
+							_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
+							_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
+							_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
 						}
 						_recoverVitality = 0;
-						for (ushort i = 0; i < _guwbaCanvas.RecoverVitality.Length; i++)
-							_guwbaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
+						for (ushort i = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 						_stunResistance += 1;
 						for (ushort i = 0; i < _stunResistance; i++)
-							_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
+							_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 					}
-					else if (_recoverVitality < _guwbaCanvas.RecoverVitality.Length)
+					else if (_recoverVitality < _gwambaCanvas.RecoverVitality.Length)
 					{
 						_recoverVitality += 1;
 						for (ushort i = 0; i < _recoverVitality; i++)
-							_guwbaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.BorderColor);
+							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BorderColor);
 					}
 			}
 		};
@@ -485,7 +485,7 @@ namespace GuwbaPrimeAdventure.Character
 				}
 			if (_fadeTimer > 0f)
 				if ((_fadeTimer -= Time.deltaTime) <= 0f)
-					(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
+					(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
 			if (!_animator.GetBool(_dashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
@@ -516,8 +516,8 @@ namespace GuwbaPrimeAdventure.Character
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
 						_hopActive = _isHoping = false;
-						for (ushort i = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
-							_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
+						for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
+							_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 					}
 					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
@@ -527,7 +527,7 @@ namespace GuwbaPrimeAdventure.Character
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
 						else
-							(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
 					}
 				}
 				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(_airJump))
@@ -554,9 +554,9 @@ namespace GuwbaPrimeAdventure.Character
 						{
 							_fallDamage = Mathf.Abs(_fallStart - transform.position.y);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
-								(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (1f, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
+								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (1f, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
 							else if (!_invencibility)
-								(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
+								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
 						}
 						else
 							(_fallStarted, _fallStart, _fallDamage) = (true, transform.position.y, 0f);
@@ -564,7 +564,7 @@ namespace GuwbaPrimeAdventure.Character
 					else
 					{
 						if (!_invencibility)
-							(_guwbaCanvas.FallDamageText.style.opacity, _guwbaCanvas.FallDamageText.text) = (0f, $"X 0");
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
 						if (_rigidbody.gravityScale > _gravityScale)
 							_rigidbody.gravityScale = _gravityScale;
 						if (_fallDamage > 0f)
@@ -642,7 +642,7 @@ namespace GuwbaPrimeAdventure.Character
 				{
 					_isHoping = true;
 					for (ushort i = 0; i < _bunnyHopBoost; i++)
-						_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.BunnyHopColor);
+						_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BunnyHopColor);
 				}
 				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 			}
@@ -663,7 +663,7 @@ namespace GuwbaPrimeAdventure.Character
 			{
 				collectable.Collect();
 				SaveController.Load(out SaveFile saveFile);
-				(_guwbaCanvas.LifeText.text, _guwbaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
+				(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			}
 		}
 		public static bool EqualObject(params GameObject[] othersObjects)
@@ -679,20 +679,20 @@ namespace GuwbaPrimeAdventure.Character
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
 				{
-					for (ushort i = 0; i < (_vitality = (short)_guwbaCanvas.Vitality.Length); i++)
+					for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
 					{
-						_guwbaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.BackgroundColor);
-						_guwbaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_guwbaCanvas.BorderColor);
-						_guwbaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_guwbaCanvas.BorderColor);
-						_guwbaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_guwbaCanvas.BorderColor);
-						_guwbaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_guwbaCanvas.BorderColor);
+						_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
+						_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
+						_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
+						_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
+						_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
 					}
-					for (ushort i = _recoverVitality = 0; i < _guwbaCanvas.RecoverVitality.Length; i++)
-						_guwbaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
-					for (ushort i = 0; i < (_stunResistance = (short)_guwbaCanvas.StunResistance.Length); i++)
-						_guwbaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_guwbaCanvas.StunResistanceColor);
-					for (ushort i = _bunnyHopBoost = 0; i < _guwbaCanvas.BunnyHop.Length; i++)
-						_guwbaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_guwbaCanvas.MissingColor);
+					for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+						_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+					for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
+						_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+					for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
+						_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 					_animator.SetBool(_death, _hopActive = _isHoping = false);
 					transform.TurnScaleX(_turnLeft);
 				}
