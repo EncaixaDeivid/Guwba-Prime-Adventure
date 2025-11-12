@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Item.EventItem
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptorSignal))]
 	internal sealed class Receptor : StateController
