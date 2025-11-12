@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CinemachineCamera), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
