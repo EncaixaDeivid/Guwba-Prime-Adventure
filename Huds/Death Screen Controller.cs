@@ -4,9 +4,9 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Hud
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class DeathScreenController : MonoBehaviour, IConnector
