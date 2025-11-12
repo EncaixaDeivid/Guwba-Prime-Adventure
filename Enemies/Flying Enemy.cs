@@ -1,6 +1,6 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
 	internal sealed class FlyingEnemy : MovingEnemy
@@ -111,9 +111,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (_statistics.EndlessPursue)
 			{
 				_movementSpeed = Time.fixedDeltaTime * _statistics.RotationSpeed;
-				_movementDirection = Vector2.MoveTowards(_movementDirection, (GuwbaAstralMarker.Localization - _rigidybody.position).normalized, _movementSpeed);
+				_movementDirection = Vector2.MoveTowards(_movementDirection, (GwambaStateMarker.Localization - _rigidybody.position).normalized, _movementSpeed);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _rigidybody.position + _movementDirection, Time.fixedDeltaTime * _statistics.MovementSpeed));
-				transform.TurnScaleX(GuwbaAstralMarker.Localization.x < _rigidybody.position.x);
+				transform.TurnScaleX(GwambaStateMarker.Localization.x < _rigidybody.position.x);
 				return;
 			}
 			if (_isDashing)
@@ -129,7 +129,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
 				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
-					if (GuwbaAstralMarker.EqualObject(verifyCollider.gameObject))
+					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
 						if (Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer))
