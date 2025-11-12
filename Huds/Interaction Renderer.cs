@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Hud
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(IInteractable))]
 	internal sealed class InteractionRenderer : StateController, IConnector
@@ -42,12 +42,12 @@ namespace GuwbaPrimeAdventure.Hud
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
-			if ((_isOnCollision = GuwbaAstralMarker.EqualObject(collision.gameObject)) && _isActive)
+			if ((_isOnCollision = GwambaStateMarker.EqualObject(collision.gameObject)) && _isActive)
 				_document.enabled = true;
 		}
 		private void OnTriggerExit2D(Collider2D collision)
 		{
-			if (!(_isOnCollision = !GuwbaAstralMarker.EqualObject(collision.gameObject)))
+			if (!(_isOnCollision = !GwambaStateMarker.EqualObject(collision.gameObject)))
 				_document.enabled = false;
 		}
 		public void Receive(DataConnection data, object additionalData)
