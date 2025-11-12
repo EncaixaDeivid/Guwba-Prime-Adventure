@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class SceneInitiator : MonoBehaviour
