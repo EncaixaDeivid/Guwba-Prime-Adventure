@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Item.EventItem
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
 	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface))]
@@ -65,7 +65,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 			{
 				while (!appear)
 				{
-					_followLight.transform.position = GuwbaAstralMarker.Localization;
+					_followLight.transform.position = GwambaStateMarker.Localization;
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled);
 				}
@@ -118,12 +118,12 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!_isReceptor && GuwbaAstralMarker.EqualObject(other.gameObject))
+			if (!_isReceptor && GwambaStateMarker.EqualObject(other.gameObject))
 				StartCoroutine(Fade(false));
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!_isReceptor && GuwbaAstralMarker.EqualObject(other.gameObject))
+			if (!_isReceptor && GwambaStateMarker.EqualObject(other.gameObject))
 				StartCoroutine(Fade(true));
 		}
 		public void Execute()
