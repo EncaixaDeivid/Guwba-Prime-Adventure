@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.IO;
 using System.Text;
-namespace GuwbaPrimeAdventure.Data
+namespace GwambaPrimeAdventure.Data
 {
 	internal static class FileEncoder
 	{
-		private const string ScriptPassword = "";
+		private const string ScriptPassword = "BoLo%De%CeNoUrA%cOm%CoBeRtUrA%dE%cHoCoLaTe%AmArGo%!";
 		private static string ScriptData(string data)
 		{
 			string scriptedData = "";
