@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-namespace GuwbaPrimeAdventure.Hud
+namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class DeathScreenHud : MonoBehaviour
