@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
 	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
 	internal sealed class ProjectileStatistics : ScriptableObject
