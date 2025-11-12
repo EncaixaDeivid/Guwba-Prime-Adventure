@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-namespace GuwbaPrimeAdventure.Connection
+namespace GwambaPrimeAdventure.Connection
 {
 	public sealed class Sender
 	{
