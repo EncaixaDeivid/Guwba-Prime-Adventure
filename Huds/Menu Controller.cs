@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using System;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Hud
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Transitioner))]
 	internal sealed class MenuController : MonoBehaviour
