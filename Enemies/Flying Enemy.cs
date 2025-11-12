@@ -7,6 +7,7 @@ namespace GuwbaPrimeAdventure.Enemy
 	{
 		private CircleCollider2D _selfCollider;
 		private Vector2[] _trail;
+		private Vector2 _movementDirection;
 		private Vector2 _pointOrigin;
 		private Vector2 _targetPoint;
 		private bool _normal = true;
@@ -14,6 +15,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		private bool _afterDash = false;
 		private bool _returnDash = false;
 		private ushort _pointIndex = 0;
+		private float _movementSpeed = 0f;
 		[Header("Flying Enemy")]
 		[SerializeField, Tooltip("The flying statitics of this enemy.")] private FlyingStatistics _statistics;
 		[SerializeField, Tooltip("If this enemy will repeat the same way it makes before.")] private bool _repeatWay;
@@ -25,6 +27,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			_trail = new Vector2[trail.points.Length];
 			for (ushort i = 0; i < trail.points.Length; i++)
 				_trail[i] = transform.TransformPoint(trail.points[i] + trail.offset);
+			_movementDirection = Vector2.right * _movementSide;
 			_pointOrigin = _rigidybody.position;
 		}
 		private void Chase()
@@ -44,7 +47,13 @@ namespace GuwbaPrimeAdventure.Enemy
 				}
 				else
 					_isDashing = true;
-			_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _targetPoint, Time.fixedDeltaTime * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed)));
+			if (_isDashing)
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _targetPoint, Time.fixedDeltaTime * _statistics.DashSpeed));
+			else
+			{
+				_movementDirection = Vector2.MoveTowards(_movementDirection, (_targetPoint - _rigidybody.position).normalized, Time.fixedDeltaTime * _statistics.RotationSpeed);
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _rigidybody.position + _movementDirection, Time.fixedDeltaTime * _statistics.MovementSpeed));
+			}
 			if (_isDashing && Vector2.Distance(_rigidybody.position, _targetPoint) <= 1e-3f)
 				if (_statistics.DetectionStop)
 					(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
@@ -55,8 +64,8 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_returnOrigin)
 			{
-				transform.TurnScaleX(_pointOrigin.x < _rigidybody.position.x);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _pointOrigin, Time.fixedDeltaTime * _statistics.ReturnSpeed));
+				transform.TurnScaleX(_pointOrigin.x < _rigidybody.position.x);
 				_returnOrigin = Vector2.Distance(_rigidybody.position, _pointOrigin) > 1e-3f;
 			}
 			else if (_trail.Length > 0f)
@@ -74,8 +83,8 @@ namespace GuwbaPrimeAdventure.Enemy
 						_pointIndex -= 1;
 						_normal = _pointIndex == 0f;
 					}
-				transform.TurnScaleX(_trail[_pointIndex].x < _rigidybody.position.x);
 				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _trail[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed));
+				transform.TurnScaleX(_trail[_pointIndex].x < _rigidybody.position.x);
 				_pointOrigin = _rigidybody.position;
 			}
 		}
@@ -93,14 +102,18 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (_statistics.Target)
 			{
+				_movementSpeed = Time.fixedDeltaTime * _statistics.RotationSpeed;
+				_movementDirection = Vector2.MoveTowards(_movementDirection, ((Vector2)_statistics.Target.transform.position - _rigidybody.position).normalized, _movementSpeed);
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _rigidybody.position + _movementDirection, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				transform.TurnScaleX(_statistics.Target.transform.position.x < _rigidybody.position.x);
-				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _statistics.Target.transform.position, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				return;
 			}
 			if (_statistics.EndlessPursue)
 			{
+				_movementSpeed = Time.fixedDeltaTime * _statistics.RotationSpeed;
+				_movementDirection = Vector2.MoveTowards(_movementDirection, (GuwbaAstralMarker.Localization - _rigidybody.position).normalized, _movementSpeed);
+				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, _rigidybody.position + _movementDirection, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				transform.TurnScaleX(GuwbaAstralMarker.Localization.x < _rigidybody.position.x);
-				_rigidybody.MovePosition(Vector2.MoveTowards(_rigidybody.position, GuwbaAstralMarker.Localization, Time.fixedDeltaTime * _statistics.MovementSpeed));
 				return;
 			}
 			if (_isDashing)
