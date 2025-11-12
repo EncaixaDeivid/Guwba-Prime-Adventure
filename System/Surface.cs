@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	public sealed class Surface : MonoBehaviour
