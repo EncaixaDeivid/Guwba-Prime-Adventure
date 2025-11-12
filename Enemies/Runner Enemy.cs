@@ -1,7 +1,7 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
 	internal sealed class RunnerEnemy : MovingEnemy, IConnector, IDestructible
@@ -177,7 +177,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				_stoppedTime = 0f;
 				_stopWorking = _canRetreat = !(_retreat = true);
 				_retreatLocation = transform.position.x;
-				transform.TurnScaleX(_movementSide = (short)(GuwbaAstralMarker.Localization.x < transform.position.x ? -1f : 1f));
+				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				return false;
