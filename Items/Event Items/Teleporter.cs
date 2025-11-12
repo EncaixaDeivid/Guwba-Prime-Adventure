@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Item.EventItem
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class Teleporter : StateController, IReceptorSignal, IInteractable
@@ -55,7 +55,7 @@ namespace GuwbaPrimeAdventure.Item.EventItem
 		{
 			if (_active && _onCollision && _useTimer)
 				StartCoroutine(Timer());
-			else if (_active && _onCollision && GuwbaAstralMarker.EqualObject(other.gameObject))
+			else if (_active && _onCollision && GwambaStateMarker.EqualObject(other.gameObject))
 				Teleport();
 		}
 		public void Execute()
