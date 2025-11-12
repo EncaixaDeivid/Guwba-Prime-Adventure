@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
 	[CreateAssetMenu(fileName = "Death Enemy", menuName = "Enemy Statistics/Death", order = 10)]
 	internal sealed class DeathStatistics : ScriptableObject
