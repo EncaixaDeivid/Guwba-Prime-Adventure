@@ -1,6 +1,6 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(EnemyController))]
 	internal abstract class EnemyProvider : StateController, IDestructible
