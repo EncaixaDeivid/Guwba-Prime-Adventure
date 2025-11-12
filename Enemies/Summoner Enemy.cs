@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
 	internal sealed class SummonerEnemy : EnemyProvider, IConnector
