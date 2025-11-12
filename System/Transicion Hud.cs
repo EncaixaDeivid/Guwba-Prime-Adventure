@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class TransicionHud : MonoBehaviour
