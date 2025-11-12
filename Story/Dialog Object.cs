@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-namespace GuwbaPrimeAdventure.Story
+namespace GwambaPrimeAdventure.Story
 {
 	[CreateAssetMenu(fileName = "Dialog", menuName = "Story/Dialog", order = 0)]
 	internal class DialogObject : ScriptableObject
