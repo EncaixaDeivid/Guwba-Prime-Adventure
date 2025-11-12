@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Hud
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class ConfigurationHud : MonoBehaviour
