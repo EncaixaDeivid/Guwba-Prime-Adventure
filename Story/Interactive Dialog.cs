@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Story
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class InteractiveDialog : MonoBehaviour, IInteractable, IConnector
