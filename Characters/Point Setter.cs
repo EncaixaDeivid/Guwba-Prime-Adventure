@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
