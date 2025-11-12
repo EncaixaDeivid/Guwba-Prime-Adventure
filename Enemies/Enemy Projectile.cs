@@ -72,7 +72,7 @@ namespace GuwbaPrimeAdventure.Enemy
 		}
 		private void CellInstanceRange()
 		{
-			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, _statistics.GroundLayer).distance;
+			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, _statistics.Physics.GroundLayer).distance;
 			if (_statistics.UseQuantity)
 				distance = _statistics.QuantityToSummon;
 			for (ushort i = 0; i < distance; i++)
@@ -136,7 +136,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90f : -90f, Vector3.forward);
 			if (_statistics.SecondProjectile && _statistics.InCell && !_statistics.ContinuosSummon)
 				CellInstanceRange();
-			else if (_statistics.SecondProjectile && !_statistics.InCell)
+			else if (_statistics.SecondProjectile && !_statistics.InCell && !_statistics.InDeath)
 				CommonInstance();
 			if (!_statistics.StayInPlace)
 				if (_statistics.UseForce)
