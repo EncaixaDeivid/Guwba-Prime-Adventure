@@ -1,7 +1,7 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Item
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
 	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
@@ -23,7 +23,7 @@ namespace GuwbaPrimeAdventure.Item
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!GuwbaAstralMarker.EqualObject(other.gameObject))
+			if (!GwambaStateMarker.EqualObject(other.gameObject))
 				return;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
