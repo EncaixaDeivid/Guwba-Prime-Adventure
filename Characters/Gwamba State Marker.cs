@@ -7,9 +7,9 @@ using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Character
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
