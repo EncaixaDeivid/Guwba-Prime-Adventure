@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	internal sealed class GeneratorItem : StateController
