@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
 	internal sealed class EnemyController : StateController, IConnector, IDestructible
