@@ -1,231 +1,73 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using System;
-using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent]
-	internal sealed class JumperEnemy : MovingEnemy, IConnector
+	[CreateAssetMenu(fileName = "Jumper Enemy", menuName = "Enemy Statistics/Jumper", order = 3)]
+	internal sealed class JumperStatistics : MovingStatistics
 	{
-		private InputController _inputController;
-		private bool _isJumping = false;
-		private bool _stopJump = false;
-		private float _jumpTime = 0f;
 		[Header("Jumper Enemy")]
-		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
-		private void BasicJump(Vector2 target)
-		{
-			StartCoroutine(Jump());
-			IEnumerator Jump()
-			{
-				_detected = true;
-				if (_statistics.DetectionStop)
-				{
-					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
-					yield return new WaitTime(this, _statistics.StopTime);
-					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
-				}
-				_isJumping = true;
-				_rigidybody.AddForceY(_rigidybody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
-				if (_statistics.UnFollow)
-					StartCoroutine(FollowSide());
-				IEnumerator FollowSide()
-				{
-					yield return new WaitUntil(() => !SurfacePerception() && isActiveAndEnabled && !IsStunned && !_stopJump);
-					_movementSide = (short)(target.x >= transform.position.x ? 1f : -1f);
-					transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
-					while (!SurfacePerception())
-					{
-						if (Mathf.Abs(target.x - transform.position.x) > _statistics.DistanceToTarget)
-							_rigidybody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
-						yield return new WaitForFixedUpdate();
-						yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
-					}
-					_rigidybody.linearVelocityX = 0f;
-				}
-			}
-		}
-		private void FollowJump(Vector2 otherTarget, bool useTarget)
-		{
-			StartCoroutine(FollowTarget());
-			IEnumerator FollowTarget()
-			{
-				yield return new WaitUntil(() => !SurfacePerception() && isActiveAndEnabled && !IsStunned && !_stopJump);
-				_rigidybody.linearVelocityX = 0f;
-				float targetPosition = GuwbaAstralMarker.Localization.x;
-				if (_statistics.RandomFollow)
-					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GuwbaAstralMarker.Localization.x : otherTarget.x;
-				else if (useTarget)
-					targetPosition = otherTarget.x;
-				_movementSide = (short)(targetPosition > transform.position.x ? 1f : -1f);
-				transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _movementSide, transform.localScale.y, transform.localScale.z);
-				float xStart = transform.position.x;
-				float distance = Mathf.Abs(targetPosition - xStart);
-				float remainingDistance = distance;
-				while (!SurfacePerception())
-				{
-					transform.position = new Vector2(Mathf.Lerp(xStart, targetPosition, 1f - remainingDistance / distance), transform.position.y);
-					if (Mathf.Abs(targetPosition - transform.position.x) > _statistics.DistanceToTarget)
-						remainingDistance -= _statistics.MovementSpeed * Time.deltaTime;
-					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
-				}
-				_rigidybody.linearVelocityX = 0f;
-			}
-		}
-		private new void Awake()
-		{
-			base.Awake();
-			_sender.SetStateForm(StateForm.State);
-			if (_statistics.UseInput)
-			{
-				_inputController = new InputController();
-				_inputController.Commands.Movement.started += JumpMovement;
-				_inputController.Commands.Movement.Enable();
-			}
-			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
-			{
-				JumpPoint jumpPointInstance = Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity);
-				_statistics.JumpPointStructures[i].RemovalJumpCount = (short)_statistics.JumpPointStructures[i].JumpCount;
-				jumpPointInstance.GetTouch(i, index =>
-				{
-					StartCoroutine(WaitToHitSurface());
-					IEnumerator WaitToHitSurface()
-					{
-						yield return new WaitUntil(() => SurfacePerception() && !_detected && isActiveAndEnabled && !IsStunned);
-						if (_stopJump)
-							yield break;
-						if (_statistics.JumpPointStructures[index].RemovalJumpCount-- <= 0f)
-						{
-							if (_statistics.JumpPointStructures[index].JumpStats.StopMove)
-							{
-								_sender.SetToggle(false);
-								_sender.Send(PathConnection.Enemy);
-							}
-							_isJumping = true;
-							_rigidybody.AddForceY(_statistics.JumpPointStructures[index].JumpStats.Strength * _rigidybody.mass, ForceMode2D.Impulse);
-							if (_statistics.JumpPointStructures[index].JumpStats.Follow)
-								FollowJump(_statistics.JumpPointStructures[index].JumpStats.OtherTarget, _statistics.JumpPointStructures[index].JumpStats.UseTarget);
-							_statistics.JumpPointStructures[index].RemovalJumpCount = (short)_statistics.JumpPointStructures[index].JumpCount;
-						}
-					}
-				});
-			}
-			if (_statistics.SequentialTimmedJumps)
-			{
-				StartCoroutine(SequentialJumps());
-				IEnumerator SequentialJumps()
-				{
-					for (ushort index = 0; index < _statistics.TimedJumps.Length; index++)
-						yield return TimedJump(_statistics.TimedJumps[index]);
-					if (_statistics.RepeatTimmedJumps)
-						StartCoroutine(SequentialJumps());
-				}
-			}
-			else
-				foreach (JumpStats jumpStats in _statistics.TimedJumps)
-					StartCoroutine(TimedJump(jumpStats));
-			IEnumerator TimedJump(JumpStats stats)
-			{
-				yield return new WaitUntil(() => SurfacePerception() && !_detected && isActiveAndEnabled && !IsStunned && !_stopJump);
-				yield return new WaitTime(this, stats.TimeToExecute);
-				if (stats.StopMove)
-				{
-					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
-					_rigidybody.linearVelocityX = 0f;
-				}
-				_isJumping = true;
-				_rigidybody.AddForceY(stats.Strength * _rigidybody.mass, ForceMode2D.Impulse);
-				if (stats.Follow)
-					FollowJump(stats.OtherTarget, stats.UseTarget);
-				if (!_statistics.SequentialTimmedJumps)
-					StartCoroutine(TimedJump(stats));
-			}
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			if (_statistics.UseInput)
-			{
-				_inputController.Commands.Movement.started -= JumpMovement;
-				_inputController.Commands.Movement.Disable();
-				_inputController.Disable();
-			}
-			Sender.Exclude(this);
-		}
-		private Action<InputAction.CallbackContext> JumpMovement => jumpMovement =>
-		{
-			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
-			{
-				_jumpTime = _statistics.TimeToJump;
-				BasicJump(GuwbaAstralMarker.Localization);
-			}
-		};
-		private void Update()
-		{
-			if (!IsStunned && _jumpTime > 0f)
-				_jumpTime -= Time.deltaTime;
-		}
-		private void FixedUpdate()
-		{
-			if (IsStunned)
-				return;
-			if (_isJumping && SurfacePerception())
-			{
-				_isJumping = false;
-				_detected = false;
-				_sender.SetToggle(true);
-				_sender.Send(PathConnection.Enemy);
-			}
-			if (_stopWorking)
-				return;
-			if (!_detected && _statistics.LookPerception && SurfacePerception())
-				if (_statistics.CircularDetection)
-				{
-					foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.LookDistance, _statistics.Physics.TargetLayer))
-						if (collider.TryGetComponent<IDestructible>(out _))
-						{
-							BasicJump(collider.transform.position);
-							return;
-						}
-				}
-				else
-				{
-					Vector2 right = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
-					foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, right, _statistics.LookDistance, _statistics.Physics.TargetLayer))
-						if (ray.collider.TryGetComponent<IDestructible>(out _))
-						{
-							BasicJump(ray.collider.transform.position);
-							return;
-						}
-				}
-		}
-		public new void Receive(DataConnection data, object additionalData)
-		{
-			base.Receive(data, additionalData);
-			if ((EnemyProvider[])additionalData != null)
-				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy != this)
-						return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				_stopJump = !data.ToggleValue.Value;
-			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage)
-			{
-				if (_statistics.StopMoveReact)
-				{
-					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
-				}
-				_isJumping = true;
-				_rigidybody.AddForceY(_statistics.StrenghtReact * _rigidybody.mass, ForceMode2D.Impulse);
-				if (_statistics.FollowReact)
-					FollowJump(_statistics.OtherTarget, _statistics.UseTarget);
-			}
-		}
+		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
+		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
+		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("If this enemy will use input.")] private bool _useInput;
+		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circularDetection;
+		[SerializeField, Tooltip("If this enemy will not follow the target in the basic jump.")] private bool _unFollow;
+		[SerializeField, Tooltip("If the timmed jumps will be executed in a sequence.")] private bool _sequentialTimmedJumps;
+		[SerializeField, Tooltip("If the sequential timmed jumps will be repeated again over again.")] private bool _repeatTimmedJumps;
+		[SerializeField, Tooltip("If the react to damage will use other target.")] private bool _useTarget;
+		[SerializeField, Tooltip("If the target to follow will be random.")] private bool _randomFollow;
+		[SerializeField, Tooltip("The strenght of the basic jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of time to jump again.")] private float _timeToJump;
+		[SerializeField, Tooltip("The angle of the detection ray.")] private float _detectionAngle;
+		[SerializeField, Tooltip("The distance this enemy will be to the follow target.")] private float _distanceToTarget;
+		[Header("Reaction")]
+		[SerializeField, Tooltip("The strenght of the jump on a react of damage.")] private ushort _strenghtReact;
+		[SerializeField, Tooltip("If the react to damage jump is a high jump.")] private bool _followReact;
+		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
+		internal JumpPointStructure[] JumpPointStructures => _jumpPointStructures;
+		internal JumpStats[] TimedJumps => _timedJumps;
+		internal Vector2 OtherTarget => _otherTarget;
+		internal bool UseInput => _useInput;
+		internal bool CircularDetection => _circularDetection;
+		internal bool UnFollow => _unFollow;
+		internal bool SequentialTimmedJumps => _sequentialTimmedJumps;
+		internal bool RepeatTimmedJumps => _repeatTimmedJumps;
+		internal bool UseTarget => _useTarget;
+		internal bool RandomFollow => _randomFollow;
+		internal float JumpStrenght => _jumpStrenght;
+		internal float TimeToJump => _timeToJump;
+		internal float DetectionAngle => _detectionAngle;
+		internal float DistanceToTarget => _distanceToTarget;
+		internal ushort StrenghtReact => _strenghtReact;
+		internal bool FollowReact => _followReact;
+		internal bool StopMoveReact => _stopMoveReact;
+	};
+	[System.Serializable]
+	internal struct JumpStats
+	{
+		[SerializeField, Tooltip("To where this have to go if theres no target.")] private Vector2 _otherTarget;
+		[SerializeField, Tooltip("The strenght of the jump.")] private ushort _strength;
+		[SerializeField, Tooltip("If in the high jumo it will stop moving.")] private bool _stopMove;
+		[SerializeField, Tooltip("If this is a follow jump.")] private bool _follow;
+		[SerializeField, Tooltip("If for this jump it will use the other target.")] private bool _useTarget;
+		[SerializeField, Tooltip("The amount of time for this jump to execute.")] private float _timeToExecute;
+		internal readonly Vector2 OtherTarget => _otherTarget;
+		internal readonly ushort Strength => _strength;
+		internal readonly bool StopMove => _stopMove;
+		internal readonly bool Follow => _follow;
+		internal readonly bool UseTarget => _useTarget;
+		internal readonly float TimeToExecute => _timeToExecute;
+	};
+	[System.Serializable]
+	internal struct JumpPointStructure
+	{
+		[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
+		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
+		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
+		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
+		internal readonly JumpPoint JumpPointObject => _jumpPointObject;
+		internal readonly JumpStats JumpStats => _jumpStats;
+		internal readonly Vector2 Point => _point;
+		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
+		internal short RemovalJumpCount { get; set; }
 	};
 };
