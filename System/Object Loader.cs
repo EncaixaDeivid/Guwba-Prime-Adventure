@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	internal sealed class ObjectLoader : MonoBehaviour
 	{
