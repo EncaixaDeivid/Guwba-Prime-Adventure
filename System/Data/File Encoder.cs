@@ -5,7 +5,7 @@ namespace GwambaPrimeAdventure.Data
 {
 	internal static class FileEncoder
 	{
-		private const string ScriptPassword = "BoLo%De%CeNoUrA%cOm%CoBeRtUrA%dE%cHoCoLaTe%AmArGo%!";
+		private const string ScriptPassword = "";
 		private static string ScriptData(string data)
 		{
 			string scriptedData = "";
