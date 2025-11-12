@@ -1,6 +1,6 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Item.EventItem
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[RequireComponent(typeof(Transform))]
 	internal abstract class Activator : StateController
