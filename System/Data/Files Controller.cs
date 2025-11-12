@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.IO;
-namespace GuwbaPrimeAdventure.Data
+namespace GwambaPrimeAdventure.Data
 {
 	internal struct FilesArchive
 	{
