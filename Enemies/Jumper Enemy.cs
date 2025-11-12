@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Character;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
 	internal sealed class JumperEnemy : MovingEnemy, IConnector
@@ -55,9 +55,9 @@ namespace GuwbaPrimeAdventure.Enemy
 			{
 				yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
 				_rigidybody.linearVelocityX = 0f;
-				float targetPosition = GuwbaAstralMarker.Localization.x;
+				float targetPosition = GwambaStateMarker.Localization.x;
 				if (_statistics.RandomFollow)
-					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GuwbaAstralMarker.Localization.x : otherTarget.x;
+					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GwambaStateMarker.Localization.x : otherTarget.x;
 				else if (useTarget)
 					targetPosition = otherTarget.x;
 				transform.TurnScaleX(_movementSide = (short)(targetPosition < transform.position.x ? -1f : 1f));
@@ -165,7 +165,7 @@ namespace GuwbaPrimeAdventure.Enemy
 			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
 			{
 				_jumpTime = _statistics.TimeToJump;
-				BasicJump(GuwbaAstralMarker.Localization);
+				BasicJump(GwambaStateMarker.Localization);
 			}
 		};
 		private void Update()
