@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-namespace GuwbaPrimeAdventure.Character
+namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
 	internal sealed class GwambaCanvas : MonoBehaviour
