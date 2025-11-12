@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-namespace GuwbaPrimeAdventure.Story
+namespace GwambaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	internal sealed class StoryTeller : MonoBehaviour
