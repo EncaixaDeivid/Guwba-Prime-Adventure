@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using GuwbaPrimeAdventure.Character;
 namespace GuwbaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D))]
@@ -171,6 +172,12 @@ namespace GuwbaPrimeAdventure.Enemy
 		{
 			if (_rigidbody.IsSleeping())
 				return;
+			if (_statistics.EndlessPursue)
+			{
+				transform.up = Vector2.MoveTowards(transform.up, (GuwbaAstralMarker.Localization - (Vector2)transform.position).normalized, Time.fixedDeltaTime * _statistics.RotationSpeed);
+				_rigidbody.linearVelocity = transform.up * _statistics.MovementSpeed;
+				return;
+			}
 			if (_statistics.SecondProjectile && _statistics.InCell && _statistics.ContinuosSummon)
 			{
 				if (_statistics.UseQuantity && _statistics.QuantityToSummon == _projectiles.Count || _statistics.StayInPlace)
@@ -179,7 +186,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				CellInstance();
 			}
 			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
-			if (_statistics.ParabolicMovement && _parabolaCoroutine)
+			if (_statistics.ParabolicMovement && !_parabolaCoroutine)
 				ParabolicProjectile();
 			else if (!_statistics.StayInPlace && _statistics.RotationMatter)
 				_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
@@ -193,7 +200,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
-			else
+			if (_statistics.Vitality > 0f)
 				Death();
 		}
 		public bool Hurt(ushort damage)
