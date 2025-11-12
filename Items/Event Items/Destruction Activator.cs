@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure.Item.EventItem
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent]
 	internal sealed class DestructionActivator : Activator
