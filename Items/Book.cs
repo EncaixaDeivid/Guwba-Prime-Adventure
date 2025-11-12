@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Item
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
 	internal sealed class Book : StateController, ILoader, ICollectable
