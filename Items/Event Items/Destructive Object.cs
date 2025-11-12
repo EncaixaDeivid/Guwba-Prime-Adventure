@@ -1,7 +1,7 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure.Item.EventItem
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
 	internal sealed class DestructiveObject : StateController, IReceptorSignal, IDestructible
