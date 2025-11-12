@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-namespace GuwbaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
 	internal sealed class TeleporterEnemy : EnemyProvider
