@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-namespace GuwbaPrimeAdventure
+using GwambaPrimeAdventure.Data;
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform))]
 	public sealed class Transitioner : MonoBehaviour
