@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System;
-namespace GuwbaPrimeAdventure.Character
+namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Collider2D))]
 	internal sealed class GwambaDamager : StateController, IDestructible
