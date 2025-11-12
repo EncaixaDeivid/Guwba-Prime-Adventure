@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(Collider2D))]
@@ -174,7 +174,7 @@ namespace GuwbaPrimeAdventure.Enemy
 				return;
 			if (_statistics.EndlessPursue)
 			{
-				transform.up = Vector2.MoveTowards(transform.up, (GuwbaAstralMarker.Localization - (Vector2)transform.position).normalized, Time.fixedDeltaTime * _statistics.RotationSpeed);
+				transform.up = Vector2.MoveTowards(transform.up, (GwambaStateMarker.Localization - (Vector2)transform.position).normalized, Time.fixedDeltaTime * _statistics.RotationSpeed);
 				_rigidbody.linearVelocity = transform.up * _statistics.MovementSpeed;
 				return;
 			}
