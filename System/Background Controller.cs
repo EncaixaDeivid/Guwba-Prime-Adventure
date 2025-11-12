@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D;
 using System.Collections;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
 	internal sealed class BackgroundController : StateController, ILoader
