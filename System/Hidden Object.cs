@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	public sealed class HiddenObject : MonoBehaviour, IConnector
