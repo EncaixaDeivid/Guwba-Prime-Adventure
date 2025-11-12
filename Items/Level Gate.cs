@@ -2,10 +2,10 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GuwbaPrimeAdventure.Data;
-using GuwbaPrimeAdventure.Connection;
-using GuwbaPrimeAdventure.Character;
-namespace GuwbaPrimeAdventure.Item
+using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Character;
+namespace GwambaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
 	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
@@ -58,7 +58,7 @@ namespace GuwbaPrimeAdventure.Item
 		private Action ShowScenes => () => _sender.Send(PathConnection.Story);
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!_isOnInteraction || !GuwbaAstralMarker.EqualObject(other.gameObject))
+			if (!_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
 				return;
 			_isOnInteraction = false;
 			_gateCamera.Priority.Value = _defaultPriority;
