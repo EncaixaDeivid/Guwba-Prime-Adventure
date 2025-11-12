@@ -1,6 +1,6 @@
 using UnityEngine;
-using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Enemy
+using GwambaPrimeAdventure.Connection;
+namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
 	internal sealed class ShooterEnemy : EnemyProvider, IConnector, IDestructible
