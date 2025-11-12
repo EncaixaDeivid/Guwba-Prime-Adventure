@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	public static class Extensions
 	{
