@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using GuwbaPrimeAdventure.Data;
 using GuwbaPrimeAdventure.Connection;
-namespace GuwbaPrimeAdventure.Character
+namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	internal sealed class PointSetter : StateController, IConnector
