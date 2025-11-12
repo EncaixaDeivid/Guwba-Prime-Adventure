@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-namespace GuwbaPrimeAdventure.Story
+namespace GwambaPrimeAdventure.Story
 {
 	[CreateAssetMenu(fileName = "Scene", menuName = "Story/Scene", order = 1)]
 	internal sealed class SceneObject : ScriptableObject
