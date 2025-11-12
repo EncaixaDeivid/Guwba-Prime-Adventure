@@ -36,7 +36,7 @@ namespace GuwbaPrimeAdventure.Character
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (GuwbaAstralMarker.EqualObject(other.gameObject) && this != _instance)
+			if (GwambaStateMarker.EqualObject(other.gameObject) && this != _instance)
 				_instance = this;
 		}
 		public void Receive(DataConnection data, object additionalData)
