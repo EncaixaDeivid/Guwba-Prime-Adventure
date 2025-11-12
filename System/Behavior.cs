@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.CompilerServices;
 #endif
-namespace GuwbaPrimeAdventure
+namespace GwambaPrimeAdventure
 {
 	public interface ILoader
 	{
