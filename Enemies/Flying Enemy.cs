@@ -132,14 +132,12 @@ namespace GwambaPrimeAdventure.Enemy
 					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
-						if (Physics2D.Linecast(transform.position, _targetPoint, _statistics.Physics.GroundLayer))
-							break;
-						_originCast = (Vector2)transform.position + _selfCollider.offset;
-						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance((Vector2)transform.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
+						_originCast = _rigidybody.position + _selfCollider.offset;
+						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(_rigidybody.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
 							if (Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.GroundLayer))
 								break;
-							_originCast += _statistics.DetectionFactor * Vector2.one * (_targetPoint - _originCast).normalized;
+							_originCast += _statistics.DetectionFactor * (_targetPoint - _originCast).normalized;
 						}
 						transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1f : 1f);
 						_detected = true;
