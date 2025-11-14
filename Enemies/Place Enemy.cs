@@ -33,7 +33,7 @@ namespace GwambaPrimeAdventure.Enemy
 					return;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (data.StateForm == StateForm.Action && _reactToDamage)
+			else if (data.StateForm == StateForm.Event && _reactToDamage)
 				StartCoroutine(AppearFade(_tilemap.color.a <= 0f));
 			IEnumerator AppearFade(bool appear)
 			{
