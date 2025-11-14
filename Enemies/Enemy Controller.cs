@@ -8,7 +8,7 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class EnemyController : StateController, IConnector, IDestructible
     {
 		private EnemyProvider[] _selfEnemies;
-		private Rigidbody2D _rigidybody;
+		private Rigidbody2D _rigidbody;
 		private IDestructible _destructibleEnemy;
 		private short _vitality;
 		private short _armorResistance = 0;
@@ -18,6 +18,7 @@ namespace GwambaPrimeAdventure.Enemy
 		[Header("Enemy Statistics")]
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
 		internal EnemyStatistics ProvidenceStatistics => _statistics;
+		internal Rigidbody2D Rigidbody => _rigidbody;
 		public PathConnection PathConnection => PathConnection.Enemy;
 		public short Health => _vitality;
 		internal short Vitality { get => _vitality; set => _vitality = value; }
@@ -28,7 +29,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_selfEnemies = GetComponents<EnemyProvider>();
-			_rigidybody = GetComponent<Rigidbody2D>();
+			_rigidbody = GetComponent<Rigidbody2D>();
 			_vitality = (short)_statistics.Vitality;
 			_armorResistance = (short)_statistics.HitResistance;
 			_fadeTime = _statistics.TimeToFadeAway;
@@ -45,8 +46,8 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private void OnEnable() => _rigidybody.WakeUp();
-		private void OnDisable() => _rigidybody.Sleep();
+		private void OnEnable() => Rigidbody.WakeUp();
+		private void OnDisable() => Rigidbody.Sleep();
 		private IEnumerator Start()
 		{
 			foreach (EnemyProvider enemy in _selfEnemies)
@@ -70,7 +71,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
 					_stunned = false;
-					_rigidybody.WakeUp();
+					Rigidbody.WakeUp();
 				}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
@@ -97,7 +98,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
 			{
-				_rigidybody.Sleep();
+				Rigidbody.Sleep();
 				foreach (EnemyProvider enemy in _selfEnemies)
 					enemy.enabled = data.ToggleValue.Value;
 			}
