@@ -4,7 +4,7 @@ using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class SummonerEnemy : EnemyProvider, IConnector
+	internal sealed class SummonerEnemy : EnemyProvider, ISummoner, IConnector
 	{
 		private SummonStats[] _summonStats;
 		private bool _stopSummon = false;
@@ -13,32 +13,6 @@ namespace GwambaPrimeAdventure.Enemy
 		private float _gravityScale = 0f;
 		[Header("Summoner Enemy")]
 		[SerializeField, Tooltip("The summoner statitics of this enemy.")] private SummonerStatistics _statistics;
-		private void Summon(SummonObject summon)
-		{
-			if (summon.StopToSummon)
-			{
-				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
-				if (summon.ParalyzeToSummon)
-					Rigidbody.gravityScale = 0f;
-				_stopTime = summon.TimeToStop;
-			}
-			Vector2 position;
-			Vector2Int summonIndex = new();
-			InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
-			for (ushort i = 0; i < summon.QuantityToSummon; i++)
-			{ 
-				if (summon.Self)
-					position = transform.position;
-				else if (summon.Random)
-					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length - 1)];
-				else
-					position = summon.SummonPoints[summonIndex.y];
-				Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-				summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
-				summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
-			}
-		}
 		private new void Awake()
 		{
 			base.Awake();
@@ -61,8 +35,34 @@ namespace GwambaPrimeAdventure.Enemy
 				_summonStats[i].isSummonTime = true;
 				_summonStats[i].summonTime = _statistics.TimedSummons[i].SummonTime;
 			}
-			foreach (SummonPointStructure summonStructure in _statistics.SummonPointStructures)
-				Instantiate(summonStructure.SummonPointObject, summonStructure.Point, Quaternion.identity).GetTouch(() => Summon(summonStructure.Summon));
+			for (ushort i = 0; i < _statistics.SummonPointStructures.Length; i++)
+				Instantiate(_statistics.SummonPointStructures[i].SummonPointObject, _statistics.SummonPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
+		}
+		private void Summon(SummonObject summon)
+		{
+			if (summon.StopToSummon)
+			{
+				_sender.SetToggle(false);
+				_sender.Send(PathConnection.Enemy);
+				if (summon.ParalyzeToSummon)
+					Rigidbody.gravityScale = 0f;
+				_stopTime = summon.TimeToStop;
+			}
+			Vector2 position;
+			Vector2Int summonIndex = new();
+			InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
+			for (ushort i = 0; i < summon.QuantityToSummon; i++)
+			{
+				if (summon.Self)
+					position = transform.position;
+				else if (summon.Random)
+					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length - 1)];
+				else
+					position = summon.SummonPoints[summonIndex.y];
+				Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
+				summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
+				summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
+			}
 		}
 		private void IndexedSummon(ushort summonIndex)
 		{
@@ -106,6 +106,7 @@ namespace GwambaPrimeAdventure.Enemy
 				for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
 					IndexedSummon(i);
 		}
+		public void OnSummon(ushort summonIndex) => Summon(_statistics.SummonPointStructures[summonIndex].Summon);
 		public void Receive(DataConnection data, object additionalData)
 		{
 			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
