@@ -54,7 +54,6 @@ namespace GwambaPrimeAdventure.Enemy
 		internal readonly JumpStats JumpStats => _jumpStats;
 		internal readonly Vector2 Point => _point;
 		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
-		internal short RemovalJumpCount { get; set; }
 	};
 	[System.Serializable]
 	internal struct JumpStats
