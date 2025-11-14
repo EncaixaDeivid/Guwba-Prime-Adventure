@@ -218,13 +218,32 @@ namespace GwambaPrimeAdventure.Character
 				transform.position = Vector2.zero;
 				return SceneInitiator.IsInTrancision();
 			});
-			EnableInputs();
 			if (_animator.GetBool(_death))
 			{
-				_animator.SetBool(_death, false);
-				ReveiveEvent();
-				ReveiveState();
+				Reanimate();
+				OnEnable();
 			}
+			else
+				EnableInputs();
+		}
+		private void Reanimate()
+		{
+			for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
+			{
+				_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
+				_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
+			}
+			for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+				_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+			for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
+				_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
+				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+			_animator.SetBool(_death, _hopActive = _isHoping = false);
+			transform.TurnScaleX(_turnLeft);
 		}
 		public IEnumerator Load()
 		{
@@ -336,8 +355,7 @@ namespace GwambaPrimeAdventure.Character
 				if (!_isOnGround && !_hopActive && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 				{
 					_hopActive = true;
-					_bunnyHopBoost += 1;
-					if (_bunnyHopBoost >= _gwambaCanvas.BunnyHop.Length)
+					if ((_bunnyHopBoost += 1) >= _gwambaCanvas.BunnyHop.Length)
 						_bunnyHopBoost = (ushort)_gwambaCanvas.BunnyHop.Length;
 				}
 			}
@@ -393,8 +411,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.Vitality[i - 1].style.borderRightColor = new StyleColor(_gwambaCanvas.MissingColor);
 				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
 			}
-			_timerOfInvencibility = _invencibilityTime;
-			_invencibility = true;
+			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 			StartCoroutine(VisualEffect());
 			if (_vitality <= 0f)
 			{
@@ -420,7 +437,7 @@ namespace GwambaPrimeAdventure.Character
 				_sender.SetToggle(false);
 				_sender.SetStateForm(StateForm.State);
 				_sender.Send(PathConnection.Hud);
-				_sender.SetStateForm(StateForm.Action);
+				_sender.SetStateForm(StateForm.Event);
 				_sender.Send(PathConnection.Hud);
 				_sender.SetStateForm(StateForm.None);
 				_sender.Send(PathConnection.Enemy);
@@ -438,8 +455,7 @@ namespace GwambaPrimeAdventure.Character
 				_animator.SetBool(_stun, !(_invencibility = false));
 				StopCoroutine(VisualEffect());
 				_stunTimer = stunTime;
-				_stunResistance = (short)_gwambaCanvas.StunResistance.Length;
-				for (ushort i = 0; i < _stunResistance; i++)
+				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
 					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 				DisableInputs();
 			}
@@ -463,8 +479,7 @@ namespace GwambaPrimeAdventure.Character
 							_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
 							_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
 						}
-						_recoverVitality = 0;
-						for (ushort i = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+						for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
 							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 						_stunResistance += 1;
 						for (ushort i = 0; i < _stunResistance; i++)
@@ -510,9 +525,9 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(_idle, true);
 					else if (_animator.GetBool(_idle))
 						_animator.SetBool(_idle, false);
-					if (_movementAction != 0f && !_animator.GetBool(_walk))
+					if (!_animator.GetBool(_walk) && _movementAction != 0f)
 						_animator.SetBool(_walk, true);
-					else if (_movementAction == 0f && _animator.GetBool(_walk))
+					else if (_animator.GetBool(_walk) && _movementAction == 0f)
 						_animator.SetBool(_walk, false);
 					if (_animator.GetBool(_jump))
 						_animator.SetBool(_jump, false);
@@ -542,13 +557,13 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(_idle, false);
 					if (_animator.GetBool(_walk))
 						_animator.SetBool(_walk, false);
-					if (_rigidbody.linearVelocityY > 0f && !_animator.GetBool(_jump))
+					if (!_animator.GetBool(_jump) && _rigidbody.linearVelocityY > 0f)
 						_animator.SetBool(_jump, true);
-					else if (_rigidbody.linearVelocityY < 0f && _animator.GetBool(_jump))
+					else if (_animator.GetBool(_jump) && _rigidbody.linearVelocityY < 0f)
 						_animator.SetBool(_jump, false);
-					if (_rigidbody.linearVelocityY < 0f && !_animator.GetBool(_fall))
+					if (!_animator.GetBool(_fall) && _rigidbody.linearVelocityY < 0f)
 						_animator.SetBool(_fall, true);
-					else if (_rigidbody.linearVelocityY > 0f && _animator.GetBool(_fall))
+					else if (_animator.GetBool(_fall) && _rigidbody.linearVelocityY > 0f)
 						_animator.SetBool(_fall, false);
 					if (_animator.GetBool(_attackJump) && _rigidbody.linearVelocityY < 0f)
 						_animator.SetBool(_attackJump, false);
@@ -672,31 +687,6 @@ namespace GwambaPrimeAdventure.Character
 				(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			}
 		}
-		private void ReveiveEvent()
-		{
-			for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
-			{
-				_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
-				_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
-			}
-			for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
-				_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
-				_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
-			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
-				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			_animator.SetBool(_death, _hopActive = _isHoping = false);
-			transform.TurnScaleX(_turnLeft);
-		}
-		private void ReveiveState()
-		{
-			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-			StartCoroutine(VisualEffect());
-			OnEnable();
-		}
 		public static bool EqualObject(params GameObject[] othersObjects)
 		{
 			if (_instance)
@@ -707,13 +697,17 @@ namespace GwambaPrimeAdventure.Character
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
-					ReveiveEvent();
+					Reanimate();
 				else if (additionalData is Vector2 position)
 					transform.position = position;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
-				ReveiveState();
+			{
+				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
+				StartCoroutine(VisualEffect());
+				OnEnable();
+			}
 		}
 	};
 };
