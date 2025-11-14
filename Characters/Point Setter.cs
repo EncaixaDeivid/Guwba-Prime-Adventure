@@ -16,7 +16,7 @@ namespace GwambaPrimeAdventure.Character
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.Action);
+			_sender.SetStateForm(StateForm.Event);
 			_sender.SetAdditionalData((Vector2)transform.position);
 			_sender.SetToggle(false);
 			Sender.Include(this);
@@ -41,7 +41,7 @@ namespace GwambaPrimeAdventure.Character
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && data.ToggleValue.Value && this == _instance)
+			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && data.ToggleValue.Value && this == _instance)
 				_sender.Send(PathConnection.Character);
 		}
 	};
