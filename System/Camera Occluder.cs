@@ -63,7 +63,7 @@ namespace GwambaPrimeAdventure
 		private void OnTriggerExit2D(Collider2D other) => SetOtherChildren(other.gameObject, false);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action)
+			if (data.StateForm == StateForm.Event)
 			{
 				_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
 				StartCoroutine(RestoreDamping());
