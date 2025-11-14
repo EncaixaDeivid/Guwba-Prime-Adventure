@@ -123,7 +123,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_retreatTime = _statistics.TimeToRetreat;
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
-					_sender.SetStateForm(StateForm.Action);
+					_sender.SetStateForm(StateForm.Event);
 					_sender.SetNumber(_statistics.EventIndex);
 					_sender.Send(PathConnection.Enemy);
 					_sender.SetStateForm(StateForm.State);
