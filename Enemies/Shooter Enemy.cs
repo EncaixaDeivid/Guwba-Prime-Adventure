@@ -54,7 +54,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_shootInterval = _statistics.IntervalToShoot;
 				if (_statistics.InvencibleShoot)
 				{
-					_sender.SetStateForm(StateForm.Action);
+					_sender.SetStateForm(StateForm.Event);
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -88,7 +88,7 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			if (_statistics.InvencibleShoot)
 			{
-				_sender.SetStateForm(StateForm.Action);
+				_sender.SetStateForm(StateForm.Event);
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 			}
@@ -128,7 +128,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
 				return;
 			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy == this && data.StateForm == StateForm.Action && _statistics.ReactToDamage)
+				if (enemy == this && data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 					Shoot();
 		}
 	};
