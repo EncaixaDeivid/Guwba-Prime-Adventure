@@ -6,7 +6,7 @@ namespace GwambaPrimeAdventure.Enemy
 	{
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
-		[SerializeField, Tooltip("The collection of the jumps timed for this boss.")] private JumpStats[] _timedJumps;
+		[SerializeField, Tooltip("The collection of the jumps timed for this enemy.")] private JumpStats[] _timedJumps;
 		[SerializeField, Tooltip("The other target to move to on jump.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("If this enemy will use input.")] private bool _useInput;
 		[SerializeField, Tooltip("If the detection will be circular.")] private bool _circularDetection;
@@ -42,6 +42,19 @@ namespace GwambaPrimeAdventure.Enemy
 		internal bool StopMoveReact => _stopMoveReact;
 	};
 	[System.Serializable]
+	internal struct JumpPointStructure
+	{
+		[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
+		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
+		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
+		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
+		internal readonly JumpPoint JumpPointObject => _jumpPointObject;
+		internal readonly JumpStats JumpStats => _jumpStats;
+		internal readonly Vector2 Point => _point;
+		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
+		internal short RemovalJumpCount { get; set; }
+	};
+	[System.Serializable]
 	internal struct JumpStats
 	{
 		[SerializeField, Tooltip("To where this have to go if theres no target.")] private Vector2 _otherTarget;
@@ -56,18 +69,5 @@ namespace GwambaPrimeAdventure.Enemy
 		internal readonly bool Follow => _follow;
 		internal readonly bool UseTarget => _useTarget;
 		internal readonly float TimeToExecute => _timeToExecute;
-	};
-	[System.Serializable]
-	internal struct JumpPointStructure
-	{
-		[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
-		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
-		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
-		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
-		internal readonly JumpPoint JumpPointObject => _jumpPointObject;
-		internal readonly JumpStats JumpStats => _jumpStats;
-		internal readonly Vector2 Point => _point;
-		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
-		internal short RemovalJumpCount { get; set; }
 	};
 };
