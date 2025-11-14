@@ -242,7 +242,7 @@ namespace GwambaPrimeAdventure.Enemy
 			base.Receive(data, additionalData);
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				_stopJump = !data.ToggleValue.Value;
-			else if (data.StateForm == StateForm.Action && _statistics.ReactToDamage)
+			else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 			{
 				if (_statistics.StopMoveReact)
 				{
