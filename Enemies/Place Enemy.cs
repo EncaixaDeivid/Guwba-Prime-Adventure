@@ -4,7 +4,7 @@ using System.Collections;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Tilemap), typeof(TilemapRenderer), typeof(CompositeCollider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)), RequireComponent(typeof(CompositeCollider2D))]
 	internal sealed class PlaceEnemy : EnemyProvider, IConnector
 	{
 		private Tilemap _tilemap;
