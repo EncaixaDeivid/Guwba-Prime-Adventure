@@ -7,7 +7,7 @@ using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class JumperEnemy : MovingEnemy, IConnector
+	internal sealed class JumperEnemy : MovingEnemy, IJumper, IConnector
 	{
 		private InputController _inputController;
 		private Vector2 _targetPosition;
@@ -16,6 +16,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _stopJump = false;
 		private bool _follow = false;
 		private ushort _sequentialJumpIndex = 0;
+		private short[] _jumpCount;
 		private float[] _timedJumpTime;
 		private float _jumpTime = 0f;
 		private float _stopTime = 0f;
@@ -50,35 +51,11 @@ namespace GwambaPrimeAdventure.Enemy
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			for (ushort i = 0; i < _statistics.TimedJumps.Length; i++)
 				_timedJumpTime[i] = _statistics.TimedJumps[i].TimeToExecute;
+			_jumpCount = new short[_statistics.JumpPointStructures.Length];
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
-				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(i, index =>
-				{
-					StartCoroutine(WaitToHitSurface());
-					IEnumerator WaitToHitSurface()
-					{
-						yield return new WaitUntil(() => GroundCheck() && !_detected && isActiveAndEnabled && !IsStunned);
-						if (_stopJump)
-							yield break;
-						if (_statistics.JumpPointStructures[index].RemovalJumpCount-- <= 0f)
-						{
-							if (_statistics.JumpPointStructures[index].JumpStats.StopMove)
-							{
-								_sender.SetToggle(false);
-								_sender.Send(PathConnection.Enemy);
-							}
-							_isJumping = true;
-							Rigidbody.AddForceY(_statistics.JumpPointStructures[index].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
-							if (_statistics.JumpPointStructures[index].JumpStats.Follow)
-							{
-								bool turnFollow = _statistics.JumpPointStructures[index].JumpStats.TurnFollow;
-								FollowJump(_statistics.JumpPointStructures[index].JumpStats.OtherTarget, _statistics.JumpPointStructures[index].JumpStats.UseTarget, turnFollow);
-							}
-							_statistics.JumpPointStructures[index].RemovalJumpCount = (short)_statistics.JumpPointStructures[index].JumpCount;
-						}
-					}
-				});
-				_statistics.JumpPointStructures[i].RemovalJumpCount = (short)_statistics.JumpPointStructures[i].JumpCount;
+				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
+				_jumpCount[i] = (short)_statistics.JumpPointStructures[i].JumpCount;
 			}
 		}
 		private void FollowJump(Vector2 otherTarget, bool useTarget, bool turnFollow)
@@ -230,6 +207,32 @@ namespace GwambaPrimeAdventure.Enemy
 					Rigidbody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
 				else
 					Rigidbody.linearVelocityX = 0f;
+			}
+		}
+		public void OnJump(ushort jumpIndex)
+		{
+			StartCoroutine(WaitToHitSurface());
+			IEnumerator WaitToHitSurface()
+			{
+				yield return new WaitUntil(() => GroundCheck() && !_detected && isActiveAndEnabled && !IsStunned);
+				if (_stopJump)
+					yield break;
+				if (_jumpCount[jumpIndex]-- <= 0f)
+				{
+					if (_statistics.JumpPointStructures[jumpIndex].JumpStats.StopMove)
+					{
+						_sender.SetToggle(false);
+						_sender.Send(PathConnection.Enemy);
+					}
+					_isJumping = true;
+					Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
+					if (_statistics.JumpPointStructures[jumpIndex].JumpStats.Follow)
+					{
+						bool turnFollow = _statistics.JumpPointStructures[jumpIndex].JumpStats.TurnFollow;
+						FollowJump(_statistics.JumpPointStructures[jumpIndex].JumpStats.OtherTarget, _statistics.JumpPointStructures[jumpIndex].JumpStats.UseTarget, turnFollow);
+					}
+					_jumpCount[jumpIndex] = (short)_statistics.JumpPointStructures[jumpIndex].JumpCount;
+				}
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
