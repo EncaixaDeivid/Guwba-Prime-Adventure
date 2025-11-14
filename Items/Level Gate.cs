@@ -25,7 +25,7 @@ namespace GwambaPrimeAdventure.Item
 		private void Awake()
 		{
 			_gateCamera = GetComponentInChildren<CinemachineCamera>();
-			_sender.SetStateForm(StateForm.Action);
+			_sender.SetStateForm(StateForm.Event);
 			_sender.SetAdditionalData(gameObject);
 			_levelGate = Instantiate(_levelGateObject, transform);
 		}
