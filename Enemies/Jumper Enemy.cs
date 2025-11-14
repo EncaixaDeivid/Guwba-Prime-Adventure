@@ -30,7 +30,7 @@ namespace GwambaPrimeAdventure.Enemy
 					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
 				_isJumping = true;
-				_rigidybody.AddForceY(_rigidybody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
+				Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
 				if (_statistics.UnFollow)
 					StartCoroutine(FollowSide());
 				IEnumerator FollowSide()
@@ -40,11 +40,11 @@ namespace GwambaPrimeAdventure.Enemy
 					while (!GroundCheck() && !_stopJump)
 					{
 						if (Mathf.Abs(target.x - transform.position.x) > _statistics.DistanceToTarget)
-							_rigidybody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
+							Rigidbody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 					}
-					_rigidybody.linearVelocityX = 0f;
+					Rigidbody.linearVelocityX = 0f;
 				}
 			}
 		}
@@ -54,7 +54,7 @@ namespace GwambaPrimeAdventure.Enemy
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
-				_rigidybody.linearVelocityX = 0f;
+				Rigidbody.linearVelocityX = 0f;
 				float targetPosition = GwambaStateMarker.Localization.x;
 				if (_statistics.RandomFollow)
 					targetPosition = UnityEngine.Random.Range(-1, 1) >= 0f ? GwambaStateMarker.Localization.x : otherTarget.x;
@@ -72,7 +72,7 @@ namespace GwambaPrimeAdventure.Enemy
 					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
-				_rigidybody.linearVelocityX = 0f;
+				Rigidbody.linearVelocityX = 0f;
 			}
 		}
 		private new void Awake()
@@ -119,7 +119,7 @@ namespace GwambaPrimeAdventure.Enemy
 								_sender.Send(PathConnection.Enemy);
 							}
 							_isJumping = true;
-							_rigidybody.AddForceY(_statistics.JumpPointStructures[index].JumpStats.Strength * _rigidybody.mass, ForceMode2D.Impulse);
+							Rigidbody.AddForceY(_statistics.JumpPointStructures[index].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
 							if (_statistics.JumpPointStructures[index].JumpStats.Follow)
 								FollowJump(_statistics.JumpPointStructures[index].JumpStats.OtherTarget, _statistics.JumpPointStructures[index].JumpStats.UseTarget);
 							_statistics.JumpPointStructures[index].RemovalJumpCount = (short)_statistics.JumpPointStructures[index].JumpCount;
@@ -150,10 +150,10 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					_sender.SetToggle(false);
 					_sender.Send(PathConnection.Enemy);
-					_rigidybody.linearVelocityX = 0f;
+					Rigidbody.linearVelocityX = 0f;
 				}
 				_isJumping = true;
-				_rigidybody.AddForceY(stats.Strength * _rigidybody.mass, ForceMode2D.Impulse);
+				Rigidbody.AddForceY(stats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
 				if (stats.Follow)
 					FollowJump(stats.OtherTarget, stats.UseTarget);
 				if (!_statistics.SequentialTimmedJumps)
@@ -224,7 +224,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.Send(PathConnection.Enemy);
 				}
 				_isJumping = true;
-				_rigidybody.AddForceY(_statistics.StrenghtReact * _rigidybody.mass, ForceMode2D.Impulse);
+				Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
 				if (_statistics.FollowReact)
 					FollowJump(_statistics.OtherTarget, _statistics.UseTarget);
 			}
