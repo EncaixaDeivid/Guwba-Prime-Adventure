@@ -3,7 +3,7 @@ using System.Collections;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class TeleporterEnemy : EnemyProvider
+	internal sealed class TeleporterEnemy : EnemyProvider, ITeleporter
 	{
 		private bool _canTeleport = true;
 		private ushort _teleportIndex = 0;
@@ -13,21 +13,8 @@ namespace GwambaPrimeAdventure.Enemy
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			foreach (TeleportPointStructure teleportPointStructure in _statistics.TeleportPointStructures)
-			{
-				Instantiate(teleportPointStructure.TeleportPointObject, teleportPointStructure.InstancePoint, Quaternion.identity).GetTouch(() =>
-				{
-					if (_canTeleport)
-					{
-						if (teleportPointStructure.RandomTeleports)
-							_teleportIndex = (ushort)Random.Range(0, teleportPointStructure.TeleportPoints.Length - 1);
-						transform.position = teleportPointStructure.TeleportPoints[_teleportIndex];
-						if (!teleportPointStructure.RandomTeleports)
-							_teleportIndex = (ushort)(_teleportIndex >= teleportPointStructure.TeleportPoints.Length - 1 ? _teleportIndex + 1 : 0);
-						(_canTeleport, _teleportTime) = (false, _statistics.TimeToUse);
-					}
-				});
-			}
+			for (ushort i = 0; i < _statistics.TeleportPointStructures.Length; i++)
+				Instantiate(_statistics.TeleportPointStructures[i].TeleportPointObject, _statistics.TeleportPointStructures[i].InstancePoint, Quaternion.identity).GetTouch(this, i);
 		}
 		private void Update()
 		{
@@ -35,6 +22,18 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			if (_teleportTime > 0f)
 				_canTeleport = (_teleportTime -= Time.deltaTime) <= 0f;
+		}
+		public void OnTeleport(ushort teleportIndex)
+		{
+			if (_canTeleport)
+			{
+				if (_statistics.TeleportPointStructures[teleportIndex].RandomTeleports)
+					_teleportIndex = (ushort)Random.Range(0, _statistics.TeleportPointStructures[teleportIndex].TeleportPoints.Length - 1);
+				transform.position = _statistics.TeleportPointStructures[teleportIndex].TeleportPoints[_teleportIndex];
+				if (!_statistics.TeleportPointStructures[teleportIndex].RandomTeleports)
+					_teleportIndex = (ushort)(_teleportIndex >= _statistics.TeleportPointStructures[teleportIndex].TeleportPoints.Length - 1 ? _teleportIndex + 1 : 0);
+				(_canTeleport, _teleportTime) = (false, _statistics.TimeToUse);
+			}
 		}
 	};
 };
