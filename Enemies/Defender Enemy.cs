@@ -70,10 +70,11 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if ((EnemyProvider[])additionalData != null)
-				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy != this)
-						return;
+			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+				return;
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+				if (enemy != this)
+					return;
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 				if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
 					_invencible = true;
