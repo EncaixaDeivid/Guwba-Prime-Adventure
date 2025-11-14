@@ -15,7 +15,7 @@ namespace GwambaPrimeAdventure.Connection
 	{
 		None,
 		State,
-		Action
+		Event
 	};
 	public interface IConnector
 	{
