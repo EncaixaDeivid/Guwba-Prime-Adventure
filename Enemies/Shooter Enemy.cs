@@ -65,7 +65,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetToggle(!(_isStopped = _canShoot = true));
 					_sender.Send(PathConnection.Enemy);
 					if (_statistics.Paralyze)
-						_rigidybody.Sleep();
+						Rigidbody.Sleep();
 				}
 				else
 					Shoot();
@@ -75,7 +75,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			foreach (EnemyProjectile projectile in _statistics.Projectiles)
 				if (_statistics.PureInstance)
-					Instantiate(projectile, transform.position, projectile.transform.rotation, transform);
+					Instantiate(projectile, transform.position, projectile.transform.rotation, transform).transform.SetParent(null);
 				else
 				{
 					Vector2 position = transform.position;
@@ -84,7 +84,7 @@ namespace GwambaPrimeAdventure.Enemy
 						rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90f, Vector3.forward);
 					if (!_statistics.InstanceOnSelf)
 						position += (Vector2)(rotation * Vector2.up);
-					Instantiate(projectile, position, rotation, transform);
+					Instantiate(projectile, position, rotation, transform).transform.SetParent(null);
 				}
 			if (_statistics.InvencibleShoot)
 			{
@@ -113,7 +113,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_sender.SetToggle(true);
 				_sender.Send(PathConnection.Enemy);
 				if (_statistics.ReturnParalyze)
-					_rigidybody.WakeUp();
+					Rigidbody.WakeUp();
 			}
 		}
 		private void FixedUpdate() => Verify();
