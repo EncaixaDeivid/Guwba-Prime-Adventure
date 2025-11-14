@@ -26,6 +26,15 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
+			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+				return;
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+				if (enemy != this)
+					return;
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+				StartCoroutine(AppearFade(data.ToggleValue.Value));
+			else if (data.StateForm == StateForm.Action && _reactToDamage)
+				StartCoroutine(AppearFade(_tilemap.color.a <= 0f));
 			IEnumerator AppearFade(bool appear)
 			{
 				Color color;
@@ -45,14 +54,6 @@ namespace GwambaPrimeAdventure.Enemy
 						yield return Opacity(i);
 				_tilemapCollider.enabled = appear;
 			}
-			if ((EnemyProvider[])additionalData != null)
-				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy != this)
-						return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				StartCoroutine(AppearFade(data.ToggleValue.Value));
-			else if (data.StateForm == StateForm.Action && _reactToDamage)
-				StartCoroutine(AppearFade(_tilemap.color.a <= 0f));
 		}
 	};
 };
