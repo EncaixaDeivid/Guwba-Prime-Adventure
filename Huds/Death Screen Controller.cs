@@ -85,7 +85,7 @@ namespace GwambaPrimeAdventure.Hud
 						yield return new WaitForEndOfFrame();
 					}
 					_sender.SetToggle(true);
-					_sender.SetStateForm(StateForm.Action);
+					_sender.SetStateForm(StateForm.Event);
 					_sender.Send(PathConnection.System);
 					_sender.Send(PathConnection.Character);
 					_sender.SetStateForm(StateForm.State);
@@ -117,7 +117,7 @@ namespace GwambaPrimeAdventure.Hud
 		};
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				if (saveFile.Lifes < 0f)
