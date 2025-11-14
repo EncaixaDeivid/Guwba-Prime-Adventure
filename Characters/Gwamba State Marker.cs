@@ -219,6 +219,12 @@ namespace GwambaPrimeAdventure.Character
 				return SceneInitiator.IsInTrancision();
 			});
 			EnableInputs();
+			if (_animator.GetBool(_death))
+			{
+				_animator.SetBool(_death, false);
+				ReveiveEvent();
+				ReveiveState();
+			}
 		}
 		public IEnumerator Load()
 		{
@@ -666,6 +672,31 @@ namespace GwambaPrimeAdventure.Character
 				(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			}
 		}
+		private void ReveiveEvent()
+		{
+			for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
+			{
+				_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
+				_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
+			}
+			for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+				_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+			for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
+				_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
+				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+			_animator.SetBool(_death, _hopActive = _isHoping = false);
+			transform.TurnScaleX(_turnLeft);
+		}
+		private void ReveiveState()
+		{
+			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
+			StartCoroutine(VisualEffect());
+			OnEnable();
+		}
 		public static bool EqualObject(params GameObject[] othersObjects)
 		{
 			if (_instance)
@@ -678,32 +709,11 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
-				{
-					for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
-					{
-						_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
-						_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
-						_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
-						_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
-						_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
-					}
-					for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
-						_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-					for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
-						_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
-					for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
-						_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-					_animator.SetBool(_death, _hopActive = _isHoping = false);
-					transform.TurnScaleX(_turnLeft);
-				}
-				else if (!data.ToggleValue.Value && additionalData is Vector2 position)
+					ReveiveEvent();
+				else if (additionalData is Vector2 position)
 					transform.position = position;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
-			{
-				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-				StartCoroutine(VisualEffect());
-				OnEnable();
-			}
+				ReveiveState();
 		}
 	};
 };
