@@ -30,7 +30,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (_controller.ProvidenceStatistics.HasIndex)
 					_sender.SetNumber(_controller.ProvidenceStatistics.IndexEvent);
-				_sender.SetStateForm(StateForm.Action);
+				_sender.SetStateForm(StateForm.Event);
 				_sender.Send(PathConnection.Enemy);
 			}
 			if ((_controller.Vitality -= (short)damage) <= 0f)
