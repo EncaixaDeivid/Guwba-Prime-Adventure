@@ -87,7 +87,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _detected && !_isDashing && GroundCheck() && !_retreat)
-				_rigidybody.linearVelocityX = 0f;
+				Rigidbody.linearVelocityX = 0f;
 			if (_stopWorking)
 				return;
 			if (_statistics.LookPerception && !_detected)
@@ -116,7 +116,7 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					_stoppedTime = _statistics.StopTime;
 					_stopWorking = true;
-					_rigidybody.linearVelocityX = 0f;
+					Rigidbody.linearVelocityX = 0f;
 				}
 				else if (_statistics.EventRetreat)
 				{
@@ -147,7 +147,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_movementSide *= -1;
 			if (_retreat)
 			{
-				_rigidybody.linearVelocityX = (transform.right * _movementSide).x * -_statistics.RetreatSpeed;
+				Rigidbody.linearVelocityX = (transform.right * _movementSide).x * -_statistics.RetreatSpeed;
 				if (Mathf.Abs(transform.position.x - _retreatLocation) >= _statistics.RetreatDistance)
 					RetreatUse();
 				return;
@@ -168,7 +168,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_sender.Send(PathConnection.Enemy);
 			}
 			transform.TurnScaleX(_movementSide);
-			_rigidybody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
+			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
 		}
 		public new bool Hurt(ushort damage)
 		{
@@ -192,7 +192,7 @@ namespace GwambaPrimeAdventure.Enemy
 						return;
 			base.Receive(data, additionalData);
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
-				_rigidybody.linearVelocityX = 0f;
+				Rigidbody.linearVelocityX = 0f;
 		}
 	};
 };
