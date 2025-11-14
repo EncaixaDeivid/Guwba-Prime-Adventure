@@ -25,7 +25,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		private void Teleport()
 		{
-			_sender.SetStateForm(StateForm.Action);
+			_sender.SetStateForm(StateForm.Event);
 			_sender.SetAdditionalData(_locations[_index]);
 			_sender.SetToggle(false);
 			_sender.Send(PathConnection.System);
