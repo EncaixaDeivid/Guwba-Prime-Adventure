@@ -5,8 +5,9 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class TeleporterEnemy : EnemyProvider
 	{
-		private ushort _teleportIndex = 0;
 		private bool _canTeleport = true;
+		private ushort _teleportIndex = 0;
+		private float _teleportTime = 0f;
 		[Header("Teleporter Enemy")]
 		[SerializeField, Tooltip("The teleporter statitics of this enemy.")] private TeleporterStatistics _statistics;
 		private IEnumerator Start()
@@ -23,16 +24,17 @@ namespace GwambaPrimeAdventure.Enemy
 						transform.position = teleportPointStructure.TeleportPoints[_teleportIndex];
 						if (!teleportPointStructure.RandomTeleports)
 							_teleportIndex = (ushort)(_teleportIndex >= teleportPointStructure.TeleportPoints.Length - 1 ? _teleportIndex + 1 : 0);
-						StartCoroutine(UseTimer());
-					}
-					IEnumerator UseTimer()
-					{
-						_canTeleport = false;
-						yield return new WaitTime(this, _statistics.TimeToUse);
-						_canTeleport = true;
+						(_canTeleport, _teleportTime) = (false, _statistics.TimeToUse);
 					}
 				});
 			}
+		}
+		private void Update()
+		{
+			if (IsStunned)
+				return;
+			if (_teleportTime > 0f)
+				_canTeleport = (_teleportTime -= Time.deltaTime) <= 0f;
 		}
 	};
 };
