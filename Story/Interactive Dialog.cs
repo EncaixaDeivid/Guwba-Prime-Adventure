@@ -7,7 +7,7 @@ namespace GwambaPrimeAdventure.Story
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
 	internal sealed class InteractiveDialog : MonoBehaviour, IInteractable, IConnector
-    {
+	{
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
 		private Animator _animator;
@@ -126,7 +126,7 @@ namespace GwambaPrimeAdventure.Story
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (data.StateForm == StateForm.Action && (GameObject)additionalData == gameObject)
+			if (data.StateForm == StateForm.Event && (GameObject)additionalData == gameObject)
 				Interaction();
 		}
 	};
