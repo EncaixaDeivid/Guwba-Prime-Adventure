@@ -75,7 +75,7 @@ namespace GwambaPrimeAdventure.Enemy
 			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
 				if (enemy != this)
 					return;
-			if (data.StateForm == StateForm.Action && data.ToggleValue.HasValue)
+			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
 				if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
 					_invencible = true;
 				else
