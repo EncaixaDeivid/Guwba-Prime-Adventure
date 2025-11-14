@@ -186,10 +186,11 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			if ((EnemyProvider[])additionalData != null)
-				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy != this)
-						return;
+			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+				return;
+			foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+				if (enemy != this)
+					return;
 			base.Receive(data, additionalData);
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 				Rigidbody.linearVelocityX = 0f;
