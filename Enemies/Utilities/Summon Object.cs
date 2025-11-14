@@ -14,7 +14,6 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the points to summon are relative to it's parent.")] private bool _localPoints;
 		[SerializeField, Tooltip("If the instantiator will stop during the summon.")] private bool _stopToSummon;
 		[SerializeField, Tooltip("If the instantiator will paralyze during the summon.")] private bool _paralyzeToSummon;
-		[SerializeField, Tooltip("If the timed summon can be stopped.")] private bool _stopTimedSummon;
 		[SerializeField, Tooltip("If the timed summon will stop permanently.")] private bool _stopPermanently;
 		[SerializeField, Tooltip("If the instanciation will be in the same point as the summoner.")] private bool _self;
 		[SerializeField, Tooltip("If the instantiation will be randomized at one of the points.")] private bool _random;
@@ -27,7 +26,6 @@ namespace GwambaPrimeAdventure.Enemy
 		internal bool LocalPoints => _localPoints;
 		internal bool StopToSummon => _stopToSummon;
 		internal bool ParalyzeToSummon => _paralyzeToSummon;
-		internal bool StopTimedSummon => _stopTimedSummon;
 		internal bool StopPermanently => _stopPermanently;
 		internal bool Self => _self;
 		internal bool Random => _random;
