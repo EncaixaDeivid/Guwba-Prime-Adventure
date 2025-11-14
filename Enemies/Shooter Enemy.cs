@@ -125,10 +125,11 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if ((EnemyProvider[])additionalData != null)
-				foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-					if (enemy == this && data.StateForm == StateForm.Action && _statistics.ReactToDamage)
-						Shoot();
+			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+				return;
+			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
+				if (enemy == this && data.StateForm == StateForm.Action && _statistics.ReactToDamage)
+					Shoot();
 		}
 	};
 };
