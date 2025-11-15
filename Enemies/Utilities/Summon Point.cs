@@ -1,16 +1,16 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class SummonPoint : StateController
+	public sealed class SummonPoint : StateController
 	{
 		private ISummoner _summoner;
 		private ushort _summonIndex;
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If this point will destroy itself after use.")] private bool _destroyAfter;
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
-		internal void GetTouch(ISummoner summoner, ushort summonIndex)
+		public void GetTouch(ISummoner summoner, ushort summonIndex)
 		{
 			_summoner = summoner;
 			_summonIndex = summonIndex;
@@ -22,14 +22,10 @@ namespace GwambaPrimeAdventure.Enemy
 				if (GwambaStateMarker.EqualObject(other.gameObject))
 					_summoner.OnSummon(_summonIndex);
 			}
-			else if (other.TryGetComponent<SummonerEnemy>(out _))
+			else if (other.TryGetComponent<ISummoner>(out _))
 				_summoner.OnSummon(_summonIndex);
 			if (_destroyAfter)
 				Destroy(gameObject);
 		}
-	};
-	internal interface ISummoner
-	{
-		public void OnSummon(ushort summonIndex);
 	};
 };
