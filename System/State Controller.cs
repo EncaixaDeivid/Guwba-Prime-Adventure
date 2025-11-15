@@ -5,7 +5,6 @@ namespace GwambaPrimeAdventure
 	public abstract class StateController : MonoBehaviour
 	{
 		private static UnityAction<bool> _state;
-		protected const float WORLDSNAP = 1f / 16f;
 		protected void Awake() => _state += InstanceState;
 		protected void OnDestroy() => _state -= InstanceState;
 		private UnityAction<bool> InstanceState => newState => enabled = newState;
