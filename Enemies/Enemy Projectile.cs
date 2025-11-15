@@ -1,28 +1,13 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D))]
 	[RequireComponent(typeof(Collider2D))]
-	internal sealed class EnemyProjectile : StateController, IDestructible
+	internal sealed class EnemyProjectile : Projectile, IDestructible
 	{
-		private Rigidbody2D _rigidbody;
-		private readonly List<EnemyProjectile> _projectiles = new();
-		private Vector2Int _oldCellPosition = new();
-		private Vector2Int _cellPosition = new();
-		private short _vitality;
-		private ushort _angleMulti = 0;
-		private ushort _pointToJump = 0;
-		private ushort _pointToBreak = 0;
-		private ushort _internalBreakPoint = 0;
-		private ushort _pointToReturn = 0;
-		private ushort _internalReturnPoint = 0;
-		private float _deathTimer = 0f;
-		private float _stunTimer = 0f;
-		private bool _breakInUse = false;
-		private bool _parabolaCoroutine = false;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
 		public short Health => _vitality;
