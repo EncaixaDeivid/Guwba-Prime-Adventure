@@ -631,11 +631,11 @@ namespace GwambaPrimeAdventure.Character
 					_jokerValue.x = 0f;
 					do
 					{
-						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += WorldBuild.SNAPLENGTH / 2f)) * _movementAction, Local.y - _collider.bounds.extents.y);
+						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += WorldBuild.SNAPLENGTH)) * _movementAction, Local.y - _collider.bounds.extents.y);
 						_bottomCast = Physics2D.Raycast(_originCast, -transform.up, 1f + WorldBuild.SNAPLENGTH, _groundLayer);
 						_downStairs = _bottomCast && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10f) / 10f != Mathf.Round(_bottomCast.point.y * 10f) / 10f;
 					}
-					while (!_downStairs && _jokerValue.x < _collider.bounds.extents.x / 4f);
+					while (!_downStairs && _jokerValue.x < WorldBuild.SNAPLENGTH * 6f);
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _bottomCast.distance);
 				}
