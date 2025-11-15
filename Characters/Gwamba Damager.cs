@@ -11,7 +11,7 @@ namespace GwambaPrimeAdventure.Character
 		private UnityAction<ushort, float> _damagerStun;
 		private UnityAction<GwambaDamager, IDestructible> _damagerAttack;
 		[Header("Stats")]
-		[SerializeField, Tooltip("The velocity of the shake on the attack.")] private Vector2 _attackShake;
+		[SerializeField, Tooltip("The velocity of the screen shake on the attack.")] private Vector2 _attackShake;
 		[SerializeField, Tooltip("If this Guwba's part will take damage.")] private bool _takeDamage;
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		[SerializeField, Tooltip("The amount of time that this Guwba's attack stun does.")] private float _stunTime;
