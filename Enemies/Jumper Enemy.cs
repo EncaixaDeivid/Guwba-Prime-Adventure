@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
