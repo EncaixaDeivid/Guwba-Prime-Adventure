@@ -1,11 +1,11 @@
 using UnityEngine;
+using Unity.Cinemachine;
 using System.Collections;
 using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
 	internal sealed class EnemyController : Control, IConnector, IDestructible
    {
 		private EnemyProvider[] _selfEnemies;
@@ -24,6 +24,7 @@ namespace GwambaPrimeAdventure.Enemy
 			base.Awake();
 			_selfEnemies = GetComponents<EnemyProvider>();
 			_rigidbody = GetComponent<Rigidbody2D>();
+			_screenShaker = GetComponent<CinemachineImpulseSource>();
 			_vitality = (short)_statistics.Vitality;
 			_armorResistance = (short)_statistics.HitResistance;
 			_fadeTime = _statistics.TimeToFadeAway;
@@ -73,6 +74,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (!_statistics.NoHit && other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
+				_screenShaker.GenerateImpulse(_statistics.HurtShake);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
 			}
 		}
