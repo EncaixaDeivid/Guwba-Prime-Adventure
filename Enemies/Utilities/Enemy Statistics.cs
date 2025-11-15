@@ -6,6 +6,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	{
 		[Header("Providence Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
+		[SerializeField, Tooltip("The velocity of the screen shake on the hurt.")] private Vector2 _hurtShake;
 		[SerializeField, Tooltip("The vitality of the enemy.")] private ushort _vitality;
 		[SerializeField, Tooltip("The amount of stun that this enemy can resists.")] private ushort _hitResistance;
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
@@ -21,6 +22,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[SerializeField, Tooltip("The index to a event to a enemy make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		public EnemyPhysics Physics => _physics;
+		public Vector2 HurtShake => _hurtShake;
 		public ushort Vitality => _vitality;
 		public ushort HitResistance => _hitResistance;
 		public ushort Damage => _damage;
