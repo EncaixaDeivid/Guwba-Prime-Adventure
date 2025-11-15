@@ -1,11 +1,10 @@
 using UnityEngine;
+using Unity.Cinemachine;
 using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D))]
-	[RequireComponent(typeof(Collider2D))]
 	internal sealed class EnemyProjectile : Projectile, IDestructible
 	{
 		[Header("Projectile")]
@@ -91,6 +90,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_rigidbody = GetComponent<Rigidbody2D>();
+			_screenShaker = GetComponent<CinemachineImpulseSource>();
 			_vitality = (short)_statistics.Vitality;
 			_pointToJump = _statistics.JumpPoints;
 			_breakInUse = _statistics.UseBreak;
@@ -183,10 +183,15 @@ namespace GwambaPrimeAdventure.Enemy
 			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
+				_screenShaker.GenerateImpulse(_statistics.HurtShake);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
-			}
-			if (_statistics.Vitality > 0f)
 				Death();
+			}
+			else if (_statistics.Vitality > 0f)
+			{
+				_screenShaker.GenerateImpulse(_statistics.CollideShake);
+				Death();
+			}
 		}
 		public bool Hurt(ushort damage)
 		{
