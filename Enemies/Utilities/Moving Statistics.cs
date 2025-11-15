@@ -1,7 +1,7 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
-	internal abstract class MovingStatistics : ScriptableObject
+	public abstract class MovingStatistics : ScriptableObject
 	{
 		[Header("Moving Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
@@ -12,13 +12,13 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will stop on detection of the target.")] private bool _detectionStop;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
 		[SerializeField, Tooltip("The amount of time this enemy will stop on detection.")] private float _stopTime;
-		internal EnemyPhysics Physics => _physics;
-		internal float MovementSpeed => _movementSpeed;
-		internal float DashSpeed => _dashSpeed;
-		internal float LookDistance => _lookDistance;
-		internal bool LookPerception => _lookPerception;
-		internal bool DetectionStop => _detectionStop;
-		internal bool ReactToDamage => _reactToDamage;
-		internal float StopTime => _stopTime;
+		public EnemyPhysics Physics => _physics;
+		public float MovementSpeed => _movementSpeed;
+		public float DashSpeed => _dashSpeed;
+		public float LookDistance => _lookDistance;
+		public bool LookPerception => _lookPerception;
+		public bool DetectionStop => _detectionStop;
+		public bool ReactToDamage => _reactToDamage;
+		public float StopTime => _stopTime;
 	};
 };
