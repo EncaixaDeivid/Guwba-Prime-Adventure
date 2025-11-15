@@ -1,5 +1,6 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
@@ -103,9 +104,9 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.Target)
 			{
 				_movementSpeed = Time.fixedDeltaTime * _statistics.RotationSpeed;
-				_movementDirection = Vector2.MoveTowards(_movementDirection, ((Vector2)_statistics.Target.transform.position - Rigidbody.position).normalized, _movementSpeed);
+				_movementDirection = Vector2.MoveTowards(_movementDirection, ((Vector2)_statistics.Target.position - Rigidbody.position).normalized, _movementSpeed);
 				Rigidbody.MovePosition(Vector2.MoveTowards(Rigidbody.position, Rigidbody.position + _movementDirection, Time.fixedDeltaTime * _statistics.MovementSpeed));
-				transform.TurnScaleX(_statistics.Target.transform.position.x < Rigidbody.position.x);
+				transform.TurnScaleX(_statistics.Target.position.x < Rigidbody.position.x);
 				return;
 			}
 			if (_statistics.EndlessPursue)
