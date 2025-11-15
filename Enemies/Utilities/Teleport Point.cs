@@ -1,16 +1,16 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D))]
-	internal sealed class TeleportPoint : StateController
+	public sealed class TeleportPoint : StateController
 	{
 		private ITeleporter _teleporter;
 		private ushort _teleportIndex;
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If this point will destroy itself after use.")] private bool _destroyAfter;
 		[SerializeField, Tooltip("If this point will trigger with other object.")] private bool _hasTarget;
-		internal void GetTouch(ITeleporter teleporter, ushort teleportIndex)
+		public void GetTouch(ITeleporter teleporter, ushort teleportIndex)
 		{
 			_teleporter = teleporter;
 			_teleportIndex = teleportIndex;
@@ -22,14 +22,10 @@ namespace GwambaPrimeAdventure.Enemy
 				if (GwambaStateMarker.EqualObject(other.gameObject))
 					_teleporter.OnTeleport(_teleportIndex);
 			}
-			else if (other.TryGetComponent<TeleporterEnemy>(out _))
+			else if (other.TryGetComponent<ITeleporter>(out _))
 				_teleporter.OnTeleport(_teleportIndex);
 			if (_destroyAfter)
 				Destroy(gameObject);
 		}
-	};
-	internal interface ITeleporter
-	{
-		public void OnTeleport(ushort teleportIndex);
 	};
 };
