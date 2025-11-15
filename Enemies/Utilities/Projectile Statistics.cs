@@ -8,6 +8,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
 		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
 		[SerializeField, Tooltip("The enemy that will be instantiate on death.")] private Control _enemyOnDeath;
+		[SerializeField, Tooltip("The velocity of the screen shake on the hurt.")] private Vector2 _hurtShake;
+		[SerializeField, Tooltip("The velocity of the screen shake when colliding on the scene.")] private Vector2 _collideShake;
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
@@ -44,6 +46,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public EnemyPhysics Physics => _physics;
 		public Projectile SecondProjectile => _secondProjectile;
 		public Control EnemyOnDeath => _enemyOnDeath;
+		public Vector2 HurtShake => _hurtShake;
+		public Vector2 CollideShake => _collideShake;
 		public ForceMode2D ForceMode => _forceMode;
 		public bool UseForce => _useForce;
 		public bool StayInPlace => _stayInPlace;
