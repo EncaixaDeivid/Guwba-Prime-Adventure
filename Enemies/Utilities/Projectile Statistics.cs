@@ -1,13 +1,13 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
-	internal sealed class ProjectileStatistics : ScriptableObject
+	public sealed class ProjectileStatistics : ScriptableObject
 	{
 		[Header("Projectile Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private EnemyProjectile _secondProjectile;
-		[SerializeField, Tooltip("The enemy that will be instantiate on death.")] private EnemyController _enemyOnDeath;
+		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
+		[SerializeField, Tooltip("The enemy that will be instantiate on death.")] private Control _enemyOnDeath;
 		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
 		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
 		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
@@ -41,40 +41,40 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
 		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
 		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
-		internal EnemyPhysics Physics => _physics;
-		internal EnemyProjectile SecondProjectile => _secondProjectile;
-		internal EnemyController EnemyOnDeath => _enemyOnDeath;
-		internal ForceMode2D ForceMode => _forceMode;
-		internal bool UseForce => _useForce;
-		internal bool StayInPlace => _stayInPlace;
-		internal bool EndlessPursue => _endlessPursue;
-		internal bool ParabolicMovement => _parabolicMovement;
-		internal bool SideMovement => _sideMovement;
-		internal bool InvertSide => _invertSide;
-		internal bool UseSelfRotation => _useSelfRotation;
-		internal bool RotationMatter => _rotationMatter;
-		internal bool UseQuantity => _useQuantity;
-		internal bool InDeath => _inDeath;
-		internal bool IsInoffensive => _isInoffensive;
-		internal ushort Vitality => _vitality;
-		internal ushort Damage => _damage;
-		internal ushort QuantityToSummon => _quantityToSummon;
-		internal float MovementSpeed => _movementSpeed;
-		internal float RotationSpeed => _rotationSpeed;
-		internal float BaseAngle => _baseAngle;
-		internal float SpreadAngle => _spreadAngle;
-		internal float StunTime => _stunTime;
-		internal float TimeToFade => _timeToFade;
-		internal bool InCell => _inCell;
-		internal bool ContinuosSummon => _continuosSummon;
-		internal bool UseBreak => _useBreak;
-		internal bool AlwaysBreak => _alwaysBreak;
-		internal bool RandomBreak => _randomBreak;
-		internal bool ExtrictRandom => _extrictRandom;
-		internal ushort JumpPoints => _jumpPoints;
-		internal ushort BreakPoint => _breakPoint;
-		internal ushort ReturnPoint => _returnPoint;
-		internal ushort MinimumRandomValue => _minimumRandomValue;
-		internal float DistanceRay => _distanceRay;
+		public EnemyPhysics Physics => _physics;
+		public Projectile SecondProjectile => _secondProjectile;
+		public Control EnemyOnDeath => _enemyOnDeath;
+		public ForceMode2D ForceMode => _forceMode;
+		public bool UseForce => _useForce;
+		public bool StayInPlace => _stayInPlace;
+		public bool EndlessPursue => _endlessPursue;
+		public bool ParabolicMovement => _parabolicMovement;
+		public bool SideMovement => _sideMovement;
+		public bool InvertSide => _invertSide;
+		public bool UseSelfRotation => _useSelfRotation;
+		public bool RotationMatter => _rotationMatter;
+		public bool UseQuantity => _useQuantity;
+		public bool InDeath => _inDeath;
+		public bool IsInoffensive => _isInoffensive;
+		public ushort Vitality => _vitality;
+		public ushort Damage => _damage;
+		public ushort QuantityToSummon => _quantityToSummon;
+		public float MovementSpeed => _movementSpeed;
+		public float RotationSpeed => _rotationSpeed;
+		public float BaseAngle => _baseAngle;
+		public float SpreadAngle => _spreadAngle;
+		public float StunTime => _stunTime;
+		public float TimeToFade => _timeToFade;
+		public bool InCell => _inCell;
+		public bool ContinuosSummon => _continuosSummon;
+		public bool UseBreak => _useBreak;
+		public bool AlwaysBreak => _alwaysBreak;
+		public bool RandomBreak => _randomBreak;
+		public bool ExtrictRandom => _extrictRandom;
+		public ushort JumpPoints => _jumpPoints;
+		public ushort BreakPoint => _breakPoint;
+		public ushort ReturnPoint => _returnPoint;
+		public ushort MinimumRandomValue => _minimumRandomValue;
+		public float DistanceRay => _distanceRay;
 	};
 };
