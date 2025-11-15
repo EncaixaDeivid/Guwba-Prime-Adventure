@@ -1,8 +1,8 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Enemy Summon", menuName = "Enemy Statistics/Summon", order = 7)]
-	internal sealed class SummonObject : ScriptableObject
+	public sealed class SummonObject : ScriptableObject
 	{
 		[Header("Components Statistics")]
 		[SerializeField, Tooltip("The enemy that will be instantiate.")] private GameObject[] _summons;
@@ -17,17 +17,17 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the timed summon will stop permanently.")] private bool _stopPermanently;
 		[SerializeField, Tooltip("If the instanciation will be in the same point as the summoner.")] private bool _self;
 		[SerializeField, Tooltip("If the instantiation will be randomized at one of the points.")] private bool _random;
-		internal GameObject[] Summons => _summons;
-		internal Vector2[] SummonPoints => _summonPoints;
-		internal ushort SummonTime => _summonTime;
-		internal ushort PostSummonTime => _postSummonTime;
-		internal ushort QuantityToSummon => _quantityToSummon;
-		internal float TimeToStop => _timeToStop;
-		internal bool LocalPoints => _localPoints;
-		internal bool StopToSummon => _stopToSummon;
-		internal bool ParalyzeToSummon => _paralyzeToSummon;
-		internal bool StopPermanently => _stopPermanently;
-		internal bool Self => _self;
-		internal bool Random => _random;
+		public GameObject[] Summons => _summons;
+		public Vector2[] SummonPoints => _summonPoints;
+		public ushort SummonTime => _summonTime;
+		public ushort PostSummonTime => _postSummonTime;
+		public ushort QuantityToSummon => _quantityToSummon;
+		public float TimeToStop => _timeToStop;
+		public bool LocalPoints => _localPoints;
+		public bool StopToSummon => _stopToSummon;
+		public bool ParalyzeToSummon => _paralyzeToSummon;
+		public bool StopPermanently => _stopPermanently;
+		public bool Self => _self;
+		public bool Random => _random;
 	};
 };
