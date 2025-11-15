@@ -1,8 +1,8 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Provider Enemy", menuName = "Enemy Statistics/Provider", order = 1)]
-	internal sealed class EnemyStatistics : ScriptableObject
+	public sealed class EnemyStatistics : ScriptableObject
 	{
 		[Header("Providence Statistics")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
@@ -20,20 +20,20 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy has a index atribute to use.")] private bool _hasIndex;
 		[SerializeField, Tooltip("The index to a event to a enemy make.")] private ushort _indexEvent;
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		internal EnemyPhysics Physics => _physics;
-		internal ushort Vitality => _vitality;
-		internal ushort HitResistance => _hitResistance;
-		internal ushort Damage => _damage;
-		internal bool NoDamage => _noDamage;
-		internal bool NoHit => _noHit;
-		internal bool NoStun => _noStun;
-		internal bool FadeOverTime => _fadeOverTime;
-		internal float TimeToFadeAway => _timeToFadeAway;
-		internal float StunTime => _stunTime;
-		internal float StunnedTime => _stunnedTime;
-		internal bool ReactToDamage => _reactToDamage;
-		internal bool HasIndex => _hasIndex;
-		internal ushort IndexEvent => _indexEvent;
-		internal bool SaveOnSpecifics => _saveOnSpecifics;
+		public EnemyPhysics Physics => _physics;
+		public ushort Vitality => _vitality;
+		public ushort HitResistance => _hitResistance;
+		public ushort Damage => _damage;
+		public bool NoDamage => _noDamage;
+		public bool NoHit => _noHit;
+		public bool NoStun => _noStun;
+		public bool FadeOverTime => _fadeOverTime;
+		public float TimeToFadeAway => _timeToFadeAway;
+		public float StunTime => _stunTime;
+		public float StunnedTime => _stunnedTime;
+		public bool ReactToDamage => _reactToDamage;
+		public bool HasIndex => _hasIndex;
+		public ushort IndexEvent => _indexEvent;
+		public bool SaveOnSpecifics => _saveOnSpecifics;
 	};
 };
