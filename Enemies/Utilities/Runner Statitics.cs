@@ -1,8 +1,8 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Runner Enemy", menuName = "Enemy Statistics/Runner", order = 2)]
-	internal sealed class RunnerStatistics : MovingStatistics
+	public sealed class RunnerStatistics : MovingStatistics
 	{
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("If the off edge verifier will be turned off.")] private bool _turnOffEdge;
@@ -19,19 +19,19 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The amount of time this enemy will be dashing upon the target.")] private float _timeDashing;
 		[SerializeField, Tooltip("The index of the event executed in the retreat.")] private ushort _eventIndex;
 		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
-		internal bool TurnOffEdge => _turnOffEdge;
-		internal bool TimedDash => _timedDash;
-		internal bool RunFromTarget => _runFromTarget;
-		internal bool RunTowardsAfter => _runTowardsAfter;
-		internal bool JumpDash => _jumpDash;
-		internal bool EventRetreat => _eventRetreat;
-		internal float TimeToDash => _timeToDash;
-		internal float RetreatSpeed => _retreatSpeed;
-		internal float TimeToRetreat => _timeToRetreat;
-		internal float RetreatDistance => _retreatDistance;
-		internal float RunOfTime => _runOfTime;
-		internal float TimeDashing => _timeDashing;
-		internal ushort EventIndex => _eventIndex;
-		internal ushort TimesToRun => _timesToRun;
+		public bool TurnOffEdge => _turnOffEdge;
+		public bool TimedDash => _timedDash;
+		public bool RunFromTarget => _runFromTarget;
+		public bool RunTowardsAfter => _runTowardsAfter;
+		public bool JumpDash => _jumpDash;
+		public bool EventRetreat => _eventRetreat;
+		public float TimeToDash => _timeToDash;
+		public float RetreatSpeed => _retreatSpeed;
+		public float TimeToRetreat => _timeToRetreat;
+		public float RetreatDistance => _retreatDistance;
+		public float RunOfTime => _runOfTime;
+		public float TimeDashing => _timeDashing;
+		public ushort EventIndex => _eventIndex;
+		public ushort TimesToRun => _timesToRun;
 	};
 };
