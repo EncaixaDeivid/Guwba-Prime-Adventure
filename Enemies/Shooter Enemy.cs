@@ -1,5 +1,6 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
@@ -73,7 +74,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void Shoot()
 		{
-			foreach (EnemyProjectile projectile in _statistics.Projectiles)
+			foreach (Projectile projectile in _statistics.Projectiles)
 				if (_statistics.PureInstance)
 					Instantiate(projectile, transform.position, projectile.transform.rotation, transform).transform.SetParent(null);
 				else
