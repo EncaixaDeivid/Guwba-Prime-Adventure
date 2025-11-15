@@ -1,12 +1,12 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Shooter Enemy", menuName = "Enemy Statistics/Shooter", order = 5)]
-	internal sealed class ShooterStatistics : ScriptableObject
+	public sealed class ShooterStatistics : ScriptableObject
 	{
 		[Header("Shooter Enemy")]
 		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
-		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private EnemyProjectile[] _projectiles;
+		[SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] private Projectile[] _projectiles;
 		[SerializeField, Tooltip("The distance this enemy can detect the target.")] private float _perceptionDistance;
 		[SerializeField, Tooltip("The angle fo the direction of ray of the detection.")] private float _rayAngleDirection;
 		[SerializeField, Tooltip("The amount of time to wait to execute another shoot.")] private float _intervalToShoot;
@@ -22,22 +22,22 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy won't interfere in the projectile.")] private bool _pureInstance;
 		[SerializeField, Tooltip("If the projectile will be instantiate on the same point as this enemy.")] private bool _instanceOnSelf;
 		[SerializeField, Tooltip("If this enemy will react to any damage taken.")] private bool _reactToDamage;
-		internal EnemyPhysics Physics => _physics;
-		internal EnemyProjectile[] Projectiles => _projectiles;
-		internal float PerceptionDistance => _perceptionDistance;
-		internal float RayAngleDirection => _rayAngleDirection;
-		internal float IntervalToShoot => _intervalToShoot;
-		internal float StopTime => _stopTime;
-		internal bool TurnRay => _turnRay;
-		internal bool InvencibleShoot => _invencibleShoot;
-		internal bool ShootDamaged => _shootDamaged;
-		internal bool Stop => _stop;
-		internal bool Paralyze => _paralyze;
-		internal bool ReturnParalyze => _returnParalyze;
-		internal bool CircularDetection => _circularDetection;
-		internal bool ShootInfinity => _shootInfinity;
-		internal bool PureInstance => _pureInstance;
-		internal bool InstanceOnSelf => _instanceOnSelf;
-		internal bool ReactToDamage => _reactToDamage;
+		public EnemyPhysics Physics => _physics;
+		public Projectile[] Projectiles => _projectiles;
+		public float PerceptionDistance => _perceptionDistance;
+		public float RayAngleDirection => _rayAngleDirection;
+		public float IntervalToShoot => _intervalToShoot;
+		public float StopTime => _stopTime;
+		public bool TurnRay => _turnRay;
+		public bool InvencibleShoot => _invencibleShoot;
+		public bool ShootDamaged => _shootDamaged;
+		public bool Stop => _stop;
+		public bool Paralyze => _paralyze;
+		public bool ReturnParalyze => _returnParalyze;
+		public bool CircularDetection => _circularDetection;
+		public bool ShootInfinity => _shootInfinity;
+		public bool PureInstance => _pureInstance;
+		public bool InstanceOnSelf => _instanceOnSelf;
+		public bool ReactToDamage => _reactToDamage;
 	};
 };
