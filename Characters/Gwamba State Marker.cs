@@ -75,6 +75,7 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
+		[SerializeField, Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
 		[SerializeField, Tooltip("Size of collider for checking the ground.")] private float _groundChecker;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
@@ -465,6 +466,7 @@ namespace GwambaPrimeAdventure.Character
 			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
 				destructible.Stun(gwambaDamager.AttackDamage, gwambaDamager.StunTime);
+				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; amount < (destructible.Health >= 0f ? gwambaDamager.AttackDamage : gwambaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
@@ -542,13 +544,44 @@ namespace GwambaPrimeAdventure.Character
 					}
 					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
-						_screenShaker.GenerateImpulseWithForce(_fallDamage / _fallDamageDistance);
+						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						Hurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
 						(_fallStarted, _fallDamage) = (false, 0f);
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
 						else
 							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
+					}
+					if (_movementAction != 0f)
+					{
+						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction, Local.y - 1f * _bottomCheckerOffset);
+						_sizeCast = new Vector2(_groundChecker, 1f - _groundChecker);
+						_bottomCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, _groundChecker, _groundLayer);
+						if (_bottomCast)
+						{
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction, Local.y + 5e-1f);
+							_sizeCast = new Vector2(_groundChecker, 1f * _topWallChecker - _groundChecker);
+							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, _groundChecker, _groundLayer))
+							{
+								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker) * _movementAction, Local.y + _collider.bounds.extents.y);
+								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker) * _movementAction, Local.y - _collider.bounds.extents.y);
+								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, _groundLayer))
+									if (lineCast.collider == _bottomCast.collider)
+									{
+										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
+										transform.position = new Vector2(transform.position.x + _groundChecker * _movementAction, transform.position.y + _jokerValue.x);
+										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
+										break;
+									}
+							}
+						}
+					}
+					else if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
+					{
+						_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
+						_jokerValue.y = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount)) * Mathf.Sign(_rigidbody.linearVelocityX);
+						_rigidbody.AddForceX(-_jokerValue.y * _rigidbody.mass, ForceMode2D.Impulse);
+						_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 					}
 				}
 				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(_airJump))
@@ -597,34 +630,16 @@ namespace GwambaPrimeAdventure.Character
 				_downStairs = false;
 				if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f)
 				{
-					_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _groundChecker) * _movementAction, Local.y - _collider.bounds.extents.y);
-					_bottomCast = Physics2D.Raycast(_originCast, -transform.up, 1f + _groundChecker, _groundLayer);
-					if (_downStairs = _bottomCast)
-						transform.position = new Vector2(transform.position.x, transform.position.y - _bottomCast.distance);
-				}
-				if (_isOnGround && _movementAction != 0f)
-				{
-					_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction, Local.y - 1f * _bottomCheckerOffset);
-					_sizeCast = new Vector2(_groundChecker, 1f - _groundChecker);
-					_bottomCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, _groundChecker, _groundLayer);
-					if (_bottomCast)
+					_jokerValue.x = 0f;
+					do
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker / 2f) * _movementAction, Local.y + 5e-1f);
-						_sizeCast = new Vector2(_groundChecker, 1f * _topWallChecker - _groundChecker);
-						if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, _groundChecker, _groundLayer))
-						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker) * _movementAction, Local.y + _collider.bounds.extents.y);
-							_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + _groundChecker) * _movementAction, Local.y - _collider.bounds.extents.y);
-							foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, _groundLayer))
-								if (lineCast.collider == _bottomCast.collider)
-								{
-									_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
-									transform.position = new Vector2(transform.position.x + _groundChecker * _movementAction, transform.position.y + _jokerValue.x);
-									_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
-									break;
-								}
-						}
+						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += _groundChecker)) * _movementAction, Local.y - _collider.bounds.extents.y);
+						_bottomCast = Physics2D.Raycast(_originCast, -transform.up, 1f + _groundChecker, _groundLayer);
+						_downStairs = Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10f) / 10f != Mathf.Round(_bottomCast.point.y * 10f) / 10f;
 					}
+					while (!_downStairs && _jokerValue.x < _collider.bounds.extents.x / 4f);
+					if (_downStairs)
+						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _bottomCast.distance);
 				}
 				if (!_animator.GetBool(_airJump))
 				{
@@ -644,12 +659,6 @@ namespace GwambaPrimeAdventure.Character
 				}
 				if (_attackUsage && !_animator.GetBool(_attackAirJump))
 					_rigidbody.linearVelocityX *= _attackVelocityCut;
-				if (_isOnGround && _movementAction == 0f && Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
-				{
-					_jokerValue.y = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount)) * Mathf.Sign(_rigidbody.linearVelocityX);
-					_rigidbody.AddForceX(-_jokerValue.y * _rigidbody.mass, ForceMode2D.Impulse);
-					_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
-				}
 			}
 			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
 			{
