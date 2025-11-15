@@ -1,6 +1,7 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
