@@ -1,8 +1,8 @@
 using UnityEngine;
-namespace GwambaPrimeAdventure.Enemy
+namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Jumper Enemy", menuName = "Enemy Statistics/Jumper", order = 3)]
-	internal sealed class JumperStatistics : MovingStatistics
+	public sealed class JumperStatistics : MovingStatistics
 	{
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The collection of the objet that carry the jump")] private JumpPointStructure[] _jumpPointStructures;
@@ -24,39 +24,39 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the react to damage jump will follow a target.")] private bool _followReact;
 		[SerializeField, Tooltip("If the react to damage jump will turn on the target.")] private bool _turnFollowReact;
 		[SerializeField, Tooltip("If it will stop moving on react to damage.")] private bool _stopMoveReact;
-		internal JumpPointStructure[] JumpPointStructures => _jumpPointStructures;
-		internal JumpStats[] TimedJumps => _timedJumps;
-		internal Vector2 OtherTarget => _otherTarget;
-		internal bool UseInput => _useInput;
-		internal bool CircularDetection => _circularDetection;
-		internal bool UnFollow => _unFollow;
-		internal bool SequentialTimmedJumps => _sequentialTimmedJumps;
-		internal bool RepeatTimmedJumps => _repeatTimmedJumps;
-		internal bool UseTarget => _useTarget;
-		internal bool RandomFollow => _randomFollow;
-		internal float JumpStrenght => _jumpStrenght;
-		internal float TimeToJump => _timeToJump;
-		internal float DetectionAngle => _detectionAngle;
-		internal float DistanceToTarget => _distanceToTarget;
-		internal ushort StrenghtReact => _strenghtReact;
-		internal bool FollowReact => _followReact;
-		internal bool TurnFollowReact => _turnFollowReact;
-		internal bool StopMoveReact => _stopMoveReact;
+		public JumpPointStructure[] JumpPointStructures => _jumpPointStructures;
+		public JumpStats[] TimedJumps => _timedJumps;
+		public Vector2 OtherTarget => _otherTarget;
+		public bool UseInput => _useInput;
+		public bool CircularDetection => _circularDetection;
+		public bool UnFollow => _unFollow;
+		public bool SequentialTimmedJumps => _sequentialTimmedJumps;
+		public bool RepeatTimmedJumps => _repeatTimmedJumps;
+		public bool UseTarget => _useTarget;
+		public bool RandomFollow => _randomFollow;
+		public float JumpStrenght => _jumpStrenght;
+		public float TimeToJump => _timeToJump;
+		public float DetectionAngle => _detectionAngle;
+		public float DistanceToTarget => _distanceToTarget;
+		public ushort StrenghtReact => _strenghtReact;
+		public bool FollowReact => _followReact;
+		public bool TurnFollowReact => _turnFollowReact;
+		public bool StopMoveReact => _stopMoveReact;
 	};
 	[System.Serializable]
-	internal struct JumpPointStructure
+	public struct JumpPointStructure
 	{
 		[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
 		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
 		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
 		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
-		internal readonly JumpPoint JumpPointObject => _jumpPointObject;
-		internal readonly JumpStats JumpStats => _jumpStats;
-		internal readonly Vector2 Point => _point;
-		internal readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
+		public readonly JumpPoint JumpPointObject => _jumpPointObject;
+		public readonly JumpStats JumpStats => _jumpStats;
+		public readonly Vector2 Point => _point;
+		public readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
 	};
 	[System.Serializable]
-	internal struct JumpStats
+	public struct JumpStats
 	{
 		[SerializeField, Tooltip("To where this have to go if theres no target.")] private Vector2 _otherTarget;
 		[SerializeField, Tooltip("The strenght of the jump.")] private ushort _strength;
@@ -65,12 +65,12 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If this enemy will turn on the follow.")] private bool _turnFollow;
 		[SerializeField, Tooltip("If for this jump it will use the other target.")] private bool _useTarget;
 		[SerializeField, Tooltip("The amount of time for this jump to execute.")] private float _timeToExecute;
-		internal readonly Vector2 OtherTarget => _otherTarget;
-		internal readonly ushort Strength => _strength;
-		internal readonly bool StopMove => _stopMove;
-		internal readonly bool Follow => _follow;
-		internal readonly bool TurnFollow => _turnFollow;
-		internal readonly bool UseTarget => _useTarget;
-		internal readonly float TimeToExecute => _timeToExecute;
+		public readonly Vector2 OtherTarget => _otherTarget;
+		public readonly ushort Strength => _strength;
+		public readonly bool StopMove => _stopMove;
+		public readonly bool Follow => _follow;
+		public readonly bool TurnFollow => _turnFollow;
+		public readonly bool UseTarget => _useTarget;
+		public readonly float TimeToExecute => _timeToExecute;
 	};
 };
