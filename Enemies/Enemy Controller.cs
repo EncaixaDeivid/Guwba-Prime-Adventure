@@ -2,19 +2,13 @@ using UnityEngine;
 using System.Collections;
 using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D))]
-	internal sealed class EnemyController : StateController, IConnector, IDestructible
-    {
+	internal sealed class EnemyController : Control, IConnector, IDestructible
+   {
 		private EnemyProvider[] _selfEnemies;
-		private Rigidbody2D _rigidbody;
-		private IDestructible _destructibleEnemy;
-		private short _vitality;
-		private short _armorResistance = 0;
-		private float _fadeTime = 0f;
-		private float _stunTimer = 0f;
-		private bool _stunned = false;
 		[Header("Enemy Statistics")]
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
 		internal EnemyStatistics ProvidenceStatistics => _statistics;
