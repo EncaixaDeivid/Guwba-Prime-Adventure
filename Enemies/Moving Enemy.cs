@@ -1,5 +1,6 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	internal abstract class MovingEnemy : EnemyProvider, IConnector
