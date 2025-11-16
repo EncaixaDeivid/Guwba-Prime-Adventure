@@ -80,8 +80,8 @@ namespace GwambaPrimeAdventure.Enemy
 					x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
 					y = Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
 					_rigidbody.MovePosition(new Vector2(_statistics.MovementSpeed * time * x, _statistics.MovementSpeed * time * y - 5e-1f * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
-					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() => isActiveAndEnabled && _rigidbody.IsAwake());
+					yield return new WaitForFixedUpdate();
 				}
 				_parabolaCoroutine = false;
 			}
