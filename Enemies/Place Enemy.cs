@@ -22,6 +22,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			StopAllCoroutines();
 			Sender.Exclude(this);
 		}
 		public void Receive(DataConnection data, object additionalData)
@@ -43,7 +44,6 @@ namespace GwambaPrimeAdventure.Enemy
 					color = _tilemap.color;
 					color.a = alpha;
 					_tilemap.color = color;
-					yield return new WaitForEndOfFrame();
 					yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 				}
 				if (appear)
