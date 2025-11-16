@@ -483,7 +483,7 @@ namespace GwambaPrimeAdventure.Character
 						}
 						for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
 							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-						_stunResistance += 1;
+						_stunResistance = (short)(_stunResistance >= _gwambaCanvas.StunResistance.Length ? _stunResistance + 1f : _gwambaCanvas.StunResistance.Length);
 						for (ushort i = 0; i < _stunResistance; i++)
 							_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 					}
