@@ -71,7 +71,7 @@ namespace GwambaPrimeAdventure.Character
 		private bool _isHoping = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
-		[Header("Control Statistics")]
+		[Header("Control")]
 		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
@@ -94,7 +94,7 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of decceleration Guwba will apply to the Movement.")] private float _decceleration;
 		[SerializeField, Tooltip("The amount of power the velocity Guwba will apply to the Movement.")] private float _velocityPower;
 		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
-		[SerializeField, Tooltip("The amount of speed in both dashes.")] private float _dashSpeed;
+		[SerializeField, Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
 		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
 		[SerializeField, Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
@@ -330,16 +330,16 @@ namespace GwambaPrimeAdventure.Character
 					_animator.SetBool(_dashSlide, true);
 					_animator.SetBool(_attackSlide, _comboAttackBuffer);
 					transform.TurnScaleX(_dashMovement = _movementAction);
-					float dashLocation = transform.position.x;
-					while (_bottomCast || Mathf.Abs(transform.position.x - dashLocation) < _dashDistance)
+					_jokerValue.z = transform.position.x;
+					while (_bottomCast || Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 					{
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
-						_jokerValue = transform.right * _dashMovement;
-						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
+						_jokerValue = new Vector3(transform.right.x * _dashMovement, transform.right.y * _dashMovement, _jokerValue.z);
+						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, (Vector2)_jokerValue, WorldBuild.SNAPLENGTH, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
 							break;
-						_jokerValue = new Vector2(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH);
-						_bottomCast = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
+						_jokerValue = new Vector3(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH, _jokerValue.z);
+						_bottomCast = Physics2D.BoxCast((Vector2)_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
 						yield return new WaitForFixedUpdate();
 						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * _dashMovement : 0f) > 0f);
 					}
@@ -470,7 +470,7 @@ namespace GwambaPrimeAdventure.Character
 				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				_attackDelay = _delayAfterAttack;
-				for (ushort amount = 0; amount < (destructible.Health >= 0f ? gwambaDamager.AttackDamage : gwambaDamager.AttackDamage - Mathf.Abs(destructible.Health)); amount++)
+				for (ushort amount = 0; amount < (destructible.Health <= 0f ? gwambaDamager.AttackDamage + 1f : gwambaDamager.AttackDamage); amount++)
 					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
 					{
 						_vitality += 1;
@@ -556,12 +556,12 @@ namespace GwambaPrimeAdventure.Character
 					}
 					if (_movementAction != 0f)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _movementAction, Local.y - 1f * _bottomCheckerOffset);
+						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _movementAction, Local.y - _bottomCheckerOffset);
 						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, 1f - WorldBuild.SNAPLENGTH);
 						if (_bottomCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAPLENGTH, _groundLayer))
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _movementAction, Local.y + 5e-1f);
-							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, 1f * _topWallChecker - WorldBuild.SNAPLENGTH);
+							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _topWallChecker - WorldBuild.SNAPLENGTH);
 							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAPLENGTH, _groundLayer))
 							{
 								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
@@ -579,10 +579,9 @@ namespace GwambaPrimeAdventure.Character
 					}
 					else if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
 					{
-						_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
 						_jokerValue.y = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount)) * Mathf.Sign(_rigidbody.linearVelocityX);
 						_rigidbody.AddForceX(-_jokerValue.y * _rigidbody.mass, ForceMode2D.Impulse);
-						_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
+						_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / (_longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost)));
 					}
 				}
 				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(_airJump))
