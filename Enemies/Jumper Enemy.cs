@@ -61,11 +61,11 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void FollowJump(Vector2 otherTarget, bool useTarget, bool turnFollow)
 		{
-
 			StartCoroutine(FollowTarget());
 			IEnumerator FollowTarget()
 			{
 				yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
+				bool validVelocity;
 				while (!GroundCheck() && !_stopJump)
 				{
 					if (_statistics.RandomFollow)
@@ -77,14 +77,12 @@ namespace GwambaPrimeAdventure.Enemy
 					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f);
 					if (turnFollow)
 						transform.TurnScaleX(_movementSide);
-					Rigidbody.linearVelocityX = _statistics.MovementSpeed * _movementSide;
-					yield return new WaitForFixedUpdate();
 					yield return new WaitUntil(() =>
 					{
-						if (!(isActiveAndEnabled && !IsStunned && Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget))
-							Rigidbody.linearVelocityX = 0f;
-						return isActiveAndEnabled && !IsStunned && Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget;
+						validVelocity = isActiveAndEnabled && !IsStunned && Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget;
+						return Mathf.Abs(Rigidbody.linearVelocityX = validVelocity ? _statistics.MovementSpeed * _movementSide : 0f) > 0f;
 					});
+					yield return new WaitForFixedUpdate();
 				}
 				Rigidbody.linearVelocityX = 0f;
 			}
