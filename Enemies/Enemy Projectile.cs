@@ -10,6 +10,23 @@ namespace GwambaPrimeAdventure.Enemy
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
 		public short Health => _vitality;
+		private new void Awake()
+		{
+			base.Awake();
+			_rigidbody = GetComponent<Rigidbody2D>();
+			_screenShaker = GetComponent<CinemachineImpulseSource>();
+			_vitality = (short)_statistics.Vitality;
+			_pointToJump = _statistics.JumpPoints;
+			_breakInUse = _statistics.UseBreak;
+			_internalBreakPoint = _statistics.BreakPoint;
+			_internalReturnPoint = _statistics.ReturnPoint;
+			_deathTimer = _statistics.TimeToFade;
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			StopAllCoroutines();
+		}
 		private void CommonInstance()
 		{
 			Quaternion rotation;
@@ -85,18 +102,6 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 				_parabolaCoroutine = false;
 			}
-		}
-		private new void Awake()
-		{
-			base.Awake();
-			_rigidbody = GetComponent<Rigidbody2D>();
-			_screenShaker = GetComponent<CinemachineImpulseSource>();
-			_vitality = (short)_statistics.Vitality;
-			_pointToJump = _statistics.JumpPoints;
-			_breakInUse = _statistics.UseBreak;
-			_internalBreakPoint = _statistics.BreakPoint;
-			_internalReturnPoint = _statistics.ReturnPoint;
-			_deathTimer = _statistics.TimeToFade;
 		}
 		private void Start()
 		{
