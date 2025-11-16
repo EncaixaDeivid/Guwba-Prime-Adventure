@@ -12,6 +12,7 @@ namespace GwambaPrimeAdventure.Character
 		private UnityAction<GwambaDamager, IDestructible> _damagerAttack;
 		[Header("Stats")]
 		[SerializeField, Tooltip("The velocity of the screen shake on the attack.")] private Vector2 _attackShake;
+		[SerializeField, Tooltip("The amount of time the attack screen shake will be applied.")] private float _attackShakeTime;
 		[SerializeField, Tooltip("If this Guwba's part will take damage.")] private bool _takeDamage;
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
 		[SerializeField, Tooltip("The amount of time that this Guwba's attack stun does.")] private float _stunTime;
@@ -19,6 +20,7 @@ namespace GwambaPrimeAdventure.Character
 		internal UnityAction<ushort, float> DamagerStun { get => null; set => _damagerStun = value; }
 		internal UnityAction<GwambaDamager, IDestructible> DamagerAttack { get => null; set => _damagerAttack = value; }
 		internal Vector2 AttackShake => _attackShake;
+		internal float AttackShakeTime => _attackShakeTime;
 		internal ushort AttackDamage => _attackDamage;
 		internal float StunTime => _stunTime;
 		internal float Alpha { get => _spriteRenderer.color.a; set => _spriteRenderer.color = new(1f, 1f, 1f, value); }
