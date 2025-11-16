@@ -76,6 +76,7 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
 		[SerializeField, Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
+		[SerializeField, Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
 		[SerializeField, Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
@@ -465,6 +466,7 @@ namespace GwambaPrimeAdventure.Character
 			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
 				destructible.Stun(gwambaDamager.AttackDamage, gwambaDamager.StunTime);
+				_screenShaker.ImpulseDefinition.ImpulseDuration = gwambaDamager.AttackShakeTime;
 				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				_attackDelay = _delayAfterAttack;
@@ -543,6 +545,7 @@ namespace GwambaPrimeAdventure.Character
 					}
 					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
+						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						Hurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
 						(_fallStarted, _fallDamage) = (false, 0f);
