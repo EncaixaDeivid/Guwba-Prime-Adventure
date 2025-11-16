@@ -336,12 +336,12 @@ namespace GwambaPrimeAdventure.Character
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _dashMovement, Local.y);
 						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
 						_jokerValue = new Vector3(transform.right.x * _dashMovement, transform.right.y * _dashMovement, _jokerValue.z);
-						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, (Vector2)_jokerValue, WorldBuild.SNAPLENGTH, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
+						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
 							break;
 						_jokerValue = new Vector3(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH, _jokerValue.z);
-						_bottomCast = Physics2D.BoxCast((Vector2)_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
-						yield return new WaitForFixedUpdate();
+						_bottomCast = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
 						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * _dashMovement : 0f) > 0f);
+						yield return new WaitForFixedUpdate();
 					}
 					_animator.SetBool(_dashSlide, false);
 					_animator.SetBool(_attackSlide, false);
