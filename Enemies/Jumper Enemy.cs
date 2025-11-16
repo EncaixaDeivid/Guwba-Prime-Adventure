@@ -39,6 +39,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
+			StopAllCoroutines();
 			if (_statistics.UseInput)
 			{
 				_inputController.Commands.Jump.started -= Jump;
