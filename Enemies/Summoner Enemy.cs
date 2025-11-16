@@ -7,9 +7,11 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class SummonerEnemy : EnemyProvider, ISummoner, IConnector
 	{
-		private SummonStats[] _summonStats;
+		private bool[] _isSummonTime;
+		private bool[] _stopPermanently;
 		private bool _stopSummon = false;
 		private ushort _randomSummonIndex = 0;
+		private float[] _summonTime;
 		private float _stopTime = 0f;
 		private float _gravityScale = 0f;
 		[Header("Summoner Enemy")]
@@ -18,7 +20,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_sender.SetStateForm(StateForm.State);
-			_summonStats = new SummonStats[_statistics.TimedSummons.Length];
+			_isSummonTime = new bool[_statistics.TimedSummons.Length];
+			_stopPermanently = new bool[_statistics.TimedSummons.Length];
+			_summonTime = new float[_statistics.TimedSummons.Length];
 			_gravityScale = Rigidbody.gravityScale;
 			Sender.Include(this);
 		}
@@ -31,11 +35,10 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
-			for (ushort i = 0; i < _summonStats.Length; i++)
-			{
-				_summonStats[i].isSummonTime = true;
-				_summonStats[i].summonTime = _statistics.TimedSummons[i].SummonTime;
-			}
+			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
+				_isSummonTime[i] = true;
+			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
+				_summonTime[i] = _statistics.TimedSummons[i].SummonTime;
 			for (ushort i = 0; i < _statistics.SummonPointStructures.Length; i++)
 				Instantiate(_statistics.SummonPointStructures[i].SummonPointObject, _statistics.SummonPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
 		}
@@ -67,26 +70,26 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void IndexedSummon(ushort summonIndex)
 		{
-			if (_summonStats[summonIndex].stopPermanently)
+			if (_stopPermanently[summonIndex])
 				return;
 			if (_stopSummon)
 			{
-				if (_statistics.TimedSummons[summonIndex].StopPermanently && !_summonStats[summonIndex].stopPermanently)
-					_summonStats[summonIndex].stopPermanently = true;
+				if (_statistics.TimedSummons[summonIndex].StopPermanently && !_stopPermanently[summonIndex])
+					_stopPermanently[summonIndex] = true;
 				return;
 			}
-			if (_summonStats[summonIndex].summonTime > 0f)
-				if ((_summonStats[summonIndex].summonTime -= Time.deltaTime) <= 0f)
+			if (_summonTime[summonIndex] > 0f)
+				if ((_summonTime[summonIndex] -= Time.deltaTime) <= 0f)
 				{
-					if (_summonStats[summonIndex].isSummonTime)
+					if (_isSummonTime[summonIndex])
 					{
 						Summon(_statistics.TimedSummons[summonIndex]);
-						_summonStats[summonIndex].summonTime = _statistics.TimedSummons[summonIndex].PostSummonTime;
+						_summonTime[summonIndex] = _statistics.TimedSummons[summonIndex].PostSummonTime;
 					}
 					else
-						_summonStats[summonIndex].summonTime = _statistics.TimedSummons[summonIndex].SummonTime;
-					_summonStats[summonIndex].isSummonTime = !_summonStats[summonIndex].isSummonTime;
-					if (_statistics.RandomTimedSummons && _summonStats[summonIndex].isSummonTime)
+						_summonTime[summonIndex] = _statistics.TimedSummons[summonIndex].SummonTime;
+					_isSummonTime[summonIndex] = !_isSummonTime[summonIndex];
+					if (_statistics.RandomTimedSummons && _isSummonTime[summonIndex])
 						_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
 				}
 		}
@@ -122,12 +125,6 @@ namespace GwambaPrimeAdventure.Enemy
 					Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
 				else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
 					Summon(_statistics.EventSummons[data.NumberValue.Value]);
-		}
-		private struct SummonStats
-		{
-			internal bool isSummonTime;
-			internal bool stopPermanently;
-			internal float summonTime;
 		}
 	};
 };
