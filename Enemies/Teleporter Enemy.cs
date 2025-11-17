@@ -32,7 +32,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_teleportIndex = (ushort)Random.Range(0, _statistics.TeleportPointStructures[teleportIndex].TeleportPoints.Length - 1);
 				transform.position = _statistics.TeleportPointStructures[teleportIndex].TeleportPoints[_teleportIndex];
 				if (!_statistics.TeleportPointStructures[teleportIndex].RandomTeleports)
-					_teleportIndex = (ushort)(_teleportIndex >= _statistics.TeleportPointStructures[teleportIndex].TeleportPoints.Length - 1 ? _teleportIndex + 1 : 0);
+					_teleportIndex = (ushort)(_teleportIndex < _statistics.TeleportPointStructures[teleportIndex].TeleportPoints.Length - 1 ? _teleportIndex + 1 : 0);
 				(_canTeleport, _teleportTime) = (false, _statistics.TimeToUse);
 			}
 		}
