@@ -24,6 +24,8 @@ namespace GwambaPrimeAdventure.Character
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
+		private IEnumerator _dashCoroutine;
+		private IEnumerator _airJumpCoroutine;
 		private Vector2 _normalOffset = new();
 		private Vector2 _normalSize = new();
 		private Vector2 _originCast;
@@ -54,7 +56,6 @@ namespace GwambaPrimeAdventure.Character
 		private float _fadeTimer = 0f;
 		private float _gravityScale = 0f;
 		private float _movementAction = 0f;
-		private float _dashMovement = 0f;
 		private float _lastGroundedTime = 0f;
 		private float _lastJumpTime = 0f;
 		private float _fallStart = 0f;
@@ -297,55 +298,57 @@ namespace GwambaPrimeAdventure.Character
 					_movementAction = 1f;
 				else if (movement.ReadValue<Vector2>().x < 0f)
 					_movementAction = -1f;
-			if (_movementAction != 0f && movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump && (!_attackUsage || _comboAttackBuffer))
-			{
-				StartCoroutine(AirJump());
-				IEnumerator AirJump()
+			if (_movementAction != 0f && (!_attackUsage || _comboAttackBuffer))
+				if (movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
 				{
-					_animator.SetBool(_airJump, !(_canAirJump = false));
-					_animator.SetBool(_attackAirJump, _comboAttackBuffer);
-					transform.TurnScaleX(_dashMovement = _movementAction);
-					while (!_isOnGround)
+					_airJumpCoroutine = AirJump(_movementAction);
+					IEnumerator AirJump(float dashMovement)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _dashMovement, Local.y);
-						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
-						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _dashMovement, WorldBuild.SNAPLENGTH, _groundLayer) || _isJumping || _animator.GetBool(_stun))
-							break;
-						_lastGroundedTime = _jumpCoyoteTime;
-						yield return new WaitUntil(() => isActiveAndEnabled);
-						yield return new WaitForFixedUpdate();
+						_animator.SetBool(_airJump, !(_canAirJump = false));
+						_animator.SetBool(_attackAirJump, _comboAttackBuffer);
+						transform.TurnScaleX(dashMovement);
+						while (!_isOnGround)
+						{
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
+							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
+							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAPLENGTH, _groundLayer);
+							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death))
+								break;
+							_lastGroundedTime = _jumpCoyoteTime;
+							yield return null;
+						}
+						_animator.SetBool(_airJump, (_airJumpCoroutine = null) is not null);
+						_animator.SetBool(_attackAirJump, false);
 					}
-					_animator.SetBool(_airJump, false);
-					_animator.SetBool(_attackAirJump, false);
+					_rigidbody.linearVelocity = Vector2.zero;
+					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
+					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
 				}
-				_rigidbody.linearVelocity = Vector2.zero;
-				_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
-				_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _dashMovement * _rigidbody.mass, ForceMode2D.Impulse);
-			}
-			if (_movementAction != 0f && movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround && (!_attackUsage || _comboAttackBuffer))
-			{
-				StartCoroutine(Dash());
-				IEnumerator Dash()
+				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround)
 				{
-					_animator.SetBool(_dashSlide, true);
-					_animator.SetBool(_attackSlide, _comboAttackBuffer);
-					transform.TurnScaleX(_dashMovement = _movementAction);
-					_jokerValue.z = transform.position.x;
-					while (_castHit || Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
+					_dashCoroutine = Dash(_movementAction);
+					IEnumerator Dash(float dashMovement)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _dashMovement, Local.y);
-						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
-						_jokerValue = new Vector3(transform.right.x * _dashMovement, transform.right.y * _dashMovement, _jokerValue.z);
-						if (Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer) || _animator.GetBool(_stun) || !_isOnGround || _isJumping)
-							break;
-						_jokerValue = new Vector3(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH, _jokerValue.z);
-						_castHit = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
-						yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * _dashMovement : 0f) > 0f);
-						yield return new WaitForFixedUpdate();
+						_animator.SetBool(_dashSlide, true);
+						_animator.SetBool(_attackSlide, _comboAttackBuffer);
+						transform.TurnScaleX(dashMovement);
+						_jokerValue.z = transform.position.x;
+						while (_castHit || Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
+						{
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
+							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
+							_jokerValue = new Vector3(transform.right.x * dashMovement, transform.right.y * dashMovement, _jokerValue.z);
+							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer);
+							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death))
+								break;
+							_jokerValue = new Vector3(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH, _jokerValue.z);
+							_castHit = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
+							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
+							yield return null;
+						}
+						_animator.SetBool(_dashSlide, (_dashCoroutine = null) is not null);
+						_animator.SetBool(_attackSlide, false);
 					}
-					_animator.SetBool(_dashSlide, false);
-					_animator.SetBool(_attackSlide, false);
-				}
 			}
 		};
 		private Action<InputAction.CallbackContext> Jump => jump =>
@@ -418,7 +421,7 @@ namespace GwambaPrimeAdventure.Character
 				SaveController.Load(out SaveFile saveFile);
 				_gwambaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
-				StopAllCoroutines();
+				StopCoroutine(VisualEffect());
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 					gwambaDamager.Alpha = 1f;
 				OnDisable();
@@ -426,11 +429,7 @@ namespace GwambaPrimeAdventure.Character
 				_animator.SetBool(_walk, false);
 				_animator.SetBool(_jump, false);
 				_animator.SetBool(_fall, false);
-				_animator.SetBool(_airJump, false);
-				_animator.SetBool(_dashSlide, false);
 				_animator.SetBool(_attackJump, false);
-				_animator.SetBool(_attackAirJump, false);
-				_animator.SetBool(_attackSlide, false);
 				_animator.SetBool(_stun, false);
 				_animator.SetBool(_death, true);
 				_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
@@ -519,7 +518,9 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (!_animator.GetBool(_dashSlide))
+			if (_dashCoroutine is not null)
+				_dashCoroutine.MoveNext();
+			else
 			{
 				if (_isOnGround)
 				{
@@ -640,7 +641,9 @@ namespace GwambaPrimeAdventure.Character
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
-				if (!_animator.GetBool(_airJump))
+				if (_airJumpCoroutine is not null)
+					_airJumpCoroutine.MoveNext();
+				else
 				{
 					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
 					_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
