@@ -30,9 +30,9 @@ namespace GwambaPrimeAdventure.Enemy
 		private void Update() => _appearFade?.MoveNext();
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData != null || additionalData is EnemyProvider[] || additionalData as EnemyProvider[] != null || (additionalData as EnemyProvider[]).Length > 0)
+			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
-					if (enemy == this)
+					if (enemy && enemy == this)
 					{
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 							_appearFade = AppearFade(data.ToggleValue.Value);
