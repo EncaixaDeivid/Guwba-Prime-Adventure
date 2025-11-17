@@ -14,6 +14,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private Vector2 _targetPosition;
 		private Vector2 _direction;
 		private bool _isJumping = false;
+		private bool _onJump = false;
 		private bool _stopJump = false;
 		private bool _follow = false;
 		private ushort _sequentialJumpIndex = 0;
@@ -167,11 +168,13 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_isJumping && GroundCheck())
+			if (!_onJump && _isJumping && !GroundCheck())
+				_onJump = true;
+			if (_onJump && GroundCheck())
 			{
 				if (_follow)
 					Rigidbody.linearVelocityX = 0f;
-				_sender.SetToggle(!(_isJumping = _detected = _follow = false));
+				_sender.SetToggle(!(_onJump = _isJumping = _detected = _follow = false));
 				_sender.Send(PathConnection.Enemy);
 			}
 			if (_stopWorking)
@@ -215,7 +218,7 @@ namespace GwambaPrimeAdventure.Enemy
 			IEnumerator WaitToHitSurface()
 			{
 				yield return new WaitUntil(() => GroundCheck() && !_detected && isActiveAndEnabled && !IsStunned);
-				if (_stopJump)
+				if (_stopJump || _jumpTime > 0f)
 					yield break;
 				if (_jumpCount[jumpIndex]-- <= 0f)
 				{
@@ -232,12 +235,13 @@ namespace GwambaPrimeAdventure.Enemy
 						FollowJump(_statistics.JumpPointStructures[jumpIndex].JumpStats.OtherTarget, _statistics.JumpPointStructures[jumpIndex].JumpStats.UseTarget, turnFollow);
 					}
 					_jumpCount[jumpIndex] = (short)_statistics.JumpPointStructures[jumpIndex].JumpCount;
+					_jumpTime = _statistics.TimeToJump;
 				}
 			}
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
 				return;
 			foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
 				if (enemy != this)
