@@ -56,36 +56,36 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			bool isHurted = false;
 			if (!_invencible && damage >= _statistics.BiggerDamage)
-				isHurted = base.Hurt(damage);
-			if (_statistics.InvencibleHurted && isHurted)
-			{
-				_timeOperation = _statistics.TimeToDestructible;
-				_invencible = true;
-				if (_statistics.InvencibleStop)
+				if (_statistics.InvencibleHurted && (isHurted = base.Hurt(damage)))
 				{
-					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Enemy);
+					_timeOperation = _statistics.TimeToDestructible;
+					_invencible = true;
+					if (_statistics.InvencibleStop)
+					{
+						_sender.SetToggle(true);
+						_sender.Send(PathConnection.Enemy);
+					}
 				}
-			}
 			return isHurted;
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
-				return;
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy != this)
-					return;
-			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
-				if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
-					_invencible = true;
-				else
-					_invencible = data.ToggleValue.Value;
-			if (_statistics.InvencibleStop)
-			{
-				_sender.SetToggle(!_invencible);
-				_sender.Send(PathConnection.Enemy);
-			}
+			if (additionalData != null || additionalData is EnemyProvider[] || additionalData as EnemyProvider[] != null || (additionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+					if (enemy == this)
+					{
+						if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
+							if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
+								_invencible = true;
+							else
+								_invencible = data.ToggleValue.Value;
+						if (_statistics.InvencibleStop)
+						{
+							_sender.SetToggle(!_invencible);
+							_sender.Send(PathConnection.Enemy);
+						}
+						return;
+					}
 		}
 	};
 };
