@@ -113,18 +113,19 @@ namespace GwambaPrimeAdventure.Enemy
 		public void OnSummon(ushort summonIndex) => Summon(_statistics.SummonPointStructures[summonIndex].Summon);
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
-				return;
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy != this)
-					return;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				_stopSummon = !data.ToggleValue.Value;
-			else if (data.StateForm == StateForm.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
-				if (_statistics.RandomReactSummons)
-					Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
-				else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
-					Summon(_statistics.EventSummons[data.NumberValue.Value]);
+			if (additionalData != null || additionalData is EnemyProvider[] || additionalData as EnemyProvider[] != null || (additionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+					if (enemy == this)
+					{
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							_stopSummon = !data.ToggleValue.Value;
+						else if (data.StateForm == StateForm.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
+							if (_statistics.RandomReactSummons)
+								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
+							else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
+								Summon(_statistics.EventSummons[data.NumberValue.Value]);
+						return;
+					}
 		}
 	};
 };
