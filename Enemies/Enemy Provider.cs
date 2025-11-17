@@ -39,11 +39,14 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Stun(ushort stunStength, float stunTime)
 		{
-			_controller.StunTimer = stunTime;
-			_controller.IsStunned = true;
-			_controller.Rigidbody.Sleep();
+			if (_controller.IsStunned = !_controller.ProvidenceStatistics.NoHitStun)
+			{
+				_controller.StunTimer = stunTime;
+				_controller.Rigidbody.Sleep();
+			}
 			if ((_controller.ArmorResistance -= (short)stunStength) <= 0f)
 			{
+				_controller.Rigidbody.Sleep();
 				_controller.StunTimer = _controller.ProvidenceStatistics.StunnedTime;
 				_controller.ArmorResistance = (short)_controller.ProvidenceStatistics.HitResistance;
 			}
