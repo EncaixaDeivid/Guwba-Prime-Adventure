@@ -27,7 +27,10 @@ namespace GwambaPrimeAdventure.Enemy
 			PolygonCollider2D trail = GetComponent<PolygonCollider2D>();
 			_trail = new Vector2[trail.points.Length];
 			for (ushort i = 0; i < trail.points.Length; i++)
-				_trail[i] = transform.TransformPoint(trail.points[i] + trail.offset);
+				if (transform.parent != null)
+					_trail[i] = (Vector2)transform.position + (trail.points[i] + trail.offset);
+				else
+					_trail[i] = trail.points[i];
 			_movementDirection = Vector2.right * _movementSide;
 			_pointOrigin = Rigidbody.position;
 		}
@@ -133,15 +136,17 @@ namespace GwambaPrimeAdventure.Enemy
 					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
-						_originCast = Rigidbody.position + _selfCollider.offset;
-						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
+						_originCast = _pointOrigin + _selfCollider.offset;
+						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(_pointOrigin + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							if (Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.GroundLayer))
+							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAPLENGTH, _statistics.Physics.GroundLayer))
+								break;
+							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.TargetLayer))
 								break;
 							_originCast += _statistics.DetectionFactor * (_targetPoint - _originCast).normalized;
 						}
-						transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1f : 1f);
-						_detected = true;
+						if (_detected)
+							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1f : 1f);
 						break;
 					}
 			if (_detected || _returnDash)
