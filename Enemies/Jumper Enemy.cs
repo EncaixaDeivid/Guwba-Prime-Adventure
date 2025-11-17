@@ -241,26 +241,27 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
-				return;
-			foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
-				if (enemy != this)
-					return;
-			base.Receive(data, additionalData);
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				_stopJump = !data.ToggleValue.Value;
-			else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
-			{
-				if (_statistics.StopMoveReact)
-				{
-					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
-				}
-				_isJumping = true;
-				Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
-				if (_statistics.FollowReact)
-					FollowJump(_statistics.OtherTarget, _statistics.UseTarget, _statistics.TurnFollowReact);
-			}
+			if (additionalData != null || additionalData is EnemyProvider[] || additionalData as EnemyProvider[] != null || (additionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+					if (enemy == this)
+					{
+						base.Receive(data, additionalData);
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+							_stopJump = !data.ToggleValue.Value;
+						else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
+						{
+							if (_statistics.StopMoveReact)
+							{
+								_sender.SetToggle(false);
+								_sender.Send(PathConnection.Enemy);
+							}
+							_isJumping = true;
+							Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
+							if (_statistics.FollowReact)
+								FollowJump(_statistics.OtherTarget, _statistics.UseTarget, _statistics.TurnFollowReact);
+						}
+						return;
+					}
 		}
 	};
 };
