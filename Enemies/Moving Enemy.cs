@@ -35,11 +35,8 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
-				return;
-			foreach (EnemyProvider enemy in (EnemyProvider[])additionalData)
-				if (enemy == this && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-					_stopWorking = !data.ToggleValue.Value;
+			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+				_stopWorking = !data.ToggleValue.Value;
 		}
 	};
 };
