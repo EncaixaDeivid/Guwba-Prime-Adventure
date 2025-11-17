@@ -8,6 +8,7 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class RunnerEnemy : MovingEnemy, IConnector, IDestructible
 	{
 		private RaycastHit2D _blockCast;
+		private bool _stopRunning = false;
 		private bool _edgeCast = false;
 		private bool _canRetreat = true;
 		private bool _retreat = false;
@@ -39,12 +40,12 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_statistics.DetectionStop && _stopWorking)
+			if (_statistics.DetectionStop && _stopRunning)
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 				{
 					_retreatTime = _statistics.TimeToRetreat;
 					_dashedTime = _statistics.TimeDashing;
-					_isDashing = !(_stopWorking = false);
+					_isDashing = !(_stopWorking = _stopRunning = false);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -116,7 +117,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_statistics.DetectionStop)
 				{
 					_stoppedTime = _statistics.StopTime;
-					_stopWorking = true;
+					_stopWorking = _stopRunning = true;
 					Rigidbody.linearVelocityX = 0f;
 				}
 				else if (_statistics.EventRetreat)
@@ -133,7 +134,7 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					_retreatTime = _statistics.TimeToRetreat;
 					_dashedTime = _statistics.TimeDashing;
-					_isDashing = !(_stopWorking = false);
+					_isDashing = !(_stopWorking = _stopRunning = false);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -156,7 +157,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
 				_stoppedTime = _statistics.StopTime;
-				_stopWorking = true;
+				_stopWorking = _stopRunning = true;
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				return;
@@ -164,19 +165,19 @@ namespace GwambaPrimeAdventure.Enemy
 			else if (_detected && !_isDashing)
 			{
 				_dashedTime = _statistics.TimeDashing;
-				_isDashing = !(_stopWorking = false);
+				_isDashing = !(_stopWorking = _stopRunning = false);
 				_sender.SetToggle(_statistics.JumpDash);
 				_sender.Send(PathConnection.Enemy);
 			}
 			transform.TurnScaleX(_movementSide);
-			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_detected ? _statistics.DashSpeed : _statistics.MovementSpeed);
+			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed);
 		}
 		public new bool Hurt(ushort damage)
 		{
 			if (_statistics.ReactToDamage && _canRetreat)
 			{
 				_stoppedTime = 0f;
-				_stopWorking = _canRetreat = !(_retreat = true);
+				_stopWorking = _stopRunning = _canRetreat = !(_retreat = true);
 				_retreatLocation = transform.position.x;
 				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
 				_sender.SetToggle(false);
@@ -187,7 +188,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || (EnemyProvider[])additionalData == null || ((EnemyProvider[])additionalData).Length <= 0)
+			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
 				return;
 			foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
 				if (enemy != this)
