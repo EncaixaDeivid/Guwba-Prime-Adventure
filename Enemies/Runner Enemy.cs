@@ -188,14 +188,15 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data, object additionalData)
 		{
-			if (additionalData == null || additionalData is not EnemyProvider[] || additionalData as EnemyProvider[] == null || (additionalData as EnemyProvider[]).Length <= 0)
-				return;
-			foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
-				if (enemy != this)
-					return;
-			base.Receive(data, additionalData);
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
-				Rigidbody.linearVelocityX = 0f;
+			if (additionalData != null || additionalData is EnemyProvider[] || additionalData as EnemyProvider[] != null || (additionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+					if (enemy == this)
+					{
+						base.Receive(data, additionalData);
+						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+							Rigidbody.linearVelocityX = 0f;
+						return;
+					}
 		}
 	};
 };
