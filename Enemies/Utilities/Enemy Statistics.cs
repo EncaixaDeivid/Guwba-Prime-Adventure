@@ -12,6 +12,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[SerializeField, Tooltip("The amount of damage that the enemy hit.")] private ushort _damage;
 		[SerializeField, Tooltip("If this enemy receives no type of damage.")] private bool _noDamage;
 		[SerializeField, Tooltip("If this enemy won't do damage at contact.")] private bool _noHit;
+		[SerializeField, Tooltip("If this enemy won't get stunned.")] private bool _noHitStun;
 		[SerializeField, Tooltip("If this enemy won't get stunned.")] private bool _noStun;
 		[SerializeField, Tooltip("If this enemy will fade away over time.")] private bool _fadeOverTime;
 		[SerializeField, Tooltip("The amount of time this enemy will fade away.")] private float _timeToFadeAway;
@@ -28,6 +29,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public ushort Damage => _damage;
 		public bool NoDamage => _noDamage;
 		public bool NoHit => _noHit;
+		public bool NoHitStun => _noHitStun;
 		public bool NoStun => _noStun;
 		public bool FadeOverTime => _fadeOverTime;
 		public float TimeToFadeAway => _timeToFadeAway;
