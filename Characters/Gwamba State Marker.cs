@@ -150,6 +150,8 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			StopAllCoroutines();
+			_dashCoroutine = null;
+			_airJumpCoroutine = null;
 			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
 				gwambaDamager.DamagerHurt -= Hurt;
@@ -313,7 +315,7 @@ namespace GwambaPrimeAdventure.Character
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAPLENGTH, _groundLayer);
-							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death))
+							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _airJumpCoroutine is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
 							yield return null;
@@ -334,16 +336,14 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(_attackSlide, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
 						_jokerValue.z = transform.position.x;
-						while (_castHit || Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
+						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
 							_jokerValue = new Vector3(transform.right.x * dashMovement, transform.right.y * dashMovement, _jokerValue.z);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer);
-							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death))
+							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _dashCoroutine is null)
 								break;
-							_jokerValue = new Vector3(transform.position.x + _normalOffset.x, transform.position.y + _normalOffset.y + WorldBuild.SNAPLENGTH, _jokerValue.z);
-							_castHit = Physics2D.BoxCast(_jokerValue, _normalSize, 0f, transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
 							yield return null;
 						}
