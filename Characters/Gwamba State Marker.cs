@@ -52,6 +52,7 @@ namespace GwambaPrimeAdventure.Character
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
 		private float _timerOfInvencibility = 0f;
+		private float _showInvencibilityTimer = 0f;
 		private float _stunTimer = 0f;
 		private float _fadeTimer = 0f;
 		private float _gravityScale = 0f;
@@ -390,17 +391,6 @@ namespace GwambaPrimeAdventure.Character
 					return;
 				}
 		};
-		private IEnumerator VisualEffect()
-		{
-			while (_invencibility)
-			{
-				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-					gwambaDamager.Alpha = gwambaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
-				yield return new WaitTime(this, _timeStep);
-			}
-			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-				gwambaDamager.Alpha = 1f;
-		}
 		public Predicate<ushort> Hurt => damage =>
 		{
 			if (_invencibility || damage <= 0f)
@@ -415,13 +405,12 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
 			}
 			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-			StartCoroutine(VisualEffect());
 			if (_vitality <= 0f)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				_gwambaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
-				StopCoroutine(VisualEffect());
+				_invencibility = false;
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 					gwambaDamager.Alpha = 1f;
 				OnDisable();
@@ -452,7 +441,8 @@ namespace GwambaPrimeAdventure.Character
 			if (_stunResistance <= 0f && !_animator.GetBool(_death))
 			{
 				_animator.SetBool(_stun, !(_invencibility = false));
-				StopCoroutine(VisualEffect());
+				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+					gwambaDamager.Alpha = 1f;
 				_stunTimer = stunTime;
 				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
 					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
@@ -497,12 +487,21 @@ namespace GwambaPrimeAdventure.Character
 		private void Update()
 		{
 			if (_invencibility)
-				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f;
+			{
+				if (_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f && (_showInvencibilityTimer -= Time.deltaTime) <= 0f)
+				{
+					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+						gwambaDamager.Alpha = gwambaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
+					_showInvencibilityTimer = _timeStep;
+				}
+				if (!_invencibility)
+					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+						gwambaDamager.Alpha = 1f;
+			}
 			if (_animator.GetBool(_stun))
 				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
 					_animator.SetBool(_stun, !(_invencibility = true));
-					StartCoroutine(VisualEffect());
 					EnableInputs();
 				}
 			if (_fadeTimer > 0f)
@@ -716,7 +715,6 @@ namespace GwambaPrimeAdventure.Character
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
 				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-				StartCoroutine(VisualEffect());
 				OnEnable();
 			}
 		}
