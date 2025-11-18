@@ -27,36 +27,35 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_stopWorking || IsStunned || !_statistics.UseAlternatedTime && !_invencible)
 				return;
 			if (_timeOperation > 0f)
-				_timeOperation -= Time.deltaTime;
-			if (_timeOperation <= 0f)
-			{
-				if (_invencible)
+				if ((_timeOperation -= Time.deltaTime) <= 0f)
 				{
-					_invencible = false;
-					_timeOperation = _statistics.TimeToInvencible;
-					if (_statistics.InvencibleStop)
+					if (_invencible)
 					{
-						_sender.SetToggle(true);
-						_sender.Send(PathConnection.Enemy);
+						_invencible = false;
+						_timeOperation = _statistics.TimeToInvencible;
+						if (_statistics.InvencibleStop)
+						{
+							_sender.SetToggle(true);
+							_sender.Send(PathConnection.Enemy);
+						}
+					}
+					else
+					{
+						_invencible = true;
+						_timeOperation = _statistics.TimeToDestructible;
+						if (_statistics.InvencibleStop)
+						{
+							_sender.SetToggle(false);
+							_sender.Send(PathConnection.Enemy);
+						}
 					}
 				}
-				else
-				{
-					_invencible = true;
-					_timeOperation = _statistics.TimeToDestructible;
-					if (_statistics.InvencibleStop)
-					{
-						_sender.SetToggle(false);
-						_sender.Send(PathConnection.Enemy);
-					}
-				}
-			}
 		}
 		public new bool Hurt(ushort damage)
 		{
 			bool isHurted = false;
 			if (!_invencible && damage >= _statistics.BiggerDamage)
-				if (_statistics.InvencibleHurted && (isHurted = base.Hurt(damage)))
+				if ((isHurted = base.Hurt(damage)) && _statistics.InvencibleHurted)
 				{
 					_timeOperation = _statistics.TimeToDestructible;
 					_invencible = true;
