@@ -18,7 +18,7 @@ namespace GwambaPrimeAdventure.Item
 				yield break;
 			}
 			saveFile.Books.Add(gameObject.name, false);
-			yield return new WaitForEndOfFrame();
+			yield return null;
 		}
 		public void Collect()
 		{
