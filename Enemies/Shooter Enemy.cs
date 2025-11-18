@@ -101,20 +101,21 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_shootInterval > 0f && !_isStopped)
 				_shootInterval -= Time.deltaTime;
 			if (_timeStop > 0f)
-				_timeStop -= Time.deltaTime;
-			if (_statistics.Stop && _canShoot && _timeStop <= _statistics.StopTime / 2f)
 			{
-				_canShoot = false;
-				Shoot();
-			}
-			if (_timeStop <= 0f && _isStopped)
-			{
-				_isStopped = false;
-				_sender.SetStateForm(StateForm.State);
-				_sender.SetToggle(true);
-				_sender.Send(PathConnection.Enemy);
-				if (_statistics.ReturnParalyze)
-					Rigidbody.WakeUp();
+				if ((_timeStop -= Time.deltaTime) <= _statistics.StopTime / 2f && _statistics.Stop && _canShoot)
+				{
+					_canShoot = false;
+					Shoot();
+				}
+				if (_timeStop <= 0f && _isStopped)
+				{
+					_isStopped = false;
+					_sender.SetStateForm(StateForm.State);
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
+					if (_statistics.ReturnParalyze)
+						Rigidbody.WakeUp();
+				}
 			}
 		}
 		private void FixedUpdate() => Verify();
