@@ -21,6 +21,11 @@ namespace GwambaPrimeAdventure
 			_instance = this;
 			_lightsStack = new List<Light2DBase>() { GetComponent<Light2DBase>() };
 		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			StopAllCoroutines();
+		}
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
 			if (_canHitStop)
@@ -29,7 +34,7 @@ namespace GwambaPrimeAdventure
 			{
 				_canHitStop = false;
 				Time.timeScale = slowTime;
-				yield return new WaitForSecondsRealtime(stopTime);
+				yield return new WaitTime(this, stopTime);
 				_canHitStop = true;
 				Time.timeScale = 1f;
 			}
