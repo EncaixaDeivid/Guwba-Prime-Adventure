@@ -34,7 +34,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
+			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length);
 			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
 				_isSummonTime[i] = true;
 			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
@@ -60,7 +60,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (summon.Self)
 					position = transform.position;
 				else if (summon.Random)
-					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length - 1)];
+					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length)];
 				else
 					position = summon.SummonPoints[summonIndex.y];
 				Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
@@ -90,7 +90,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_summonTime[summonIndex] = _statistics.TimedSummons[summonIndex].SummonTime;
 					_isSummonTime[summonIndex] = !_isSummonTime[summonIndex];
 					if (_statistics.RandomTimedSummons && _isSummonTime[summonIndex])
-						_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length - 1);
+						_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length);
 				}
 		}
 		private void Update()
@@ -121,7 +121,7 @@ namespace GwambaPrimeAdventure.Enemy
 							_stopSummon = !data.ToggleValue.Value;
 						else if (data.StateForm == StateForm.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
 							if (_statistics.RandomReactSummons)
-								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length - 1)]);
+								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length)]);
 							else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
 								Summon(_statistics.EventSummons[data.NumberValue.Value]);
 						return;
