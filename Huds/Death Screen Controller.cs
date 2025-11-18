@@ -80,10 +80,7 @@ namespace GwambaPrimeAdventure.Hud
 					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
 					_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
 					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 5e-2f)
-					{
-						_deathScreenHud.Curtain.style.opacity = i;
-						yield return new WaitForEndOfFrame();
-					}
+						yield return _deathScreenHud.Curtain.style.opacity = i;
 					_sender.SetToggle(true);
 					_sender.SetStateForm(StateForm.Event);
 					_sender.Send(PathConnection.System);
@@ -91,10 +88,7 @@ namespace GwambaPrimeAdventure.Hud
 					_sender.SetStateForm(StateForm.State);
 					_sender.Send(PathConnection.Item);
 					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 5e-2f)
-					{
-						_deathScreenHud.Curtain.style.opacity = i;
-						yield return new WaitForEndOfFrame();
-					}
+						yield return _deathScreenHud.Curtain.style.opacity = i;
 					_sender.Send(PathConnection.Character);
 					_sender.SetStateForm(StateForm.None);
 					_sender.Send(PathConnection.Enemy);
