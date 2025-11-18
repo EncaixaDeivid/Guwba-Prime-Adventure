@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -7,6 +8,7 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class SummonerEnemy : EnemyProvider, ISummoner, IConnector
 	{
+		private IEnumerator _summonCoroutine;
 		private bool[] _isSummonTime;
 		private bool[] _stopPermanently;
 		private bool _stopSummon = false;
@@ -42,30 +44,39 @@ namespace GwambaPrimeAdventure.Enemy
 			for (ushort i = 0; i < _statistics.SummonPointStructures.Length; i++)
 				Instantiate(_statistics.SummonPointStructures[i].SummonPointObject, _statistics.SummonPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
 		}
-		private void Summon(SummonObject summon)
+		private async void Summon(SummonObject summon)
 		{
-			if (summon.StopToSummon)
+			while (_summonCoroutine is not null)
+				await Task.Yield();
+			_summonCoroutine = StopToSummon();
+			_summonCoroutine.MoveNext();
+			IEnumerator StopToSummon()
 			{
-				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
-				if (summon.ParalyzeToSummon)
-					Rigidbody.gravityScale = 0f;
-				_stopTime = summon.TimeToStop;
-			}
-			Vector2 position;
-			Vector2Int summonIndex = new();
-			InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
-			for (ushort i = 0; i < summon.QuantityToSummon; i++)
-			{
-				if (summon.Self)
-					position = transform.position;
-				else if (summon.Random)
-					position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length)];
-				else
-					position = summon.SummonPoints[summonIndex.y];
-				Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-				summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
-				summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
+				if (summon.StopToSummon)
+				{
+					_sender.SetToggle(false);
+					_sender.Send(PathConnection.Enemy);
+					if (summon.ParalyzeToSummon)
+						Rigidbody.gravityScale = 0f;
+					_stopTime = summon.TimeToStop;
+					yield return null;
+				}
+				Vector2 position;
+				Vector2Int summonIndex = new();
+				InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
+				for (ushort i = 0; i < summon.QuantityToSummon; i++)
+				{
+					if (summon.Self)
+						position = transform.position;
+					else if (summon.Random)
+						position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length)];
+					else
+						position = summon.SummonPoints[summonIndex.y];
+					Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
+					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
+					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
+				}
+				_summonCoroutine = null;
 			}
 		}
 		private void IndexedSummon(ushort summonIndex)
@@ -103,6 +114,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
 					Rigidbody.gravityScale = _gravityScale;
+					_summonCoroutine?.MoveNext();
 				}
 			if (_statistics.RandomTimedSummons)
 				IndexedSummon(_randomSummonIndex);
