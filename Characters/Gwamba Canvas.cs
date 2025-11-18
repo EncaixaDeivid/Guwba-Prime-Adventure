@@ -118,7 +118,7 @@ namespace GwambaPrimeAdventure.Character
 				BunnyHop[i] = bunnyHop[i + 1];
 			}
 			bunnyHop.Remove(bunnyHopPiece);
-			yield return new WaitForEndOfFrame();
+			yield return null;
 		}
 	};
 };
