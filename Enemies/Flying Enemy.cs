@@ -1,10 +1,11 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
-	internal sealed class FlyingEnemy : MovingEnemy
+	internal sealed class FlyingEnemy : MovingEnemy, IConnector
 	{
 		private CircleCollider2D _selfCollider;
 		private Vector2[] _trail;
@@ -33,6 +34,12 @@ namespace GwambaPrimeAdventure.Enemy
 					_trail[i] = trail.points[i];
 			_movementDirection = Vector2.right * _movementSide;
 			_pointOrigin = Rigidbody.position;
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void Chase()
 		{
@@ -153,6 +160,16 @@ namespace GwambaPrimeAdventure.Enemy
 				Chase();
 			else
 				Trail();
+		}
+		public new void Receive(DataConnection data, object additionalData)
+		{
+			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+					if (enemy && enemy == this)
+					{
+						base.Receive(data, additionalData);
+						return;
+					}
 		}
 	};
 };
