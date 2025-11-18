@@ -49,11 +49,12 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[SerializeField, Tooltip("The object to activate the jump.")] private JumpPoint _jumpPointObject;
 		[SerializeField, Tooltip("The jump stats to use in this structure.")] private JumpStats _jumpStats;
 		[SerializeField, Tooltip("Where the jump point will be.")] private Vector2 _point;
-		[SerializeField, Tooltip("The amount of times the boss have to pass by to activate the jump.")] private Vector2Int _jumpCountMaxMin;
+		[SerializeField, Tooltip("The minimal amount of times the boss have to pass by to activate the jump.")] private ushort _minJumpCount;
+		[SerializeField, Tooltip("The maximum amount of times the boss have to pass by to activate the jump.")] private ushort _maxJumpCount;
 		public readonly JumpPoint JumpPointObject => _jumpPointObject;
 		public readonly JumpStats JumpStats => _jumpStats;
 		public readonly Vector2 Point => _point;
-		public readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y + 1);
+		public readonly ushort JumpCount => (ushort)Random.Range(_minJumpCount, _maxJumpCount + 1);
 	};
 	[System.Serializable]
 	public struct JumpStats
