@@ -264,7 +264,7 @@ namespace GwambaPrimeAdventure.Character
 			transform.TurnScaleX(_turnLeft);
 			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
 			SceneLoaded.Invoke(SceneManager.GetActiveScene(), LoadSceneMode.Single);
-			yield return new WaitForEndOfFrame();
+			yield return null;
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
