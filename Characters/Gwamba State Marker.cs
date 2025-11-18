@@ -24,10 +24,8 @@ namespace GwambaPrimeAdventure.Character
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
-		private IEnumerator _dashCoroutine;
-		private IEnumerator _airJumpCoroutine;
-		private Vector2 _normalOffset = new();
-		private Vector2 _normalSize = new();
+		private IEnumerator _dashSlideEvent;
+		private IEnumerator _airJumpEvent;
 		private Vector2 _originCast;
 		private Vector2 _sizeCast;
 		private Vector3 _jokerValue;
@@ -150,8 +148,8 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			StopAllCoroutines();
-			_dashCoroutine = null;
-			_airJumpCoroutine = null;
+			_dashSlideEvent = null;
+			_airJumpEvent = null;
 			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
 				gwambaDamager.DamagerHurt -= Hurt;
@@ -265,7 +263,7 @@ namespace GwambaPrimeAdventure.Character
 				gwambaDamager.DamagerAttack += Attack;
 			}
 			transform.TurnScaleX(_turnLeft);
-			(_gravityScale, _normalOffset, _normalSize) = (_rigidbody.gravityScale, _collider.offset, _collider.size);
+			_gravityScale = _rigidbody.gravityScale;
 			SceneLoaded.Invoke(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 			yield return null;
 		}
@@ -304,7 +302,7 @@ namespace GwambaPrimeAdventure.Character
 			if (_movementAction != 0f && (!_attackUsage || _comboAttackBuffer))
 				if (movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
 				{
-					_airJumpCoroutine = AirJump(_movementAction);
+					_airJumpEvent = AirJump(_movementAction);
 					IEnumerator AirJump(float dashMovement)
 					{
 						_animator.SetBool(_airJump, !(_canAirJump = false));
@@ -315,12 +313,12 @@ namespace GwambaPrimeAdventure.Character
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAPLENGTH, _groundLayer);
-							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _airJumpCoroutine is null)
+							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _airJumpEvent is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
 							yield return null;
 						}
-						_animator.SetBool(_airJump, (_airJumpCoroutine = null) is not null);
+						_animator.SetBool(_airJump, (_airJumpEvent = null) is not null);
 						_animator.SetBool(_attackAirJump, false);
 					}
 					_rigidbody.linearVelocity = Vector2.zero;
@@ -329,7 +327,7 @@ namespace GwambaPrimeAdventure.Character
 				}
 				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround)
 				{
-					_dashCoroutine = Dash(_movementAction);
+					_dashSlideEvent = Dash(_movementAction);
 					IEnumerator Dash(float dashMovement)
 					{
 						_animator.SetBool(_dashSlide, true);
@@ -342,12 +340,12 @@ namespace GwambaPrimeAdventure.Character
 							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
 							_jokerValue = new Vector3(transform.right.x * dashMovement, transform.right.y * dashMovement, _jokerValue.z);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer);
-							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _dashCoroutine is null)
+							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _dashSlideEvent is null)
 								break;
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
 							yield return null;
 						}
-						_animator.SetBool(_dashSlide, (_dashCoroutine = null) is not null);
+						_animator.SetBool(_dashSlide, (_dashSlideEvent = null) is not null);
 						_animator.SetBool(_attackSlide, false);
 					}
 			}
@@ -517,8 +515,8 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (_dashCoroutine is not null)
-				_dashCoroutine.MoveNext();
+			if (_dashSlideEvent is not null)
+				_dashSlideEvent.MoveNext();
 			else
 			{
 				if (_isOnGround)
@@ -640,8 +638,8 @@ namespace GwambaPrimeAdventure.Character
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
-				if (_airJumpCoroutine is not null)
-					_airJumpCoroutine.MoveNext();
+				if (_airJumpEvent is not null)
+					_airJumpEvent.MoveNext();
 				else
 				{
 					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
