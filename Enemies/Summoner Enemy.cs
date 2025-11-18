@@ -14,6 +14,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _stopSummon = false;
 		private ushort _randomSummonIndex = 0;
 		private float[] _summonTime;
+		private float _fullStopTime = 0f;
 		private float _stopTime = 0f;
 		private float _gravityScale = 0f;
 		[Header("Summoner Enemy")]
@@ -58,7 +59,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.Send(PathConnection.Enemy);
 					if (summon.ParalyzeToSummon)
 						Rigidbody.gravityScale = 0f;
-					_stopTime = summon.TimeToStop;
+					_fullStopTime = _stopTime = summon.TimeToStop;
 					yield return null;
 				}
 				Vector2 position;
@@ -109,13 +110,16 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_stopTime > 0f)
-				if ((_stopTime -= Time.deltaTime) <= 0f)
+			{
+				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2f && _summonCoroutine is not null)
+					_summonCoroutine?.MoveNext();
+				if (_stopTime <= 0f)
 				{
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
 					Rigidbody.gravityScale = _gravityScale;
-					_summonCoroutine?.MoveNext();
 				}
+			}
 			if (_statistics.RandomTimedSummons)
 				IndexedSummon(_randomSummonIndex);
 			else
