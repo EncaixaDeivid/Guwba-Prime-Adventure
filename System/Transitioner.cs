@@ -22,7 +22,7 @@ namespace GwambaPrimeAdventure
 				for (float i = 0f; transicionHud.RootElement.style.opacity.value < 1f; i += 0.1f)
 				{
 					transicionHud.RootElement.style.opacity = i;
-					yield return new WaitForEndOfFrame();
+					yield return null;
 				}
 				string newScene = scene ?? sceneName ?? _sceneTransicion;
 				if (newScene != gameObject.scene.name)
@@ -38,7 +38,7 @@ namespace GwambaPrimeAdventure
 					while (!asyncOperation.isDone)
 					{
 						transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
-						yield return new WaitForEndOfFrame();
+						yield return null;
 					}
 				}
 				asyncOperation.allowSceneActivation = true;
