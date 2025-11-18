@@ -53,7 +53,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public readonly JumpPoint JumpPointObject => _jumpPointObject;
 		public readonly JumpStats JumpStats => _jumpStats;
 		public readonly Vector2 Point => _point;
-		public readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y);
+		public readonly ushort JumpCount => (ushort)Random.Range(_jumpCountMaxMin.x, _jumpCountMaxMin.y + 1);
 	};
 	[System.Serializable]
 	public struct JumpStats
