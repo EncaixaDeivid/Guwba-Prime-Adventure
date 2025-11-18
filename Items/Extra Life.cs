@@ -13,7 +13,7 @@ namespace GwambaPrimeAdventure.Item
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.LifesAcquired.Contains(gameObject.name))
 				Destroy(gameObject);
-			yield return new WaitForEndOfFrame();
+			yield return null;
 		}
 		public void Collect()
 		{
