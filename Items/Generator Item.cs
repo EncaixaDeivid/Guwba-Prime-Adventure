@@ -16,10 +16,8 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("If the items generated are to be keeped in existence.")] private bool _existentItems;
 		private void Update()
 		{
-			if (_continueGeneration)
-				if (_timeGeneration > 0f)
-					_timeGeneration -= Time.deltaTime;
-				else if (_timeGeneration <= 0f)
+			if (_continueGeneration && _timeGeneration > 0f)
+				if ((_timeGeneration -= Time.deltaTime) <= 0f)
 				{
 					_timeGeneration = _generationTime;
 					_itemsGenerated.Add(Instantiate(_generatedItem, transform.position, transform.rotation));
