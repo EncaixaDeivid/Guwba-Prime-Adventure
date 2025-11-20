@@ -6,7 +6,7 @@ namespace GwambaPrimeAdventure
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
 	public sealed class HiddenObject : MonoBehaviour, IConnector
 	{
-		private static readonly WaitForSeconds _waitForSeconds1e = new(1e-3f);
+		private static readonly WaitForSeconds _waitForSeconds = new(1e-3f);
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If this object will activate the children.")] private bool _initialActive;
 		[SerializeField, Tooltip("If this object will turn off the collisions.")] private bool _offCollision;
@@ -20,7 +20,7 @@ namespace GwambaPrimeAdventure
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			yield return _waitForSeconds1e;
+			yield return _waitForSeconds;
 			if (!_initialActive)
 				for (ushort i = 0; i < transform.childCount; i++)
 					transform.GetChild(i).gameObject.SetActive(false);
