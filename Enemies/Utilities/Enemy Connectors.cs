@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
@@ -21,6 +22,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected Rigidbody2D _rigidbody;
 		protected CinemachineImpulseSource _screenShaker;
 		protected readonly List<Projectile> _projectiles = new();
+		protected IEnumerator _parabolicEvent;
 		protected Vector2Int _oldCellPosition = new();
 		protected Vector2Int _cellPosition = new();
 		protected short _vitality;
@@ -33,7 +35,6 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected float _deathTimer = 0f;
 		protected float _stunTimer = 0f;
 		protected bool _breakInUse = false;
-		protected bool _parabolaCoroutine = false;
 	};
 	public interface IJumper
 	{
