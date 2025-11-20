@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -19,10 +18,8 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void Update()
 		{
-			if (_isDead && !IsStunned)
-			{
-				_deathTime -= Time.deltaTime;
-				if (_deathTime <= 0f)
+			if (_isDead)
+				if ((_deathTime -= Time.deltaTime) <= 0f)
 				{
 					_isDead = false;
 					if (_statistics.ChildEnemy)
@@ -31,11 +28,10 @@ namespace GwambaPrimeAdventure.Enemy
 						Instantiate(_statistics.ChildProjectile, transform.position, Quaternion.identity);
 					Destroy(gameObject);
 				}
-			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (_statistics.OnTouch && GwambaStateMarker.EqualObject(other.gameObject))
+			if (!_isDead && _statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 			{
 				_sender.Send(PathConnection.Enemy);
 				_deathTime = _statistics.TimeToDie;
@@ -44,6 +40,8 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new bool Hurt(ushort damage)
 		{
+			if (_isDead)
+				return false;
 			if (Health - (short)damage <= 0f)
 			{
 				_sender.Send(PathConnection.Enemy);
