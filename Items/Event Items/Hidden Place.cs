@@ -7,8 +7,7 @@ using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
-	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface))]
-	[RequireComponent(typeof(Light2DBase), typeof(Receptor))]
+	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface)), RequireComponent(typeof(Light2DBase), typeof(Receptor))]
 	internal sealed class HiddenPlace : StateController, IReceptorSignal
 	{
 		private Tilemap _tilemap;
@@ -17,6 +16,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private Light2DBase _followLight;
 		private readonly Sender _sender = Sender.Create();
 		private bool _activation = false;
+		private bool _follow = false;
 		[Header("Hidden Place")]
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
@@ -59,17 +59,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				EffectsController.OffGlobalLight(_selfLight);
 			else
 				EffectsController.OnGlobalLight(_selfLight);
-			if (_hasFollowLight && !appear)
-				StartCoroutine(FollowLight());
-			IEnumerator FollowLight()
-			{
-				while (!appear)
-				{
-					_followLight.transform.position = GwambaStateMarker.Localization;
-					yield return new WaitForFixedUpdate();
-					yield return new WaitUntil(() => isActiveAndEnabled);
-				}
-			}
+			if (_hasFollowLight)
+				_follow = !appear;
 			void HaveHidden()
 			{
 				if (_haveHidden)
@@ -102,7 +93,6 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			}
 			IEnumerator OpacityLevel(float alpha)
 			{
-				yield return new WaitForEndOfFrame();
 				yield return new WaitUntil(() => isActiveAndEnabled);
 				Color color = _tilemap.color;
 				color.a = alpha;
@@ -115,6 +105,11 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					StartCoroutine(_otherPlace.Fade(true));
 				else if (!_otherPlace._fadeFirst && !_otherPlace._activation)
 					StartCoroutine(_otherPlace.Fade(false));
+		}
+		private void FixedUpdate()
+		{
+			if (_follow)
+				_followLight.transform.position = GwambaStateMarker.Localization;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
