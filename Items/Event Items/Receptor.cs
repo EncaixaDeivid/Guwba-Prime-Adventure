@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Item.EventItem
@@ -8,8 +7,10 @@ namespace GwambaPrimeAdventure.Item.EventItem
 	internal sealed class Receptor : StateController
 	{
 		private readonly List<Activator> _usedActivators = new();
+		private Activator _signalActivator;
 		private IReceptorSignal _receptor;
 		private ushort _signals = 0;
+		private float _signalTimer = 0f;
 		private bool _onlyOneActivation = false;
 		[Header("Receptor")]
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
@@ -30,8 +31,14 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					if (saveFile.GeneralObjects.Contains(specificObject))
 						Activate();
 		}
+		private void Update()
+		{
+			if (_signalTimer > 0f)
+				if ((_signalTimer -= Time.deltaTime) <= 0f)
+					NormalSignal();
+		}
 		private void Activate() => _receptor.Execute();
-		private void NormalSignal(Activator signalActivator)
+		private void NormalSignal()
 		{
 			if (_onlyOneActivation)
 				return;
@@ -40,7 +47,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			if (_1X1)
 			{
 				foreach (Activator activator1X1 in _activators)
-					if (signalActivator == activator1X1 && !_usedActivators.Contains(activator1X1))
+					if (_signalActivator == activator1X1 && !_usedActivators.Contains(activator1X1))
 					{
 						_usedActivators.Add(activator1X1);
 						Activate();
@@ -50,7 +57,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			else if (_multiplesNeeded)
 			{
 				foreach (Activator activator in _activators)
-					if (activator == signalActivator)
+					if (activator == _signalActivator)
 						_signals += 1;
 				if (_signals >= _quantityNeeded)
 				{
@@ -61,7 +68,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			else if (_oneNeeded)
 			{
 				foreach (Activator activator in _activators)
-					if (activator == signalActivator)
+					if (activator == _signalActivator)
 					{
 						Activate();
 						if (_oneActivation)
@@ -72,7 +79,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			else
 			{
 				foreach (Activator activator in _activators)
-					if (activator == signalActivator)
+					if (activator == _signalActivator)
 						_signals += 1;
 				if (_signals >= _activators.Length)
 				{
@@ -83,15 +90,11 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		internal void ReceiveSignal(Activator signalActivator)
 		{
+			_signalActivator = signalActivator;
 			if (_timeToActivate > 0f)
-				StartCoroutine(TimerSignal());
+				_signalTimer = _timeToActivate;
 			else
-				NormalSignal(signalActivator);
-			IEnumerator TimerSignal()
-			{
-				yield return new WaitTime(this, _timeToActivate);
-				NormalSignal(signalActivator);
-			}
+				NormalSignal();
 		}
 	};
 	internal interface IReceptorSignal
