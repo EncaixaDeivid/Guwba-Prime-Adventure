@@ -11,7 +11,7 @@ namespace GwambaPrimeAdventure.Item
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.LifesAcquired.Contains(gameObject.name))
+			if (saveFile.LifesAcquired.Contains(name))
 				Destroy(gameObject);
 			yield return null;
 		}
@@ -20,9 +20,9 @@ namespace GwambaPrimeAdventure.Item
 			SaveController.Load(out SaveFile saveFile);
 			if (saveFile.Lifes < 100f)
 				saveFile.Lifes += 1;
-			saveFile.LifesAcquired.Add(gameObject.name);
-			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
-				saveFile.GeneralObjects.Add(gameObject.name);
+			saveFile.LifesAcquired.Add(name);
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
+				saveFile.GeneralObjects.Add(name);
 			SaveController.WriteSave(saveFile);
 			Destroy(gameObject);
 		}
