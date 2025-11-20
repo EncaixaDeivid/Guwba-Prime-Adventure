@@ -1,4 +1,5 @@
 using UnityEngine;
+using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -34,7 +35,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (_statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
+			if (_statistics.OnTouch && GwambaStateMarker.EqualObject(other.gameObject))
 			{
 				_sender.Send(PathConnection.Enemy);
 				_deathTime = _statistics.TimeToDie;
