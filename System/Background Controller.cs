@@ -47,7 +47,7 @@ namespace GwambaPrimeAdventure
 				for (ushort childIndex = 0; childIndex < _childrenTransforms[i].childCount; childIndex++)
 					_childrenTransforms[i].GetChild(childIndex).GetComponent<SpriteRenderer>().sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
 			}
-			yield return new WaitForEndOfFrame();
+			yield return null;
 		}
 		private void LateUpdate()
 		{
