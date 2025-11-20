@@ -32,9 +32,9 @@ namespace GwambaPrimeAdventure.Item
 				saveFile.LevelsCompleted[ushort.Parse($"{gameObject.scene.name[^1]}") - 1] = true;
 				SaveController.WriteSave(saveFile);
 			}
-			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 			{
-				saveFile.GeneralObjects.Add(gameObject.name);
+				saveFile.GeneralObjects.Add(name);
 				SaveController.WriteSave(saveFile);
 			}
 			if (_enterInDialog && settings.DialogToggle)
