@@ -85,9 +85,9 @@ namespace GwambaPrimeAdventure.Story
 					if (_storyTeller)
 						_storyTeller.CloseScene();
 					SaveController.Load(out SaveFile saveFile);
-					if (_dialogObject.SaveOnEspecific && !saveFile.GeneralObjects.Contains(gameObject.name))
+					if (_dialogObject.SaveOnEspecific && !saveFile.GeneralObjects.Contains(name))
 					{
-						saveFile.GeneralObjects.Add(gameObject.name);
+						saveFile.GeneralObjects.Add(name);
 						SaveController.WriteSave(saveFile);
 					}
 					if (_dialogObject.ActivateTransition)
