@@ -7,7 +7,7 @@ using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
-	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Surface)), RequireComponent(typeof(Light2DBase), typeof(Receptor))]
+	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Light2DBase)), RequireComponent(typeof(Receptor))]
 	internal sealed class HiddenPlace : StateController, IReceptorSignal
 	{
 		private Tilemap _tilemap;
