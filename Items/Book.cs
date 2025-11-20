@@ -11,23 +11,23 @@ namespace GwambaPrimeAdventure.Item
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.Books.ContainsKey(gameObject.name))
+			if (saveFile.Books.ContainsKey(name))
 			{
-				if (saveFile.Books[gameObject.name])
+				if (saveFile.Books[name])
 					GetComponent<SpriteRenderer>().sprite = _bookCacthed;
 				yield break;
 			}
-			saveFile.Books.Add(gameObject.name, false);
+			saveFile.Books.Add(name, false);
 			yield return null;
 		}
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (!saveFile.Books[gameObject.name])
-				saveFile.Books[gameObject.name] = true;
+			if (!saveFile.Books[name])
+				saveFile.Books[name] = true;
 			GetComponent<SpriteRenderer>().sprite = _bookCacthed;
-			if (!saveFile.GeneralObjects.Contains(gameObject.name))
-				saveFile.GeneralObjects.Add(gameObject.name);
+			if (!saveFile.GeneralObjects.Contains(name))
+				saveFile.GeneralObjects.Add(name);
 			SaveController.WriteSave(saveFile);
 		}
 	};
