@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.U2D;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Light2DBase))]
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
-		private List<Light2DBase> _lightsStack;
+		private Light2DBase[] _lightsStack;
 		private bool _canHitStop = true;
 		private new void Awake()
 		{
@@ -19,7 +19,7 @@ namespace GwambaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			_lightsStack = new List<Light2DBase>() { GetComponent<Light2DBase>() };
+			_lightsStack = new Light2DBase[] { GetComponent<Light2DBase>() };
 		}
 		private new void OnDestroy()
 		{
@@ -43,19 +43,24 @@ namespace GwambaPrimeAdventure
 		{
 			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight)
 			{
-				foreach (Light2DBase light in _lightsStack)
+				Light2DBase[] lights;
+				foreach (Light2DBase light in lights = _lightsStack)
 					if (light)
 						light.enabled = false;
 				if (active)
 				{
-					globalLight.enabled = true;
-					_lightsStack.Add(globalLight);
+					_lightsStack = new Light2DBase[_lightsStack.Length + 1];
+					for (ushort i = 0; i < lights.Length; i++)
+						_lightsStack[i] = lights[i];
+					_lightsStack[^1] = globalLight;
 				}
 				else
 				{
-					_lightsStack.Remove(globalLight);
-					_lightsStack[^1].enabled = true;
+					_lightsStack = new Light2DBase[_lightsStack.Length - 1];
+					for (ushort i = 0; i < _lightsStack.Length; i++)
+						_lightsStack[i] = lights[i];
 				}
+				_lightsStack[^1].enabled = true;
 			}
 		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
