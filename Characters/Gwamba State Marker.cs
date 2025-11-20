@@ -303,6 +303,9 @@ namespace GwambaPrimeAdventure.Character
 				if (movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
 				{
 					_airJumpEvent = AirJump(_movementAction);
+					_rigidbody.linearVelocity = Vector2.zero;
+					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
+					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 					IEnumerator AirJump(float dashMovement)
 					{
 						_animator.SetBool(_airJump, !(_canAirJump = false));
@@ -321,9 +324,6 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(_airJump, (_airJumpEvent = null) is not null);
 						_animator.SetBool(_attackAirJump, false);
 					}
-					_rigidbody.linearVelocity = Vector2.zero;
-					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
-					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
 				}
 				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround)
 				{
@@ -663,10 +663,7 @@ namespace GwambaPrimeAdventure.Character
 			{
 				if (_comboAttackBuffer)
 					_animator.SetBool(_attackJump, true);
-				_isJumping = !(_hopActive = false);
-				_longJumping = _animator.GetBool(_dashSlide);
-				_rigidbody.gravityScale = _gravityScale;
-				_rigidbody.linearVelocityY = 0f;
+				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(_dashSlide), _gravityScale, 0f);
 				if (_bunnyHopBoost > 0f)
 				{
 					_isHoping = true;
