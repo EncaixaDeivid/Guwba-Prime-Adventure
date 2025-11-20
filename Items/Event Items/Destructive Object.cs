@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, IReceptorSignal, IDestructible
+	internal sealed class DestructiveObject : StateController, ILoader, IReceptorSignal, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
@@ -20,16 +21,13 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_sender.SetStateForm(StateForm.State);
 			_sender.SetAdditionalData(_hiddenObject);
 			_sender.SetToggle(true);
+		}
+		public IEnumerator Load()
+		{
 			SaveController.Load(out SaveFile saveFile);
 			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(gameObject.name))
-				Destroy(gameObject, 1e-3f);
-		}
-		public void Execute()
-		{
-			if (_hiddenObject)
-				_sender.Send(PathConnection.System);
-			SaveObject();
-			Destroy(gameObject);
+				Destroy(gameObject);
+			yield return null;
 		}
 		private void SaveObject()
 		{
@@ -40,15 +38,17 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				SaveController.WriteSave(saveFile);
 			}
 		}
+		public void Execute()
+		{
+			if (_hiddenObject)
+				_sender.Send(PathConnection.System);
+			SaveObject();
+			Destroy(gameObject);
+		}
 		private void DestroyOnCollision()
 		{
 			if (_destroyOnCollision)
-			{
-				if (_hiddenObject)
-					_sender.Send(PathConnection.System);
-				SaveObject();
-				Destroy(gameObject);
-			}
+				Execute();
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => DestroyOnCollision();
 		private void OnTriggerEnter2D(Collider2D collision) => DestroyOnCollision();
@@ -57,12 +57,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			if (damage < _biggerDamage || _vitality <= 0f)
 				return false;
 			if ((_vitality -= (short)damage) <= 0f)
-			{
-				if (_hiddenObject)
-					_sender.Send(PathConnection.System);
-				SaveObject();
-				Destroy(gameObject);
-			}
+				Execute();
 			return true;
 		}
 		public void Stun(ushort stunStength, float stunTime) { }
