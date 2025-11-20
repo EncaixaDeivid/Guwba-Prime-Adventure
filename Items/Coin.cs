@@ -19,6 +19,12 @@ namespace GwambaPrimeAdventure.Item
 			_spriteRenderer = GetComponent<SpriteRenderer>();
 			_animator = GetComponent<Animator>();
 			_collider = GetComponent<CircleCollider2D>();
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
 		}
 		private void OnEnable()
 		{
@@ -42,8 +48,8 @@ namespace GwambaPrimeAdventure.Item
 			}
 			if (saveFile.Lifes >= 100f && saveFile.Coins >= 99f)
 				saveFile.Coins = 100;
-			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
-				saveFile.GeneralObjects.Add(gameObject.name);
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
+				saveFile.GeneralObjects.Add(name);
 			SaveController.WriteSave(saveFile);
 			_collider.enabled = _animator.enabled = _spriteRenderer.enabled = false;
 		}
