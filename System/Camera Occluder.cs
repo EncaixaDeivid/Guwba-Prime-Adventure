@@ -71,12 +71,11 @@ namespace GwambaPrimeAdventure
 				{
 					yield return new WaitTime(this, _waitTime);
 					float time = 0f;
-					while (time < 1f)
+					while (time < 1e-1f)
 					{
 						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
 						yield return new WaitUntil(() => isActiveAndEnabled);
-						yield return new WaitForEndOfFrame();
 					}
 				}
 			}
