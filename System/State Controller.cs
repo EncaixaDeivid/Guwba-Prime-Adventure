@@ -27,6 +27,6 @@ namespace GwambaPrimeAdventure
 				_instance = instance;
 				_time = time;
 			}
-		}
+		};
 	};
 };
