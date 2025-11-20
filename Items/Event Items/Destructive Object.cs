@@ -25,16 +25,16 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(name))
 				Destroy(gameObject);
 			yield return null;
 		}
 		private void SaveObject()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 			{
-				saveFile.GeneralObjects.Add(gameObject.name);
+				saveFile.GeneralObjects.Add(name);
 				SaveController.WriteSave(saveFile);
 			}
 		}
