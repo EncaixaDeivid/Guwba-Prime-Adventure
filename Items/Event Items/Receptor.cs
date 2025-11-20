@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptorSignal))]
-	internal sealed class Receptor : StateController
+	internal sealed class Receptor : StateController, ILoader
 	{
 		private readonly List<Activator> _usedActivators = new();
 		private Activator _signalActivator;
@@ -25,11 +26,15 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			_receptor = GetComponent<IReceptorSignal>();
+		}
+		public IEnumerator Load()
+		{
 			SaveController.Load(out SaveFile saveFile);
 			if (_specificsObjects.Length > 0f)
 				foreach (string specificObject in _specificsObjects)
 					if (saveFile.GeneralObjects.Contains(specificObject))
 						Activate();
+			yield return null;
 		}
 		private void Update()
 		{
