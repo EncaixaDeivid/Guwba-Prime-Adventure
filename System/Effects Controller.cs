@@ -34,9 +34,9 @@ namespace GwambaPrimeAdventure
 			{
 				_canHitStop = false;
 				Time.timeScale = slowTime;
-				yield return new WaitTime(this, stopTime);
-				_canHitStop = true;
+				yield return new WaitForSecondsRealtime(stopTime);
 				Time.timeScale = 1f;
+				_canHitStop = true;
 			}
 		}
 		private void PrivateGlobalLight(Light2DBase globalLight, bool active)
