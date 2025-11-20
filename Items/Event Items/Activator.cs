@@ -1,9 +1,10 @@
 using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[RequireComponent(typeof(Transform))]
-	internal abstract class Activator : StateController
+	internal abstract class Activator : StateController, ILoader
 	{
 		private Animator _animator;
 		private readonly int _isOn = Animator.StringToHash("IsOn");
@@ -21,9 +22,6 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			_animator = GetComponent<Animator>();
-			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(gameObject.name))
-				Activation();
 		}
 		private void OnEnable()
 		{
@@ -34,6 +32,13 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		{
 			if (_animator)
 				_animator.SetFloat(_isOn, 0f);
+		}
+		public IEnumerator Load()
+		{
+			SaveController.Load(out SaveFile saveFile);
+			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(name))
+				Activation();
+			yield return null;
 		}
 		protected void Activation()
 		{
@@ -52,9 +57,9 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					receptor.ReceiveSignal(this);
 			_usedOne = true;
 			SaveController.Load(out SaveFile saveFile);
-			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 			{
-				saveFile.GeneralObjects.Add(gameObject.name);
+				saveFile.GeneralObjects.Add(name);
 				SaveController.WriteSave(saveFile);
 			}
 		}
