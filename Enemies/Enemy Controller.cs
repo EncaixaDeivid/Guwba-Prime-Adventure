@@ -6,7 +6,7 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	internal sealed class EnemyController : Control, IConnector, IDestructible
+	internal sealed class EnemyController : Control, ILoader, IConnector, IDestructible
    {
 		private EnemyProvider[] _selfEnemies;
 		[Header("Enemy Statistics")]
@@ -34,9 +34,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.OnDestroy();
 			SaveController.Load(out SaveFile saveFile);
-			if (_statistics.SaveOnSpecifics && !saveFile.GeneralObjects.Contains(gameObject.name))
+			if (_statistics.SaveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 			{
-				saveFile.GeneralObjects.Add(gameObject.name);
+				saveFile.GeneralObjects.Add(name);
 				SaveController.WriteSave(saveFile);
 			}
 			Sender.Exclude(this);
@@ -54,6 +54,13 @@ namespace GwambaPrimeAdventure.Enemy
 					_destructibleEnemy = _selfEnemies[i + 1];
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
+		}
+		public IEnumerator Load()
+		{
+			SaveController.Load(out SaveFile saveFile);
+			if (_statistics.SaveOnSpecifics && saveFile.GeneralObjects.Contains(name))
+				Destroy(gameObject);
+			yield return null;
 		}
 		private void Update()
 		{
