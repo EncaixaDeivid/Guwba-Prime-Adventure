@@ -8,8 +8,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 	{
 		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
-		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of ")]
-		private HiddenObject _hiddenObject;
+		[SerializeField, Tooltip("If there a object that will be instantiate after the destruction of ")] private HiddenObject _hiddenObject;
 		[SerializeField, Tooltip("The vitality of this object before it destruction.")] private short _vitality;
 		[SerializeField, Tooltip("The amount of damage that this object have to receive real damage.")] private short _biggerDamage;
 		[SerializeField, Tooltip("If this object will be destructed on collision with another object.")] private bool _destroyOnCollision;
