@@ -23,13 +23,9 @@ namespace GwambaPrimeAdventure
 			if (!_instance || _instance != this)
 				yield break;
 			TransicionHud transicionHud = Instantiate(_transicionHud, transform);
-			transicionHud.RootElement.style.opacity = 1f;
-			transicionHud.LoadingBar.highValue = _objectLoaders.Length * 2f;
+			(transicionHud.RootElement.style.opacity, transicionHud.LoadingBar.highValue) = (1f, _objectLoaders.Length);
 			for (ushort i = 0; i < _objectLoaders.Length; i++)
-			{
-				yield return StartCoroutine(Instantiate(_objectLoaders[i]).Load(transicionHud.LoadingBar, (ushort)transicionHud.LoadingBar.highValue));
-				transicionHud.LoadingBar.value += i;
-			}
+				yield return StartCoroutine(Instantiate(_objectLoaders[i]).Load(transicionHud.LoadingBar, true, 0));
 			Destroy(gameObject);
 			StateController.SetState(true);
 		}
