@@ -41,7 +41,7 @@ namespace GwambaPrimeAdventure
 		}
 		private void PrivateGlobalLight(Light2DBase globalLight, bool active)
 		{
-			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight)
+			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight && _lightsStack[0])
 			{
 				Light2DBase[] lights;
 				foreach (Light2DBase light in lights = _lightsStack)
