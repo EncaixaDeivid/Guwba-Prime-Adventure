@@ -7,6 +7,6 @@ namespace GwambaPrimeAdventure
 	{
 		[SerializeField] private bool _isScene;
 		public bool IsScene => _isScene;
-		public IEnumerator Load() => null;
+		public IEnumerator Load() { yield return null; }
 	};
 };
