@@ -5,26 +5,22 @@ namespace GwambaPrimeAdventure
 {
 	internal sealed class ObjectLoader : MonoBehaviour
 	{
-		[SerializeField, Tooltip("The objects to be lodaed.")] private ObjectLoader[] _objectLoaders;
-		public IEnumerator Load(ProgressBar progressBar, bool coverProgress, ushort totalComplete)
+		private static ushort _progressIndex = 0;
+		public IEnumerator Load(ProgressBar progressBar)
 		{
 			ILoader[] loaders = GetComponentsInChildren<ILoader>();
-			for (ushort i = 0; i < _objectLoaders.Length; i++)
-			{
-				progressBar.value += (i + 1f) / (_objectLoaders.Length + loaders.Length + totalComplete);
-				yield return StartCoroutine(Instantiate(_objectLoaders[i]).Load(progressBar, false, (ushort)(_objectLoaders.Length + loaders.Length)));
-				if (i < _objectLoaders.Length - 1)
-					progressBar.value -= (i + 1f) / (_objectLoaders.Length + loaders.Length + totalComplete);
-			}
+			float progress = 0f;
 			for (ushort i = 0; i < loaders.Length; i++)
 			{
-				progressBar.value += (i + 1f) / (_objectLoaders.Length + loaders.Length + totalComplete);
 				yield return StartCoroutine(loaders[i].Load());
-				if (i < loaders.Length - 1)
-					progressBar.value -= (i + 1f) / (_objectLoaders.Length + loaders.Length + totalComplete);
+				progressBar.value -= progress;
+				progress = (i + 1f) / loaders.Length;
+				progressBar.value += progress;
 			}
-			if (coverProgress && _objectLoaders.Length + loaders.Length <= 0)
-				progressBar.value += 1f;
+			if (loaders.Length <= 0)
+				progressBar.value += (_progressIndex += 1) / _progressIndex;
+			else
+				progressBar.value += (_progressIndex += 1) - progressBar.value;
 			transform.DetachChildren();
 			Destroy(gameObject);
 		}
