@@ -22,7 +22,7 @@
 {
 	font-size : 60px;
 	-unity-text-align : middle-center;
-	background-image: url("project://database/Assets/Huds/Designs/Guwba Prime Adventure Logo.png");
+	background-image: url("project://database/Assets/Huds/Designs/Gwamba Prime Adventure Logo.png");
 	width: 600px;
 	height: 600px;
 	justify-content: center;
