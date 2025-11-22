@@ -18,6 +18,7 @@ namespace GwambaPrimeAdventure.Hud
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
+		[SerializeField, Tooltip("The scene of the boss of actual scene.")] private SceneField _bossScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -68,7 +69,7 @@ namespace GwambaPrimeAdventure.Hud
 		};
 		private Action Continue => () =>
 		{
-			if (SceneManager.GetActiveScene().name.ContainsInvariantCultureIgnoreCase("Boss"))
+			if (SceneManager.GetActiveScene().name == _bossScene)
 				GetComponent<Transitioner>().Transicion(sceneName: SceneManager.GetActiveScene().name);
 			else
 			{
