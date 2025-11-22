@@ -10,8 +10,7 @@ namespace GwambaPrimeAdventure.Character
 	{
 		private static PointSetter _instance;
 		private readonly Sender _sender = Sender.Create();
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("The name of the hubby world scene.")] private SceneField _hubbyWorldScene;
+		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("The name of the hubby world scene."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("Which point setter is setted when scene is the hubby world.")] private ushort _selfIndex;
 		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
