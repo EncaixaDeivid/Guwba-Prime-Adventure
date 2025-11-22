@@ -227,7 +227,7 @@ namespace GwambaPrimeAdventure.Hud
 				StateController.SetState(false);
 				if (SceneManager.GetActiveScene().name != _levelSelectorScene)
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
-				if (SceneManager.GetActiveScene().name == _menuScene)
+				else if (SceneManager.GetActiveScene().name == _menuScene)
 				{
 					_configurationHud.OutLevel.style.display = DisplayStyle.None;
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
