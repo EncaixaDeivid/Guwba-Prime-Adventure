@@ -74,8 +74,8 @@ namespace GwambaPrimeAdventure.Character
 		[Header("Control")]
 		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
-		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
-		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
+		[SerializeField, Tooltip("The layer mask that Gwamba identifies the ground.")] private LayerMask _groundLayer;
+		[SerializeField, Tooltip("The layer mask that Gwamba identifies a interactive object.")] private LayerMask _InteractionLayer;
 		[SerializeField, Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
 		[SerializeField, Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
@@ -85,34 +85,34 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
 		[SerializeField, Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
-		[SerializeField, Tooltip("The amount of time that Guwba gets invencible.")] private float _invencibilityTime;
+		[SerializeField, Tooltip("The amount of time that Gwamba gets invencible.")] private float _invencibilityTime;
 		[SerializeField, Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
-		[SerializeField, Tooltip("The amount of time that the has to stay before fade.")] private float _timeStep;
-		[SerializeField, Tooltip("The amount of time taht Guwba will be stunned after recover.")] private float _stunnedTime;
+		[SerializeField, Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
+		[SerializeField, Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
 		[Header("Movement")]
-		[SerializeField, Tooltip("The amount of speed that Guwba moves yourself.")] private float _movementSpeed;
-		[SerializeField, Tooltip("The amount of acceleration Guwba will apply to the Movement.")] private float _acceleration;
-		[SerializeField, Tooltip("The amount of decceleration Guwba will apply to the Movement.")] private float _decceleration;
-		[SerializeField, Tooltip("The amount of power the velocity Guwba will apply to the Movement.")] private float _velocityPower;
-		[SerializeField, Tooltip("The amount of friction Guwba will apply to the end of Movement.")] private float _frictionAmount;
+		[SerializeField, Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
+		[SerializeField, Tooltip("The amount of acceleration Gwamba will apply to the Movement.")] private float _acceleration;
+		[SerializeField, Tooltip("The amount of decceleration Gwamba will apply to the Movement.")] private float _decceleration;
+		[SerializeField, Tooltip("The amount of power the velocity Gwamba will apply to the Movement.")] private float _velocityPower;
+		[SerializeField, Tooltip("The amount of friction Gwamba will apply to the end of Movement.")] private float _frictionAmount;
 		[SerializeField, Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
-		[SerializeField, Tooltip("The amount of distance Guwba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
 		[SerializeField, Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
 		[SerializeField, Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, Tooltip("If Guwba will look firstly to the left.")] private bool _turnLeft;
+		[SerializeField, Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
 		[Header("Jump")]
-		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump.")] private float _jumpStrenght;
-		[SerializeField, Tooltip("The amount of strenght that Guwba can Jump on the air.")] private float _airJumpStrenght;
+		[SerializeField, Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
+		[SerializeField, Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
 		[SerializeField, Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
-		[SerializeField, Tooltip("The amount of time that Guwba can Jump before thouching ground.")] private float _jumpBufferTime;
-		[SerializeField, Tooltip("The amount of time that Guwba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Guwba's jump will suffer at up.")] private float _jumpCut;
+		[SerializeField, Tooltip("The amount of time that Gwamba can Jump before thouching ground.")] private float _jumpBufferTime;
+		[SerializeField, Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
+		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
 		[Header("Attack")]
 		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
 		[SerializeField, Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
-		[SerializeField, Tooltip("If Guwba is attacking in the moment.")] private bool _attackUsage;
-		[SerializeField, Tooltip("The buffer moment that Guwba have to execute a combo attack.")] private bool _comboAttackBuffer;
+		[SerializeField, Tooltip("If Gwamba is attacking in the moment.")] private bool _attackUsage;
+		[SerializeField, Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		private Vector2 Local => (Vector2)transform.position + _collider.offset;
 		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
@@ -487,7 +487,8 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (_invencibility)
 			{
-				if (_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f && (_showInvencibilityTimer -= Time.deltaTime) <= 0f)
+				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f;
+				if (_invencibility && (_showInvencibilityTimer -= Time.deltaTime) <= 0f)
 				{
 					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 						gwambaDamager.Alpha = gwambaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
