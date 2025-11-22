@@ -7,11 +7,12 @@ using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
+using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Character
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup)), SelectionBase]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
 	public sealed class GwambaStateMarker : StateController, ILoader, IConnector
 	{
@@ -71,48 +72,48 @@ namespace GwambaPrimeAdventure.Character
 		private bool _isHoping = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
-		[Header("Control")]
-		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
-		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
-		[SerializeField, Tooltip("The layer mask that Gwamba identifies the ground.")] private LayerMask _groundLayer;
-		[SerializeField, Tooltip("The layer mask that Gwamba identifies a interactive object.")] private LayerMask _InteractionLayer;
-		[SerializeField, Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
-		[SerializeField, Min(0f), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
-		[SerializeField, Min(0f), Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
-		[SerializeField, Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, Min(0f), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
-		[SerializeField, Min(0f), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
-		[SerializeField, Min(0f), Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
-		[SerializeField, Min(0f), Tooltip("The amount of time that Gwamba gets invencible.")] private float _invencibilityTime;
-		[SerializeField, Range(0f, 1f), Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
-		[SerializeField, Min(0f), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
-		[SerializeField, Min(0f), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
-		[Header("Movement")]
-		[SerializeField, Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
-		[SerializeField, Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the Movement.")] private float _acceleration;
-		[SerializeField, Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the Movement.")] private float _decceleration;
-		[SerializeField, Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the Movement.")] private float _velocityPower;
-		[SerializeField, Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of Movement.")] private float _frictionAmount;
-		[SerializeField, Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
-		[SerializeField, Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
-		[SerializeField, Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
-		[Header("Jump")]
-		[SerializeField, Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
-		[SerializeField, Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
-		[SerializeField, Min(0f), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
-		[SerializeField, Min(0f), Tooltip("The amount of time that Gwamba can Jump before thouching ground.")] private float _jumpBufferTime;
-		[SerializeField, Min(0f), Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
-		[SerializeField, Range(0f, 1f), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
-		[Header("Attack")]
-		[SerializeField, Min(0f), Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
-		[SerializeField, Min(0f), Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, Min(0f), Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
-		[SerializeField, Tooltip("If Gwamba is attacking in the moment.")] private bool _attackUsage;
-		[SerializeField, Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
+		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
+		[SerializeField, BoxGroup("Control"), Tooltip("The layer mask that Gwamba identifies the ground.")] private LayerMask _groundLayer;
+		[SerializeField, BoxGroup("Control"), Tooltip("The layer mask that Gwamba identifies a interactive object.")] private LayerMask _InteractionLayer;
+		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
+		[SerializeField, BoxGroup("Control"), Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
+		[SerializeField, BoxGroup("Control"), Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba gets invencible.")] private float _invencibilityTime;
+		[SerializeField, BoxGroup("Control"), Range(0f, 1f), Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
+		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the Movement.")] private float _acceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the Movement.")] private float _decceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the Movement.")] private float _velocityPower;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of Movement.")] private float _frictionAmount;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
+		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
+		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
+		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
+		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of time that Gwamba can Jump before thouching ground.")] private float _jumpBufferTime;
+		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
+		[SerializeField, BoxGroup("Jump"), Range(0f, 1f), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Attack"), Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
+		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
+		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
+		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
+		[SerializeField, BoxGroup("Attack"), Tooltip("If Gwamba is attacking in the moment.")] private bool _attackUsage;
+		[SerializeField, BoxGroup("Attack"), Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		private Vector2 Local => (Vector2)transform.position + _collider.offset;
 		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
@@ -314,9 +315,9 @@ namespace GwambaPrimeAdventure.Character
 						transform.TurnScaleX(dashMovement);
 						while (!_isOnGround)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
-							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
-							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAPLENGTH, _groundLayer);
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
+							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
+							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, _groundLayer);
 							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _airJumpEvent is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
@@ -337,10 +338,10 @@ namespace GwambaPrimeAdventure.Character
 						_jokerValue.z = transform.position.x;
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * dashMovement, Local.y);
-							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.size.y - WorldBuild.SNAPLENGTH);
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
+							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							_jokerValue = new Vector3(transform.right.x * dashMovement, transform.right.y * dashMovement, _jokerValue.z);
-							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAPLENGTH, _groundLayer);
+							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAP_LENGTH, _groundLayer);
 							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _dashSlideEvent is null)
 								break;
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
@@ -555,21 +556,21 @@ namespace GwambaPrimeAdventure.Character
 					}
 					if (_movementAction != 0f)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _movementAction, Local.y - _bottomCheckerOffset);
-						_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, 1f - WorldBuild.SNAPLENGTH);
-						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAPLENGTH, _groundLayer))
+						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * _movementAction, Local.y - _bottomCheckerOffset);
+						_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, 1f - WorldBuild.SNAP_LENGTH);
+						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, _groundLayer))
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * _movementAction, Local.y + 5e-1f);
-							_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _topWallChecker - WorldBuild.SNAPLENGTH);
-							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAPLENGTH, _groundLayer))
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * _movementAction, Local.y + 5e-1f);
+							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _topWallChecker - WorldBuild.SNAP_LENGTH);
+							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, _groundLayer))
 							{
-								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
-								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAPLENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
+								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
+								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
 								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, _groundLayer))
 									if (lineCast.collider == _castHit.collider)
 									{
 										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
-										transform.position = new Vector2(transform.position.x + WorldBuild.SNAPLENGTH * _movementAction, transform.position.y + _jokerValue.x);
+										transform.position = new Vector2(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x);
 										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 										break;
 									}
@@ -632,11 +633,11 @@ namespace GwambaPrimeAdventure.Character
 					_jokerValue.x = 0f;
 					do
 					{
-						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += WorldBuild.SNAPLENGTH)) * _movementAction, Local.y - _collider.bounds.extents.y);
-						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1f + WorldBuild.SNAPLENGTH, _groundLayer);
+						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += WorldBuild.SNAP_LENGTH)) * _movementAction, Local.y - _collider.bounds.extents.y);
+						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1f + WorldBuild.SNAP_LENGTH, _groundLayer);
 						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10f) / 10f != Mathf.Round(_castHit.point.y * 10f) / 10f;
 					}
-					while (!_downStairs && _jokerValue.x < WorldBuild.SNAPLENGTH * 6f);
+					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * 6f);
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
@@ -680,8 +681,8 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAPLENGTH / 2f) * -transform.up.y);
-			_isOnGround = Physics2D.BoxCast(_originCast, new Vector2(_collider.size.x - WorldBuild.SNAPLENGTH, WorldBuild.SNAPLENGTH), 0f, -transform.up, WorldBuild.SNAPLENGTH, _groundLayer);
+			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y);
+			_isOnGround = Physics2D.BoxCast(_originCast, new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH), 0f, -transform.up, WorldBuild.SNAP_LENGTH, _groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
