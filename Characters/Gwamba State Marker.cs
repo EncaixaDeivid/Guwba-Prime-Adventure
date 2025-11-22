@@ -73,6 +73,7 @@ namespace GwambaPrimeAdventure.Character
 		private bool _invencibility = false;
 		[Header("Control")]
 		[SerializeField, Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
+		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies the ground.")] private LayerMask _groundLayer;
 		[SerializeField, Tooltip("The layer mask that Guwba identifies a interactive object.")] private LayerMask _InteractionLayer;
 		[SerializeField, Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
@@ -269,7 +270,7 @@ namespace GwambaPrimeAdventure.Character
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
-			if (scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+			if (scene.name == _menuScene)
 			{
 				Destroy(gameObject);
 				return;
