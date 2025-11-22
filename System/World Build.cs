@@ -3,7 +3,8 @@ namespace GwambaPrimeAdventure
 {
 	public static class WorldBuild
 	{
-		public const float SNAPLENGTH = 1f / 16f;
+		public const float FIELD_SPACE_LENGTH = 8f;
+		public const float SNAP_LENGTH = 1f / 16f;
 		private static float _localScaleX;
 		public static void TurnScaleX(this Transform transform, float valueChanger)
 		{
