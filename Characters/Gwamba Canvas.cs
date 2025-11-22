@@ -8,12 +8,12 @@ namespace GwambaPrimeAdventure.Character
 	internal sealed class GwambaCanvas : MonoBehaviour
 	{
 		private static GwambaCanvas _instance;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		[SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar background.")] private Color _backgroundColor;
-		[SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar border.")] private Color _borderColor;
-		[SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's stun resistance bar.")] private Color _stunResistanceColor;
-		[SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's bunny hop bar.")] private Color _bunnyHopColor;
-		[SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar missing vitality piece.")] private Color _missingVitalityColor;
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar background."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		internal Color BackgroundColor { get; private set; }
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar border.")] internal Color BorderColor { get; private set; }
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's stun resistance bar.")] internal Color StunResistanceColor { get; private set; }
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's bunny hop bar.")] internal Color BunnyHopColor { get; private set; }
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar missing vitality piece.")] internal Color MissingColor { get; private set; }
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of vitality that Gwamba have.")] private ushort _vitality;
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of recover vitality that Gwamba have.")] private ushort _recoverVitality;
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of stun resistance that Gwamba have.")] private ushort _stunResistance;
@@ -40,11 +40,6 @@ namespace GwambaPrimeAdventure.Character
 		internal Label FallDamageText { get; private set; }
 		internal Label LifeText { get; private set; }
 		internal Label CoinText { get; private set; }
-		internal Color BackgroundColor => _backgroundColor;
-		internal Color BorderColor => _borderColor;
-		internal Color StunResistanceColor => _stunResistanceColor;
-		internal Color BunnyHopColor => _bunnyHopColor;
-		internal Color MissingColor => _missingVitalityColor;
 		private void Awake()
 		{
 			if (_instance)
@@ -70,11 +65,11 @@ namespace GwambaPrimeAdventure.Character
 			for (ushort i = 0; i < _vitality; i++)
 			{
 				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
-				vitalityPieceClone.style.backgroundColor = new StyleColor(_backgroundColor);
-				vitalityPieceClone.style.borderBottomColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderLeftColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderRightColor = new StyleColor(_borderColor);
-				vitalityPieceClone.style.borderTopColor = new StyleColor(_borderColor);
+				vitalityPieceClone.style.backgroundColor = new StyleColor(BackgroundColor);
+				vitalityPieceClone.style.borderBottomColor = new StyleColor(BorderColor);
+				vitalityPieceClone.style.borderLeftColor = new StyleColor(BorderColor);
+				vitalityPieceClone.style.borderRightColor = new StyleColor(BorderColor);
+				vitalityPieceClone.style.borderTopColor = new StyleColor(BorderColor);
 				vitalityPieceClone.style.borderBottomWidth = new StyleFloat(_borderWidth);
 				vitalityPieceClone.style.borderLeftWidth = new StyleFloat(_borderWidth);
 				vitalityPieceClone.style.borderRightWidth = new StyleFloat(_borderWidth);
@@ -89,7 +84,7 @@ namespace GwambaPrimeAdventure.Character
 			for (ushort i = 0; i < _recoverVitality; i++)
 			{
 				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
-				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
+				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(MissingColor);
 				recoverVitalityPieceClone.style.width = new StyleLength(new Length(_totalWidth / _recoverVitality - _borderWidth * 2f, LengthUnit.Pixel));
 				recoverVitality.Add(recoverVitalityPieceClone);
 				RecoverVitality[i] = recoverVitality[i + 1];
@@ -101,7 +96,7 @@ namespace GwambaPrimeAdventure.Character
 			for (ushort i = 0; i < _stunResistance; i++)
 			{
 				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
-				stunResistancePieceClone.style.backgroundColor = new StyleColor(_stunResistanceColor);
+				stunResistancePieceClone.style.backgroundColor = new StyleColor(StunResistanceColor);
 				stunResistancePieceClone.style.width = new StyleLength(new Length(_totalWidth / _stunResistance - _borderWidth * 2f, LengthUnit.Pixel));
 				stunResistance.Add(stunResistancePieceClone);
 				StunResistance[i] = stunResistance[i + 1];
@@ -113,7 +108,7 @@ namespace GwambaPrimeAdventure.Character
 			for (ushort i = 0; i < _bunnyHop; i++)
 			{
 				VisualElement bunnyHopPieceClone = new() { name = bunnyHopPiece.name };
-				bunnyHopPieceClone.style.backgroundColor = new StyleColor(_missingVitalityColor);
+				bunnyHopPieceClone.style.backgroundColor = new StyleColor(MissingColor);
 				bunnyHopPieceClone.style.width = new StyleLength(new Length(_totalWidth / _bunnyHop - _borderWidth * 2f, LengthUnit.Pixel));
 				bunnyHop.Add(bunnyHopPieceClone);
 				BunnyHop[i] = bunnyHop[i + 1];
