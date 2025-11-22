@@ -11,7 +11,7 @@ namespace GwambaPrimeAdventure
 		[SerializeField, Tooltip("The object that handles the hud of the trancision.")] private TransicionHud _transicionHud;
 		[SerializeField, Tooltip("The scene that will be trancisionate to.")] private SceneField _sceneTransicion;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
-		public void Transicion(SceneField scene = null, string sceneName = null)
+		public void Transicion(SceneField scene = null)
 		{
 			StartCoroutine(SceneTransicion());
 			IEnumerator SceneTransicion()
@@ -24,10 +24,10 @@ namespace GwambaPrimeAdventure
 					transicionHud.RootElement.style.opacity = i;
 					yield return null;
 				}
-				string newScene = scene ?? sceneName ?? _sceneTransicion;
+				SceneField newScene = scene ?? _sceneTransicion;
 				if (newScene != gameObject.scene.name)
 					for (ushort i = 0; i < saveFile.LevelsCompleted.Length; i++)
-						if (newScene.Contains($"{i}"))
+						if (newScene.SceneName.Contains($"{i}"))
 							saveFile.LastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
 				if (newScene != _menuScene)
