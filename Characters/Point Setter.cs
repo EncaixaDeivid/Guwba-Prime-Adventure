@@ -10,7 +10,7 @@ namespace GwambaPrimeAdventure.Character
 		private static PointSetter _instance;
 		private readonly Sender _sender = Sender.Create();
 		[Header("Hubby World Interaction")]
-		[SerializeField, Tooltip("The name of the hubby world scene.")] private string _levelSelectorScene;
+		[SerializeField, Tooltip("The name of the hubby world scene.")] private SceneField _levelSelectorScene;
 		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
 		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
