@@ -17,6 +17,7 @@ namespace GwambaPrimeAdventure.Hud
 		[Header("Interaction Object")]
 		[SerializeField, Tooltip("The object that handles the hud of the death screen.")] private DeathScreenHud _deathScreenHudObject;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
+		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		public PathConnection PathConnection => PathConnection.Hud;
 		private void Awake()
 		{
@@ -52,7 +53,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
-			if (scene.name == _levelSelectorScene || scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+			if (scene.name == _levelSelectorScene || scene.name == _menuScene)
 				Destroy(gameObject);
 			else
 			{
