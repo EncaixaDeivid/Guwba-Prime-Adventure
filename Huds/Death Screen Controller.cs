@@ -69,8 +69,8 @@ namespace GwambaPrimeAdventure.Hud
 		};
 		private Action Continue => () =>
 		{
-			if (SceneManager.GetActiveScene().name == _bossScene)
-				GetComponent<Transitioner>().Transicion(sceneName: SceneManager.GetActiveScene().name);
+			if (_bossScene != null && SceneManager.GetActiveScene().name == _bossScene)
+				GetComponent<Transitioner>().Transicion(_bossScene);
 			else
 			{
 				StartCoroutine(Curtain());
