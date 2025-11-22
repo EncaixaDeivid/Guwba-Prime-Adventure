@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
-using System;
 using System.Collections;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure
@@ -15,6 +14,7 @@ namespace GwambaPrimeAdventure
 		private Vector2 _positionDamping = new();
 		[Header("Camera Objects")]
 		[SerializeField, Tooltip("The object that handles the follow of the camera.")] private CinemachineFollow _cinemachineFollow;
+		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The amount of time to wait to start restoring.")] private float _waitTime;
 		public PathConnection PathConnection => PathConnection.System;
 		private new void Awake()
@@ -49,7 +49,7 @@ namespace GwambaPrimeAdventure
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
-			if (scene.name.ContainsInvariantCultureIgnoreCase("Menu"))
+			if (scene.name == _menuScene)
 				Destroy(gameObject);
 		};
 		private void SetOtherChildren(GameObject gameObject, bool activate)
