@@ -23,8 +23,8 @@
 	font-size : 60px;
 	-unity-text-align : middle-center;
 	background-image: url("project://database/Assets/Huds/Designs/Gwamba Prime Adventure Logo.png");
-	width: 600px;
-	height: 600px;
+	width: 800px;
+	height: 328px;
 	justify-content: center;
 	align-self: center;
 	border-radius: 25px;
