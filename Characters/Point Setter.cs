@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using NaughtyAttributes;
 using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Character
@@ -9,9 +10,9 @@ namespace GwambaPrimeAdventure.Character
 	{
 		private static PointSetter _instance;
 		private readonly Sender _sender = Sender.Create();
-		[Header("Hubby World Interaction")]
-		[SerializeField, Tooltip("The name of the hubby world scene.")] private SceneField _levelSelectorScene;
-		[SerializeField, Tooltip("Which point is checked when scene is the level selector.")] private ushort _selfIndex;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("The name of the hubby world scene.")] private SceneField _hubbyWorldScene;
+		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("Which point setter is setted when scene is the hubby world.")] private ushort _selfIndex;
 		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
 		{
@@ -30,7 +31,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
-			if (gameObject.scene.name == _levelSelectorScene && saveFile.LastLevelEntered != "")
+			if (gameObject.scene.name == _hubbyWorldScene && saveFile.LastLevelEntered != "")
 				if (ushort.Parse($"{saveFile.LastLevelEntered[^1]}") == _selfIndex)
 					_sender.Send(PathConnection.Character);
 		}
