@@ -12,9 +12,9 @@ namespace GwambaPrimeAdventure.Character
 		private UnityAction<GwambaDamager, IDestructible> _damagerAttack;
 		[Header("Stats")]
 		[SerializeField, Tooltip("The velocity of the screen shake on the attack.")] private Vector2 _attackShake;
-		[SerializeField, Tooltip("The amount of time the attack screen shake will be applied.")] private float _attackShakeTime;
+		[SerializeField, Min(0f), Tooltip("The amount of time the attack screen shake will be applied.")] private float _attackShakeTime;
 		[SerializeField, Tooltip("The amount of damage that the attack of Guwba hits.")] private ushort _attackDamage;
-		[SerializeField, Tooltip("The amount of time that this Guwba's attack stun does.")] private float _stunTime;
+		[SerializeField, Min(0f), Tooltip("The amount of time that this Guwba's attack stun does.")] private float _stunTime;
 		[SerializeField, Tooltip("If this Guwba's part will take damage.")] private bool _takeDamage;
 		internal Predicate<ushort> DamagerHurt { get => null; set => _damagerHurt = value; }
 		internal UnityAction<ushort, float> DamagerStun { get => null; set => _damagerStun = value; }
