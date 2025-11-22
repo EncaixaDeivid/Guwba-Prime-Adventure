@@ -20,17 +20,17 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, Tooltip("User interface element.")] private string _lifeTextObject;
 		[SerializeField, Tooltip("User interface element.")] private string _coinTextObject;
 		[Header("Vitality Visual")]
-		[SerializeField, Tooltip("The color of Guwba's vitality bar background.")] private Color _backgroundColor;
-		[SerializeField, Tooltip("The color of Guwba's vitality bar border.")] private Color _borderColor;
-		[SerializeField, Tooltip("The color of Guwba's stun resistance bar.")] private Color _stunResistanceColor;
-		[SerializeField, Tooltip("The color of Guwba's bunny hop bar.")] private Color _bunnyHopColor;
-		[SerializeField, Tooltip("The color of Guwba's vitality bar missing vitality piece.")] private Color _missingVitalityColor;
+		[SerializeField, ColorUsage(true, true), Tooltip("The color of Guwba's vitality bar background.")] private Color _backgroundColor;
+		[SerializeField, ColorUsage(true, true), Tooltip("The color of Guwba's vitality bar border.")] private Color _borderColor;
+		[SerializeField, ColorUsage(true, true), Tooltip("The color of Guwba's stun resistance bar.")] private Color _stunResistanceColor;
+		[SerializeField, ColorUsage(true, true), Tooltip("The color of Guwba's bunny hop bar.")] private Color _bunnyHopColor;
+		[SerializeField, ColorUsage(true, true), Tooltip("The color of Guwba's vitality bar missing vitality piece.")] private Color _missingVitalityColor;
 		[SerializeField, Tooltip("The total of vitality that Guwba have.")] private ushort _vitality;
 		[SerializeField, Tooltip("The total of recover vitality that Guwba have.")] private ushort _recoverVitality;
 		[SerializeField, Tooltip("The total of stun resistance that Guwba have.")] private ushort _stunResistance;
 		[SerializeField, Tooltip("The total of bunny hop that Guwba have.")] private ushort _bunnyHop;
-		[SerializeField, Tooltip("The total width of Guwba's vitality bar.")] private float _totalWidth;
-		[SerializeField, Tooltip("The norder width of Guwba's vitality bar.")] private float _borderWidth;
+		[SerializeField, Min(0f), Tooltip("The total width of Guwba's vitality bar.")] private float _totalWidth;
+		[SerializeField, Min(0f), Tooltip("The norder width of Guwba's vitality bar.")] private float _borderWidth;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement[] Vitality { get; private set; }
 		internal VisualElement[] RecoverVitality { get; private set; }
