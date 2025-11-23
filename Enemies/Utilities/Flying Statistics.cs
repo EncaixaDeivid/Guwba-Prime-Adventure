@@ -1,23 +1,22 @@
 using UnityEngine;
+using NaughtyAttributes;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Flying Enemy", menuName = "Enemy Statistics/Flying", order = 4)]
 	public sealed class FlyingStatistics : MovingStatistics
 	{
-		[Header("Flying Enemy")]
-		[SerializeField, Tooltip("The target this enemy have to pursue.")] private Transform _target;
-		[SerializeField, Tooltip("The amount of speed to this enemy rotate towards.")] private float _rotationSpeed;
-		[SerializeField, Tooltip("The distance to stay away from the target.")] private float _targetDistance;
-		[SerializeField, Tooltip("The multiplication factor of the detection.")] private float _detectionFactor;
-		[SerializeField, Tooltip("The amount of speed that this enemy moves to go back to the original point.")] private float _returnSpeed;
-		[SerializeField, Tooltip("The amount of time this enemy moves will be stopped after it attack.")] private float _afterTime;
-		[SerializeField, Tooltip("If this enemy will pursue the target until fade.")] private bool _endlessPursue;
-		public Transform Target => _target;
-		public float RotationSpeed => _rotationSpeed;
-		public float TargetDistance => _targetDistance;
-		public float DetectionFactor => _detectionFactor;
-		public float ReturnSpeed => _returnSpeed;
-		public float AfterTime => _afterTime;
-		public bool EndlessPursue => _endlessPursue;
+		[field: SerializeField, Tooltip("The target this enemy have to pursue."), Header("Flying Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public Transform Target { get; private set; }
+		[field: SerializeField, Min(0f), ShowIf(EConditionOperator.Or, nameof(LookPerception), nameof(EndlessPursue)), Tooltip("The amount of speed to this enemy rotate towards.")]
+		public float RotationSpeed { get; private set; }
+		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The distance to stay away from the target.")]
+		public float TargetDistance { get; private set; }
+		[field: SerializeField, Min(1e-3f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The multiplication factor of the detection.")]
+		public float DetectionFactor { get; private set; }
+		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The amount of speed that this enemy moves to go back to the original point.")]
+		public float ReturnSpeed { get; private set; }
+		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The amount of time this enemy moves will be stopped after it attack.")]
+		public float AfterTime { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy will pursue the target until fade.")] public bool EndlessPursue { get; private set; }
 	};
 };
