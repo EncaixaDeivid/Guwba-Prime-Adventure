@@ -123,10 +123,10 @@ namespace GwambaPrimeAdventure.Enemy
 				Shoot();
 			return base.Hurt(damage);
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
-			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this && data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 					{
 						Shoot();
