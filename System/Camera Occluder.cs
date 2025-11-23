@@ -61,7 +61,7 @@ namespace GwambaPrimeAdventure
 		}
 		private void OnTriggerEnter2D(Collider2D other) => SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => SetOtherChildren(other.gameObject, false);
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.Event)
 			{
