@@ -15,10 +15,13 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] public float TimeToFade { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile won't move.")] public bool StayInPlace { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The velocity of the screen shake when colliding on the scene.")] public Vector2 CollideShake { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The fore mode to applied in the projectile.")] public ForceMode2D ForceMode { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will use force mode to move.")] public bool UseForce { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will pursue the player endless.")] public bool EndlessPursue { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will use parabolic movement.")] public bool ParabolicMovement { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")]
+		public ForceMode2D ForceMode { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")]
+		public bool UseForce { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")]
+		public bool ParabolicMovement { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The amount of speed this projectile will move.")] public float MovementSpeed { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If the rotation of this projectile impacts its movement.")] public bool RotationMatter { get; private set; }
 		[field: SerializeField, Tooltip("If the rotation of this projectile will be used.")] public bool UseSelfRotation { get; private set; }
