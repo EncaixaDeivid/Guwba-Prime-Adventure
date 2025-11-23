@@ -29,9 +29,9 @@ namespace GwambaPrimeAdventure.Enemy
 		protected bool GroundCheck()
 		{
 			_originCast = new Vector2(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
-			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAPLENGTH / 2f) * -transform.up.y;
-			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAPLENGTH, WorldBuild.SNAPLENGTH);
-			return Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAPLENGTH, _moving.Physics.GroundLayer);
+			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
+			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
+			return Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAP_LENGTH, _moving.Physics.GroundLayer);
 		}
 		public void Receive(DataConnection data, object additionalData)
 		{
