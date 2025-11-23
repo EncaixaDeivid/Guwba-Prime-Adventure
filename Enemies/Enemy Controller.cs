@@ -97,7 +97,7 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			_destructibleEnemy.Stun(stunStength, stunTime);
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
 			{
