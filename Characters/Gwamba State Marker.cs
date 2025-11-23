@@ -706,12 +706,12 @@ namespace GwambaPrimeAdventure.Character
 						return true;
 			return false;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
 					Reanimate();
-				else if (additionalData is Vector2 position)
+				else if (data.AdditionalData is Vector2 position)
 					transform.position = position;
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 			{
