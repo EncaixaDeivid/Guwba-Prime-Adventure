@@ -53,7 +53,7 @@ namespace GwambaPrimeAdventure.Item
 			SaveController.WriteSave(saveFile);
 			_collider.enabled = _animator.enabled = _spriteRenderer.enabled = false;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
 				_collider.enabled = _animator.enabled = _spriteRenderer.enabled = true;
