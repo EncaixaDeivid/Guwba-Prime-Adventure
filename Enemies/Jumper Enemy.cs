@@ -184,7 +184,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (!_detected && _statistics.LookPerception)
 					if (_statistics.CircularDetection)
 					{
-						foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 							if (collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = collider.transform.position;
@@ -194,8 +194,9 @@ namespace GwambaPrimeAdventure.Enemy
 					}
 					else
 					{
+						_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
 						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
-						foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, _direction, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 							if (ray.collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = ray.collider.transform.position;
@@ -208,8 +209,6 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget)
 					Rigidbody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
-				else
-					Rigidbody.linearVelocityX = 0f;
 			}
 		}
 		public void OnJump(ushort jumpIndex)
@@ -239,13 +238,13 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			}
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data)
 		{
-			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data, additionalData);
+						base.Receive(data);
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 							_stopJump = !data.ToggleValue.Value;
 						else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
