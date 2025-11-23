@@ -39,7 +39,7 @@ namespace GwambaPrimeAdventure.Character
 			if (GwambaStateMarker.EqualObject(other.gameObject) && this != _instance)
 				_instance = this;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && data.ToggleValue.Value && this == _instance)
 				_sender.Send(PathConnection.Character);
