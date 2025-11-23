@@ -26,52 +26,6 @@ namespace GwambaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void Verify()
-		{
-			_hasTarget = false;
-			if (_statistics.CircularDetection)
-			{
-				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
-					if (collider.TryGetComponent<IDestructible>(out _))
-						if (!Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
-						{
-							_targetDirection = (collider.transform.position - transform.position).normalized;
-							_hasTarget = true;
-						}
-			}
-			else
-			{
-				_originCast = (Vector2)transform.position + _collider.offset;
-				_originCast += new Vector2(_collider.bounds.extents.x * (transform.localScale.x < 0f ? -1f : 1f), 0f);
-				_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
-				if (_statistics.TurnRay)
-					_directionCast *= transform.localScale.x < 0f ? -1f : 1f;
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
-					if (ray.collider.TryGetComponent<IDestructible>(out _))
-						_hasTarget = true;
-			}
-			if ((_hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
-			{
-				_shootInterval = _statistics.IntervalToShoot;
-				if (_statistics.InvencibleShoot)
-				{
-					_sender.SetStateForm(StateForm.Event);
-					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Enemy);
-				}
-				if (_statistics.Stop)
-				{
-					_timeStop = _statistics.StopTime;
-					_sender.SetStateForm(StateForm.State);
-					_sender.SetToggle(!(_isStopped = _canShoot = true));
-					_sender.Send(PathConnection.Enemy);
-					if (_statistics.Paralyze)
-						Rigidbody.Sleep();
-				}
-				else
-					Shoot();
-			}
-		}
 		private void Shoot()
 		{
 			foreach (Projectile projectile in _statistics.Projectiles)
@@ -116,7 +70,52 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			}
 		}
-		private void FixedUpdate() => Verify();
+		private void FixedUpdate()
+		{
+			_hasTarget = false;
+			if (_statistics.CircularDetection)
+			{
+				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
+					if (collider.TryGetComponent<IDestructible>(out _))
+						if (!Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
+						{
+							_targetDirection = (collider.transform.position - transform.position).normalized;
+							_hasTarget = true;
+						}
+			}
+			else
+			{
+				_originCast = (Vector2)transform.position + _collider.offset;
+				_originCast.x += _collider.bounds.extents.x * (transform.localScale.x < 0f ? -1f : 1f);
+				_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
+				if (_statistics.TurnRay)
+					_directionCast *= transform.localScale.x < 0f ? -1f : 1f;
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
+					if (ray.collider.TryGetComponent<IDestructible>(out _))
+						_hasTarget = true;
+			}
+			if ((_hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
+			{
+				_shootInterval = _statistics.IntervalToShoot;
+				if (_statistics.InvencibleShoot)
+				{
+					_sender.SetStateForm(StateForm.Event);
+					_sender.SetToggle(true);
+					_sender.Send(PathConnection.Enemy);
+				}
+				if (_statistics.Stop)
+				{
+					_timeStop = _statistics.StopTime;
+					_sender.SetStateForm(StateForm.State);
+					_sender.SetToggle(!(_isStopped = _canShoot = true));
+					_sender.Send(PathConnection.Enemy);
+					if (_statistics.Paralyze)
+						Rigidbody.Sleep();
+				}
+				else
+					Shoot();
+			}
+		}
 		public new bool Hurt(ushort damage)
 		{
 			if (_statistics.ShootDamaged)
