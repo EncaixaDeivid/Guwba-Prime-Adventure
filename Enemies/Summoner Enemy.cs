@@ -8,10 +8,11 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class SummonerEnemy : EnemyProvider, ISummoner, IConnector
 	{
-		private IEnumerator _summonCoroutine;
+		private IEnumerator _summonEvent;
 		private bool[] _isSummonTime;
 		private bool[] _stopPermanently;
 		private bool _stopSummon = false;
+		private bool _waitStop = false;
 		private ushort _randomSummonIndex = 0;
 		private float[] _summonTime;
 		private float _fullStopTime = 0f;
@@ -47,10 +48,12 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private async void Summon(SummonObject summon)
 		{
-			while (_summonCoroutine is not null)
+			while (_summonEvent is not null)
 				await Task.Yield();
-			_summonCoroutine = StopToSummon();
-			_summonCoroutine.MoveNext();
+			_summonEvent = StopToSummon();
+			_summonEvent.MoveNext();
+			if (summon.InstantlySummon)
+				_summonEvent?.MoveNext();
 			IEnumerator StopToSummon()
 			{
 				if (summon.StopToSummon)
@@ -59,6 +62,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.Send(PathConnection.Enemy);
 					if (summon.ParalyzeToSummon)
 						Rigidbody.gravityScale = 0f;
+					_waitStop = summon.WaitStop;
 					_fullStopTime = _stopTime = summon.TimeToStop;
 					yield return null;
 				}
@@ -77,7 +81,7 @@ namespace GwambaPrimeAdventure.Enemy
 					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
 					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
 				}
-				_summonCoroutine = null;
+				_summonEvent = null;
 			}
 		}
 		private void IndexedSummon(ushort summonIndex)
@@ -111,13 +115,15 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			if (_stopTime > 0f)
 			{
-				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2f && _summonCoroutine is not null)
-					_summonCoroutine?.MoveNext();
+				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2f && !_waitStop && _summonEvent is not null)
+					_summonEvent?.MoveNext();
 				if (_stopTime <= 0f)
 				{
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
 					Rigidbody.gravityScale = _gravityScale;
+					if (_waitStop)
+						_summonEvent?.MoveNext();
 				}
 			}
 			if (_statistics.RandomTimedSummons)
