@@ -4,14 +4,10 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Enemy Physics", menuName = "Enemy Statistics/Physics", order = 0)]
 	public sealed class EnemyPhysics : ScriptableObject
 	{
-		[Header("Enemy Physics")]
-		[SerializeField, Tooltip("The layer mask to identify the ground.")] private LayerMask _groundLayer;
-		[SerializeField, Tooltip("The layer mask to identify the target of the attacks.")] private LayerMask _targetLayer;
-		[SerializeField, Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
-		[SerializeField, Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		public LayerMask GroundLayer => _groundLayer;
-		public LayerMask TargetLayer => _targetLayer;
-		public float HitStopTime => _hitStopTime;
-		public float HitSlowTime => _hitSlowTime;
+		[field: SerializeField, Tooltip("The layer mask to identify the ground."), Header("Enemy Physics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		public LayerMask GroundLayer { get; private set; }
+		[field: SerializeField, Tooltip("The layer mask to identify the ground.")] public LayerMask TargetLayer { get; private set; }
+		[field: SerializeField, Tooltip("The layer mask to identify the ground.")] public float HitStopTime { get; private set; }
+		[field: SerializeField, Tooltip("The layer mask to identify the ground.")] public float HitSlowTime { get; private set; }
 	};
 };
