@@ -53,7 +53,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_summonEvent = StopToSummon();
 			_summonEvent.MoveNext();
 			if (summon.InstantlySummon)
-				_summonEvent?.MoveNext();
+				_summonEvent.MoveNext();
 			IEnumerator StopToSummon()
 			{
 				if (summon.StopToSummon)
@@ -116,7 +116,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_stopTime > 0f)
 			{
 				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2f && !_waitStop && _summonEvent is not null)
-					_summonEvent?.MoveNext();
+					_summonEvent.MoveNext();
 				if (_stopTime <= 0f)
 				{
 					_sender.SetToggle(true);
