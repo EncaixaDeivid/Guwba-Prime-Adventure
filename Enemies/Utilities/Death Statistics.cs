@@ -4,14 +4,10 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Death Enemy", menuName = "Enemy Statistics/Death", order = 10)]
 	public sealed class DeathStatistics : ScriptableObject
 	{
-		[Header("Death Enemy")]
-		[SerializeField, Tooltip("The enemy that this enemy will spawn in death.")] private Control _childEnemy;
-		[SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] private Projectile _childProjectile;
-		[SerializeField, Tooltip("If this enemy will die on touch.")] private bool _onTouch;
-		[SerializeField, Tooltip("THe time to this enemy die.")] private float _timeToDie;
-		public Control ChildEnemy => _childEnemy;
-		public Projectile ChildProjectile => _childProjectile;
-		public bool OnTouch => _onTouch;
-		public float TimeToDie => _timeToDie;
+		[field: SerializeField, Tooltip("The enemy that this enemy will spawn in death."), Header("Death Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public Control ChildEnemy { get; private set; }
+		[field: SerializeField, Tooltip("The projectile that this enemy will spawn in death.")] public Projectile ChildProjectile { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy will die on touch.")] public bool OnTouch { get; private set; }
+		[field: SerializeField, Tooltip("The time to this enemy die.")] public float TimeToDie { get; private set; }
 	};
 };
