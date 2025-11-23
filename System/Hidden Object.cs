@@ -35,9 +35,9 @@ namespace GwambaPrimeAdventure
 			for (ushort i = 0; i < transform.childCount; i++)
 				transform.GetChild(i).gameObject.SetActive(activate);
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
-			if (this == additionalData as HiddenObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+			if (this == data.AdditionalData as HiddenObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 					for (ushort i = 0; i < transform.childCount; i++)
 						transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
