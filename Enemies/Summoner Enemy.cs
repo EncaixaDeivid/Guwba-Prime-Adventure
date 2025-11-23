@@ -133,10 +133,10 @@ namespace GwambaPrimeAdventure.Enemy
 					IndexedSummon(i);
 		}
 		public void OnSummon(ushort summonIndex) => Summon(_statistics.SummonPointStructures[summonIndex].Summon);
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
-			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
