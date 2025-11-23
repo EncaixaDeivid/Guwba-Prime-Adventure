@@ -1,33 +1,23 @@
 using UnityEngine;
+using NaughtyAttributes;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Enemy Summon", menuName = "Enemy Statistics/Summon", order = 7)]
 	public sealed class SummonObject : ScriptableObject
 	{
-		[Header("Components Statistics")]
-		[SerializeField, Tooltip("The enemy that will be instantiate.")] private GameObject[] _summons;
-		[SerializeField, Tooltip("The points that the instance can be instantiate.")] private Vector2[] _summonPoints;
-		[SerializeField, Tooltip("The amount of time to execute the instance.")] private ushort _summonTime;
-		[SerializeField, Tooltip("The amount of time to wait to execute the next instance.")] private ushort _postSummonTime;
-		[SerializeField, Tooltip("The amount of instance to be instantiate.")] private ushort _quantityToSummon;
-		[SerializeField, Tooltip("The amount of time to stop the instantiator.")] private float _timeToStop;
-		[SerializeField, Tooltip("If the points to summon are relative to it's parent.")] private bool _localPoints;
-		[SerializeField, Tooltip("If the instantiator will stop during the summon.")] private bool _stopToSummon;
-		[SerializeField, Tooltip("If the instantiator will paralyze during the summon.")] private bool _paralyzeToSummon;
-		[SerializeField, Tooltip("If the timed summon will stop permanently.")] private bool _stopPermanently;
-		[SerializeField, Tooltip("If the instanciation will be in the same point as the summoner.")] private bool _self;
-		[SerializeField, Tooltip("If the instantiation will be randomized at one of the points.")] private bool _random;
-		public GameObject[] Summons => _summons;
-		public Vector2[] SummonPoints => _summonPoints;
-		public ushort SummonTime => _summonTime;
-		public ushort PostSummonTime => _postSummonTime;
-		public ushort QuantityToSummon => _quantityToSummon;
-		public float TimeToStop => _timeToStop;
-		public bool LocalPoints => _localPoints;
-		public bool StopToSummon => _stopToSummon;
-		public bool ParalyzeToSummon => _paralyzeToSummon;
-		public bool StopPermanently => _stopPermanently;
-		public bool Self => _self;
-		public bool Random => _random;
+		[field: SerializeField, Tooltip("The enemy that will be instantiate."), Header("Components Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public GameObject[] Summons { get; private set; }
+		[field: SerializeField, Tooltip("The points that the instance can be instantiate.")] public Vector2[] SummonPoints { get; private set; }
+		[field: SerializeField, Tooltip("If the points to summon are relative to it's parent.")] public bool LocalPoints { get; private set; }
+		[field: SerializeField, Tooltip("The amount of instance to be instantiate.")] public ushort QuantityToSummon { get; private set; }
+		[field: SerializeField, Tooltip("The amount of time to execute the instance.")] public ushort SummonTime { get; private set; }
+		[field: SerializeField, Tooltip("The amount of time to wait to execute the next instance.")] public ushort PostSummonTime { get; private set; }
+		[field: SerializeField, Tooltip("If the instanciation will be in the same point as the summoner.")] public bool Self { get; private set; }
+		[field: SerializeField, Tooltip("If the instantiation will be randomized at one of the points.")] public bool Random { get; private set; }
+		[field: SerializeField, Tooltip("If the instantiator will stop during the summon.")] public bool StopToSummon { get; private set; }
+		[field: SerializeField, ShowIf(nameof(StopToSummon)), Tooltip("If the instantiator will paralyze during the summon.")] public bool ParalyzeToSummon { get; private set; }
+		[field: SerializeField, ShowIf(nameof(StopToSummon)), Tooltip("If the timed summon will stop permanently.")] public bool StopPermanently { get; private set; }
+		[field: SerializeField, ShowIf(nameof(StopToSummon)), HideIf(nameof(StopPermanently)), Min(0f), Tooltip("The amount of time to stop the instantiator.")]
+		public float TimeToStop { get; private set; }
 	};
 };
