@@ -111,7 +111,7 @@ namespace GwambaPrimeAdventure.Hud
 			SaveController.RefreshData();
 			GetComponent<Transitioner>().Transicion();
 		};
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 			{
