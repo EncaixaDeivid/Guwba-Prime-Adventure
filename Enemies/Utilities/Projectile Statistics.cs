@@ -1,84 +1,48 @@
 using UnityEngine;
+using NaughtyAttributes;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
 	public sealed class ProjectileStatistics : ScriptableObject
 	{
-		[Header("Projectile Statistics")]
-		[SerializeField, Tooltip("The physics of the enemy.")] private EnemyPhysics _physics;
-		[SerializeField, Tooltip("The second projectile this will instantiate.")] private Projectile _secondProjectile;
-		[SerializeField, Tooltip("The enemy that will be instantiate on death.")] private Control _enemyOnDeath;
-		[SerializeField, Tooltip("The velocity of the screen shake on the hurt.")] private Vector2 _hurtShake;
-		[SerializeField, Tooltip("The velocity of the screen shake when colliding on the scene.")] private Vector2 _collideShake;
-		[SerializeField, Tooltip("The fore mode to applied in the projectile.")] private ForceMode2D _forceMode;
-		[SerializeField, Tooltip("If this projectile will use force mode to move.")] private bool _useForce;
-		[SerializeField, Tooltip("If this projectile won't move.")] private bool _stayInPlace;
-		[SerializeField, Tooltip("If this projectile will pursue the player endless.")] private bool _endlessPursue;
-		[SerializeField, Tooltip("If this projectile will use parabolic movement.")] private bool _parabolicMovement;
-		[SerializeField, Tooltip("If this peojectile will move in side ways.")] private bool _sideMovement;
-		[SerializeField, Tooltip("If this projectile will move in the opposite way.")] private bool _invertSide;
-		[SerializeField, Tooltip("If the rotation of this projectile will be used.")] private bool _useSelfRotation;
-		[SerializeField, Tooltip("If the rotation of this projectile impacts its movement.")] private bool _rotationMatter;
-		[SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] private bool _useQuantity;
-		[SerializeField, Tooltip("If this projectile will instantiate another after its death.")] private bool _inDeath;
-		[SerializeField, Tooltip("If this projectile won't cause any type of damage.")] private bool _isInoffensive;
-		[SerializeField, Tooltip("The vitality of this projectile.")] private ushort _vitality;
-		[SerializeField, Tooltip("The amount of damage this projectile will cause to a target.")] private ushort _damage;
-		[SerializeField, Tooltip("The amount of second projectiles to instantiate.")] private ushort _quantityToSummon;
-		[SerializeField, Tooltip("The amount of speed this projectile will move.")] private float _movementSpeed;
-		[SerializeField, Tooltip("The amount of speed the rotation spins.")] private float _rotationSpeed;
-		[SerializeField, Tooltip("The angle the second projectile will be instantiated.")] private float _baseAngle;
-		[SerializeField, Tooltip("The angle the second projectile have to be spreaded")] private float _spreadAngle;
-		[SerializeField, Tooltip("The amount of time this projectile will stun.")] private float _stunTime;
-		[SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] private float _timeToFade;
-		[Header("Cell Projectile Statistics")]
-		[SerializeField, Tooltip("If the second projectile will be instantiated in a cell.")] private bool _inCell;
-		[SerializeField, Tooltip("If the second projectile will instantiate in a continuos sequence.")] private bool _continuosSummon;
-		[SerializeField, Tooltip("If the instantiation of the second projectile will break after a moment.")] private bool _useBreak;
-		[SerializeField, Tooltip("If the instantiation of the second projectile will always break after the first.")] private bool _alwaysBreak;
-		[SerializeField, Tooltip("If the points of break are randomized between the maximum and minimum.")] private bool _randomBreak;
-		[SerializeField, Tooltip("If the break point is restricted at a specific break point.")] private bool _extrictRandom;
-		[SerializeField, Tooltip("The amount of cell points to jump the instantiation.")] private ushort _jumpPoints;
-		[SerializeField, Tooltip("The exact point where the break of the instantiantion start.")] private ushort _breakPoint;
-		[SerializeField, Tooltip("The exact point where the instantiation returns.")] private ushort _returnPoint;
-		[SerializeField, Tooltip("The minimum value the break point can break.")] private ushort _minimumRandomValue;
-		[SerializeField, Tooltip("The distance of the range ray to the instantiation.")] private float _distanceRay;
-		public EnemyPhysics Physics => _physics;
-		public Projectile SecondProjectile => _secondProjectile;
-		public Control EnemyOnDeath => _enemyOnDeath;
-		public Vector2 HurtShake => _hurtShake;
-		public Vector2 CollideShake => _collideShake;
-		public ForceMode2D ForceMode => _forceMode;
-		public bool UseForce => _useForce;
-		public bool StayInPlace => _stayInPlace;
-		public bool EndlessPursue => _endlessPursue;
-		public bool ParabolicMovement => _parabolicMovement;
-		public bool SideMovement => _sideMovement;
-		public bool InvertSide => _invertSide;
-		public bool UseSelfRotation => _useSelfRotation;
-		public bool RotationMatter => _rotationMatter;
-		public bool UseQuantity => _useQuantity;
-		public bool InDeath => _inDeath;
-		public bool IsInoffensive => _isInoffensive;
-		public ushort Vitality => _vitality;
-		public ushort Damage => _damage;
-		public ushort QuantityToSummon => _quantityToSummon;
-		public float MovementSpeed => _movementSpeed;
-		public float RotationSpeed => _rotationSpeed;
-		public float BaseAngle => _baseAngle;
-		public float SpreadAngle => _spreadAngle;
-		public float StunTime => _stunTime;
-		public float TimeToFade => _timeToFade;
-		public bool InCell => _inCell;
-		public bool ContinuosSummon => _continuosSummon;
-		public bool UseBreak => _useBreak;
-		public bool AlwaysBreak => _alwaysBreak;
-		public bool RandomBreak => _randomBreak;
-		public bool ExtrictRandom => _extrictRandom;
-		public ushort JumpPoints => _jumpPoints;
-		public ushort BreakPoint => _breakPoint;
-		public ushort ReturnPoint => _returnPoint;
-		public ushort MinimumRandomValue => _minimumRandomValue;
-		public float DistanceRay => _distanceRay;
+		[field: SerializeField, Tooltip("The physics of the enemy."), Header("Projectile Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public EnemyPhysics Physics { get; private set; }
+		[field: SerializeField, Tooltip("The second projectile this will instantiate.")] public Projectile SecondProjectile { get; private set; }
+		[field: SerializeField, Tooltip("If this peojectile will move in side ways.")] public bool SideMovement { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile will move in the opposite way.")] public bool InvertSide { get; private set; }
+		[field: SerializeField, Tooltip("The angle the second projectile will be instantiated.")] public float BaseAngle { get; private set; }
+		[field: SerializeField, Tooltip("The angle the second projectile have to be spreaded.")] public float SpreadAngle { get; private set; }
+		[field: SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] public float TimeToFade { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile won't move.")] public bool StayInPlace { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The velocity of the screen shake when colliding on the scene.")] public Vector2 CollideShake { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The fore mode to applied in the projectile.")] public ForceMode2D ForceMode { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will use force mode to move.")] public bool UseForce { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will pursue the player endless.")] public bool EndlessPursue { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will use parabolic movement.")] public bool ParabolicMovement { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The amount of speed this projectile will move.")] public float MovementSpeed { get; private set; }
+		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If the rotation of this projectile impacts its movement.")] public bool RotationMatter { get; private set; }
+		[field: SerializeField, Tooltip("If the rotation of this projectile will be used.")] public bool UseSelfRotation { get; private set; }
+		[field: SerializeField, Tooltip("The amount of speed the rotation spins.")] public float RotationSpeed { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] public bool UseQuantity { get; private set; }
+		[field: SerializeField, ShowIf(nameof(UseQuantity)), Tooltip("The amount of second projectiles to instantiate.")] public ushort QuantityToSummon { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile will instantiate another after its death.")] public bool InDeath { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InDeath)), Tooltip("The enemy that will be instantiate on death.")] public Control EnemyOnDeath { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile won't cause any type of damage.")] public bool IsInoffensive { get; private set; }
+		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
+		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
+		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The amount of damage this projectile will cause to a target.")] public ushort Damage { get; private set; }
+		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The amount of time this projectile will stun.")] public float StunTime { get; private set; }
+		[field: SerializeField, Tooltip("If the second projectile will be instantiated in a cell."), Header("Cell Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public bool InCell { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the second projectile will instantiate in a continuos sequence.")] public bool ContinuosSummon { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the instantiation of the second projectile will break after a moment.")] public bool UseBreak { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the instantiation of the second projectile will always break after the first.")] public bool AlwaysBreak { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the points of break are randomized between the maximum and minimum.")] public bool RandomBreak { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the break point is restricted at a specific break point.")] public bool ExtrictRandom { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The amount of cell points to jump the instantiation.")] public ushort JumpPoints { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The exact point where the break of the instantiantion start.")] public ushort BreakPoint { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The exact point where the instantiation returns.")] public ushort ReturnPoint { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The minimum value the break point can break.")] public ushort MinimumRandomValue { get; private set; }
+		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The distance of the range ray to the instantiation.")] public float DistanceRay { get; private set; }
 	};
 };
