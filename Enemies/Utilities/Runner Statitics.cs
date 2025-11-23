@@ -1,37 +1,28 @@
 using UnityEngine;
+using NaughtyAttributes;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	[CreateAssetMenu(fileName = "Runner Enemy", menuName = "Enemy Statistics/Runner", order = 2)]
 	public sealed class RunnerStatistics : MovingStatistics
 	{
-		[Header("Runner Enemy")]
-		[SerializeField, Tooltip("If the off edge verifier will be turned off.")] private bool _turnOffEdge;
-		[SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] private bool _timedDash;
-		[SerializeField, Tooltip("If this enemy will run away from the target.")] private bool _runFromTarget;
-		[SerializeField, Tooltip("If this enemy will run toward the target after the run.")] private bool _runTowardsAfter;
-		[SerializeField, Tooltip("If the boss can jump while dashing.\nRequires: Jumper Enemy")] private bool _jumpDash;
-		[SerializeField, Tooltip("If this enemy will execute other event than dashing.")] private bool _eventRetreat;
-		[SerializeField, Tooltip("The amount of time to wait the timed dash to go.")] private float _timeToDash;
-		[SerializeField, Tooltip("The amount of speed to run in the retreat.")] private float _retreatSpeed;
-		[SerializeField, Tooltip("The amount of time to wait for retreat again.")] private float _timeToRetreat;
-		[SerializeField, Tooltip("The amount of distance to run in the retreat.")] private float _retreatDistance;
-		[SerializeField, Tooltip("The amount of time this enemy will run away from or pursue the target.")] private float _runOfTime;
-		[SerializeField, Tooltip("The amount of time this enemy will be dashing upon the target.")] private float _timeDashing;
-		[SerializeField, Tooltip("The index of the event executed in the retreat.")] private ushort _eventIndex;
-		[SerializeField, Tooltip("The amount of times this enemy have to run away from the target.")] private ushort _timesToRun;
-		public bool TurnOffEdge => _turnOffEdge;
-		public bool TimedDash => _timedDash;
-		public bool RunFromTarget => _runFromTarget;
-		public bool RunTowardsAfter => _runTowardsAfter;
-		public bool JumpDash => _jumpDash;
-		public bool EventRetreat => _eventRetreat;
-		public float TimeToDash => _timeToDash;
-		public float RetreatSpeed => _retreatSpeed;
-		public float TimeToRetreat => _timeToRetreat;
-		public float RetreatDistance => _retreatDistance;
-		public float RunOfTime => _runOfTime;
-		public float TimeDashing => _timeDashing;
-		public ushort EventIndex => _eventIndex;
-		public ushort TimesToRun => _timesToRun;
+		[field: SerializeField, Tooltip("If the off edge verifier will be turned off."), Header("Runner Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public bool TurnOffEdge { get; private set; }
+		[field: SerializeField, Tooltip("If the boss can jump while dashing.\nRequires: Jumper Enemy.")] public bool JumpDash { get; private set; }
+		[field: SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] public bool TimedDash { get; private set; }
+		[field: SerializeField, ShowIf(nameof(TimedDash)), Min(0f), Tooltip("The amount of time to wait the timed dash to go.")] public float TimeToDash { get; private set; }
+		[field: SerializeField, Min(0f), Tooltip("The amount of time this enemy will be dashing upon the target.")] public float TimeDashing { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy will run away from the target.")] public bool RunFromTarget { get; private set; }
+		[field: SerializeField, ShowIf(nameof(RunFromTarget)), Tooltip("If this enemy will run toward the target after the run."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		public bool RunTowardsAfter { get; private set; }
+		[field: SerializeField, ShowIf(nameof(RunFromTarget)), Min(0f), Tooltip("The amount of time this enemy will run away from or pursue the target.")]
+		public float RunOfTime { get; private set; }
+		[field: SerializeField, ShowIf(nameof(RunFromTarget)), Tooltip("The amount of times this enemy have to run away from the target.")]
+		public ushort TimesToRun { get; private set; }
+		[field: SerializeField, ShowIf(nameof(ReactToDamage)), Min(0f), Tooltip("The amount of speed to run in the retreat."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		public float RetreatSpeed { get; private set; }
+		[field: SerializeField, ShowIf(nameof(ReactToDamage)), Min(0f), Tooltip("The amount of time to wait for retreat again.")] public float TimeToRetreat { get; private set; }
+		[field: SerializeField, ShowIf(nameof(ReactToDamage)), Min(0f), Tooltip("The amount of distance to run in the retreat.")] public float RetreatDistance { get; private set; }
+		[field: SerializeField, ShowIf(nameof(ReactToDamage)), Tooltip("If this enemy will execute other event than dashing.")] public bool EventRetreat { get; private set; }
+		[field: SerializeField, ShowIf(nameof(ReactToDamage)), Tooltip("The index of the event executed in the retreat.")] public ushort EventIndex { get; private set; }
 	};
 };
