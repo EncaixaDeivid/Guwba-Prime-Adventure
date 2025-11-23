@@ -33,7 +33,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			return Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAP_LENGTH, _moving.Physics.GroundLayer);
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				_stopWorking = !data.ToggleValue.Value;
