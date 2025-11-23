@@ -25,6 +25,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
+			(_timeRun, _dashTime) = (_statistics.RunOfTime, _statistics.TimeToDash);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -32,7 +33,6 @@ namespace GwambaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private void Start() => (_timeRun, _dashTime) = (_statistics.RunOfTime, _statistics.TimeToDash);
 		private void Update()
 		{
 			if (IsStunned)
@@ -82,14 +82,17 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_stopWorking)
 				return;
 			if (_statistics.LookPerception && !_detected)
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(transform.position, transform.right * _movementSide, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+			{
+				_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, transform.right * _movementSide, _statistics.LookDistance, _statistics.Physics.TargetLayer))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
 						_detected = true;
 						break;
 					}
-			_originCast = transform.position;
-			_originCast += new Vector2((_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, 0f);
+			}
+			_originCast = (Vector2)transform.position + _collider.offset;
+			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x;
 			_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
 			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, _statistics.Physics.GroundLayer);
 			if (_statistics.RunFromTarget && _timeRun <= 0f && _detected)
@@ -167,13 +170,13 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			return base.Hurt(damage);
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data)
 		{
-			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data, additionalData);
+						base.Receive(data);
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 							Rigidbody.linearVelocityX = 0f;
 						return;
