@@ -29,7 +29,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_trail = new Vector2[trail.points.Length];
 			for (ushort i = 0; i < trail.points.Length; i++)
 				if (transform.parent != null)
-					_trail[i] = (Vector2)transform.position + (trail.points[i] + trail.offset);
+					_trail[i] = trail.offset + trail.points[i] + (Vector2)transform.position;
 				else
 					_trail[i] = trail.points[i];
 			_movementDirection = Vector2.right * _movementSide;
@@ -129,7 +129,7 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			if (_isDashing)
 			{
-				_originCast = Rigidbody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized * 5e-1f;
+				_originCast = Rigidbody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized;
 				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, _statistics.Physics.GroundLayer))
 					if (_statistics.DetectionStop)
 						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
@@ -161,13 +161,13 @@ namespace GwambaPrimeAdventure.Enemy
 			else
 				Trail();
 		}
-		public new void Receive(DataConnection data, object additionalData)
+		public new void Receive(DataConnection data)
 		{
-			if (additionalData != null && additionalData is EnemyProvider[] && additionalData as EnemyProvider[] != null && (additionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in additionalData as EnemyProvider[])
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data, additionalData);
+						base.Receive(data);
 						return;
 					}
 		}
