@@ -50,9 +50,9 @@ namespace GwambaPrimeAdventure.Hud
 			if (!(_isOnCollision = !GwambaStateMarker.EqualObject(collision.gameObject)))
 				_document.enabled = false;
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
-			if (additionalData as GameObject == gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+			if (data.AdditionalData as GameObject == gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				if (data.ToggleValue.Value)
 				{
 					_isActive = true;
