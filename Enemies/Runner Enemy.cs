@@ -89,9 +89,9 @@ namespace GwambaPrimeAdventure.Enemy
 						break;
 					}
 			_originCast = transform.position;
-			_originCast += new Vector2((_collider.bounds.extents.x + WorldBuild.SNAPLENGTH / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, 0f);
-			_sizeCast = new Vector2(WorldBuild.SNAPLENGTH, _collider.bounds.size.y - WorldBuild.SNAPLENGTH);
-			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, WorldBuild.SNAPLENGTH, _statistics.Physics.GroundLayer);
+			_originCast += new Vector2((_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, 0f);
+			_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
+			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, _statistics.Physics.GroundLayer);
 			if (_statistics.RunFromTarget && _timeRun <= 0f && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
@@ -124,7 +124,7 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
 			_originCast += new Vector2(_collider.bounds.extents.x * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
-			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAPLENGTH, _statistics.Physics.GroundLayer);
+			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, _statistics.Physics.GroundLayer);
 			if (GroundCheck() && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
 				if (_retreat)
 					RetreatUse();
