@@ -241,7 +241,7 @@ namespace GwambaPrimeAdventure.Hud
 			}
 		}
 		internal void SetActive(bool isActive) => _isActive = isActive;
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
 			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
 				_isActive = data.ToggleValue.Value;
