@@ -113,8 +113,6 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
-					if (_statistics.ReturnParalyze)
-						Rigidbody.WakeUp();
 				}
 			}
 		}
