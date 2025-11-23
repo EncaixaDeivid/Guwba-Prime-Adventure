@@ -457,6 +457,7 @@ namespace GwambaPrimeAdventure.Character
 				_screenShaker.ImpulseDefinition.ImpulseDuration = gwambaDamager.AttackShakeTime;
 				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
+				gwambaDamager.DamagerDamaged.Add(destructible);
 				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; amount < (destructible.Health <= 0f ? gwambaDamager.AttackDamage + 1f : gwambaDamager.AttackDamage); amount++)
 					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
@@ -511,7 +512,9 @@ namespace GwambaPrimeAdventure.Character
 			if (!_animator.GetBool(_dashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
-				_attackDelay -= Time.deltaTime;
+				if ((_attackDelay -= Time.deltaTime) <= 0f)
+					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+						gwambaDamager.DamagerDamaged.Clear();
 		}
 		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
 		private void FixedUpdate()
