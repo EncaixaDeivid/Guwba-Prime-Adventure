@@ -124,9 +124,9 @@ namespace GwambaPrimeAdventure.Story
 					_storyTeller.ShowScene();
 			}
 		}
-		public void Receive(DataConnection data, object additionalData)
+		public void Receive(DataConnection data)
 		{
-			if (data.StateForm == StateForm.Event && (GameObject)additionalData == gameObject)
+			if (data.StateForm == StateForm.Event && gameObject == data.AdditionalData as GameObject)
 				Interaction();
 		}
 	};
