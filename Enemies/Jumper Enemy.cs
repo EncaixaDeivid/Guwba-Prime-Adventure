@@ -27,7 +27,6 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
 			_timedJumpTime = new float[_statistics.TimedJumps.Length];
 			if (_statistics.UseInput)
 			{
@@ -103,6 +102,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_detected = true;
 			if (_statistics.DetectionStop)
 			{
+				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				_stopTime = _statistics.StopTime;
@@ -120,6 +120,7 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					if (_statistics.TimedJumps[jumpIndex].StopMove)
 					{
+						_sender.SetStateForm(StateForm.State);
 						_sender.SetToggle(false);
 						_sender.Send(PathConnection.Enemy);
 						Rigidbody.linearVelocityX = 0f;
@@ -174,6 +175,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (_follow)
 					Rigidbody.linearVelocityX = 0f;
+				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(!(_onJump = _isJumping = _detected = _follow = false));
 				_sender.Send(PathConnection.Enemy);
 			}
@@ -223,6 +225,7 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					if (_statistics.JumpPointStructures[jumpIndex].JumpStats.StopMove)
 					{
+						_sender.SetStateForm(StateForm.State);
 						_sender.SetToggle(false);
 						_sender.Send(PathConnection.Enemy);
 					}
@@ -251,6 +254,7 @@ namespace GwambaPrimeAdventure.Enemy
 						{
 							if (_statistics.StopMoveReact)
 							{
+								_sender.SetStateForm(StateForm.State);
 								_sender.SetToggle(false);
 								_sender.Send(PathConnection.Enemy);
 							}
