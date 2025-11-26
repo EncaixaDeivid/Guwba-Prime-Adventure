@@ -171,12 +171,10 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
 			if (_statistics.ParabolicMovement)
-			{
 				if (_parabolicEvent is null)
 					_parabolicEvent = ParabolicProjectile();
 				else
 					_parabolicEvent?.MoveNext();
-			}
 			else if (!_statistics.StayInPlace && _statistics.RotationMatter)
 				_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
