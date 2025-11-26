@@ -44,7 +44,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.InvencibleShoot)
 			{
 				_sender.SetStateForm(StateForm.Event);
-				_sender.SetToggle(false);
+				_sender.SetToggle(true);
 				_sender.Send(PathConnection.Enemy);
 			}
 		}
@@ -100,7 +100,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_statistics.InvencibleShoot)
 				{
 					_sender.SetStateForm(StateForm.Event);
-					_sender.SetToggle(true);
+					_sender.SetToggle(false);
 					_sender.Send(PathConnection.Enemy);
 				}
 				if (_statistics.Stop)
