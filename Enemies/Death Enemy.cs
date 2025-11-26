@@ -10,12 +10,6 @@ namespace GwambaPrimeAdventure.Enemy
 		private float _deathTime = 0f;
 		[Header("Death Enemy")]
 		[SerializeField, Tooltip("The death statitics of this enemy.")] private DeathStatistics _statistics;
-		private new void Awake()
-		{
-			base.Awake();
-			_sender.SetStateForm(StateForm.State);
-			_sender.SetToggle(false);
-		}
 		private void Update()
 		{
 			if (_isDead)
@@ -33,6 +27,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (!_isDead && _statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 			{
+				_sender.SetStateForm(StateForm.State);
+				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				_deathTime = _statistics.TimeToDie;
 				_isDead = true;
@@ -44,6 +40,8 @@ namespace GwambaPrimeAdventure.Enemy
 				return false;
 			if (Health - (short)damage <= 0f)
 			{
+				_sender.SetStateForm(StateForm.State);
+				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				_deathTime = _statistics.TimeToDie;
 				return _isDead = true;
