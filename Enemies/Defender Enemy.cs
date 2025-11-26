@@ -32,7 +32,7 @@ namespace GwambaPrimeAdventure.Enemy
 					if (_invencible)
 					{
 						_invencible = false;
-						_timeOperation = _statistics.TimeToInvencible;
+						_timeOperation = _statistics.UseAlternatedTime ? _statistics.TimeToInvencible : _statistics.TimeToDestructible;
 						if (_statistics.InvencibleStop)
 						{
 							_sender.SetToggle(true);
