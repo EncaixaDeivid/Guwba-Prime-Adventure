@@ -41,6 +41,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
+					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -69,6 +70,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_dashedTime -= Time.deltaTime) <= 0f)
 				{
 					_dashTime = _statistics.TimeToDash;
+					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(!(_detected = _isDashing = false));
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -111,16 +113,17 @@ namespace GwambaPrimeAdventure.Enemy
 				else if (_statistics.EventRetreat)
 				{
 					_retreatTime = _statistics.TimeToRetreat;
+					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Enemy);
 					_sender.SetStateForm(StateForm.Event);
 					_sender.SetNumber(_statistics.EventIndex);
 					_sender.Send(PathConnection.Enemy);
-					_sender.SetStateForm(StateForm.State);
 				}
 				else
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
+					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
 				}
@@ -143,6 +146,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
 				(_stoppedTime, _stopWorking) = (_statistics.StopTime, _stopRunning = true);
+				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				return;
@@ -150,6 +154,7 @@ namespace GwambaPrimeAdventure.Enemy
 			else if (_detected && !_isDashing)
 			{
 				(_dashedTime, _isDashing) = (_statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
+				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(_statistics.JumpDash);
 				_sender.Send(PathConnection.Enemy);
 			}
@@ -164,6 +169,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
 				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
+				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(false);
 				_sender.Send(PathConnection.Enemy);
 				return false;
