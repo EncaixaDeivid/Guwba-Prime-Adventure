@@ -33,6 +33,15 @@ namespace GwambaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
+		private void InvencibleDash()
+		{
+			if (_statistics.InvencibleDash)
+			{
+				_sender.SetStateForm(StateForm.Event);
+				_sender.SetToggle(_isDashing);
+				_sender.Send(PathConnection.Enemy);
+			}
+		}
 		private void Update()
 		{
 			if (IsStunned)
@@ -44,16 +53,23 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
+					InvencibleDash();
 				}
 			if (_stopWorking)
 				return;
 			if (_statistics.TimedDash && !_isDashing)
 				if ((_dashTime -= Time.deltaTime) <= 0f)
+				{
 					(_dashedTime, _isDashing) = (_statistics.TimeDashing, true);
+					InvencibleDash();
+				}
 			if (_statistics.RunFromTarget)
 			{
-				if (_timeRun > 0f)
+				if (_timeRun > 0f && !_isDashing)
+				{
 					_isDashing = true;
+					InvencibleDash();
+				}
 				if ((_timeRun -= Time.deltaTime) <= 0f && _isDashing)
 				{
 					if (_statistics.RunTowardsAfter && _runnedTimes >= _statistics.TimesToRun)
@@ -61,6 +77,7 @@ namespace GwambaPrimeAdventure.Enemy
 					else if (_statistics.RunTowardsAfter)
 						_runnedTimes++;
 					_isDashing = false;
+					InvencibleDash();
 				}
 			}
 			if (!_retreat && _retreatTime > 0f)
@@ -73,6 +90,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(!(_detected = _isDashing = false));
 					_sender.Send(PathConnection.Enemy);
+					InvencibleDash();
 				}
 		}
 		private void FixedUpdate()
@@ -126,6 +144,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetStateForm(StateForm.State);
 					_sender.SetToggle(_statistics.JumpDash);
 					_sender.Send(PathConnection.Enemy);
+					InvencibleDash();
 				}
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
@@ -157,6 +176,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_sender.SetStateForm(StateForm.State);
 				_sender.SetToggle(_statistics.JumpDash);
 				_sender.Send(PathConnection.Enemy);
+				InvencibleDash();
 			}
 			transform.TurnScaleX(_movementSide);
 			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed);
@@ -185,6 +205,14 @@ namespace GwambaPrimeAdventure.Enemy
 						base.Receive(data);
 						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
 							Rigidbody.linearVelocityX = 0f;
+						if (data.StateForm == StateForm.Event && _statistics.ReactToDamage && _canRetreat)
+						{
+							(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
+							transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
+							_sender.SetStateForm(StateForm.State);
+							_sender.SetToggle(false);
+							_sender.Send(PathConnection.Enemy);
+						}
 						return;
 					}
 		}
