@@ -8,6 +8,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("If the off edge verifier will be turned off."), Header("Runner Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
 		public bool TurnOffEdge { get; private set; }
 		[field: SerializeField, Tooltip("If the boss can jump while dashing.\nRequires: Jumper Enemy.")] public bool JumpDash { get; private set; }
+		[field: SerializeField, Tooltip("If the boss will turn invencible while dashing.\nRequires: Defender Enemy.")] public bool InvencibleDash { get; private set; }
 		[field: SerializeField, Tooltip("If the dash is timed to start when the boss is instantiate.")] public bool TimedDash { get; private set; }
 		[field: SerializeField, ShowIf(nameof(TimedDash)), Min(0f), Tooltip("The amount of time to wait the timed dash to go.")] public float TimeToDash { get; private set; }
 		[field: SerializeField, Min(0f), Tooltip("The amount of time this enemy will be dashing upon the target.")] public float TimeDashing { get; private set; }
