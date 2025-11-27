@@ -202,8 +202,7 @@ namespace GwambaPrimeAdventure.Enemy
 					if (_turnFollow)
 						transform.TurnScaleX(_movementSide);
 				}
-				if (Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget)
-					Rigidbody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
+				Rigidbody.linearVelocityX = Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget ? _movementSide * _statistics.MovementSpeed : 0f;
 			}
 			base.FixedUpdate();
 		}
