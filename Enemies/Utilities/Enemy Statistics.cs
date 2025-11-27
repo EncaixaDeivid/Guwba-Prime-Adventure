@@ -14,7 +14,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public ushort HitResistance { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("If this enemy won't get stunned when hitted.")] public bool NoHitStun { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The amount of time this enemy will be stunned when armor be broken.")] public float StunnedTime { get; private set; }
-		[field: SerializeField, Tooltip("If this enemy won't do damage at contact.")] public bool NoHit { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy won't hit at contact.")] public bool NoHit { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		public Vector2 HurtShake { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of damage that the enemy hit.")] public ushort Damage { get; private set; }
