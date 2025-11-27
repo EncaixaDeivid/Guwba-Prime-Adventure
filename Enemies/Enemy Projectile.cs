@@ -125,7 +125,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (!_statistics.StayInPlace)
 				if (_statistics.UseForce)
 					_rigidbody.AddForce((_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed, _statistics.ForceMode);
-				else
+				else if (!_statistics.RotationMatter)
 					_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
 		}
 		private void Death()
