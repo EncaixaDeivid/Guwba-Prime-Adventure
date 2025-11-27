@@ -93,11 +93,11 @@ namespace GwambaPrimeAdventure.Enemy
 					InvencibleDash();
 				}
 		}
-		private void FixedUpdate()
+		private new void FixedUpdate()
 		{
 			if (IsStunned)
 				return;
-			if (_statistics.DetectionStop && _detected && !_isDashing && GroundCheck() && !_retreat)
+			if (_statistics.DetectionStop && _detected && !_isDashing && OnGround && !_retreat)
 				Rigidbody.linearVelocityX = 0f;
 			if (_stopWorking)
 				return;
@@ -150,7 +150,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_originCast = (Vector2)transform.position + _collider.offset;
 			_originCast += new Vector2(_collider.bounds.extents.x * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
 			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, _statistics.Physics.GroundLayer);
-			if (GroundCheck() && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
+			if (OnGround && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
 				if (_retreat)
 					RetreatUse();
 				else
@@ -180,6 +180,7 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			transform.TurnScaleX(_movementSide);
 			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed);
+			base.FixedUpdate();
 		}
 		public new bool Hurt(ushort damage)
 		{
