@@ -32,7 +32,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, ShowIf(nameof(InDeath)), Tooltip("The enemy that will be instantiate on death.")] public Control EnemyOnDeath { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile receives no type of damage.")] public bool NoDamage { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile won't get stunned.")] public bool NoStun { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("If this projectile won't get stunned.")] public bool NoStun { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile won't hit at contact.")] public bool NoHit { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("If this projectile won't die when hit.")] public bool NoDeathHit { get; private set; }
