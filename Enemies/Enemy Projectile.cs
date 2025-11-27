@@ -180,16 +180,17 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (_statistics.IsInoffensive)
+			if (_statistics.NoHit)
 				return;
 			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				_screenShaker.GenerateImpulse(_statistics.HurtShake);
 				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
-				Death();
+				if (!_statistics.NoDeathHit)
+					Death();
 			}
-			else if (_statistics.Vitality > 0f)
+			else if (!_statistics.NoDeathCollision)
 			{
 				_screenShaker.GenerateImpulse(_statistics.CollideShake);
 				Death();
@@ -197,7 +198,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (_statistics.IsInoffensive || damage <= 0 || _statistics.Vitality <= 0f)
+			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0f)
 				return false;
 			if ((_vitality -= (short)damage) <= 0f)
 				Death();
