@@ -40,7 +40,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	public struct JumpStats
 	{
 		[field: SerializeField, ShowIf(nameof(Follow)), Tooltip("To where this have to go if theres no target.")] public Vector2 OtherTarget { get; private set; }
-		[field: SerializeField, Tooltip("The strenght of the jump.")] public ushort Strength { get; private set; }
+		[field: SerializeField, Min(0f), Tooltip("The strenght of the jump.")] public float Strength { get; private set; }
 		[field: SerializeField, Tooltip("If it will stop moving when jumping.")] public bool StopMove { get; private set; }
 		[field: SerializeField, Tooltip("If this is a follow jump.")] public bool Follow { get; private set; }
 		[field: SerializeField, ShowIf(nameof(Follow)), Tooltip("If this enemy will turn on the follow.")] public bool TurnFollow { get; private set; }
