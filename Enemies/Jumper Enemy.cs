@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
@@ -17,11 +18,15 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _onJump = false;
 		private bool _stopJump = false;
 		private bool _follow = false;
+		private bool _contunuosFollow = false;
+		private bool _useTarget = false;
+		private bool _turnFollow = false;
 		private ushort _sequentialJumpIndex = 0;
 		private short[] _jumpCount;
 		private float[] _timedJumpTime;
 		private float _jumpTime = 0f;
 		private float _stopTime = 0f;
+		private float _otherTarget = 0f;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
 		private new void Awake()
@@ -60,34 +65,6 @@ namespace GwambaPrimeAdventure.Enemy
 				_jumpCount[i] = (short)_statistics.JumpPointStructures[i].JumpCount;
 			}
 		}
-		private void FollowJump(Vector2 otherTarget, bool useTarget, bool turnFollow)
-		{
-			StartCoroutine(FollowTarget());
-			IEnumerator FollowTarget()
-			{
-				yield return new WaitUntil(() => !GroundCheck() && isActiveAndEnabled && !IsStunned && !_stopJump);
-				bool validVelocity;
-				while (!GroundCheck() && !_stopJump)
-				{
-					if (_statistics.RandomFollow)
-						_targetPosition.x = UnityEngine.Random.Range(-1, 1) >= 0f ? GwambaStateMarker.Localization.x : otherTarget.x;
-					else if (useTarget)
-						_targetPosition.x = otherTarget.x;
-					else
-						_targetPosition.x = GwambaStateMarker.Localization.x;
-					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f);
-					if (turnFollow)
-						transform.TurnScaleX(_movementSide);
-					yield return new WaitUntil(() =>
-					{
-						validVelocity = isActiveAndEnabled && !IsStunned && Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget;
-						return Mathf.Abs(Rigidbody.linearVelocityX = validVelocity ? _statistics.MovementSpeed * _movementSide : 0f) > 0f;
-					});
-					yield return new WaitForFixedUpdate();
-				}
-				Rigidbody.linearVelocityX = 0f;
-			}
-		}
 		private Action<InputAction.CallbackContext> Jump => jump =>
 		{
 			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
@@ -113,11 +90,23 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_follow = !_statistics.UnFollow)
 				transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f));
 		}
-		private void TimedJump(ushort jumpIndex)
+		private async void TimedJump(ushort jumpIndex)
 		{
 			if (_timedJumpTime[jumpIndex] > 0f)
 				if ((_timedJumpTime[jumpIndex] -= Time.deltaTime) <= 0f)
 				{
+					Rigidbody.AddForceY(_statistics.TimedJumps[jumpIndex].Strength * Rigidbody.mass, ForceMode2D.Impulse);
+					while (OnGround)
+						await Task.Yield();
+					_isJumping = true;
+					_contunuosFollow = _follow = _statistics.TimedJumps[jumpIndex].Follow;
+					_turnFollow = _statistics.TimedJumps[jumpIndex].TurnFollow;
+					_useTarget = _statistics.TimedJumps[jumpIndex].UseTarget;
+					_otherTarget = _statistics.TimedJumps[jumpIndex].OtherTarget;
+					if (_statistics.SequentialTimmedJumps)
+						_sequentialJumpIndex++;
+					else
+						_timedJumpTime[jumpIndex] = _statistics.TimedJumps[jumpIndex].TimeToExecute;
 					if (_statistics.TimedJumps[jumpIndex].StopMove)
 					{
 						_sender.SetStateForm(StateForm.State);
@@ -125,14 +114,6 @@ namespace GwambaPrimeAdventure.Enemy
 						_sender.Send(PathConnection.Enemy);
 						Rigidbody.linearVelocityX = 0f;
 					}
-					_isJumping = true;
-					Rigidbody.AddForceY(_statistics.TimedJumps[jumpIndex].Strength * Rigidbody.mass, ForceMode2D.Impulse);
-					if (_statistics.TimedJumps[jumpIndex].Follow)
-						FollowJump(_statistics.TimedJumps[jumpIndex].OtherTarget, _statistics.TimedJumps[jumpIndex].UseTarget, _statistics.TimedJumps[jumpIndex].TurnFollow);
-					if (_statistics.SequentialTimmedJumps)
-						_sequentialJumpIndex++;
-					else
-						_timedJumpTime[jumpIndex] = _statistics.TimedJumps[jumpIndex].TimeToExecute;
 				}
 		}
 		private void Update()
@@ -147,7 +128,7 @@ namespace GwambaPrimeAdventure.Enemy
 					if (_follow = !_statistics.UnFollow)
 						transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f));
 				}
-			if (!GroundCheck() || _detected || _isJumping)
+			if (!OnGround || _detected || _isJumping)
 				return;
 			if (_jumpTime > 0f)
 				_jumpTime -= Time.deltaTime;
@@ -165,23 +146,23 @@ namespace GwambaPrimeAdventure.Enemy
 					for (ushort i = 0; i < _timedJumpTime.Length; i++)
 						TimedJump(i);
 		}
-		private void FixedUpdate()
+		private new void FixedUpdate()
 		{
 			if (IsStunned)
 				return;
-			if (!_onJump && _isJumping && !GroundCheck())
-				_onJump = true;
-			if (_onJump && GroundCheck())
+			if (_onJump && OnGround)
 			{
 				if (_follow)
 					Rigidbody.linearVelocityX = 0f;
 				_sender.SetStateForm(StateForm.State);
-				_sender.SetToggle(!(_onJump = _isJumping = _detected = _follow = false));
+				_sender.SetToggle(!(_onJump = _isJumping = _detected = _contunuosFollow = _follow = false));
 				_sender.Send(PathConnection.Enemy);
 			}
+			else if (!_onJump && _isJumping && !OnGround)
+				_onJump = true;
 			if (_stopWorking)
 				return;
-			if (GroundCheck())
+			if (OnGround)
 			{
 				if (!_detected && _statistics.LookPerception)
 					if (_statistics.CircularDetection)
@@ -209,39 +190,51 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			else if (_follow)
 			{
+				if (_contunuosFollow)
+				{
+					if (_statistics.RandomFollow)
+						_targetPosition.x = UnityEngine.Random.Range(-1, 1) >= 0f ? GwambaStateMarker.Localization.x : _otherTarget;
+					else if (_useTarget)
+						_targetPosition.x = _otherTarget;
+					else
+						_targetPosition.x = GwambaStateMarker.Localization.x;
+					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f);
+					if (_turnFollow)
+						transform.TurnScaleX(_movementSide);
+				}
 				if (Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget)
 					Rigidbody.linearVelocityX = _movementSide * _statistics.MovementSpeed;
 			}
+			base.FixedUpdate();
 		}
-		public void OnJump(ushort jumpIndex)
+		public async void OnJump(ushort jumpIndex)
 		{
-			StartCoroutine(WaitToHitSurface());
-			IEnumerator WaitToHitSurface()
+			while (!OnGround || _detected || !isActiveAndEnabled || IsStunned)
+				await Task.Yield();
+			if (_stopJump || _jumpTime > 0f)
+				return;
+			if (_jumpCount[jumpIndex]-- <= 0f)
 			{
-				yield return new WaitUntil(() => GroundCheck() && !_detected && isActiveAndEnabled && !IsStunned);
-				if (_stopJump || _jumpTime > 0f)
-					yield break;
-				if (_jumpCount[jumpIndex]-- <= 0f)
+				Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
+				while (OnGround)
+					await Task.Yield();
+				_isJumping = true;
+				_contunuosFollow = _follow = _statistics.JumpPointStructures[jumpIndex].JumpStats.Follow;
+				_turnFollow = _statistics.JumpPointStructures[jumpIndex].JumpStats.TurnFollow;
+				_useTarget = _statistics.JumpPointStructures[jumpIndex].JumpStats.UseTarget;
+				_otherTarget = _statistics.JumpPointStructures[jumpIndex].JumpStats.OtherTarget;
+				_jumpCount[jumpIndex] = (short)_statistics.JumpPointStructures[jumpIndex].JumpCount;
+				_jumpTime = _statistics.TimeToJump;
+				if (_statistics.JumpPointStructures[jumpIndex].JumpStats.StopMove)
 				{
-					if (_statistics.JumpPointStructures[jumpIndex].JumpStats.StopMove)
-					{
-						_sender.SetStateForm(StateForm.State);
-						_sender.SetToggle(false);
-						_sender.Send(PathConnection.Enemy);
-					}
-					_isJumping = true;
-					Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
-					if (_statistics.JumpPointStructures[jumpIndex].JumpStats.Follow)
-					{
-						bool turnFollow = _statistics.JumpPointStructures[jumpIndex].JumpStats.TurnFollow;
-						FollowJump(_statistics.JumpPointStructures[jumpIndex].JumpStats.OtherTarget, _statistics.JumpPointStructures[jumpIndex].JumpStats.UseTarget, turnFollow);
-					}
-					_jumpCount[jumpIndex] = (short)_statistics.JumpPointStructures[jumpIndex].JumpCount;
-					_jumpTime = _statistics.TimeToJump;
+					_sender.SetStateForm(StateForm.State);
+					_sender.SetToggle(false);
+					_sender.Send(PathConnection.Enemy);
+					Rigidbody.linearVelocityX = 0f;
 				}
 			}
 		}
-		public new void Receive(DataConnection data)
+		public new async void Receive(DataConnection data)
 		{
 			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
@@ -252,16 +245,20 @@ namespace GwambaPrimeAdventure.Enemy
 							_stopJump = !data.ToggleValue.Value;
 						else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 						{
+							Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
+							while (OnGround)
+								await Task.Yield();
+							_isJumping = true;
+							_contunuosFollow = _follow = _statistics.FollowReact;
+							_turnFollow = _statistics.TurnFollowReact;
+							_useTarget = _statistics.UseTarget;
+							_otherTarget = _statistics.OtherTarget;
 							if (_statistics.StopMoveReact)
 							{
 								_sender.SetStateForm(StateForm.State);
 								_sender.SetToggle(false);
 								_sender.Send(PathConnection.Enemy);
 							}
-							_isJumping = true;
-							Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
-							if (_statistics.FollowReact)
-								FollowJump(_statistics.OtherTarget, _statistics.UseTarget, _statistics.TurnFollowReact);
 						}
 						return;
 					}
