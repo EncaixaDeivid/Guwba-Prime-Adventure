@@ -17,7 +17,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("If the react to damage will use other target.")] public bool UseTarget { get; private set; }
 		[field: SerializeField, Tooltip("If the target to follow will be random.")] public bool RandomFollow { get; private set; }
 		[field: SerializeField, Min(0f), Tooltip("The strenght of the basic jump.")] public float JumpStrenght { get; private set; }
-		[field: SerializeField, Min(1e-3f), Tooltip("The amount of time to jump again.")] public float TimeToJump { get; private set; }
+		[field: SerializeField, Min(0f), Tooltip("The amount of time to jump again.")] public float TimeToJump { get; private set; }
 		[field: SerializeField, Min(0f), HideIf(nameof(CircularDetection)), Tooltip("The angle of the detection ray.")] public float DetectionAngle { get; private set; }
 		[field: SerializeField, Min(0f), Tooltip("The distance this enemy will be to the follow target.")] public float DistanceToTarget { get; private set; }
 		[field: SerializeField, Tooltip("The strenght of the jump on a react of damage."), Header("Reaction", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
