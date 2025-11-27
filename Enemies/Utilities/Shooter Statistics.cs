@@ -11,7 +11,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("Will shoot to infinity without any detection.")] public bool ShootInfinity { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Min(0f), Tooltip("The distance this enemy can detect the target.")] public float PerceptionDistance { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Tooltip("If the detection will be circular.")] public bool CircularDetection { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or ,nameof(ShootInfinity), nameof(CircularDetection)), Min(0f), Tooltip("The angle fo the direction of ray of the detection.")]
+		[field: SerializeField, HideIf(EConditionOperator.Or ,nameof(ShootInfinity), nameof(CircularDetection)), Tooltip("The angle fo the direction of ray of the detection.")]
 		public float RayAngleDirection { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Min(0f), Tooltip("The amount of time to wait to execute another shoot.")] public float IntervalToShoot { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Tooltip("If this enemy will stop moving when shoot.\nRequires: Moving Enemy.")] public bool Stop { get; private set; }
