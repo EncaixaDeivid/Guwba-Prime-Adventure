@@ -107,7 +107,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 					(_isDashing, _afterDash, _stopWorking) = (!_afterDash, false, false);
 		}
-		private void FixedUpdate()
+		private new void FixedUpdate()
 		{
 			if (_stopWorking || IsStunned)
 				return;
@@ -160,6 +160,7 @@ namespace GwambaPrimeAdventure.Enemy
 				Chase();
 			else
 				Trail();
+			base.FixedUpdate();
 		}
 		public new void Receive(DataConnection data)
 		{
