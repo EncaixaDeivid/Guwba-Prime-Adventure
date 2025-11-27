@@ -34,9 +34,11 @@ namespace GwambaPrimeAdventure.Enemy
 				else
 				{
 					Vector2 position = transform.position;
-					Quaternion rotation = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward);
+					Quaternion rotation;
 					if (_statistics.CircularDetection)
 						rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90f, Vector3.forward);
+					else
+						rotation = Quaternion.AngleAxis(_statistics.TurnRay ? (_statistics.RayAngleDirection * (transform.localScale.x < 0f ? -1f : 1f)) : _statistics.RayAngleDirection, Vector3.forward);
 					if (!_statistics.InstanceOnSelf)
 						position += (Vector2)(rotation * Vector2.up);
 					Instantiate(projectile, position, rotation, transform).transform.SetParent(null);
