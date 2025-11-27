@@ -30,11 +30,15 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, ShowIf(nameof(UseQuantity)), Tooltip("The amount of second projectiles to instantiate.")] public ushort QuantityToSummon { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile will instantiate another after its death.")] public bool InDeath { get; private set; }
 		[field: SerializeField, ShowIf(nameof(InDeath)), Tooltip("The enemy that will be instantiate on death.")] public Control EnemyOnDeath { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile won't cause any type of damage.")] public bool IsInoffensive { get; private set; }
-		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
-		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
-		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The amount of damage this projectile will cause to a target.")] public ushort Damage { get; private set; }
-		[field: SerializeField, HideIf(nameof(IsInoffensive)), Tooltip("The amount of time this projectile will stun.")] public float StunTime { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile receives no type of damage.")] public bool NoDamage { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile won't get stunned.")] public bool NoStun { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile won't hit at contact.")] public bool NoHit { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("If this projectile won't die when hit.")] public bool NoDeathHit { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("If this projectile won't die when hit a wall.")] public bool NoDeathCollision { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of damage this projectile will cause to a target.")] public ushort Damage { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time this projectile will stun.")] public float StunTime { get; private set; }
 		[field: SerializeField, Tooltip("If the second projectile will be instantiated in a cell."), Header("Cell Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
 		public bool InCell { get; private set; }
 		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the second projectile will instantiate in a continuos sequence.")] public bool ContinuosSummon { get; private set; }
