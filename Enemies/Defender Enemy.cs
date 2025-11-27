@@ -28,7 +28,6 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			if (_timeOperation > 0f)
 				if ((_timeOperation -= Time.deltaTime) <= 0f)
-				{
 					if (_invencible)
 					{
 						_invencible = false;
@@ -49,7 +48,6 @@ namespace GwambaPrimeAdventure.Enemy
 							_sender.Send(PathConnection.Enemy);
 						}
 					}
-				}
 		}
 		public new bool Hurt(ushort damage)
 		{
@@ -73,11 +71,11 @@ namespace GwambaPrimeAdventure.Enemy
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
+						if (data.StateForm == StateForm.Event && _statistics.ReactToDamage && data.ToggleValue.HasValue)
 							if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
-								_invencible = true;
+								(_invencible, _timeOperation) = (true, _statistics.TimeToDestructible);
 							else
-								_invencible = data.ToggleValue.Value;
+								(_invencible, _timeOperation) = (data.ToggleValue.Value, _statistics.TimeToDestructible);
 						if (_statistics.InvencibleStop)
 						{
 							_sender.SetToggle(!_invencible);
