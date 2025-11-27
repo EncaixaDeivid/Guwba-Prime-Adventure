@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource)), SelectionBase]
 	public abstract class Control : StateController
 	{
 		protected Rigidbody2D _rigidbody;
