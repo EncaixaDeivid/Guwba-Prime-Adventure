@@ -9,6 +9,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public short BiggerDamage { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy.")] public bool InvencibleStop { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will become invencible when hurted.")] public bool InvencibleHurted { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy will react to any damage taken to a event.")] public bool ReactToDamage { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will use time to become invencible/destructible.")] public bool UseAlternatedTime { get; private set; }
 		[field: SerializeField, Tooltip("The amount of time the enemy have to become destructible.")] public float TimeToDestructible { get; private set; }
 		[field: SerializeField, ShowIf(nameof(UseAlternatedTime)), Tooltip("The amount of time the enemy have to become invencible.")] public float TimeToInvencible { get; private set; }
