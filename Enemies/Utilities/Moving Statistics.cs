@@ -4,8 +4,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 {
 	public abstract class MovingStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("physics."), Header("Moving Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)] public EnemyPhysics Physics { get; private set; }
-		[field: SerializeField, Min(0f), Tooltip("The speed of the enemy to moves towards.")] public float MovementSpeed { get; private set; }
+		[field: SerializeField, Min(0f), Tooltip("The speed of the enemy to moves towards."), Header("Moving Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public float MovementSpeed { get; private set; }
 		[field: SerializeField, Min(0f), Tooltip("The amount of speed of the dash.")] public float DashSpeed { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will do some action when look to a target.")] public bool LookPerception { get; private set; }
 		[field: SerializeField, ShowIf(nameof(LookPerception)), Min(0f), Tooltip("The distance of the detection of target."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
