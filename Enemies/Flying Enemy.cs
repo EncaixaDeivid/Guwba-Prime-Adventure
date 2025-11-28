@@ -130,7 +130,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_isDashing)
 			{
 				_originCast = Rigidbody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized;
-				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, WorldBuild.SceneMask))
+				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, _selfCollider.radius / 2f, WorldBuild.SceneMask))
 					if (_statistics.DetectionStop)
 						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
 					else
