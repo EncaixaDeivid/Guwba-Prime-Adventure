@@ -67,7 +67,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
