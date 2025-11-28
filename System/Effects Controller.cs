@@ -34,7 +34,7 @@ namespace GwambaPrimeAdventure
 			{
 				_canHitStop = false;
 				Time.timeScale = slowTime;
-				yield return new WaitForSecondsRealtime(stopTime);
+				yield return new WaitTime(this, stopTime, true);
 				Time.timeScale = 1f;
 				_canHitStop = true;
 			}
