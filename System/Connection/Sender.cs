@@ -1,3 +1,4 @@
+using UnityEngine;
 using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Connection
 {
@@ -31,7 +32,7 @@ namespace GwambaPrimeAdventure.Connection
 		public void SetAdditionalData(object additionalData) => _dataConnection.AdditionalData = additionalData;
 		public void SetStateForm(StateForm stateForm) => _dataConnection.StateForm = stateForm;
 		public void SetToggle(bool value) => _dataConnection.ToggleValue = value;
-		public void SetNumber(ushort value) => _dataConnection.NumberValue = (ushort)(value < 0f ? -value : value);
+		public void SetNumber(ushort value) => _dataConnection.NumberValue = (ushort)(Mathf.Abs(value));
 		public void Send(PathConnection path)
 		{
 			if (_connectors.ContainsKey(path))
