@@ -12,20 +12,22 @@ namespace GwambaPrimeAdventure
 		protected sealed class WaitTime : CustomYieldInstruction
 		{
 			private readonly StateController _instance;
+			private readonly bool _isScaled;
 			private float _time;
 			public override bool keepWaiting
 			{
 				get
 				{
 					if (_time > 0f && _instance.isActiveAndEnabled)
-						_time -= Time.deltaTime;
+						_time -= Time.deltaTime / (_isScaled ? Time.timeScale : 1f);
 					return _time > 0f;
 				}
 			}
-			public WaitTime(StateController instance, float time)
+			public WaitTime(StateController instance, float time, bool isScaled = false)
 			{
 				_instance = instance;
 				_time = time;
+				_isScaled = isScaled;
 			}
 		};
 	};
