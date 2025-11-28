@@ -636,7 +636,8 @@ namespace GwambaPrimeAdventure.Character
 					_jokerValue.x = 0f;
 					do
 					{
-						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - (_jokerValue.x += WorldBuild.SNAP_LENGTH)) * _movementAction, Local.y - _collider.bounds.extents.y);
+						_jokerValue.x += WorldBuild.SNAP_LENGTH;
+						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _jokerValue.x) * _movementAction, Local.y - _collider.bounds.extents.y);
 						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1f + WorldBuild.SNAP_LENGTH, _groundLayer);
 						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10f) / 10f != Mathf.Round(_castHit.point.y * 10f) / 10f;
 					}
@@ -685,7 +686,8 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y);
-			_isOnGround = Physics2D.BoxCast(_originCast, new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH), 0f, -transform.up, WorldBuild.SNAP_LENGTH, _groundLayer);
+			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
+			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAP_LENGTH, _groundLayer);
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
