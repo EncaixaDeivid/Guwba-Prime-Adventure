@@ -5,9 +5,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Shooter Enemy", menuName = "Enemy Statistics/Shooter", order = 5)]
 	public sealed class ShooterStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("The physics of the enemy."), Header("Shooter Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
-		public EnemyPhysics Physics { get; private set; }
-		[field: SerializeField, Tooltip("The projectiles that this enemy can instantiate.")] public Projectile[] Projectiles { get; private set; }
+		[field: SerializeField, Tooltip("The projectiles that this enemy can instantiate."), Header("Shooter Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		public Projectile[] Projectiles { get; private set; }
 		[field: SerializeField, Tooltip("Will shoot to infinity without any detection.")] public bool ShootInfinity { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Min(0f), Tooltip("The distance this enemy can detect the target.")] public float PerceptionDistance { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Tooltip("If the detection will be circular.")] public bool CircularDetection { get; private set; }
