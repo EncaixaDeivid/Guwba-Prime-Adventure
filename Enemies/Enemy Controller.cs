@@ -82,7 +82,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				_screenShaker.GenerateImpulse(_statistics.HurtShake);
-				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
+				EffectsController.HitStop(_statistics.HitStopTime, _statistics.HitSlowTime);
 			}
 		}
 		public bool Hurt(ushort damage)
