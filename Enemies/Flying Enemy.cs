@@ -130,7 +130,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_isDashing)
 			{
 				_originCast = Rigidbody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized;
-				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, _statistics.Physics.GroundLayer))
+				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, 5e-1f, WorldBuild.SceneMask))
 					if (_statistics.DetectionStop)
 						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
 					else
@@ -139,16 +139,16 @@ namespace GwambaPrimeAdventure.Enemy
 			else
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
-				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, WorldBuild.CharacterMask))
 					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_originCast = Rigidbody.position + _selfCollider.offset;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
 						{
-							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, _statistics.Physics.GroundLayer))
+							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
 								break;
-							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, _statistics.Physics.TargetLayer))
+							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, WorldBuild.CharacterMask))
 								break;
 							_originCast += _statistics.DetectionFactor * (_targetPoint - _originCast).normalized;
 						}
@@ -164,7 +164,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(DataConnection data)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
