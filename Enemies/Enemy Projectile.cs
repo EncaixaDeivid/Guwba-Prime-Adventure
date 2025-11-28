@@ -74,7 +74,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void CellInstanceRange()
 		{
-			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, _statistics.Physics.GroundLayer).distance;
+			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, WorldBuild.SceneMask).distance;
 			if (_statistics.UseQuantity)
 				distance = _statistics.QuantityToSummon;
 			for (ushort i = 0; i < distance; i++)
@@ -186,7 +186,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				destructible.Stun(_statistics.Damage, _statistics.StunTime);
 				_screenShaker.GenerateImpulse(_statistics.HurtShake);
-				EffectsController.HitStop(_statistics.Physics.HitStopTime, _statistics.Physics.HitSlowTime);
+				EffectsController.HitStop(_statistics.HitStopTime, _statistics.HitSlowTime);
 				if (!_statistics.NoDeathHit)
 					Death();
 			}
