@@ -14,8 +14,10 @@ namespace GwambaPrimeAdventure.Character
 		private UnityAction<GwambaDamager, IDestructible> _damagerAttack;
 		private readonly List<IDestructible> _damagerDamaged = new();
 		[SerializeField, BoxGroup("Stats"), Tooltip("If this Gwamba's part will take damage."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)] private bool _takeDamage;
-		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Tooltip("The velocity of the screen shake on the attack.")] internal Vector2 AttackShake { get; private set; }
-		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Tooltip("The amount of damage that the attack of Gwamba hits.")] internal ushort AttackDamage { get; private set; }
+		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Tooltip("The velocity of the screen shake on the attack.")]
+		internal Vector2 AttackShake { get; private set; }
+		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Tooltip("The amount of damage that the attack of Gwamba hits.")]
+		internal ushort AttackDamage { get; private set; }
 		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Min(0f), Tooltip("The amount of time the attack screen shake will be applied.")]
 		internal float AttackShakeTime { get; private set; }
 		[field: SerializeField, BoxGroup("Stats"), HideIf(nameof(_takeDamage)), Min(0f), Tooltip("The amount of time that this Gwamba's attack stun does.")]
