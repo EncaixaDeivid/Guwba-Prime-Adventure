@@ -167,7 +167,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (!_detected && _statistics.LookPerception)
 					if (_statistics.CircularDetection)
 					{
-						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, WorldBuild.CharacterMask))
 							if (collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = collider.transform.position;
@@ -179,7 +179,7 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
 						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
-						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, _statistics.Physics.TargetLayer))
+						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CharacterMask))
 							if (ray.collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = ray.collider.transform.position;
@@ -235,7 +235,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new async void Receive(DataConnection data)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
