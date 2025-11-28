@@ -9,13 +9,11 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public bool NoDamage { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of the enemy.")] public ushort Vitality { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy won't get stunned.")] public bool NoStun { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The amount of stun that this enemy can resists."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		public ushort HitResistance { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The amount of stun that this enemy can resists.")] public ushort HitResistance { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("If this enemy won't get stunned when hitted.")] public bool NoHitStun { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The amount of time this enemy will be stunned when armor be broken.")] public float StunnedTime { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy won't hit at contact.")] public bool NoHit { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		public Vector2 HurtShake { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of damage that the enemy hit.")] public ushort Damage { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time this enemy will stun.")] public float StunTime { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time to stop the game when hit is given.")] public float HitStopTime { get; private set; }
