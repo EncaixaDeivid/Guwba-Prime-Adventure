@@ -27,13 +27,8 @@ namespace GwambaPrimeAdventure
 #if UNITY_EDITOR
 	public interface ILogger
 	{
-		public void LogInfo(object message,
-			[CallerMemberName] string member = "",
-			[CallerFilePath] string file = "",
-			[CallerLineNumber] int line = 0)
-		{
-			Debug.Log($"[{Path.GetFileName(file)} : {line} - {member}] " + message);
-		}
+		public void LogInfo(object message, [CallerMemberName] string member = "", [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+			=> Debug.Log($"[{Path.GetFileName(file)} : {line} - {member}] " + message);
 	};
 	public sealed class Logger : ILogger
 	{
