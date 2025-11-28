@@ -77,9 +77,9 @@ namespace GwambaPrimeAdventure.Enemy
 			_hasTarget = false;
 			if (_statistics.CircularDetection)
 			{
-				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
+				foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, WorldBuild.CharacterMask))
 					if (collider.TryGetComponent<IDestructible>(out _))
-						if (!Physics2D.Linecast(transform.position, collider.transform.position, _statistics.Physics.GroundLayer))
+						if (!Physics2D.Linecast(transform.position, collider.transform.position, WorldBuild.SceneMask))
 						{
 							_targetDirection = (collider.transform.position - transform.position).normalized;
 							_hasTarget = true;
@@ -92,7 +92,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
 				if (_statistics.TurnRay)
 					_directionCast *= transform.localScale.x < 0f ? -1f : 1f;
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, _statistics.Physics.TargetLayer))
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, WorldBuild.CharacterMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 						_hasTarget = true;
 			}
@@ -126,7 +126,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(DataConnection data)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && data.AdditionalData as EnemyProvider[] != null && (data.AdditionalData as EnemyProvider[]).Length > 0)
+			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this && data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 					{
