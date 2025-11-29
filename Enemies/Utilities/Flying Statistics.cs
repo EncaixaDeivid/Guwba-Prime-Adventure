@@ -11,8 +11,6 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public float RotationSpeed { get; private set; }
 		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The distance to stay away from the target.")]
 		public float TargetDistance { get; private set; }
-		[field: SerializeField, Min(1e-3f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The multiplication factor of the detection.")]
-		public float DetectionFactor { get; private set; }
 		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The amount of speed that this enemy moves to go back to the original point.")]
 		public float ReturnSpeed { get; private set; }
 		[field: SerializeField, Min(0f), ShowIf(nameof(LookPerception)), HideIf(nameof(EndlessPursue)), Tooltip("The amount of time this enemy moves will be stopped after it attack.")]
