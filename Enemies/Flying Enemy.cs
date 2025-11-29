@@ -144,13 +144,13 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_originCast = Rigidbody.position + _selfCollider.offset;
-						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _statistics.DetectionFactor); i++)
+						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _selfCollider.radius); i++)
 						{
 							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
 								break;
 							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, WorldBuild.CharacterMask))
 								break;
-							_originCast += _statistics.DetectionFactor * (_targetPoint - _originCast).normalized;
+							_originCast += _selfCollider.radius * (_targetPoint - _originCast).normalized;
 						}
 						if (_detected)
 							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1f : 1f);
