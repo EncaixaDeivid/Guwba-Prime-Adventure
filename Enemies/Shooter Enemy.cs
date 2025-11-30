@@ -1,4 +1,5 @@
 using UnityEngine;
+using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -79,6 +80,7 @@ namespace GwambaPrimeAdventure.Enemy
 						{
 							_targetDirection = (collider.transform.position - transform.position).normalized;
 							_hasTarget = true;
+							transform.TurnScaleX(collider.transform.position.x < transform.position.x);
 							break;
 						}
 			}
@@ -130,6 +132,8 @@ namespace GwambaPrimeAdventure.Enemy
 				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this && data.StateForm == StateForm.Event && _statistics.ReactToDamage)
 					{
+						_targetDirection = (GwambaStateMarker.Localization - (Vector2)transform.position).normalized;
+						transform.TurnScaleX(GwambaStateMarker.Localization.x < transform.position.x);
 						Shoot();
 						return;
 					}
