@@ -50,13 +50,16 @@ namespace GwambaPrimeAdventure
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
 			if (scene.name == _menuScene)
+			{
+				StopAllCoroutines();
 				Destroy(gameObject);
+			}
 		};
 		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (gameObject.TryGetComponent<HiddenObject>(out var hiddenObject))
+			if (gameObject.TryGetComponent<OcclusionObject>(out var hiddenObject))
 				hiddenObject.Execution(activate);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => SetOtherChildren(other.gameObject, true);
@@ -69,9 +72,9 @@ namespace GwambaPrimeAdventure
 				StartCoroutine(RestoreDamping());
 				IEnumerator RestoreDamping()
 				{
-					yield return new WaitTime(this, _waitTime);
+					yield return new WaitTime(this, _waitTime, true);
 					float time = 0f;
-					while (time < 1e-1f)
+					while (time < 1f)
 					{
 						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
