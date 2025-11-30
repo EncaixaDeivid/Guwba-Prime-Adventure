@@ -6,7 +6,7 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	internal sealed class EnemyController : Control, ILoader, IConnector, IDestructible
+	internal sealed class EnemyController : Control, ILoader, IConnector, IOccludee, IDestructible
    {
 		private EnemyProvider[] _selfEnemies;
 		[Header("Enemy Statistics")]
@@ -19,6 +19,7 @@ namespace GwambaPrimeAdventure.Enemy
 		internal short ArmorResistance { get => _armorResistance; set => _armorResistance = value; }
 		internal float StunTimer { get => _stunTimer; set => _stunTimer = value; }
 		internal bool IsStunned { get => _stunned; set => _stunned = value; }
+		public bool Occlude => !_statistics.FadeOverTime;
 		private new void Awake()
 		{
 			base.Awake();
