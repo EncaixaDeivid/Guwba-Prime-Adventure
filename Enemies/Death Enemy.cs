@@ -17,9 +17,9 @@ namespace GwambaPrimeAdventure.Enemy
 				{
 					_isDead = false;
 					if (_statistics.ChildEnemy)
-						Instantiate(_statistics.ChildEnemy, transform.position, Quaternion.identity);
+						Instantiate(_statistics.ChildEnemy, _statistics.SpawnPoint, Quaternion.identity).transform.SetParent(null);
 					if (_statistics.ChildProjectile)
-						Instantiate(_statistics.ChildProjectile, transform.position, Quaternion.identity);
+						Instantiate(_statistics.ChildProjectile, _statistics.SpawnPoint, Quaternion.identity).transform.SetParent(null);
 					Destroy(gameObject);
 				}
 		}
