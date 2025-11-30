@@ -5,6 +5,10 @@ namespace GwambaPrimeAdventure
 	{
 		public IEnumerator Load();
 	};
+	public interface IOccludee
+	{
+		public bool Occlude { get; }
+	};
 	public interface IDestructible
 	{
 		public short Health { get; }
