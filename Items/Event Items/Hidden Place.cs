@@ -19,14 +19,13 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private bool _follow = false;
 		[Header("Hidden Place")]
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
-		[SerializeField, Tooltip("The hidden object to reveal.")] private HiddenObject _hiddenObject;
+		[SerializeField, Tooltip("The occlusion object to reveal/hide.")] private OcclusionObject _occlusionObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
 		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
 		[SerializeField, Tooltip("If this object will appear-fade instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
-		[SerializeField, Tooltip("If the place has any hidden objects.")] private bool _haveHidden;
 		[SerializeField, Tooltip("If theres a follow light.")] private bool _hasFollowLight;
 		[SerializeField, Tooltip("The amount o time to fade/appear again after the activation.")] private float _timeToFadeAppearAgain;
 		private new void Awake()
@@ -37,7 +36,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_selfLight = GetComponent<Light2DBase>();
 			_followLight = GetComponentInChildren<Light2DBase>();
 			_sender.SetStateForm(StateForm.State);
-			_sender.SetAdditionalData(_hiddenObject);
+			_sender.SetAdditionalData(_occlusionObject);
 			_activation = !_fadeActivation;
 		}
 		private new void OnDestroy()
@@ -61,34 +60,12 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				EffectsController.OnGlobalLight(_selfLight);
 			if (_hasFollowLight)
 				_follow = !appear;
-			void HaveHidden()
+			void Occlusion()
 			{
-				if (_haveHidden)
+				if (_occlusionObject)
 				{
 					_sender.SetToggle(appear);
 					_sender.Send(PathConnection.System);
-				}
-			}
-			if (_instantly)
-			{
-				Color color = _tilemap.color;
-				color.a = appear ? 1f : 0f;
-				_tilemap.color = color;
-				HaveHidden();
-			}
-			else
-			{
-				if (appear)
-				{
-					HaveHidden();
-					for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
-						yield return OpacityLevel(i);
-				}
-				else
-				{
-					HaveHidden();
-					for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
-						yield return OpacityLevel(i);
 				}
 			}
 			IEnumerator OpacityLevel(float alpha)
@@ -97,6 +74,28 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				Color color = _tilemap.color;
 				color.a = alpha;
 				_tilemap.color = color;
+			}
+			if (_instantly)
+			{
+				if (appear)
+					Occlusion();
+				Color color = _tilemap.color;
+				color.a = appear ? 1f : 0f;
+				_tilemap.color = color;
+				if (!appear)
+					Occlusion();
+			}
+			else if (appear)
+			{
+				Occlusion();
+				for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
+					yield return OpacityLevel(i);
+			}
+			else
+			{
+				for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
+					yield return OpacityLevel(i);
+				Occlusion();
 			}
 			if (_haveColliders)
 				_collider.enabled = appear;
@@ -130,7 +129,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			IEnumerator FadeTimed(bool appear)
 			{
 				yield return Fade(appear);
-				yield return new WaitTime(this, _timeToFadeAppearAgain);
+				yield return new WaitTime(this, _timeToFadeAppearAgain, true);
 				StartCoroutine(Fade(!appear));
 			}
 		}
