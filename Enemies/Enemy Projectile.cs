@@ -85,13 +85,15 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private IEnumerator ParabolicProjectile()
 		{
-			float time = 0f, x, y;
+			float time = 0f;
+			float x;
+			float y;
 			while (time > _statistics.TimeToFade)
 			{
 				time += Time.fixedDeltaTime;
 				x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
 				y = Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
-				_rigidbody.MovePosition(new Vector2(_statistics.MovementSpeed * time * x, _statistics.MovementSpeed * time * y - 5e-1f * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
+				_rigidbody.MovePosition(_statistics.MovementSpeed * time * new Vector2(x, y - 5e-1f * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
 				yield return null;
 			}
 			_parabolicEvent = null;
