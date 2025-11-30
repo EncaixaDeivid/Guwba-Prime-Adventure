@@ -11,6 +11,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private Vector2 _targetDirection;
 		private float _shootInterval = 0f;
 		private float _timeStop = 0f;
+		private float _rotation = 0f;
 		private bool _hasTarget = false;
 		private bool _canShoot = false;
 		private bool _isStopped = false;
@@ -28,21 +29,16 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void Shoot()
 		{
+			if (!_statistics.PureInstance)
+				if (_statistics.CircularDetection)
+					_rotation = (Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90f;
+				else
+					_rotation = _statistics.RayAngleDirection * (_statistics.TurnRay ? (transform.localScale.x < 0f ? -1f : 1f) : 1f);
 			foreach (Projectile projectile in _statistics.Projectiles)
 				if (_statistics.PureInstance)
-					Instantiate(projectile, transform.position, projectile.transform.rotation, transform).transform.SetParent(null);
+					Instantiate(projectile, _statistics.SpawnPoint, projectile.transform.rotation, transform).transform.SetParent(null);
 				else
-				{
-					Vector2 position = transform.position;
-					Quaternion rotation;
-					if (_statistics.CircularDetection)
-						rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90f, Vector3.forward);
-					else
-						rotation = Quaternion.AngleAxis(_statistics.TurnRay ? (_statistics.RayAngleDirection * (transform.localScale.x < 0f ? -1f : 1f)) : _statistics.RayAngleDirection, Vector3.forward);
-					if (!_statistics.InstanceOnSelf)
-						position += (Vector2)(rotation * Vector2.up);
-					Instantiate(projectile, position, rotation, transform).transform.SetParent(null);
-				}
+					Instantiate(projectile, _statistics.SpawnPoint, Quaternion.AngleAxis(_rotation, Vector3.forward), transform).transform.SetParent(null);
 			if (_statistics.InvencibleShoot)
 			{
 				_sender.SetStateForm(StateForm.Event);
@@ -83,6 +79,7 @@ namespace GwambaPrimeAdventure.Enemy
 						{
 							_targetDirection = (collider.transform.position - transform.position).normalized;
 							_hasTarget = true;
+							break;
 						}
 			}
 			else
@@ -94,7 +91,10 @@ namespace GwambaPrimeAdventure.Enemy
 					_directionCast *= transform.localScale.x < 0f ? -1f : 1f;
 				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, WorldBuild.CharacterMask))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
+					{
 						_hasTarget = true;
+						break;
+					}
 			}
 			if ((_hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0f)
 			{
