@@ -4,11 +4,12 @@ using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(BoxCollider2D))]
-	public sealed class HiddenObject : MonoBehaviour, IConnector
+	public sealed class OcclusionObject : MonoBehaviour, IConnector
 	{
 		[Header("Interactions")]
 		[SerializeField, Tooltip("If this object will activate the children.")] private bool _initialActive;
 		[SerializeField, Tooltip("If this object will turn off the collisions.")] private bool _offCollision;
+		[SerializeField, Tooltip("If this object will occlude any other object that enter the collision.")] private bool _collisionOcclusion;
 		public PathConnection PathConnection => PathConnection.System;
 		private void Awake()
 		{
@@ -19,10 +20,10 @@ namespace GwambaPrimeAdventure
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			StateController[] childrenCollection = GetComponentsInChildren<StateController>();
+			StateController[] children = GetComponentsInChildren<StateController>();
 			yield return new WaitUntil(() =>
 			{
-				foreach (StateController child in childrenCollection)
+				foreach (StateController child in children)
 					if (!child.enabled)
 						return false;
 				return true;
@@ -35,11 +36,16 @@ namespace GwambaPrimeAdventure
 			for (ushort i = 0; i < transform.childCount; i++)
 				transform.GetChild(i).gameObject.SetActive(activate);
 		}
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (_collisionOcclusion && other.TryGetComponent<IOccludee>(out var occludee) && occludee.Occlude)
+				other.transform.SetParent(transform);
+		}
 		public void Receive(DataConnection data)
 		{
-			if (this == data.AdditionalData as HiddenObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-					for (ushort i = 0; i < transform.childCount; i++)
-						transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
+			if (this == data.AdditionalData as OcclusionObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
+				for (ushort i = 0; i < transform.childCount; i++)
+					transform.GetChild(i).gameObject.SetActive(data.ToggleValue.Value);
 		}
 	};
 };
