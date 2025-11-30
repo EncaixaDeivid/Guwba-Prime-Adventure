@@ -7,6 +7,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	{
 		[field: SerializeField, Tooltip("The projectiles that this enemy can instantiate."), Header("Shooter Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
 		public Projectile[] Projectiles { get; private set; }
+		[field: SerializeField, Tooltip("The point to where spawn the projectile relative to this enemy.")] public Vector2 SpawnPoint { get; private set; }
 		[field: SerializeField, Tooltip("Will shoot to infinity without any detection.")] public bool ShootInfinity { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Min(0f), Tooltip("The distance this enemy can detect the target.")] public float PerceptionDistance { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), Tooltip("If the detection will be circular.")] public bool CircularDetection { get; private set; }
@@ -21,7 +22,6 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		public bool InvencibleShoot { get; private set; }
 		[field: SerializeField, HideIf(nameof(ShootInfinity)), ShowIf(nameof(Stop)), Tooltip("If this enemy will paralyze moving.\nRequires: Moving Enemy.")] public bool Paralyze { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy won't interfere in the projectile.")] public bool PureInstance { get; private set; }
-		[field: SerializeField, Tooltip("If the projectile will be instantiate on the same point as this enemy.")] public bool InstanceOnSelf { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy gets hurt it will shoot.")] public bool ShootDamaged { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will react to any damage taken.")] public bool ReactToDamage { get; private set; }
 	};
