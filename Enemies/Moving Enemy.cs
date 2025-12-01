@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -14,19 +16,22 @@ namespace GwambaPrimeAdventure.Enemy
 		protected short _movementSide = 1;
 		[Header("Moving Enemy")]
 		[SerializeField, Tooltip("The moving statitics of this enemy.")] private MovingStatistics _moving;
-		[SerializeField, Tooltip("If this enemy will moves firstly to the left.")] private bool _invertMovementSide;
 		protected bool OnGround => _onGround;
 		protected new void Awake()
 		{
 			base.Awake();
 			_sender.SetStateForm(StateForm.State);
-			transform.TurnScaleX(_movementSide = (short)(_invertMovementSide ? -1 : 1));
 			Sender.Include(this);
 		}
 		protected new void OnDestroy()
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
+		}
+		protected IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			transform.TurnScaleX(_movementSide = (short)((GwambaStateMarker.Localization.x < transform.position.x ? -1 : 1) * (_moving.InvertMovementSide ? -1 : 1)));
 		}
 		protected void FixedUpdate() => _onGround = false;
 		private void GroundCheck()
