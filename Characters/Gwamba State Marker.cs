@@ -76,7 +76,6 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of variation in the localization of Gwamba.")] private float _localizationVariation;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
 		[SerializeField, BoxGroup("Control"), Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
@@ -114,7 +113,7 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Attack"), Tooltip("If Gwamba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, BoxGroup("Attack"), Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		private Vector2 Local => (Vector2)transform.position + _collider.offset;
-		public static Vector2 Localization => _instance ? _instance.Local + UnityEngine.Random.insideUnitCircle * _instance._localizationVariation : Vector2.zero;
+		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
 		public PathConnection PathConnection => PathConnection.Character;
 		private new void Awake()
 		{
