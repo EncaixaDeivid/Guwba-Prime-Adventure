@@ -53,9 +53,9 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private IEnumerator Start()
+		private new IEnumerator Start()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			yield return base.Start();
 			for (ushort i = 0; i < _statistics.TimedJumps.Length; i++)
 				_timedJumpTime[i] = _statistics.TimedJumps[i].TimeToExecute;
 			_jumpCount = new short[_statistics.JumpPointStructures.Length];
