@@ -4,7 +4,6 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
@@ -19,7 +18,7 @@ namespace GwambaPrimeAdventure.Hud
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The scene of the boss of actual scene.")] private SceneField _bossScene;
-		public PathConnection PathConnection => PathConnection.Hud;
+		public MessagePath Path => MessagePath.Hud;
 		private void Awake()
 		{
 			if (_instance)
@@ -84,16 +83,16 @@ namespace GwambaPrimeAdventure.Hud
 					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 5e-2f)
 						yield return _deathScreenHud.Curtain.style.opacity = i;
 					_sender.SetToggle(true);
-					_sender.SetStateForm(StateForm.Event);
-					_sender.Send(PathConnection.System);
-					_sender.Send(PathConnection.Character);
-					_sender.SetStateForm(StateForm.State);
-					_sender.Send(PathConnection.Item);
+					_sender.SetFormat(MessageFormat.Event);
+					_sender.Send(MessagePath.System);
+					_sender.Send(MessagePath.Character);
+					_sender.SetFormat(MessageFormat.State);
+					_sender.Send(MessagePath.Item);
 					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 5e-2f)
 						yield return _deathScreenHud.Curtain.style.opacity = i;
-					_sender.Send(PathConnection.Character);
-					_sender.SetStateForm(StateForm.None);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Character);
+					_sender.SetFormat(MessageFormat.None);
+					_sender.Send(MessagePath.Enemy);
 					ConfigurationController.Instance.SetActive(true);
 					_deathScreenHud.RootElement.style.display = DisplayStyle.None;
 					_deathScreenHud.Text.text = "You have died";
@@ -111,9 +110,9 @@ namespace GwambaPrimeAdventure.Hud
 			SaveController.RefreshData();
 			GetComponent<Transitioner>().Transicion();
 		};
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				if (saveFile.Lifes < 0f)
