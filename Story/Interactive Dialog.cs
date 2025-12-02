@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Story
 {
@@ -20,12 +19,12 @@ namespace GwambaPrimeAdventure.Story
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
 		[SerializeField, Tooltip("The collection of the object that contais the dialog.")] private DialogObject _dialogObject;
-		public PathConnection PathConnection => PathConnection.Story;
+		public MessagePath Path => MessagePath.Story;
 		private void Awake()
 		{
 			_storyTeller = GetComponent<StoryTeller>();
 			_animator = GetComponent<Animator>();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_sender.SetAdditionalData(gameObject);
 		}
 		private void OnEnable()
@@ -102,7 +101,7 @@ namespace GwambaPrimeAdventure.Story
 						Destroy(this);
 					}
 					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Hud);
+					_sender.Send(MessagePath.Hud);
 				}
 			}
 			else
@@ -114,7 +113,7 @@ namespace GwambaPrimeAdventure.Story
 			if (settings.DialogToggle && _dialogObject && _dialogHudObject)
 			{
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Hud);
+				_sender.Send(MessagePath.Hud);
 				StateController.SetState(false);
 				_dialogHud = Instantiate(_dialogHudObject, transform);
 				_dialogTime = settings.DialogSpeed;
@@ -124,9 +123,9 @@ namespace GwambaPrimeAdventure.Story
 					_storyTeller.ShowScene();
 			}
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.Event && gameObject == data.AdditionalData as GameObject)
+			if (message.Format == MessageFormat.Event && gameObject == message.AdditionalData as GameObject)
 				Interaction();
 		}
 	};
