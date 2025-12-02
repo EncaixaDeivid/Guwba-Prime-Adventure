@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using GwambaPrimeAdventure.Connection;
-using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
@@ -18,7 +17,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_sender.SetAdditionalData(_occlusionObject);
 			_sender.SetToggle(true);
 		}
@@ -41,7 +40,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		public void Execute()
 		{
 			if (_occlusionObject)
-				_sender.Send(PathConnection.System);
+				_sender.Send(MessagePath.System);
 			SaveObject();
 			Destroy(gameObject);
 		}
