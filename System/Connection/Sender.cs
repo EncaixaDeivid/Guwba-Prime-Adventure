@@ -2,48 +2,53 @@ using UnityEngine;
 using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Connection
 {
+	public interface IConnector
+	{
+		public MessagePath Path { get; }
+		public void Receive(MessageData data);
+	};
 	public sealed class Sender
 	{
 		private Sender()
 		{
-			_dataConnection = new()
+			_messageData = new MessageData()
 			{
-				StateForm = StateForm.None,
+				Format = MessageFormat.None,
 				AdditionalData = null,
 				ToggleValue = null,
 				NumberValue = null
 			};
 		}
-		private static readonly Dictionary<PathConnection, List<IConnector>> _connectors = new();
-		private DataConnection _dataConnection;
+		private static readonly Dictionary<MessagePath, List<IConnector>> _connectors = new();
+		private MessageData _messageData;
 		public static void Include(IConnector connector)
 		{
-			if (!_connectors.ContainsKey(connector.PathConnection))
-				_connectors.Add(connector.PathConnection, new List<IConnector>() { connector });
-			else if (!_connectors[connector.PathConnection].Contains(connector))
-				_connectors[connector.PathConnection].Add(connector);
+			if (!_connectors.ContainsKey(connector.Path))
+				_connectors.Add(connector.Path, new List<IConnector>() { connector });
+			else if (!_connectors[connector.Path].Contains(connector))
+				_connectors[connector.Path].Add(connector);
 		}
 		public static void Exclude(IConnector connector)
 		{
-			if (_connectors.ContainsKey(connector.PathConnection))
+			if (_connectors.ContainsKey(connector.Path))
 			{
-				if (_connectors[connector.PathConnection].Contains(connector))
-					_connectors[connector.PathConnection].Remove(connector);
-				if (_connectors[connector.PathConnection].Count <= 0)
-					_connectors.Remove(connector.PathConnection);
+				if (_connectors[connector.Path].Contains(connector))
+					_connectors[connector.Path].Remove(connector);
+				if (_connectors[connector.Path].Count <= 0)
+					_connectors.Remove(connector.Path);
 			}
 		}
 		public static Sender Create() => new();
-		public void SetAdditionalData(object additionalData) => _dataConnection.AdditionalData = additionalData;
-		public void SetStateForm(StateForm stateForm) => _dataConnection.StateForm = stateForm;
-		public void SetToggle(bool value) => _dataConnection.ToggleValue = value;
-		public void SetNumber(ushort value) => _dataConnection.NumberValue = (ushort)(Mathf.Abs(value));
-		public void Send(PathConnection path)
+		public void SetFormat(MessageFormat format) => _messageData.Format = format;
+		public void SetAdditionalData(object additionalData) => _messageData.AdditionalData = additionalData;
+		public void SetToggle(bool value) => _messageData.ToggleValue = value;
+		public void SetNumber(ushort value) => _messageData.NumberValue = (ushort)(Mathf.Abs(value));
+		public void Send(MessagePath path)
 		{
 			if (_connectors.ContainsKey(path))
 				foreach (IConnector connector in _connectors[path].ToArray())
-					if (connector != null && connector.PathConnection == path)
-						connector.Receive(_dataConnection);
+					if (connector != null && connector.Path == path)
+						connector.Receive(_messageData);
 		}
 	};
 };
