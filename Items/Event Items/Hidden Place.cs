@@ -36,7 +36,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_collider = GetComponent<TilemapCollider2D>();
 			_selfLight = GetComponent<Light2DBase>();
 			_followLight = GetComponentInChildren<Light2DBase>();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_sender.SetAdditionalData(_occlusionObject);
 			_activation = !_fadeActivation;
 		}
@@ -66,7 +66,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				if (_occlusionObject)
 				{
 					_sender.SetToggle(appear);
-					_sender.Send(PathConnection.System);
+					_sender.Send(MessagePath.System);
 				}
 			}
 			IEnumerator OpacityLevel(float alpha)
