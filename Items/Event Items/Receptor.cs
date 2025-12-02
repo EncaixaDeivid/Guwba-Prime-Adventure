@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
-using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(IReceptorSignal))]
