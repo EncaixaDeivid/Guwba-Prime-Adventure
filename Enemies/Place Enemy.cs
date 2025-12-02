@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
-using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)), RequireComponent(typeof(CompositeCollider2D))]
@@ -28,15 +27,15 @@ namespace GwambaPrimeAdventure.Enemy
 			Sender.Exclude(this);
 		}
 		private void Update() => _appearFadeEvent?.MoveNext();
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-							_appearFadeEvent = AppearFade(data.ToggleValue.Value);
-						else if (data.StateForm == StateForm.Event && _reactToDamage)
+						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+							_appearFadeEvent = AppearFade(message.ToggleValue.Value);
+						else if (message.Format == MessageFormat.Event && _reactToDamage)
 							_appearFadeEvent = AppearFade(_tilemap.color.a <= 0f);
 						IEnumerator AppearFade(bool appear)
 						{
