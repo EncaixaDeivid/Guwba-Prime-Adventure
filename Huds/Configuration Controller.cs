@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
@@ -20,7 +19,7 @@ namespace GwambaPrimeAdventure.Hud
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
 		internal static ConfigurationController Instance { get; private set; }
-		public PathConnection PathConnection => PathConnection.Hud;
+		public MessagePath Path => MessagePath.Hud;
 		private void Awake()
 		{
 			if (Instance)
@@ -241,10 +240,10 @@ namespace GwambaPrimeAdventure.Hud
 			}
 		}
 		internal void SetActive(bool isActive) => _isActive = isActive;
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				_isActive = data.ToggleValue.Value;
+			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+				_isActive = message.ToggleValue.Value;
 		}
 	};
 };
