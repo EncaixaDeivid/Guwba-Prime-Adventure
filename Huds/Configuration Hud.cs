@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
