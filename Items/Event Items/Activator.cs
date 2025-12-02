@@ -7,9 +7,9 @@ namespace GwambaPrimeAdventure.Item.EventItem
 	internal abstract class Activator : StateController, ILoader
 	{
 		private Animator _animator;
-		private readonly int _isOn = Animator.StringToHash("IsOn");
-		private readonly int _use = Animator.StringToHash("Use");
-		private readonly int _useAgain = Animator.StringToHash("UseAgain");
+		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
+		private readonly int Use = Animator.StringToHash(nameof(Use));
+		private readonly int UseAgain = Animator.StringToHash(nameof(UseAgain));
 		private bool _used = false;
 		private bool _usedOne = false;
 		private bool _usable = true;
@@ -26,12 +26,12 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private void OnEnable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 1f);
+				_animator.SetFloat(IsOn, 1f);
 		}
 		private void OnDisable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 0f);
+				_animator.SetFloat(IsOn, 0f);
 		}
 		public IEnumerator Load()
 		{
@@ -49,9 +49,9 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				_usable = false;
 			if (_animator)
 				if (_used)
-					_animator.SetTrigger(_use);
+					_animator.SetTrigger(Use);
 				else
-					_animator.SetTrigger(_useAgain);
+					_animator.SetTrigger(UseAgain);
 			foreach (Receptor receptor in _receptors)
 				if (receptor)
 					receptor.ReceiveSignal(this);
