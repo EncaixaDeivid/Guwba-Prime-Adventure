@@ -20,7 +20,7 @@ namespace GwambaPrimeAdventure.Enemy
 		protected new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			Sender.Include(this);
 		}
 		protected new void OnDestroy()
@@ -43,10 +43,10 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				_stopWorking = !data.ToggleValue.Value;
+			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+				_stopWorking = !message.ToggleValue.Value;
 		}
 	};
 };
