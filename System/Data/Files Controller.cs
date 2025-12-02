@@ -24,8 +24,8 @@ namespace GwambaPrimeAdventure.Data
 				SaveFile4 = "Save File 4"
 			};
 		}
-		public static string Select(ushort actualSaveFile) =>
-			actualSaveFile switch
+		public static string Select(ushort actualSaveFile)
+			=> actualSaveFile switch
 			{
 				1 => LoadFiles().SaveFile1,
 				2 => LoadFiles().SaveFile2,
