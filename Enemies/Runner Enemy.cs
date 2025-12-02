@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -37,9 +36,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_statistics.InvencibleDash)
 			{
-				_sender.SetStateForm(StateForm.Event);
+				_sender.SetFormat(MessageFormat.Event);
 				_sender.SetToggle(_isDashing);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 			}
 		}
 		private void Update()
@@ -50,9 +49,9 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_stoppedTime -= Time.deltaTime) <= 0f)
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(_statistics.JumpDash);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					InvencibleDash();
 				}
 			if (_stopWorking)
@@ -87,9 +86,9 @@ namespace GwambaPrimeAdventure.Enemy
 				if ((_dashedTime -= Time.deltaTime) <= 0f)
 				{
 					_dashTime = _statistics.TimeToDash;
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(!(_detected = _isDashing = false));
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					InvencibleDash();
 				}
 		}
@@ -131,19 +130,19 @@ namespace GwambaPrimeAdventure.Enemy
 				else if (_statistics.EventRetreat)
 				{
 					_retreatTime = _statistics.TimeToRetreat;
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Enemy);
-					_sender.SetStateForm(StateForm.Event);
+					_sender.Send(MessagePath.Enemy);
+					_sender.SetFormat(MessageFormat.Event);
 					_sender.SetNumber(_statistics.EventIndex);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 				}
 				else
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(_statistics.JumpDash);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					InvencibleDash();
 				}
 			}
@@ -165,17 +164,17 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.DetectionStop && _detected && !_isDashing)
 			{
 				(_stoppedTime, _stopWorking) = (_statistics.StopTime, _stopRunning = true);
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				return;
 			}
 			else if (_detected && !_isDashing)
 			{
 				(_dashedTime, _isDashing) = (_statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(_statistics.JumpDash);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				InvencibleDash();
 			}
 			transform.TurnScaleX(_movementSide);
@@ -190,29 +189,29 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
 				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				return false;
 			}
 			return base.Hurt(damage);
 		}
-		public new void Receive(DataConnection data)
+		public new void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data);
-						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && !data.ToggleValue.Value)
+						base.Receive(message);
+						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 							Rigidbody.linearVelocityX = 0f;
-						if (data.StateForm == StateForm.Event && _statistics.ReactToDamage && _canRetreat)
+						if (message.Format == MessageFormat.Event && _statistics.ReactToDamage && _canRetreat)
 						{
 							(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
 							transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
-							_sender.SetStateForm(StateForm.State);
+							_sender.SetFormat(MessageFormat.State);
 							_sender.SetToggle(false);
-							_sender.Send(PathConnection.Enemy);
+							_sender.Send(MessagePath.Enemy);
 						}
 						return;
 					}
