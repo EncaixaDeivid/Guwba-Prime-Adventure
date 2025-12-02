@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Character
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
 			if (gameObject.scene.name == _hubbyWorldScene && saveFile.LastLevelEntered != "")
-				if (ushort.Parse($"{saveFile.LastLevelEntered[^1]}") == _selfIndex)
+				if (saveFile.LastLevelEntered.Contains($"{_selfIndex}"))
 					_sender.Send(PathConnection.Character);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
