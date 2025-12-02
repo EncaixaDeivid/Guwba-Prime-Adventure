@@ -1,6 +1,5 @@
 using UnityEngine;
 using NaughtyAttributes;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
@@ -33,29 +32,29 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					{
 						_use = false;
 						Teleport();
-						_sender.SetStateForm(StateForm.State);
+						_sender.SetFormat(MessageFormat.State);
 						_sender.SetAdditionalData(gameObject);
 						_sender.SetToggle(true);
-						_sender.Send(PathConnection.Hud);
+						_sender.Send(MessagePath.Hud);
 					}
 					else
 						_active = _returnActive;
 		}
 		private void Teleport()
 		{
-			_sender.SetStateForm(StateForm.Event);
+			_sender.SetFormat(MessageFormat.Event);
 			_sender.SetAdditionalData(_locations[_index]);
 			_sender.SetToggle(false);
-			_sender.Send(PathConnection.System);
-			_sender.Send(PathConnection.Character);
+			_sender.Send(MessagePath.System);
+			_sender.Send(MessagePath.Character);
 			_index = (ushort)(_index < _locations.Length - 1f ? _index + 1f : 0f);
 		}
 		private void Timer()
 		{
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_sender.SetAdditionalData(gameObject);
 			_sender.SetToggle(false);
-			_sender.Send(PathConnection.Hud);
+			_sender.Send(MessagePath.Hud);
 			_timer = _timeToUse;
 			_use = true;
 		}
