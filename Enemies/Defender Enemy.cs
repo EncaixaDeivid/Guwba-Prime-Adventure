@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -13,7 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_timeOperation = _statistics.TimeToInvencible;
 			Sender.Include(this);
 		}
@@ -35,7 +34,7 @@ namespace GwambaPrimeAdventure.Enemy
 						if (_statistics.InvencibleStop)
 						{
 							_sender.SetToggle(true);
-							_sender.Send(PathConnection.Enemy);
+							_sender.Send(MessagePath.Enemy);
 						}
 					}
 					else
@@ -45,7 +44,7 @@ namespace GwambaPrimeAdventure.Enemy
 						if (_statistics.InvencibleStop)
 						{
 							_sender.SetToggle(false);
-							_sender.Send(PathConnection.Enemy);
+							_sender.Send(MessagePath.Enemy);
 						}
 					}
 		}
@@ -60,26 +59,26 @@ namespace GwambaPrimeAdventure.Enemy
 					if (_statistics.InvencibleStop)
 					{
 						_sender.SetToggle(true);
-						_sender.Send(PathConnection.Enemy);
+						_sender.Send(MessagePath.Enemy);
 					}
 				}
 			return isHurted;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						if (data.StateForm == StateForm.Event && _statistics.ReactToDamage && data.ToggleValue.HasValue)
-							if (_statistics.UseAlternatedTime && data.ToggleValue.Value)
+						if (message.Format == MessageFormat.Event && _statistics.ReactToDamage && message.ToggleValue.HasValue)
+							if (_statistics.UseAlternatedTime && message.ToggleValue.Value)
 								(_invencible, _timeOperation) = (true, _statistics.TimeToDestructible);
 							else
-								(_invencible, _timeOperation) = (data.ToggleValue.Value, _statistics.TimeToDestructible);
+								(_invencible, _timeOperation) = (message.ToggleValue.Value, _statistics.TimeToDestructible);
 						if (_statistics.InvencibleStop)
 						{
 							_sender.SetToggle(!_invencible);
-							_sender.Send(PathConnection.Enemy);
+							_sender.Send(MessagePath.Enemy);
 						}
 						return;
 					}
