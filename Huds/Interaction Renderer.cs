@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Hud
 {
@@ -15,7 +14,7 @@ namespace GwambaPrimeAdventure.Hud
 		[Header("Interaction Components")]
 		[SerializeField, Tooltip("The UI document of the interaction.")] private UIDocument _documentObject;
 		[SerializeField, Tooltip("The offset of the document of interaction.")] private Vector2 _imageOffset;
-		public PathConnection PathConnection => PathConnection.Hud;
+		public MessagePath Path => MessagePath.Hud;
 		private new void Awake()
 		{
 			base.Awake();
@@ -50,10 +49,10 @@ namespace GwambaPrimeAdventure.Hud
 			if (!(_isOnCollision = !GwambaStateMarker.EqualObject(collision.gameObject)))
 				_document.enabled = false;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.AdditionalData as GameObject == gameObject && data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-				if (data.ToggleValue.Value)
+			if (message.AdditionalData as GameObject == gameObject && message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+				if (message.ToggleValue.Value)
 				{
 					_isActive = true;
 					if (_isOnCollision)
