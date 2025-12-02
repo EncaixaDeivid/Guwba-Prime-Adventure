@@ -1,10 +1,5 @@
 namespace GwambaPrimeAdventure.Connection
 {
-	public interface IConnector
-	{
-		public MessagePath Path { get; }
-		public void Receive(MessageData data);
-	};
 	public struct MessageData
 	{
 		public MessageFormat Format { get; internal set; }
