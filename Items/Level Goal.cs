@@ -1,6 +1,6 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
