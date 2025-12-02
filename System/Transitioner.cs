@@ -26,9 +26,8 @@ namespace GwambaPrimeAdventure
 				}
 				SceneField newScene = scene ?? _sceneTransicion;
 				if (newScene != gameObject.scene.name)
-					for (ushort i = 0; i < saveFile.LevelsCompleted.Length; i++)
-						if (newScene.SceneName.Contains($"{i}"))
-							saveFile.LastLevelEntered = newScene;
+					if (newScene.SceneName.Contains($"{1..(saveFile.LevelsCompleted.Length + 1)}"))
+						saveFile.LastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
 				if (newScene != _menuScene)
 					yield return new WaitUntil(() => asyncOperation.isDone);
