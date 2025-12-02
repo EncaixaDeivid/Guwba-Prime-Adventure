@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Collections;
+using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item.EventItem
@@ -21,13 +22,13 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("Other hidden place to activate.")] private HiddenPlace _otherPlace;
 		[SerializeField, Tooltip("The occlusion object to reveal/hide.")] private OcclusionObject _occlusionObject;
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
+		[SerializeField, ShowIf(nameof(_isReceptor)), Tooltip("The amount o time to appear/fade again after the activation.")] private float _timeToFadeAppearAgain;
 		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
 		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
-		[SerializeField, Tooltip("If this object will appear-fade instantly.")] private bool _instantly;
+		[SerializeField, Tooltip("If this object will appear/fade instantly.")] private bool _instantly;
 		[SerializeField, Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
 		[SerializeField, Tooltip("If the place has any inferior collider.")] private bool _haveColliders;
 		[SerializeField, Tooltip("If theres a follow light.")] private bool _hasFollowLight;
-		[SerializeField, Tooltip("The amount o time to fade/appear again after the activation.")] private float _timeToFadeAppearAgain;
 		private new void Awake()
 		{
 			base.Awake();
