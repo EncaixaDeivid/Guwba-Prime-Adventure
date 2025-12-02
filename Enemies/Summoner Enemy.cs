@@ -23,7 +23,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.State);
+			_sender.SetFormat(MessageFormat.State);
 			_isSummonTime = new bool[_statistics.TimedSummons.Length];
 			_stopPermanently = new bool[_statistics.TimedSummons.Length];
 			_summonTime = new float[_statistics.TimedSummons.Length];
@@ -59,7 +59,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (summon.StopToSummon)
 				{
 					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					if (summon.ParalyzeToSummon)
 						Rigidbody.gravityScale = 0f;
 					_waitStop = summon.WaitStop;
@@ -120,7 +120,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_stopTime <= 0f)
 				{
 					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					Rigidbody.gravityScale = _gravityScale;
 					if (_waitStop)
 						_summonEvent?.MoveNext();
@@ -133,19 +133,19 @@ namespace GwambaPrimeAdventure.Enemy
 					IndexedSummon(i);
 		}
 		public void OnSummon(ushort summonIndex) => Summon(_statistics.SummonPointStructures[summonIndex].Summon);
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-							_stopSummon = !data.ToggleValue.Value;
-						else if (data.StateForm == StateForm.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
+						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+							_stopSummon = !message.ToggleValue.Value;
+						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
 							if (_statistics.RandomReactSummons)
 								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length)]);
-							else if (data.NumberValue.HasValue && data.NumberValue.Value < _statistics.EventSummons.Length && data.NumberValue.Value >= 0)
-								Summon(_statistics.EventSummons[data.NumberValue.Value]);
+							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && message.NumberValue.Value >= 0)
+								Summon(_statistics.EventSummons[message.NumberValue.Value]);
 						return;
 					}
 		}
