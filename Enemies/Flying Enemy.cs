@@ -1,6 +1,5 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -162,13 +161,13 @@ namespace GwambaPrimeAdventure.Enemy
 				Trail();
 			base.FixedUpdate();
 		}
-		public new void Receive(DataConnection data)
+		public new void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data);
+						base.Receive(message);
 						return;
 					}
 		}
