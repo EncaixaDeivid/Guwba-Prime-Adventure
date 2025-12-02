@@ -61,7 +61,7 @@ namespace GwambaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
 			Settings = RootElement.Q<GroupBox>(_settingsGroup);
 			Confirmation = RootElement.Q<GroupBox>(_confirmationGroup);
 			ScreenResolution = RootElement.Q<DropdownField>(_screenResolution);
