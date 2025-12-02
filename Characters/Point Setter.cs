@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using NaughtyAttributes;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Character
 {
@@ -12,11 +11,11 @@ namespace GwambaPrimeAdventure.Character
 		private readonly Sender _sender = Sender.Create();
 		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("The name of the hubby world scene."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Hubby World Interaction"), Tooltip("Which point setter is setted when scene is the hubby world.")] private ushort _selfIndex;
-		public PathConnection PathConnection => PathConnection.Character;
+		public MessagePath Path => MessagePath.Character;
 		private new void Awake()
 		{
 			base.Awake();
-			_sender.SetStateForm(StateForm.Event);
+			_sender.SetFormat(MessageFormat.Event);
 			_sender.SetAdditionalData((Vector2)transform.position);
 			_sender.SetToggle(false);
 			Sender.Include(this);
@@ -32,17 +31,17 @@ namespace GwambaPrimeAdventure.Character
 			SaveController.Load(out SaveFile saveFile);
 			if (gameObject.scene.name == _hubbyWorldScene && saveFile.LastLevelEntered != "")
 				if (saveFile.LastLevelEntered.Contains($"{_selfIndex}"))
-					_sender.Send(PathConnection.Character);
+					_sender.Send(MessagePath.Character);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (GwambaStateMarker.EqualObject(other.gameObject) && this != _instance)
 				_instance = this;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue && data.ToggleValue.Value && this == _instance)
-				_sender.Send(PathConnection.Character);
+			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && message.ToggleValue.Value && this == _instance)
+				_sender.Send(MessagePath.Character);
 		}
 	};
 };
