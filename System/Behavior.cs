@@ -5,6 +5,11 @@ namespace GwambaPrimeAdventure
 	{
 		public IEnumerator Load();
 	};
+	public interface IConnector
+	{
+		public MessagePath Path { get; }
+		public void Receive(MessageData message);
+	};
 	public interface IOccludee
 	{
 		public bool Occlude { get; }
