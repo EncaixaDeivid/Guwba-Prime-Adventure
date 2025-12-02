@@ -25,27 +25,27 @@ namespace GwambaPrimeAdventure.Character
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
-		private IEnumerator _dashSlideEvent;
-		private IEnumerator _airJumpEvent;
+		private IEnumerator _airJumpMethod;
+		private IEnumerator _dashSlideMethod;
 		private Vector2 _originCast;
 		private Vector2 _sizeCast;
 		private Vector3 _jokerValue;
 		private RaycastHit2D _castHit;
-		private readonly int _isOn = Animator.StringToHash("IsOn");
-		private readonly int _idle = Animator.StringToHash("Idle");
-		private readonly int _walk = Animator.StringToHash("Walk");
-		private readonly int _walkSpeed = Animator.StringToHash("WalkSpeed");
-		private readonly int _jump = Animator.StringToHash("Jump");
-		private readonly int _fall = Animator.StringToHash("Fall");
-		private readonly int _airJump = Animator.StringToHash("AirJump");
-		private readonly int _dashSlide = Animator.StringToHash("DashSlide");
-		private readonly int _attack = Animator.StringToHash("Attack");
-		private readonly int _attackCombo = Animator.StringToHash("AttackCombo");
-		private readonly int _attackJump = Animator.StringToHash("AttackJump");
-		private readonly int _attackAirJump = Animator.StringToHash("AttackAirJump");
-		private readonly int _attackSlide = Animator.StringToHash("AttackSlide");
-		private readonly int _stun = Animator.StringToHash("Stun");
-		private readonly int _death = Animator.StringToHash("Death");
+		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
+		private readonly int Idle = Animator.StringToHash(nameof(Idle));
+		private readonly int Walk = Animator.StringToHash(nameof(Walk));
+		private readonly int WalkSpeed = Animator.StringToHash(nameof(WalkSpeed));
+		private readonly int Jump = Animator.StringToHash(nameof(Jump));
+		private readonly int Fall = Animator.StringToHash(nameof(Fall));
+		private readonly int AirJump = Animator.StringToHash(nameof(AirJump));
+		private readonly int DashSlide = Animator.StringToHash(nameof(DashSlide));
+		private readonly int Attack = Animator.StringToHash(nameof(Attack));
+		private readonly int AttackCombo = Animator.StringToHash(nameof(AttackCombo));
+		private readonly int AttackJump = Animator.StringToHash(nameof(AttackJump));
+		private readonly int AttackAirJump = Animator.StringToHash(nameof(AttackAirJump));
+		private readonly int AttackSlide = Animator.StringToHash(nameof(AttackSlide));
+		private readonly int Stun = Animator.StringToHash(nameof(Stun));
+		private readonly int Death = Animator.StringToHash(nameof(Death));
 		private short _vitality;
 		private short _stunResistance;
 		private ushort _recoverVitality = 0;
@@ -88,16 +88,16 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the Movement.")] private float _acceleration;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the Movement.")] private float _decceleration;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the Movement.")] private float _velocityPower;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of Movement.")] private float _frictionAmount;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the MovementInput.")] private float _acceleration;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the MovementInput.")] private float _decceleration;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the MovementInput.")] private float _velocityPower;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of MovementInput.")] private float _frictionAmount;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
+		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
+		[SerializeField, BoxGroup("MovementInput"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
@@ -131,14 +131,14 @@ namespace GwambaPrimeAdventure.Character
 			_gwambaCanvas = GetComponentInChildren<GwambaCanvas>();
 			_gwambaDamagers = GetComponentsInChildren<GwambaDamager>();
 			_inputController = new InputController();
-			_inputController.Commands.Movement.started += Movement;
-			_inputController.Commands.Movement.performed += Movement;
-			_inputController.Commands.Movement.canceled += Movement;
-			_inputController.Commands.Jump.started += Jump;
-			_inputController.Commands.Jump.canceled += Jump;
-			_inputController.Commands.AttackUse.started += AttackUse;
-			_inputController.Commands.AttackUse.canceled += AttackUse;
-			_inputController.Commands.Interaction.started += Interaction;
+			_inputController.Commands.Movement.started += MovementInput;
+			_inputController.Commands.Movement.performed += MovementInput;
+			_inputController.Commands.Movement.canceled += MovementInput;
+			_inputController.Commands.Jump.started += JumpInput;
+			_inputController.Commands.Jump.canceled += JumpInput;
+			_inputController.Commands.AttackUse.started += AttackUseInput;
+			_inputController.Commands.AttackUse.canceled += AttackUseInput;
+			_inputController.Commands.Interaction.started += InteractionInput;
 			SceneManager.sceneLoaded += SceneLoaded;
 			Sender.Include(this);
 		}
@@ -148,23 +148,23 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			StopAllCoroutines();
-			_dashSlideEvent = null;
-			_airJumpEvent = null;
+			_airJumpMethod = null;
+			_dashSlideMethod = null;
 			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
-				gwambaDamager.DamagerHurt -= Hurt;
-				gwambaDamager.DamagerStun -= Stun;
-				gwambaDamager.DamagerAttack -= Attack;
+				gwambaDamager.DamagerHurt -= DamagerHurt;
+				gwambaDamager.DamagerStun -= DamagerStun;
+				gwambaDamager.DamagerAttack -= DamagerAttack;
 				gwambaDamager.Alpha = 1f;
 			}
-			_inputController.Commands.Movement.started -= Movement;
-			_inputController.Commands.Movement.performed -= Movement;
-			_inputController.Commands.Movement.canceled -= Movement;
-			_inputController.Commands.Jump.started -= Jump;
-			_inputController.Commands.Jump.canceled -= Jump;
-			_inputController.Commands.AttackUse.started -= AttackUse;
-			_inputController.Commands.AttackUse.canceled -= AttackUse;
-			_inputController.Commands.Interaction.started -= Interaction;
+			_inputController.Commands.Movement.started -= MovementInput;
+			_inputController.Commands.Movement.performed -= MovementInput;
+			_inputController.Commands.Movement.canceled -= MovementInput;
+			_inputController.Commands.Jump.started -= JumpInput;
+			_inputController.Commands.Jump.canceled -= JumpInput;
+			_inputController.Commands.AttackUse.started -= AttackUseInput;
+			_inputController.Commands.AttackUse.canceled -= AttackUseInput;
+			_inputController.Commands.Interaction.started -= InteractionInput;
 			_inputController.Dispose();
 			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
@@ -175,8 +175,8 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			if (_gwambaCanvas.RootElement != null)
 				_gwambaCanvas.RootElement.style.display = DisplayStyle.Flex;
-			_animator.SetFloat(_isOn, 1f);
-			_animator.SetFloat(_walkSpeed, 1f);
+			_animator.SetFloat(IsOn, 1f);
+			_animator.SetFloat(WalkSpeed, 1f);
 			EnableInputs();
 		}
 		private void OnDisable()
@@ -184,8 +184,8 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			_gwambaCanvas.RootElement.style.display = DisplayStyle.None;
-			_animator.SetFloat(_isOn, 0f);
-			_animator.SetFloat(_walkSpeed, 0f);
+			_animator.SetFloat(IsOn, 0f);
+			_animator.SetFloat(WalkSpeed, 0f);
 			DisableInputs();
 		}
 		private void EnableInputs()
@@ -221,7 +221,7 @@ namespace GwambaPrimeAdventure.Character
 				transform.position = Vector2.zero;
 				return SceneInitiator.IsInTrancision();
 			});
-			if (_animator.GetBool(_death))
+			if (_animator.GetBool(Death))
 			{
 				Reanimate();
 				OnEnable();
@@ -245,7 +245,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
 				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			_animator.SetBool(_death, _hopActive = _isHoping = false);
+			_animator.SetBool(Death, _hopActive = _isHoping = false);
 			transform.TurnScaleX(_turnLeft);
 		}
 		public IEnumerator Load()
@@ -258,9 +258,9 @@ namespace GwambaPrimeAdventure.Character
 			(_vitality, _stunResistance) = ((short)_gwambaCanvas.Vitality.Length, (short)_gwambaCanvas.StunResistance.Length);
 			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 			{
-				gwambaDamager.DamagerHurt += Hurt;
-				gwambaDamager.DamagerStun += Stun;
-				gwambaDamager.DamagerAttack += Attack;
+				gwambaDamager.DamagerHurt += DamagerHurt;
+				gwambaDamager.DamagerStun += DamagerStun;
+				gwambaDamager.DamagerAttack += DamagerAttack;
 			}
 			transform.TurnScaleX(_turnLeft);
 			_gravityScale = _rigidbody.gravityScale;
@@ -289,9 +289,9 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
 		};
-		private Action<InputAction.CallbackContext> Movement => movement =>
+		private Action<InputAction.CallbackContext> MovementInput => movement =>
 		{
-			if (!isActiveAndEnabled || _animator.GetBool(_stun))
+			if (!isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
 			_movementAction = 0f;
 			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 0.5f)
@@ -302,36 +302,36 @@ namespace GwambaPrimeAdventure.Character
 			if (_movementAction != 0f && (!_attackUsage || _comboAttackBuffer))
 				if (movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
 				{
-					_airJumpEvent = AirJump(_movementAction);
+					_airJumpMethod = AirJumpMethod(_movementAction);
 					_rigidbody.linearVelocity = Vector2.zero;
 					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
 					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
-					IEnumerator AirJump(float dashMovement)
+					IEnumerator AirJumpMethod(float dashMovement)
 					{
-						_animator.SetBool(_airJump, !(_canAirJump = false));
-						_animator.SetBool(_attackAirJump, _comboAttackBuffer);
+						_animator.SetBool(AirJump, !(_canAirJump = false));
+						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
 						while (!_isOnGround)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
-							if (_castHit || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _airJumpEvent is null)
+							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _airJumpMethod is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
 							yield return null;
 						}
-						_animator.SetBool(_airJump, (_airJumpEvent = null) is not null);
-						_animator.SetBool(_attackAirJump, false);
+						_animator.SetBool(AirJump, (_airJumpMethod = null) is not null);
+						_animator.SetBool(AttackAirJump, false);
 					}
 				}
-				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(_dashSlide) && _isOnGround)
+				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(DashSlide) && _isOnGround)
 				{
-					_dashSlideEvent = Dash(_movementAction);
-					IEnumerator Dash(float dashMovement)
+					_dashSlideMethod = DashSlideMethod(_movementAction);
+					IEnumerator DashSlideMethod(float dashMovement)
 					{
-						_animator.SetBool(_dashSlide, true);
-						_animator.SetBool(_attackSlide, _comboAttackBuffer);
+						_animator.SetBool(DashSlide, true);
+						_animator.SetBool(AttackSlide, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
 						_jokerValue.z = transform.position.x;
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
@@ -340,17 +340,17 @@ namespace GwambaPrimeAdventure.Character
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							_jokerValue = new Vector3(transform.right.x * dashMovement, transform.right.y * dashMovement, _jokerValue.z);
 							_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, _jokerValue, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
-							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(_stun) || _animator.GetBool(_death) || _dashSlideEvent is null)
+							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _dashSlideMethod is null)
 								break;
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
 							yield return null;
 						}
-						_animator.SetBool(_dashSlide, (_dashSlideEvent = null) is not null);
-						_animator.SetBool(_attackSlide, false);
+						_animator.SetBool(DashSlide, (_dashSlideMethod = null) is not null);
+						_animator.SetBool(AttackSlide, false);
 					}
 			}
 		};
-		private Action<InputAction.CallbackContext> Jump => jump =>
+		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
 			{
@@ -368,18 +368,18 @@ namespace GwambaPrimeAdventure.Character
 				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
 			}
 		};
-		private Action<InputAction.CallbackContext> AttackUse => attackUse =>
+		private Action<InputAction.CallbackContext> AttackUseInput => attackUse =>
 		{
-			if ((_attackDelay > 0f && !_comboAttackBuffer) || _animator.GetBool(_airJump) || _animator.GetBool(_dashSlide) || !isActiveAndEnabled || _animator.GetBool(_stun))
+			if ((_attackDelay > 0f && !_comboAttackBuffer) || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || !isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
 			if (attackUse.started && !_attackUsage)
-				_animator.SetTrigger(_attack);
+				_animator.SetTrigger(Attack);
 			if (attackUse.canceled && _comboAttackBuffer)
-				_animator.SetTrigger(_attackCombo);
+				_animator.SetTrigger(AttackCombo);
 		};
-		private Action<InputAction.CallbackContext> Interaction => interaction =>
+		private Action<InputAction.CallbackContext> InteractionInput => interaction =>
 		{
-			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(_airJump) || _animator.GetBool(_dashSlide) || _animator.GetBool(_stun))
+			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
 			LayerMask mask = WorldBuild.SystemMask + WorldBuild.CharacterMask + WorldBuild.SceneMask + WorldBuild.ItemMask;
 			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, mask))
@@ -390,7 +390,7 @@ namespace GwambaPrimeAdventure.Character
 					return;
 				}
 		};
-		public Predicate<ushort> Hurt => damage =>
+		public Predicate<ushort> DamagerHurt => damage =>
 		{
 			if (_invencibility || damage <= 0f)
 				return false;
@@ -413,13 +413,13 @@ namespace GwambaPrimeAdventure.Character
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 					gwambaDamager.Alpha = 1f;
 				OnDisable();
-				_animator.SetBool(_idle, false);
-				_animator.SetBool(_walk, false);
-				_animator.SetBool(_jump, false);
-				_animator.SetBool(_fall, false);
-				_animator.SetBool(_attackJump, false);
-				_animator.SetBool(_stun, false);
-				_animator.SetBool(_death, true);
+				_animator.SetBool(Idle, false);
+				_animator.SetBool(Walk, false);
+				_animator.SetBool(Jump, false);
+				_animator.SetBool(Fall, false);
+				_animator.SetBool(AttackJump, false);
+				_animator.SetBool(Stun, false);
+				_animator.SetBool(Death, true);
 				_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
 				_sender.SetToggle(false);
 				_sender.SetStateForm(StateForm.State);
@@ -432,14 +432,14 @@ namespace GwambaPrimeAdventure.Character
 			}
 			return true;
 		};
-		public UnityAction<ushort, float> Stun => (stunStrength, stunTime) =>
+		public UnityAction<ushort, float> DamagerStun => (stunStrength, stunTime) =>
 		{
 			_stunResistance -= (short)stunStrength;
 			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
 				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			if (_stunResistance <= 0f && !_animator.GetBool(_death))
+			if (_stunResistance <= 0f && !_animator.GetBool(Death))
 			{
-				_animator.SetBool(_stun, !(_invencibility = false));
+				_animator.SetBool(Stun, !(_invencibility = false));
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 					gwambaDamager.Alpha = 1f;
 				_stunTimer = stunTime;
@@ -448,7 +448,7 @@ namespace GwambaPrimeAdventure.Character
 				DisableInputs();
 			}
 		};
-		private UnityAction<GwambaDamager, IDestructible> Attack => (gwambaDamager, destructible) =>
+		private UnityAction<GwambaDamager, IDestructible> DamagerAttack => (gwambaDamager, destructible) =>
 		{
 			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
@@ -499,16 +499,16 @@ namespace GwambaPrimeAdventure.Character
 					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 						gwambaDamager.Alpha = 1f;
 			}
-			if (_animator.GetBool(_stun))
+			if (_animator.GetBool(Stun))
 				if ((_stunTimer -= Time.deltaTime) <= 0f)
 				{
-					_animator.SetBool(_stun, !(_invencibility = true));
+					_animator.SetBool(Stun, !(_invencibility = true));
 					EnableInputs();
 				}
 			if (_fadeTimer > 0f)
 				if ((_fadeTimer -= Time.deltaTime) <= 0f)
 					(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
-			if (!_animator.GetBool(_dashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
+			if (!_animator.GetBool(DashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0f)
 				if ((_attackDelay -= Time.deltaTime) <= 0f)
@@ -520,24 +520,24 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (_dashSlideEvent is not null)
-				_dashSlideEvent.MoveNext();
+			if (_dashSlideMethod is not null)
+				_dashSlideMethod.MoveNext();
 			else
 			{
 				if (_isOnGround)
 				{
-					if (_movementAction == 0f || (_animator.GetBool(_fall) || Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f))
-						_animator.SetBool(_idle, true);
-					else if (_animator.GetBool(_idle))
-						_animator.SetBool(_idle, false);
-					if (!_animator.GetBool(_walk) && _movementAction != 0f)
-						_animator.SetBool(_walk, true);
-					else if (_animator.GetBool(_walk) && _movementAction == 0f)
-						_animator.SetBool(_walk, false);
-					if (_animator.GetBool(_jump))
-						_animator.SetBool(_jump, false);
-					if (_animator.GetBool(_fall))
-						_animator.SetBool(_fall, false);
+					if (_movementAction == 0f || (_animator.GetBool(Fall) || Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f))
+						_animator.SetBool(Idle, true);
+					else if (_animator.GetBool(Idle))
+						_animator.SetBool(Idle, false);
+					if (!_animator.GetBool(Walk) && _movementAction != 0f)
+						_animator.SetBool(Walk, true);
+					else if (_animator.GetBool(Walk) && _movementAction == 0f)
+						_animator.SetBool(Walk, false);
+					if (_animator.GetBool(Jump))
+						_animator.SetBool(Jump, false);
+					if (_animator.GetBool(Fall))
+						_animator.SetBool(Fall, false);
 					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
 					if (_bunnyHopBoost <= 0f && _isHoping)
 					{
@@ -549,7 +549,7 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
-						Hurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
+						DamagerHurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
 						(_fallStarted, _fallDamage) = (false, 0f);
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
@@ -583,26 +583,26 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_jokerValue.y = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount)) * Mathf.Sign(_rigidbody.linearVelocityX);
 						_rigidbody.AddForceX(-_jokerValue.y * _rigidbody.mass, ForceMode2D.Impulse);
-						_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / (_longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost)));
+						_animator.SetFloat(WalkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / (_longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost)));
 					}
 				}
-				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(_airJump))
+				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(AirJump))
 				{
-					if (_animator.GetBool(_idle))
-						_animator.SetBool(_idle, false);
-					if (_animator.GetBool(_walk))
-						_animator.SetBool(_walk, false);
-					if (!_animator.GetBool(_jump) && _rigidbody.linearVelocityY > 0f)
-						_animator.SetBool(_jump, true);
-					else if (_animator.GetBool(_jump) && _rigidbody.linearVelocityY < 0f)
-						_animator.SetBool(_jump, false);
-					if (!_animator.GetBool(_fall) && _rigidbody.linearVelocityY < 0f)
-						_animator.SetBool(_fall, true);
-					else if (_animator.GetBool(_fall) && _rigidbody.linearVelocityY > 0f)
-						_animator.SetBool(_fall, false);
-					if (_animator.GetBool(_attackJump) && _rigidbody.linearVelocityY < 0f)
-						_animator.SetBool(_attackJump, false);
-					if (_animator.GetBool(_fall))
+					if (_animator.GetBool(Idle))
+						_animator.SetBool(Idle, false);
+					if (_animator.GetBool(Walk))
+						_animator.SetBool(Walk, false);
+					if (!_animator.GetBool(Jump) && _rigidbody.linearVelocityY > 0f)
+						_animator.SetBool(Jump, true);
+					else if (_animator.GetBool(Jump) && _rigidbody.linearVelocityY < 0f)
+						_animator.SetBool(Jump, false);
+					if (!_animator.GetBool(Fall) && _rigidbody.linearVelocityY < 0f)
+						_animator.SetBool(Fall, true);
+					else if (_animator.GetBool(Fall) && _rigidbody.linearVelocityY > 0f)
+						_animator.SetBool(Fall, false);
+					if (_animator.GetBool(AttackJump) && _rigidbody.linearVelocityY < 0f)
+						_animator.SetBool(AttackJump, false);
+					if (_animator.GetBool(Fall))
 					{
 						if (_rigidbody.gravityScale < _fallGravityMultiply * _gravityScale)
 							_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
@@ -644,8 +644,8 @@ namespace GwambaPrimeAdventure.Character
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
-				if (_airJumpEvent is not null)
-					_airJumpEvent.MoveNext();
+				if (_airJumpMethod is not null)
+					_airJumpMethod.MoveNext();
 				else
 				{
 					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
@@ -659,17 +659,17 @@ namespace GwambaPrimeAdventure.Character
 						else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
 							transform.TurnScaleX(_movementAction);
 						if (_isOnGround)
-							_animator.SetFloat(_walkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
+							_animator.SetFloat(WalkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 					}
 				}
-				if (_attackUsage && !_animator.GetBool(_attackAirJump))
+				if (_attackUsage && !_animator.GetBool(AttackAirJump))
 					_rigidbody.linearVelocityX *= _attackVelocityCut;
 			}
 			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
 			{
 				if (_comboAttackBuffer)
-					_animator.SetBool(_attackJump, true);
-				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(_dashSlide), _gravityScale, 0f);
+					_animator.SetBool(AttackJump, true);
+				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0f);
 				if (_bunnyHopBoost > 0f)
 				{
 					_isHoping = true;
