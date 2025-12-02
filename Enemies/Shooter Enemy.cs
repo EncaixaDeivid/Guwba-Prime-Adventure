@@ -1,6 +1,5 @@
 using UnityEngine;
 using GwambaPrimeAdventure.Character;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -42,9 +41,9 @@ namespace GwambaPrimeAdventure.Enemy
 					Instantiate(projectile, _statistics.SpawnPoint, rotation, new InstantiateParameters() { parent = transform, worldSpace = false }).transform.SetParent(null);
 			if (_statistics.InvencibleShoot)
 			{
-				_sender.SetStateForm(StateForm.Event);
+				_sender.SetFormat(MessageFormat.Event);
 				_sender.SetToggle(true);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 			}
 		}
 		private void Update()
@@ -63,9 +62,9 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_timeStop <= 0f && _isStopped)
 				{
 					_isStopped = false;
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(true);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 				}
 			}
 		}
@@ -104,16 +103,16 @@ namespace GwambaPrimeAdventure.Enemy
 				_shootInterval = _statistics.IntervalToShoot;
 				if (_statistics.InvencibleShoot)
 				{
-					_sender.SetStateForm(StateForm.Event);
+					_sender.SetFormat(MessageFormat.Event);
 					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 				}
 				if (_statistics.Stop)
 				{
 					_timeStop = _statistics.StopTime;
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(!(_isStopped = _canShoot = true));
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					if (_statistics.Paralyze)
 						Rigidbody.Sleep();
 				}
@@ -127,11 +126,11 @@ namespace GwambaPrimeAdventure.Enemy
 				Shoot();
 			return base.Hurt(damage);
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this && data.StateForm == StateForm.Event && _statistics.ReactToDamage)
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
+					if (enemy && enemy == this && message.Format == MessageFormat.Event && _statistics.ReactToDamage)
 					{
 						_targetDirection = (GwambaStateMarker.Localization - (Vector2)transform.position).normalized;
 						transform.TurnScaleX(GwambaStateMarker.Localization.x < transform.position.x);
