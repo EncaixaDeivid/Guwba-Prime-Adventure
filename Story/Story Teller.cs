@@ -10,7 +10,7 @@ namespace GwambaPrimeAdventure.Story
 		private ushort _imageIndex = 0;
 		[Header("Scene Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the story scene.")] private StorySceneHud _storySceneHudObject;
-		[SerializeField, Tooltip("The object that carry the scene settings.")] private SceneObject _sceneObject;
+		[SerializeField, Tooltip("The object that carry the scene settings.")] private StorySceneObject _storySceneObject;
 		private IEnumerator FadeImage(bool appear)
 		{
 			if (appear)
@@ -23,19 +23,19 @@ namespace GwambaPrimeAdventure.Story
 		internal void ShowScene()
 		{
 			_storySceneHud = Instantiate(_storySceneHudObject, transform);
-			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_sceneObject.SceneComponents[_imageIndex].Image);
+			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
 			StartCoroutine(FadeImage(true));
 		}
 		internal IEnumerator NextSlide()
 		{
 			yield return FadeImage(false);
-			_imageIndex = (ushort)(_imageIndex < _sceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
-			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_sceneObject.SceneComponents[_imageIndex].Image);
+			_imageIndex = (ushort)(_imageIndex < _storySceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
+			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
 			yield return FadeImage(true);
-			while (_sceneObject.SceneComponents[_imageIndex].OffDialog)
+			while (_storySceneObject.SceneComponents[_imageIndex].OffDialog)
 			{
-				yield return new WaitForSeconds(_sceneObject.SceneComponents[_imageIndex].TimeToDesapear);
-				if (_sceneObject.SceneComponents[_imageIndex].JumpToNext)
+				yield return new WaitForSeconds(_storySceneObject.SceneComponents[_imageIndex].TimeToDesapear);
+				if (_storySceneObject.SceneComponents[_imageIndex].JumpToNext)
 					yield return NextSlide();
 			}
 		}
