@@ -34,6 +34,7 @@ namespace GwambaPrimeAdventure
 			base.OnDestroy();
 			if (!_instance || _instance != this)
 				return;
+			StopAllCoroutines();
 			SceneManager.sceneLoaded -= SceneLoaded;
 			Sender.Exclude(this);
 		}
@@ -50,10 +51,7 @@ namespace GwambaPrimeAdventure
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
 		{
 			if (scene.name == _menuScene)
-			{
-				StopAllCoroutines();
 				Destroy(gameObject);
-			}
 		};
 		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
