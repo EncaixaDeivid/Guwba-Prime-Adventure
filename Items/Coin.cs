@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item
 {
@@ -12,7 +11,7 @@ namespace GwambaPrimeAdventure.Item
 		private CircleCollider2D _collider;
 		[Header("Condition")]
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
-		public PathConnection PathConnection => PathConnection.Item;
+		public MessagePath Path => MessagePath.Item;
 		private new void Awake()
 		{
 			base.Awake();
@@ -53,9 +52,9 @@ namespace GwambaPrimeAdventure.Item
 			SaveController.WriteSave(saveFile);
 			_collider.enabled = _animator.enabled = _spriteRenderer.enabled = false;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && message.ToggleValue.Value)
 				_collider.enabled = _animator.enabled = _spriteRenderer.enabled = true;
 		}
 	};
