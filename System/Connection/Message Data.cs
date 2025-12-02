@@ -2,17 +2,17 @@ namespace GwambaPrimeAdventure.Connection
 {
 	public interface IConnector
 	{
-		public PathConnection PathConnection { get; }
-		public void Receive(DataConnection data);
+		public MessagePath Path { get; }
+		public void Receive(MessageData data);
 	};
-	public struct DataConnection
+	public struct MessageData
 	{
-		public StateForm StateForm { get; internal set; }
+		public MessageFormat Format { get; internal set; }
 		public object AdditionalData { get; internal set; }
 		public bool? ToggleValue { get; internal set; }
 		public ushort? NumberValue { get; internal set; }
 	};
-	public enum PathConnection
+	public enum MessagePath
 	{
 		None,
 		System,
@@ -23,7 +23,7 @@ namespace GwambaPrimeAdventure.Connection
 		EventItem,
 		Story
 	};
-	public enum StateForm
+	public enum MessageFormat
 	{
 		None,
 		State,
