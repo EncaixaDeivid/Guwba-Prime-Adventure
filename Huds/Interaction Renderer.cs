@@ -9,7 +9,7 @@ namespace GwambaPrimeAdventure.Hud
 	{
 		private Animator _animator;
 		private UIDocument _document;
-		private readonly int _isOn = Animator.StringToHash("IsOn");
+		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private bool _isActive = true;
 		private bool _isOnCollision = false;
 		[Header("Interaction Components")]
@@ -33,12 +33,12 @@ namespace GwambaPrimeAdventure.Hud
 		private void OnEnable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 1f);
+				_animator.SetFloat(IsOn, 1f);
 		}
 		private void OnDisable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 0f);
+				_animator.SetFloat(IsOn, 0f);
 		}
 		private void OnTriggerEnter2D(Collider2D collision)
 		{
