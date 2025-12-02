@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[RequireComponent(typeof(Transform), typeof(EnemyController))]
@@ -13,7 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The enemies to send messages.")] private EnemyProvider[] _enemiesToSend;
 		[SerializeField, Tooltip("The level of priority to use the destructible side.")] private ushort _destructilbePriority = 0;
 		protected Rigidbody2D Rigidbody => _controller.Rigidbody;
-		public PathConnection PathConnection => PathConnection.Enemy;
+		public MessagePath Path => MessagePath.Enemy;
 		protected bool IsStunned => _controller.IsStunned;
 		public short Health => _controller.Health;
 		internal ushort DestructilbePriority => _destructilbePriority;
@@ -30,8 +29,8 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (_controller.ProvidenceStatistics.HasIndex)
 					_sender.SetNumber(_controller.ProvidenceStatistics.IndexEvent);
-				_sender.SetStateForm(StateForm.Event);
-				_sender.Send(PathConnection.Enemy);
+				_sender.SetFormat(MessageFormat.Event);
+				_sender.Send(MessagePath.Enemy);
 			}
 			if ((_controller.Vitality -= (short)damage) <= 0f)
 				Destroy(gameObject);
