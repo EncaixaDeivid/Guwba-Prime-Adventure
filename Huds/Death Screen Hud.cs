@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Hud
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
 			Curtain = RootElement.Q<VisualElement>(_curtainVisual);
 			Text = RootElement.Q<Label>(_textLabel);
 			Continue = RootElement.Q<Button>(_continueButton);
