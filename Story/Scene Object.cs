@@ -3,23 +3,16 @@ using System;
 namespace GwambaPrimeAdventure.Story
 {
 	[CreateAssetMenu(fileName = "Scene", menuName = "Story/Scene", order = 1)]
-	internal sealed class SceneObject : ScriptableObject
+	internal sealed class StorySceneObject : ScriptableObject
 	{
-		[Header("Scene Component Collection")]
-		[SerializeField, Tooltip("The collection of objects that carry the background settings.")] private SceneComponent[] _sceneComponents;
-		internal SceneComponent[] SceneComponents => _sceneComponents;
+		[field: SerializeField, Tooltip("The collection of objects that carry the background settings."), Header("Scene Component Collection")] internal SceneComponent[] SceneComponents { get; private set; }
 		[Serializable]
 		internal struct SceneComponent
 		{
-			[Header("Components")]
-			[SerializeField, Tooltip("The main imgae that is placed in the hud.")] private Texture2D _image;
-			[SerializeField, Tooltip("If the dialog will go turned off during the scene.")] private bool _offDialog;
-			[SerializeField, Tooltip("If the dialog will jump to the next slide.")] private bool _jumpToNext;
-			[SerializeField, Tooltip("The amount of time that the dialog will be turned off.")] private float _timeToDesapear;
-			internal readonly Texture2D Image => _image;
-			internal readonly bool OffDialog => _offDialog;
-			internal readonly bool JumpToNext => _jumpToNext;
-			internal readonly float TimeToDesapear => _timeToDesapear;
+			[field: SerializeField, Tooltip("The main imgae that is placed in the hud."), Header("Components"), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)] internal Texture2D Image { get; private set; }
+			[field: SerializeField, Tooltip("If the dialog will go turned off during the scene.")] internal bool OffDialog { get; private set; }
+			[field: SerializeField, Tooltip("If the dialog will jump to the next slide.")] internal bool JumpToNext { get; private set; }
+			[field: SerializeField, Tooltip("The amount of time that the dialog will be turned off.")] internal float TimeToDesapear { get; private set; }
 		};
 	};
 };
