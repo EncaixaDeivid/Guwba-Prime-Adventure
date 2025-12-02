@@ -50,7 +50,7 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			}
 			_instance = this;
-			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("RootElement");
+			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
 			Vitality = new VisualElement[_vitality];
 			RecoverVitality = new VisualElement[_recoverVitality];
 			StunResistance = new VisualElement[_stunResistance];
