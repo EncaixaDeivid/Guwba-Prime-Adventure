@@ -2,7 +2,6 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item
@@ -25,7 +24,7 @@ namespace GwambaPrimeAdventure.Item
 		private void Awake()
 		{
 			_gateCamera = GetComponentInChildren<CinemachineCamera>();
-			_sender.SetStateForm(StateForm.Event);
+			_sender.SetFormat(MessageFormat.Event);
 			_sender.SetAdditionalData(gameObject);
 			_levelGate = Instantiate(_levelGateObject, transform);
 		}
@@ -55,7 +54,7 @@ namespace GwambaPrimeAdventure.Item
 		}
 		private Action EnterLevel => () => GetComponent<Transitioner>().Transicion(_levelScene);
 		private Action EnterBoss => () => GetComponent<Transitioner>().Transicion(_bossScene);
-		private Action ShowScenes => () => _sender.Send(PathConnection.Story);
+		private Action ShowScenes => () => _sender.Send(MessagePath.Story);
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (!_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
