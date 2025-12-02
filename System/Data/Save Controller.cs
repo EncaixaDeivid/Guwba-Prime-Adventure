@@ -93,18 +93,9 @@ namespace GwambaPrimeAdventure.Data
 			if (string.IsNullOrEmpty(actualSaveFile))
 				return;
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
-			SaveFile newSaveFile = new()
-			{
-				Lifes = _saveFile.Lifes,
-				LifesAcquired = _saveFile.LifesAcquired,
-				Coins = _saveFile.Coins,
-				BooksName = new List<string>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Keys : new List<string>()),
-				BooksValue = new List<bool>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Values : new List<bool>()),
-				GeneralObjects = _saveFile.GeneralObjects,
-				LastLevelEntered = _saveFile.LastLevelEntered,
-				LevelsCompleted = _saveFile.LevelsCompleted,
-				DeafetedBosses = _saveFile.DeafetedBosses
-			};
+			SaveFile newSaveFile = _saveFile;
+			newSaveFile.BooksName = new List<string>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Keys : new List<string>());
+			newSaveFile.BooksValue = new List<bool>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Values : new List<bool>());
 			FileEncoder.WriteData(newSaveFile, actualPath);
 		}
 	};
