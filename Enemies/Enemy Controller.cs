@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
-using GwambaPrimeAdventure.Data;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
@@ -13,7 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The control statitics of this enemy.")] private EnemyStatistics _statistics;
 		internal EnemyStatistics ProvidenceStatistics => _statistics;
 		internal Rigidbody2D Rigidbody => _rigidbody;
-		public PathConnection PathConnection => PathConnection.Enemy;
+		public MessagePath Path => MessagePath.Enemy;
 		public short Health => _vitality;
 		internal short Vitality { get => _vitality; set => _vitality = value; }
 		internal short ArmorResistance { get => _armorResistance; set => _armorResistance = value; }
@@ -98,13 +97,13 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			_destructibleEnemy.Stun(stunStength, stunTime);
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.None && data.ToggleValue.HasValue)
+			if (message.Format == MessageFormat.None && message.ToggleValue.HasValue)
 			{
 				Rigidbody.Sleep();
 				foreach (EnemyProvider enemy in _selfEnemies)
-					enemy.enabled = data.ToggleValue.Value;
+					enemy.enabled = message.ToggleValue.Value;
 			}
 		}
 	};
