@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using GwambaPrimeAdventure.Character;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -79,9 +78,9 @@ namespace GwambaPrimeAdventure.Enemy
 			_detected = true;
 			if (_statistics.DetectionStop)
 			{
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				_stopTime = _statistics.StopTime;
 				return;
 			}
@@ -109,9 +108,9 @@ namespace GwambaPrimeAdventure.Enemy
 						_timedJumpTime[jumpIndex] = _statistics.TimedJumps[jumpIndex].TimeToExecute;
 					if (_statistics.TimedJumps[jumpIndex].StopMove)
 					{
-						_sender.SetStateForm(StateForm.State);
+						_sender.SetFormat(MessageFormat.State);
 						_sender.SetToggle(false);
-						_sender.Send(PathConnection.Enemy);
+						_sender.Send(MessagePath.Enemy);
 						Rigidbody.linearVelocityX = 0f;
 					}
 				}
@@ -154,9 +153,9 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (_follow)
 					Rigidbody.linearVelocityX = 0f;
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(!(_onJump = _isJumping = _detected = _contunuosFollow = _follow = false));
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 			}
 			else if (!_onJump && _isJumping && !OnGround)
 				_onJump = true;
@@ -226,23 +225,23 @@ namespace GwambaPrimeAdventure.Enemy
 				_jumpTime = _statistics.TimeToJump;
 				if (_statistics.JumpPointStructures[jumpIndex].JumpStats.StopMove)
 				{
-					_sender.SetStateForm(StateForm.State);
+					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(false);
-					_sender.Send(PathConnection.Enemy);
+					_sender.Send(MessagePath.Enemy);
 					Rigidbody.linearVelocityX = 0f;
 				}
 			}
 		}
-		public new async void Receive(DataConnection data)
+		public new async void Receive(MessageData message)
 		{
-			if (data.AdditionalData != null && data.AdditionalData is EnemyProvider[] && (data.AdditionalData as EnemyProvider[]).Length > 0)
-				foreach (EnemyProvider enemy in data.AdditionalData as EnemyProvider[])
+			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
-						base.Receive(data);
-						if (data.StateForm == StateForm.State && data.ToggleValue.HasValue)
-							_stopJump = !data.ToggleValue.Value;
-						else if (data.StateForm == StateForm.Event && _statistics.ReactToDamage)
+						base.Receive(message);
+						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+							_stopJump = !message.ToggleValue.Value;
+						else if (message.Format == MessageFormat.Event && _statistics.ReactToDamage)
 						{
 							Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
 							while (OnGround)
@@ -254,9 +253,9 @@ namespace GwambaPrimeAdventure.Enemy
 							_otherTarget = _statistics.OtherTarget;
 							if (_statistics.StopMoveReact)
 							{
-								_sender.SetStateForm(StateForm.State);
+								_sender.SetFormat(MessageFormat.State);
 								_sender.SetToggle(false);
-								_sender.Send(PathConnection.Enemy);
+								_sender.Send(MessagePath.Enemy);
 							}
 						}
 						return;
