@@ -25,8 +25,13 @@ namespace GwambaPrimeAdventure.Connection
 		}
 		public static void Exclude(IConnector connector)
 		{
-			if (_connectors.ContainsKey(connector.PathConnection) && _connectors[connector.PathConnection].Contains(connector))
-				_connectors[connector.PathConnection].Remove(connector);
+			if (_connectors.ContainsKey(connector.PathConnection))
+			{
+				if (_connectors[connector.PathConnection].Contains(connector))
+					_connectors[connector.PathConnection].Remove(connector);
+				if (_connectors[connector.PathConnection].Count <= 0)
+					_connectors.Remove(connector.PathConnection);
+			}
 		}
 		public static Sender Create() => new();
 		public void SetAdditionalData(object additionalData) => _dataConnection.AdditionalData = additionalData;
