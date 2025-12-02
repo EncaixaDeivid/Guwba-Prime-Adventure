@@ -3,9 +3,11 @@ namespace GwambaPrimeAdventure
 {
 	public static class WorldBuild
 	{
-		public const float FIELD_SPACE_LENGTH = 8f;
-		public const float SNAP_LENGTH = 1f / 16f;
-		private static float _localScaleX;
+		public const ushort PIXEL_PERFECT_WIDTH = 320;
+		public const ushort PIXEL_PERFECT_HEIGHT = 180;
+		public const ushort LEVELS_COUNT = 10;
+		public const float FIELD_SPACE_LENGTH = 8F;
+		public const float SNAP_LENGTH = 1F / 16F;
 		public enum Layers
 		{
 			System,
@@ -21,6 +23,7 @@ namespace GwambaPrimeAdventure
 		public static readonly LayerMask ItemMask = GetMask(Layers.Item);
 		public static readonly LayerMask EnemyMask = GetMask(Layers.Enemy);
 		public static readonly LayerMask BossMask = GetMask(Layers.Boss);
+		private static float _localScaleX;
 		private static LayerMask GetMask(Layers layerName)
 		{
 			for (int i = 0; i < 32; i++)
