@@ -12,7 +12,7 @@ namespace GwambaPrimeAdventure.Story
 		private StoryTeller _storyTeller;
 		private Animator _animator;
 		private readonly Sender _sender = Sender.Create();
-		private readonly int _isOn = Animator.StringToHash("IsOn");
+		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private string _text = "";
 		private ushort _speachIndex = 0;
 		private float _dialogTime = 0f;
@@ -31,12 +31,12 @@ namespace GwambaPrimeAdventure.Story
 		private void OnEnable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 1f);
+				_animator.SetFloat(IsOn, 1f);
 		}
 		private void OnDisable()
 		{
 			if (_animator)
-				_animator.SetFloat(_isOn, 0f);
+				_animator.SetFloat(IsOn, 0f);
 		}
 		private IEnumerator TextDigitation()
 		{
@@ -90,17 +90,17 @@ namespace GwambaPrimeAdventure.Story
 						saveFile.GeneralObjects.Add(name);
 						SaveController.WriteSave(saveFile);
 					}
-					if (_dialogObject.ActivateTransition)
-						GetComponent<Transitioner>().Transicion(_dialogObject.SceneToTransition);
+					if (_dialogObject.Transition && TryGetComponent<Transitioner>(out var transitioner))
+						transitioner.Transicion(_dialogObject.SceneToTransition);
 					else if (_dialogObject.ActivateAnimation)
 						_animator.SetTrigger(_dialogObject.Animation);
-					if (_dialogObject.DesactiveInteraction)
+					else if (_dialogObject.EndDestroy)
+						Destroy(gameObject, _dialogObject.TimeToDestroy);
+					else if (_dialogObject.DesactiveInteraction)
 					{
 						_sender.SetAdditionalData(null);
 						Destroy(this);
 					}
-					if (!_dialogObject.ActivateTransition && _dialogObject.ActivateDestroy)
-						Destroy(gameObject, _dialogObject.TimeToDestroy);
 					_sender.SetToggle(true);
 					_sender.Send(PathConnection.Hud);
 				}
