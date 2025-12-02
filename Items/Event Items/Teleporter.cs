@@ -1,4 +1,5 @@
 using UnityEngine;
+using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item.EventItem
@@ -15,10 +16,10 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		[Header("Teleporter")]
 		[SerializeField, Tooltip("The locations that Guwba can teleport to.")] private Vector2[] _locations;
 		[SerializeField, Tooltip("If it have to interact to teleport.")] private bool _isInteractive;
-		[SerializeField, Tooltip("If it teleports at the touch.")] private bool _onCollision;
 		[SerializeField, Tooltip("If it have to receive a signal to work.")] private bool _isReceptor;
+		[SerializeField, Tooltip("If it teleports at the touch.")] private bool _onCollision;
 		[SerializeField, Tooltip("If it have to waits to teleport.")] private bool _useTimer;
-		[SerializeField, Tooltip("The amount of time it have to waits to teleport.")] private float _timeToUse;
+		[SerializeField, ShowIf(nameof(_useTimer)), Tooltip("The amount of time it have to waits to teleport.")] private float _timeToUse;
 		private new void Awake()
 		{
 			base.Awake();
@@ -70,7 +71,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		{
 			_active = !_active;
 			if (_useTimer)
-				(_timer, _returnActive) = (_timeToUse, _active);
+				(_timer, _returnActive) = (_timeToUse, !_active);
 			else
 				Teleport();
 		}
