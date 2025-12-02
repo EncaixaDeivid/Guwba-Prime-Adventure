@@ -1,5 +1,4 @@
 using UnityEngine;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -27,9 +26,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (!_isDead && _statistics.OnTouch && other.TryGetComponent<IDestructible>(out _))
 			{
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				_deathTime = _statistics.TimeToDie;
 				_isDead = true;
 			}
@@ -40,9 +39,9 @@ namespace GwambaPrimeAdventure.Enemy
 				return false;
 			if (Health - (short)damage <= 0f)
 			{
-				_sender.SetStateForm(StateForm.State);
+				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
-				_sender.Send(PathConnection.Enemy);
+				_sender.Send(MessagePath.Enemy);
 				_deathTime = _statistics.TimeToDie;
 				return _isDead = true;
 			}
