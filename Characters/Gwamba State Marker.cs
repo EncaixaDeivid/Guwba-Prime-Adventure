@@ -9,7 +9,6 @@ using System;
 using System.Collections;
 using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
-using GwambaPrimeAdventure.Data;
 namespace GwambaPrimeAdventure.Character
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup)), SelectionBase]
@@ -114,7 +113,7 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Attack"), Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		private Vector2 Local => (Vector2)transform.position + _collider.offset;
 		public static Vector2 Localization => _instance ? _instance.transform.position : Vector2.zero;
-		public PathConnection PathConnection => PathConnection.Character;
+		public MessagePath Path => MessagePath.Character;
 		private new void Awake()
 		{
 			base.Awake();
@@ -422,12 +421,12 @@ namespace GwambaPrimeAdventure.Character
 				_animator.SetBool(Death, true);
 				_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
 				_sender.SetToggle(false);
-				_sender.SetStateForm(StateForm.State);
-				_sender.Send(PathConnection.Hud);
-				_sender.SetStateForm(StateForm.Event);
-				_sender.Send(PathConnection.Hud);
-				_sender.SetStateForm(StateForm.None);
-				_sender.Send(PathConnection.Enemy);
+				_sender.SetFormat(MessageFormat.State);
+				_sender.Send(MessagePath.Hud);
+				_sender.SetFormat(MessageFormat.Event);
+				_sender.Send(MessagePath.Hud);
+				_sender.SetFormat(MessageFormat.None);
+				_sender.Send(MessagePath.Enemy);
 				return true;
 			}
 			return true;
@@ -707,14 +706,14 @@ namespace GwambaPrimeAdventure.Character
 						return true;
 			return false;
 		}
-		public void Receive(DataConnection data)
+		public void Receive(MessageData message)
 		{
-			if (data.StateForm == StateForm.Event && data.ToggleValue.HasValue)
-				if (data.ToggleValue.Value)
+			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue)
+				if (message.ToggleValue.Value)
 					Reanimate();
-				else if (data.AdditionalData is Vector2 position)
+				else if (message.AdditionalData is Vector2 position)
 					transform.position = position;
-			if (data.StateForm == StateForm.State && data.ToggleValue.HasValue && data.ToggleValue.Value)
+			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && message.ToggleValue.Value)
 			{
 				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 				OnEnable();
