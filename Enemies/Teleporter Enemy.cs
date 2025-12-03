@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -9,7 +8,7 @@ namespace GwambaPrimeAdventure.Enemy
 	{
 		private bool _canTeleport = true;
 		private ushort _teleportIndex = 0;
-		private float _teleportTime = 0f;
+		private float _teleportTime = 0F;
 		[Header("Teleporter Enemy")]
 		[SerializeField, Tooltip("The teleporter statitics of this enemy.")] private TeleporterStatistics _statistics;
 		private IEnumerator Start()
@@ -22,8 +21,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_teleportTime > 0f)
-				_canTeleport = (_teleportTime -= Time.deltaTime) <= 0f;
+			if (_teleportTime > 0F)
+				_canTeleport = (_teleportTime -= Time.deltaTime) <= 0F;
 		}
 		public void OnTeleport(ushort teleportIndex)
 		{
