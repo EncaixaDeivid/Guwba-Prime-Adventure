@@ -45,7 +45,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_oldCellPosition != _cellPosition)
 			{
 				_oldCellPosition = _cellPosition;
-				if (_pointToJump == 0f)
+				if (_pointToJump == 0F)
 				{
 					if (_pointToBreak >= _internalBreakPoint)
 						if (_pointToReturn++ >= _internalReturnPoint)
@@ -63,13 +63,13 @@ namespace GwambaPrimeAdventure.Enemy
 						_pointToJump = _statistics.JumpPoints;
 						Quaternion rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
 						if (_statistics.UseQuantity)
-							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5e-1f, _cellPosition.y + 5e-1f), rotation));
+							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation));
 						else
-							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5e-1f, _cellPosition.y + 5e-1f), rotation);
+							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation);
 						_angleMulti++;
 					}
 				}
-				else if (_pointToJump > 0f)
+				else if (_pointToJump > 0F)
 					_pointToJump--;
 			}
 		}
@@ -86,7 +86,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private IEnumerator ParabolicProjectile()
 		{
-			float time = 0f;
+			float time = 0F;
 			float x;
 			float y;
 			while (time > _statistics.TimeToFade)
@@ -94,7 +94,7 @@ namespace GwambaPrimeAdventure.Enemy
 				time += Time.fixedDeltaTime;
 				x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
 				y = Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
-				_rigidbody.MovePosition(_statistics.MovementSpeed * time * new Vector2(x, y - 5e-1f * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
+				_rigidbody.MovePosition(_statistics.MovementSpeed * time * new Vector2(x, y - 5E-1F * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
 				yield return null;
 			}
 			_parabolicEvent = null;
@@ -120,7 +120,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
 			_oldCellPosition = _cellPosition;
 			if (_statistics.SideMovement)
-				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90f : -90f, Vector3.forward);
+				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90F : -90F, Vector3.forward);
 			if (_statistics.SecondProjectile && _statistics.InCell && !_statistics.ContinuosSummon)
 				CellInstanceRange();
 			else if (_statistics.SecondProjectile && !_statistics.InCell && !_statistics.InDeath)
@@ -149,9 +149,9 @@ namespace GwambaPrimeAdventure.Enemy
 		private void Update()
 		{
 			if (_rigidbody.IsSleeping())
-				if ((_stunTimer -= Time.deltaTime) <= 0f)
+				if ((_stunTimer -= Time.deltaTime) <= 0F)
 					_rigidbody.WakeUp();
-			if ((_deathTimer -= Time.deltaTime) <= 0f)
+			if ((_deathTimer -= Time.deltaTime) <= 0F)
 				Death();
 		}
 		private void FixedUpdate()
@@ -201,9 +201,9 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0f)
+			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0F)
 				return false;
-			if ((_vitality -= (short)damage) <= 0f)
+			if ((_vitality -= (short)damage) <= 0F)
 				Death();
 			return true;
 		}
