@@ -5,7 +5,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
 	public sealed class ProjectileStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("The second projectile this will instantiate."), Header("Projectile Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		[field: SerializeField, Tooltip("The second projectile this will instantiate."), Header("Projectile Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
 		public Projectile SecondProjectile { get; private set; }
 		[field: SerializeField, Tooltip("If this peojectile will move in side ways.")] public bool SideMovement { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile will move in the opposite way.")] public bool InvertSide { get; private set; }
@@ -15,12 +15,9 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("If this projectile won't move.")] public bool StayInPlace { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The velocity of the screen shake when colliding on the scene.")] public Vector2 CollideShake { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will pursue the player endless.")] public bool EndlessPursue { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")]
-		public ForceMode2D ForceMode { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")]
-		public bool UseForce { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")]
-		public bool ParabolicMovement { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")] public ForceMode2D ForceMode { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")] public bool UseForce { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")] public bool ParabolicMovement { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The amount of speed this projectile will move.")] public float MovementSpeed { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If the rotation of this projectile impacts its movement.")] public bool RotationMatter { get; private set; }
 		[field: SerializeField, Tooltip("If the rotation of this projectile will be used.")] public bool UseSelfRotation { get; private set; }
@@ -40,7 +37,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time this projectile will stun.")] public float StunTime { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time to stop the game when hit is given.")] public float HitStopTime { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time to slow the game when hit is given.")] public float HitSlowTime { get; private set; }
-		[field: SerializeField, Tooltip("If the second projectile will be instantiated in a cell."), Header("Cell Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		[field: SerializeField, Tooltip("If the second projectile will be instantiated in a cell."), Header("Cell Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
 		public bool InCell { get; private set; }
 		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the second projectile will instantiate in a continuos sequence.")] public bool ContinuosSummon { get; private set; }
 		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the instantiation of the second projectile will break after a moment.")] public bool UseBreak { get; private set; }
