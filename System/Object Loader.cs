@@ -9,12 +9,12 @@ namespace GwambaPrimeAdventure
 		public IEnumerator Load(ProgressBar progressBar)
 		{
 			ILoader[] loaders = GetComponentsInChildren<ILoader>();
-			float progress = 0f;
+			float progress = 0F;
 			for (ushort i = 0; i < loaders.Length; i++)
 			{
 				yield return StartCoroutine(loaders[i].Load());
 				progressBar.value -= progress;
-				progress = (i + 1f) / loaders.Length;
+				progress = (i + 1F) / loaders.Length;
 				progressBar.value += progress;
 			}
 			if (loaders.Length <= 0)
