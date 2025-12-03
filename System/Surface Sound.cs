@@ -1,17 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Tilemaps;
-using System;
 namespace GwambaPrimeAdventure
 {
 	[CreateAssetMenu(fileName = "Surface Sound", menuName = "Surface/Sound", order = 0)]
-	internal class SurfaceSound : ScriptableObject
+	public class SurfaceSound : ScriptableObject
    {
-		[field: SerializeField] internal TilesSound[] TilesSounds { get; private set; }
-   };
-	[Serializable]
-	internal struct TilesSound
-	{
-		[field: SerializeField] internal Tile[] Tiles { get; private set; }
-		[field: SerializeField] internal AudioSource Source { get; private set; }
+		[field: SerializeField, Tooltip("The tiles that contain the sound clip specified.")] public Tile[] Tiles { get; private set; }
+		[field: SerializeField, Tooltip("The sound clip that the tiles contains to be played.")] public AudioClip Clip { get; private set; }
 	};
 };
