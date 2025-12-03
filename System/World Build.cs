@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 namespace GwambaPrimeAdventure
 {
 	public static class WorldBuild
@@ -30,6 +31,14 @@ namespace GwambaPrimeAdventure
 				if (LayerMask.LayerToName(i) != string.Empty && LayerMask.LayerToName(i).ToUpper() == layerName.ToString().ToUpper())
 					return 1 << i;
 			return 0;
+		}
+		public static Resolution[] PixelPerfectResolutions()
+		{
+			List<Resolution> resolutions = new();
+			foreach (Resolution resolution in Screen.resolutions)
+				if (resolution.width % PIXEL_PERFECT_WIDTH == 0 && resolution.height % PIXEL_PERFECT_HEIGHT == 0)
+					resolutions.Add(resolution);
+			return resolutions.ToArray();
 		}
 		public static void TurnScaleX(this Transform transform, float valueChanger) => transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
 		public static void TurnScaleX(this Transform transform, bool conditionChanger) => TurnScaleX(transform, conditionChanger ? -1F : 1F);
