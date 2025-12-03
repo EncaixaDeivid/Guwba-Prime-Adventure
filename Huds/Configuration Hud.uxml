@@ -21,9 +21,9 @@
                 </ui:GroupBox>
                 <ui:GroupBox name="Output">
                     <ui:GroupBox name="OutputSliders">
-                        <ui:SliderInt label="General Volume" name="GeneralVolume" />
-                        <ui:SliderInt label="Effects Volume" name="EffectsVolume" />
-                        <ui:SliderInt label="Music Volume" name="MusicVolume" />
+                        <ui:Slider label="General Volume" name="GeneralVolume" />
+                        <ui:Slider label="Effects Volume" name="EffectsVolume" />
+                        <ui:Slider label="Music Volume" name="MusicVolume" />
                         <ui:Slider label="Dialog Speed" name="DialogSpeed" />
                     </ui:GroupBox>
                     <ui:GroupBox name="Toggles">
