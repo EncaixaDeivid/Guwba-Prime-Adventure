@@ -43,10 +43,10 @@ namespace GwambaPrimeAdventure.Hud
 		internal Toggle InfinityFPS { get; private set; }
 		internal Slider DialogSpeed { get; private set; }
 		internal Slider ScreenBrightness { get; private set; }
+		internal Slider GeneralVolume { get; private set; }
+		internal Slider EffectsVolume { get; private set; }
+		internal Slider MusicVolume { get; private set; }
 		internal SliderInt FrameRate { get; private set; }
-		internal SliderInt GeneralVolume { get; private set; }
-		internal SliderInt EffectsVolume { get; private set; }
-		internal SliderInt MusicVolume { get; private set; }
 		internal Button Close { get; private set; }
 		internal Button OutLevel { get; private set; }
 		internal Button SaveGame { get; private set; }
@@ -73,10 +73,10 @@ namespace GwambaPrimeAdventure.Hud
 			InfinityFPS = RootElement.Q<Toggle>(_inifinityFPSToggle);
 			DialogSpeed = RootElement.Q<Slider>(_dialogSpeed);
 			ScreenBrightness = RootElement.Q<Slider>(_screenBrightness);
+			GeneralVolume = RootElement.Q<Slider>(_generalVolume);
+			EffectsVolume = RootElement.Q<Slider>(_effectsVolume);
+			MusicVolume = RootElement.Q<Slider>(_musicVolume);
 			FrameRate = RootElement.Q<SliderInt>(_frameRate);
-			GeneralVolume = RootElement.Q<SliderInt>(_generalVolume);
-			EffectsVolume = RootElement.Q<SliderInt>(_effectsVolume);
-			MusicVolume = RootElement.Q<SliderInt>(_musicVolume);
 			Close = RootElement.Q<Button>(_closeButton);
 			OutLevel = RootElement.Q<Button>(_outLevelButton);
 			SaveGame = RootElement.Q<Button>(_saveGameButton);
@@ -94,16 +94,16 @@ namespace GwambaPrimeAdventure.Hud
 				SettingsController.WriteSave(settings);
 			DialogSpeed.highValue = .1f;
 			ScreenBrightness.highValue = 1f;
+			GeneralVolume.highValue = 1f;
+			EffectsVolume.highValue = 1f;
+			MusicVolume.highValue = 1f;
 			FrameRate.highValue = 240;
-			GeneralVolume.highValue = 100;
-			EffectsVolume.highValue = 100;
-			MusicVolume.highValue = 100;
 			DialogSpeed.lowValue = 0f;
 			ScreenBrightness.lowValue = 0f;
+			GeneralVolume.lowValue = 1e-3f;
+			EffectsVolume.lowValue = 1e-3f;
+			MusicVolume.lowValue = 1e-3f;
 			FrameRate.lowValue = 10;
-			GeneralVolume.lowValue = 0;
-			EffectsVolume.lowValue = 0;
-			MusicVolume.lowValue = 0;
 			foreach (Resolution resolution in SettingsController.PixelPerfectResolutions())
 				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
