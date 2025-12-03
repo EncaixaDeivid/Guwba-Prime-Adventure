@@ -320,6 +320,8 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
 						EffectsController.SoundEffect(_airJumpSound, transform.position);
+						if (_comboAttackBuffer)
+							EffectsController.SoundEffect(_attackSound, transform.position);
 						while (!_isOnGround)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
@@ -344,6 +346,8 @@ namespace GwambaPrimeAdventure.Character
 						transform.TurnScaleX(dashMovement);
 						_jokerValue.z = transform.position.x;
 						EffectsController.SoundEffect(_dashSlideSound, transform.position);
+						if (_comboAttackBuffer)
+							EffectsController.SoundEffect(_attackSound, transform.position);
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
@@ -697,6 +701,8 @@ namespace GwambaPrimeAdventure.Character
 				}
 				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 				EffectsController.SoundEffect(_jumpSound, transform.position);
+				if (_comboAttackBuffer)
+					EffectsController.SoundEffect(_attackSound, transform.position);
 			}
 			(_isOnGround, _canDownStairs) = (false, _isOnGround);
 		}
