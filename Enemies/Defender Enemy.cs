@@ -6,7 +6,7 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class DefenderEnemy : EnemyProvider, IConnector, IDestructible
 	{
 		private bool _invencible = false;
-		private float _timeOperation = 0f;
+		private float _timeOperation = 0F;
 		[Header("Defender Enemy")]
 		[SerializeField, Tooltip("The defender statitics of this enemy.")] private DefenderStatistics _statistics;
 		private new void Awake()
@@ -25,8 +25,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_stopWorking || IsStunned || !_statistics.UseAlternatedTime && !_invencible)
 				return;
-			if (_timeOperation > 0f)
-				if ((_timeOperation -= Time.deltaTime) <= 0f)
+			if (_timeOperation > 0F)
+				if ((_timeOperation -= Time.deltaTime) <= 0F)
 					if (_invencible)
 					{
 						_invencible = false;
