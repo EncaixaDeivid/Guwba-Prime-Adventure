@@ -38,7 +38,7 @@ namespace GwambaPrimeAdventure.Connection
 		private void OnDisable()
 		{
 			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
-				source.Key.UnPause();
+				source.Key.Pause();
 		}
 		private void Update()
 		{
