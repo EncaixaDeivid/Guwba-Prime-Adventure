@@ -57,7 +57,7 @@ namespace GwambaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
@@ -92,19 +92,19 @@ namespace GwambaPrimeAdventure.Hud
 			SettingsController.Load(out Settings settings);
 			if (!SettingsController.FileExists())
 				SettingsController.WriteSave(settings);
-			DialogSpeed.highValue = .1f;
-			ScreenBrightness.highValue = 1f;
-			GeneralVolume.highValue = 1f;
-			EffectsVolume.highValue = 1f;
-			MusicVolume.highValue = 1f;
+			DialogSpeed.highValue = 1E-1F;
+			ScreenBrightness.highValue = 1F;
+			GeneralVolume.highValue = 1F;
+			EffectsVolume.highValue = 1F;
+			MusicVolume.highValue = 1F;
 			FrameRate.highValue = 240;
-			DialogSpeed.lowValue = 0f;
-			ScreenBrightness.lowValue = 0f;
-			GeneralVolume.lowValue = 1e-4f;
-			EffectsVolume.lowValue = 1e-4f;
-			MusicVolume.lowValue = 1e-4f;
+			DialogSpeed.lowValue = 0F;
+			ScreenBrightness.lowValue = 0F;
+			GeneralVolume.lowValue = 1E-4F;
+			EffectsVolume.lowValue = 1E-4F;
+			MusicVolume.lowValue = 1E-4F;
 			FrameRate.lowValue = 10;
-			foreach (Resolution resolution in SettingsController.PixelPerfectResolutions())
+			foreach (Resolution resolution in WorldBuild.PixelPerfectResolutions())
 				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
 				FullScreenModes.choices.Add(mode.ToString());
@@ -118,9 +118,9 @@ namespace GwambaPrimeAdventure.Hud
 			DialogSpeed.value = settings.DialogSpeed;
 			ScreenBrightness.value = settings.ScreenBrightness;
 			FrameRate.value = settings.FrameRate;
-			GeneralVolume.value = (int)(settings.GeneralVolume * 100);
-			EffectsVolume.value = (int)(settings.EffectsVolume * 100);
-			MusicVolume.value = (int)(settings.MusicVolume * 100);
+			GeneralVolume.value = settings.GeneralVolume;
+			EffectsVolume.value = settings.EffectsVolume;
+			MusicVolume.value = settings.MusicVolume;
 			FrameRateText.text = settings.FrameRate.ToString();
 		}
 	};
