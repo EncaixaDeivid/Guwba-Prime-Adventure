@@ -74,6 +74,9 @@ namespace GwambaPrimeAdventure.Character
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
+		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets hurt.")] private AudioClip _hurtSound;
+		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets stunned.")] private AudioClip _stunSound;
+		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba die.")] private AudioClip _deathSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
@@ -87,17 +90,21 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
 		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the MovementInput.")] private float _acceleration;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the MovementInput.")] private float _decceleration;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the MovementInput.")] private float _velocityPower;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of MovementInput.")] private float _frictionAmount;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
-		[SerializeField, BoxGroup("MovementInput"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, BoxGroup("MovementInput"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
+		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba steps while walking.")] private AudioClip _stepSound;
+		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the air jump.")] private AudioClip _airJumpSound;
+		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the dash slide.")] private AudioClip _dashSlideSound;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the movement.")] private float _acceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the movement.")] private float _decceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the movement.")] private float _velocityPower;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of movement.")] private float _frictionAmount;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
+		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
+		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Jump"), Tooltip("The sound to play when Gwamba execute a jump.")] private AudioClip _jumpSound;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
@@ -105,6 +112,8 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
 		[SerializeField, BoxGroup("Jump"), Range(0f, 1f), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Attack"), Tooltip("The sound to play when Gwamba attack.")] private AudioClip _attackSound;
+		[SerializeField, BoxGroup("Attack"), Tooltip("The sound to play when Gwamba damages something.")] private AudioClip _damageAttackSound;
 		[SerializeField, BoxGroup("Attack"), Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
 		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
 		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
@@ -309,6 +318,10 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_animator.SetBool(AirJump, !(_canAirJump = false));
 						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
+						if (_comboAttackBuffer)
+							EffectsController.SoundEffect(_attackSound, transform.position);
+						else
+							EffectsController.SoundEffect(_airJumpSound, transform.position);
 						transform.TurnScaleX(dashMovement);
 						while (!_isOnGround)
 						{
@@ -331,6 +344,10 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_animator.SetBool(DashSlide, true);
 						_animator.SetBool(AttackSlide, _comboAttackBuffer);
+						if (_comboAttackBuffer)
+							EffectsController.SoundEffect(_attackSound, transform.position);
+						else
+							EffectsController.SoundEffect(_dashSlideSound, transform.position);
 						transform.TurnScaleX(dashMovement);
 						_jokerValue.z = transform.position.x;
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
@@ -349,6 +366,11 @@ namespace GwambaPrimeAdventure.Character
 					}
 			}
 		};
+		private void FootStepSound(float stepPositionX)
+		{
+			EffectsController.SoundEffect(_stepSound, new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+			EffectsController.SurfaceSound((Vector2)transform.position + new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+		}
 		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
@@ -376,6 +398,7 @@ namespace GwambaPrimeAdventure.Character
 			if (attackUse.canceled && _comboAttackBuffer)
 				_animator.SetTrigger(AttackCombo);
 		};
+		private void StartAttackSound() => EffectsController.SoundEffect(_attackSound, transform.position);
 		private Action<InputAction.CallbackContext> InteractionInput => interaction =>
 		{
 			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
@@ -393,6 +416,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (_invencibility || damage <= 0f)
 				return false;
+			EffectsController.SoundEffect(_hurtSound, transform.position);
 			_vitality -= (short)damage;
 			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0f ? _vitality : 0f); i--)
 			{
@@ -405,6 +429,7 @@ namespace GwambaPrimeAdventure.Character
 			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 			if (_vitality <= 0f)
 			{
+				EffectsController.SoundEffect(_deathSound, transform.position);
 				SaveController.Load(out SaveFile saveFile);
 				_gwambaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
@@ -444,6 +469,7 @@ namespace GwambaPrimeAdventure.Character
 				_stunTimer = stunTime;
 				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
 					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+				EffectsController.SoundEffect(_stunSound, transform.position);
 				DisableInputs();
 			}
 		};
@@ -451,6 +477,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
+				EffectsController.SoundEffect(_damageAttackSound, gwambaDamager.transform.position);
 				destructible.Stun(gwambaDamager.AttackDamage, gwambaDamager.StunTime);
 				_screenShaker.ImpulseDefinition.ImpulseDuration = gwambaDamager.AttackShakeTime;
 				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
@@ -666,8 +693,11 @@ namespace GwambaPrimeAdventure.Character
 			}
 			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
 			{
+				_animator.SetBool(AttackJump, _comboAttackBuffer);
 				if (_comboAttackBuffer)
-					_animator.SetBool(AttackJump, true);
+					EffectsController.SoundEffect(_attackSound, transform.position);
+				else
+					EffectsController.SoundEffect(_jumpSound, transform.position);
 				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0f);
 				if (_bunnyHopBoost > 0f)
 				{
