@@ -10,7 +10,6 @@ namespace GwambaPrimeAdventure.Connection
 	{
 		private static EffectsController _instance;
 		private Light2DBase[] _lightsStack;
-		private Surface[] _surfaces;
 		private readonly Dictionary<AudioSource, float> _soundSources = new();
 		private bool _canHitStop = true;
 		[SerializeField] private SurfaceSound[] _surfaceSounds;
@@ -20,7 +19,7 @@ namespace GwambaPrimeAdventure.Connection
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.DESTROY_COPY_TIME);
 				return;
 			}
 			_instance = this;
@@ -40,11 +39,6 @@ namespace GwambaPrimeAdventure.Connection
 		{
 			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
 				source.Key.UnPause();
-		}
-		private IEnumerator Start()
-		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			_surfaces = FindObjectsByType<Surface>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
 		}
 		private void Update()
 		{
@@ -103,7 +97,7 @@ namespace GwambaPrimeAdventure.Connection
 		}
 		private void PrivateSurfaceSound(Vector2 originPosition)
 		{
-			foreach (Surface surface in _surfaces)
+			if (Physics2D.OverlapPoint(originPosition, WorldBuild.SceneMask).TryGetComponent<Surface>(out var surface))
 				foreach (SurfaceSound surfaceSound in _surfaceSounds)
 					if (surfaceSound.Tiles.Contains(surface.CheckForTile(originPosition)))
 					{
