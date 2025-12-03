@@ -13,8 +13,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	public struct TeleportPointStructure
 	{
 		[field: SerializeField, Tooltip("The teleport point to be instantiated.")] public TeleportPoint TeleportPointObject { get; private set; }
-		[field: SerializeField, Tooltip("The point where the teleport point will be.")] public Vector2 InstancePoint { get; private set; }
 		[field: SerializeField, Tooltip("The points where the point will teleport to.")] public Vector2[] TeleportPoints { get; private set; }
+		[field: SerializeField, Tooltip("The point where the teleport point will be.")] public Vector2 InstancePoint { get; private set; }
 		[field: SerializeField, Tooltip("If the points to teleport will be random.")] public bool RandomTeleports { get; private set; }
 	}
 };
