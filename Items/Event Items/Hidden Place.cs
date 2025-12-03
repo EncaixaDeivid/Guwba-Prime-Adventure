@@ -81,7 +81,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				if (appear)
 					Occlusion();
 				Color color = _tilemap.color;
-				color.a = appear ? 1f : 0f;
+				color.a = appear ? 1F : 0F;
 				_tilemap.color = color;
 				if (!appear)
 					Occlusion();
@@ -89,12 +89,12 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			else if (appear)
 			{
 				Occlusion();
-				for (float i = 0f; _tilemap.color.a < 1f; i += 0.1f)
+				for (float i = 0F; _tilemap.color.a < 1F; i += 1E-1F)
 					yield return OpacityLevel(i);
 			}
 			else
 			{
-				for (float i = 1f; _tilemap.color.a > 0f; i -= 0.1f)
+				for (float i = 1F; _tilemap.color.a > 0F; i -= 1E-1F)
 					yield return OpacityLevel(i);
 				Occlusion();
 			}
@@ -123,7 +123,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		public void Execute()
 		{
-			if (_timeToFadeAppearAgain > 0f)
+			if (_timeToFadeAppearAgain > 0F)
 				StartCoroutine(FadeTimed(_activation));
 			else
 				StartCoroutine(Fade(_activation));
