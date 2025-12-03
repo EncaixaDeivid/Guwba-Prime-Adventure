@@ -24,7 +24,7 @@ namespace GwambaPrimeAdventure
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(gameObject, WorldBuild.DESTROY_COPY_TIME);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
