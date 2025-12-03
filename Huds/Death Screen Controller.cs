@@ -23,7 +23,7 @@ namespace GwambaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
@@ -80,7 +80,7 @@ namespace GwambaPrimeAdventure.Hud
 					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
 					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
 					_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
-					for (float i = 0f; _deathScreenHud.Curtain.style.opacity.value < 1f; i += 5e-2f)
+					for (float i = 0F; _deathScreenHud.Curtain.style.opacity.value < 1F; i += 5E-2F)
 						yield return _deathScreenHud.Curtain.style.opacity = i;
 					_sender.SetToggle(true);
 					_sender.SetFormat(MessageFormat.Event);
@@ -88,7 +88,7 @@ namespace GwambaPrimeAdventure.Hud
 					_sender.Send(MessagePath.Character);
 					_sender.SetFormat(MessageFormat.State);
 					_sender.Send(MessagePath.Item);
-					for (float i = 1f; _deathScreenHud.Curtain.style.opacity.value > 0f; i -= 5e-2f)
+					for (float i = 1F; _deathScreenHud.Curtain.style.opacity.value > 0F; i -= 5E-2F)
 						yield return _deathScreenHud.Curtain.style.opacity = i;
 					_sender.Send(MessagePath.Character);
 					_sender.SetFormat(MessageFormat.None);
@@ -115,7 +115,7 @@ namespace GwambaPrimeAdventure.Hud
 			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				if (saveFile.Lifes < 0f)
+				if (saveFile.Lifes < 0F)
 				{
 					_deathScreenHud.Text.text = "Game Over";
 					_deathScreenHud.Continue.style.display = DisplayStyle.None;
