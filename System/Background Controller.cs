@@ -10,8 +10,8 @@ namespace GwambaPrimeAdventure
 		private static BackgroundController _instance;
 		private Transform[] _childrenTransforms;
 		private SpriteRenderer[] _childrenRenderers;
-		private float _startPosition = 0f;
-		private float _movementX = 0f;
+		private float _startPosition = 0F;
+		private float _movementX = 0F;
 		[Header("Background Objects")]
 		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
 		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
@@ -24,7 +24,7 @@ namespace GwambaPrimeAdventure
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.DESTROY_COPY_TIME);
 				return;
 			}
 			_instance = this;
@@ -55,11 +55,11 @@ namespace GwambaPrimeAdventure
 				return;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
-				_movementX = 1f - (_backgroundSpeed - (i * _slowSpeed));
+				_movementX = 1F - (_backgroundSpeed - (i * _slowSpeed));
 				_childrenTransforms[i].position = new Vector2(_startPosition + transform.position.x * _movementX, transform.position.y);
-				if (transform.position.x * (1f - _movementX) > _startPosition + _childrenRenderers[i].sprite.bounds.size.x)
+				if (transform.position.x * (1F - _movementX) > _startPosition + _childrenRenderers[i].sprite.bounds.size.x)
 					_startPosition += _childrenRenderers[i].sprite.bounds.size.x;
-				else if (transform.position.x * (1f - _movementX) < _startPosition - _childrenRenderers[i].sprite.bounds.size.x)
+				else if (transform.position.x * (1F - _movementX) < _startPosition - _childrenRenderers[i].sprite.bounds.size.x)
 					_startPosition -= _childrenRenderers[i].sprite.bounds.size.x;
 			}
 		}
