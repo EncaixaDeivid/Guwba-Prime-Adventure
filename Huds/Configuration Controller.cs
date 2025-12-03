@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -18,6 +19,7 @@ namespace GwambaPrimeAdventure.Hud
 		[SerializeField, Tooltip("The object that handles the hud of the configurations.")] private ConfigurationHud _configurationHudObject;
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, Tooltip("The scene of the level selector.")] private SceneField _levelSelectorScene;
+		[SerializeField, Tooltip("The mixer of the sounds.")] private AudioMixer _mixer;
 		internal static ConfigurationController Instance { get; private set; }
 		public MessagePath Path => MessagePath.Hud;
 		private void Awake()
@@ -185,19 +187,19 @@ namespace GwambaPrimeAdventure.Hud
 		private EventCallback<ChangeEvent<int>> GeneralVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.GeneralVolume = (ushort)volume.newValue;
+			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue / 100f) * 20f);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<int>> EffectsVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.EffectsVolume = (ushort)volume.newValue;
+			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue / 100f) * 20f);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<int>> MusicVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			settings.MusicVolume = (ushort)volume.newValue;
+			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue / 100f) * 20f);
 			SettingsController.WriteSave(settings);
 		};
 		private Action YesBackLevel => () =>
