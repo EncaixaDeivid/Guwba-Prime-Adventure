@@ -12,7 +12,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private Activator _signalActivator;
 		private IReceptorSignal _receptor;
 		private ushort _signals = 0;
-		private float _signalTimer = 0f;
+		private float _signalTimer = 0F;
 		private bool _onlyOneActivation = false;
 		[Header("Receptor")]
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_specificsObjects.Length > 0f)
+			if (_specificsObjects.Length > 0F)
 				foreach (string specificObject in _specificsObjects)
 					if (saveFile.GeneralObjects.Contains(specificObject))
 						Activate();
@@ -39,8 +39,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		private void Update()
 		{
-			if (_signalTimer > 0f)
-				if ((_signalTimer -= Time.deltaTime) <= 0f)
+			if (_signalTimer > 0F)
+				if ((_signalTimer -= Time.deltaTime) <= 0F)
 					NormalSignal();
 		}
 		private void Activate() => _receptor.Execute();
@@ -97,7 +97,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		internal void ReceiveSignal(Activator signalActivator)
 		{
 			_signalActivator = signalActivator;
-			if (_timeToActivate > 0f)
+			if (_timeToActivate > 0F)
 				_signalTimer = _timeToActivate;
 			else
 				NormalSignal();
