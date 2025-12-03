@@ -43,8 +43,7 @@ namespace GwambaPrimeAdventure.Connection
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 			{
-				bool isDataEmpty = actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4);
-				if (actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2) && isDataEmpty)
+				if (actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2) && actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4))
 				{
 					File.Delete(actualPath);
 					return saveFile;
@@ -68,20 +67,16 @@ namespace GwambaPrimeAdventure.Connection
 			if (string.IsNullOrEmpty(newName))
 				return;
 			FilesController.SaveData((actualSave, newName));
-			string actualSaveFile = FilesController.Select(actualSave);
-			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
-			string newSaveName = $@"{Application.persistentDataPath}\{newName}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{FilesController.Select(actualSave)}.txt";
 			if (File.Exists(actualPath))
 			{
-				SaveFile loadedData = FileEncoder.ReadData<SaveFile>(actualPath);
 				File.Delete(actualPath);
-				FileEncoder.WriteData(loadedData, newSaveName);
+				FileEncoder.WriteData(FileEncoder.ReadData<SaveFile>(actualPath), $@"{Application.persistentDataPath}\{newName}.txt");
 			}
 		}
 		public static string DeleteData(ushort actualSave)
 		{
-			string actualSaveFile = FilesController.Select(actualSave);
-			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
+			string actualPath = $@"{Application.persistentDataPath}\{FilesController.Select(actualSave)}.txt";
 			if (File.Exists(actualPath))
 				File.Delete(actualPath);
 			return FilesController.SaveData((actualSave, $"Data File {actualSave}"));
@@ -92,11 +87,10 @@ namespace GwambaPrimeAdventure.Connection
 			string actualSaveFile = FilesController.Select(_actualSaveFile);
 			if (string.IsNullOrEmpty(actualSaveFile))
 				return;
-			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			SaveFile newSaveFile = _saveFile;
 			newSaveFile.BooksName = new List<string>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Keys : new List<string>());
 			newSaveFile.BooksValue = new List<bool>(_saveFile.Books?.Count > 0f ? _saveFile.Books.Values : new List<bool>());
-			FileEncoder.WriteData(newSaveFile, actualPath);
+			FileEncoder.WriteData(newSaveFile, $@"{Application.persistentDataPath}\{actualSaveFile}.txt");
 		}
 	};
 };
