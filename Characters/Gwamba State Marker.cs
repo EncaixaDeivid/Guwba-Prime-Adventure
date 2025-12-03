@@ -49,17 +49,17 @@ namespace GwambaPrimeAdventure.Character
 		private short _stunResistance;
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
-		private float _timerOfInvencibility = 0f;
-		private float _showInvencibilityTimer = 0f;
-		private float _stunTimer = 0f;
-		private float _fadeTimer = 0f;
-		private float _gravityScale = 0f;
-		private float _movementAction = 0f;
-		private float _lastGroundedTime = 0f;
-		private float _lastJumpTime = 0f;
-		private float _fallStart = 0f;
-		private float _fallDamage = 0f;
-		private float _attackDelay = 0f;
+		private float _timerOfInvencibility = 0F;
+		private float _showInvencibilityTimer = 0F;
+		private float _stunTimer = 0F;
+		private float _fadeTimer = 0F;
+		private float _gravityScale = 0F;
+		private float _movementAction = 0F;
+		private float _lastGroundedTime = 0F;
+		private float _lastJumpTime = 0F;
+		private float _fallStart = 0F;
+		private float _fallDamage = 0F;
+		private float _attackDelay = 0F;
 		private bool _didStart = false;
 		private bool _isOnGround = false;
 		private bool _canDownStairs = false;
@@ -74,51 +74,50 @@ namespace GwambaPrimeAdventure.Character
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
-		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba collides while on air jump or dash slide.")] private AudioClip _collisionSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets hurt.")] private AudioClip _hurtSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets stunned.")] private AudioClip _stunSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba die.")] private AudioClip _deathSound;
+		[SerializeField, BoxGroup("Control"), Tooltip("The offset and size of the bottom part of the wall checker to climb stairs.")] private Vector2 _bottomStairsChecker;
+		[SerializeField, BoxGroup("Control"), Tooltip("The offset and size of the top part of the wall checker to climb stairs.")] private Vector2 _topStairsChecker;
 		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("Size of top part of the wall collider to climb stairs.")] private float _topWallChecker;
-		[SerializeField, BoxGroup("Control"), Tooltip("Offset of bottom part of the wall collider to climb stairs.")] private float _bottomCheckerOffset;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
-		[SerializeField, BoxGroup("Control"), Range(0f, 1f), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba gets invencible.")] private float _invencibilityTime;
-		[SerializeField, BoxGroup("Control"), Range(0f, 1f), Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
-		[SerializeField, BoxGroup("Control"), Min(0f), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
-		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba steps while walking.")] private AudioClip _stepSound;
+		[SerializeField, BoxGroup("Control"), Tooltip("The maximum amount of queries to get down stairs.")] private ushort _downStairsQueryLimit;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time to fade the show of fall's damage.")] private float _timeToFadeShow;
+		[SerializeField, BoxGroup("Control"), Range(0F, 1F), Tooltip("The amount of fall's distance to start show the fall damage.")] private float _fallDamageShowMultiply;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time that Gwamba gets invencible.")] private float _invencibilityTime;
+		[SerializeField, BoxGroup("Control"), Range(0F, 1F), Tooltip("The value applied to visual when a hit is taken.")] private float _invencibilityValue;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time that Gwamba has to stay before fade.")] private float _timeStep;
+		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time taht Gwamba will be stunned after recover.")] private float _stunnedTime;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the air jump.")] private AudioClip _airJumpSound;
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the dash slide.")] private AudioClip _dashSlideSound;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the movement.")] private float _acceleration;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the movement.")] private float _decceleration;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of power the velocity Gwamba will apply to the movement.")] private float _velocityPower;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of friction Gwamba will apply to the end of movement.")] private float _frictionAmount;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
-		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of acceleration Gwamba will apply to the movement.")] private float _acceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of decceleration Gwamba will apply to the movement.")] private float _decceleration;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of power the velocity Gwamba will apply to the movement.")] private float _velocityPower;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of friction Gwamba will apply to the end of movement.")] private float _frictionAmount;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of speed that the dash will apply.")] private float _dashSpeed;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
+		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
 		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Jump"), Tooltip("The sound to play when Gwamba execute a jump.")] private AudioClip _jumpSound;
-		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
-		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
-		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
-		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of time that Gwamba can Jump before thouching ground.")] private float _jumpBufferTime;
-		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
-		[SerializeField, BoxGroup("Jump"), Range(0f, 1f), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
+		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
+		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
+		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of time that Gwamba can Jump before thouching ground.")] private float _jumpBufferTime;
+		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of time that Gwamba can Jump when get out of the ground.")] private float _jumpCoyoteTime;
+		[SerializeField, BoxGroup("Jump"), Range(0F, 1F), Tooltip("The amount of cut that Gwamba's jump will suffer at up.")] private float _jumpCut;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Attack"), Tooltip("The sound to play when Gwamba attack.")] private AudioClip _attackSound;
 		[SerializeField, BoxGroup("Attack"), Tooltip("The sound to play when Gwamba damages something.")] private AudioClip _damageAttackSound;
-		[SerializeField, BoxGroup("Attack"), Range(0f, 1f), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
-		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
-		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
-		[SerializeField, BoxGroup("Attack"), Min(0f), Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
+		[SerializeField, BoxGroup("Attack"), Range(0F, 1F), Tooltip("The amount of velocity to cut during the attack.")] private float _attackVelocityCut;
+		[SerializeField, BoxGroup("Attack"), Min(0F), Tooltip("The amount of time to stop the game when hit is given.")] private float _hitStopTime;
+		[SerializeField, BoxGroup("Attack"), Min(0F), Tooltip("The amount of time to slow the game when hit is given.")] private float _hitSlowTime;
+		[SerializeField, BoxGroup("Attack"), Min(0F), Tooltip("The amount of time the attack will be inactive after attack's hit.")] private float _delayAfterAttack;
 		[SerializeField, BoxGroup("Attack"), Tooltip("If Gwamba is attacking in the moment.")] private bool _attackUsage;
 		[SerializeField, BoxGroup("Attack"), Tooltip("The buffer moment that Gwamba have to execute a combo attack.")] private bool _comboAttackBuffer;
 		private Vector2 Local => (Vector2)transform.position + _collider.offset;
@@ -129,7 +128,7 @@ namespace GwambaPrimeAdventure.Character
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
@@ -164,7 +163,7 @@ namespace GwambaPrimeAdventure.Character
 				gwambaDamager.DamagerHurt -= DamagerHurt;
 				gwambaDamager.DamagerStun -= DamagerStun;
 				gwambaDamager.DamagerAttack -= DamagerAttack;
-				gwambaDamager.Alpha = 1f;
+				gwambaDamager.Alpha = 1F;
 			}
 			_inputController.Commands.Movement.started -= MovementInput;
 			_inputController.Commands.Movement.performed -= MovementInput;
@@ -184,8 +183,8 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			if (_gwambaCanvas.RootElement != null)
 				_gwambaCanvas.RootElement.style.display = DisplayStyle.Flex;
-			_animator.SetFloat(IsOn, 1f);
-			_animator.SetFloat(WalkSpeed, 1f);
+			_animator.SetFloat(IsOn, 1F);
+			_animator.SetFloat(WalkSpeed, 1F);
 			EnableInputs();
 		}
 		private void OnDisable()
@@ -193,8 +192,8 @@ namespace GwambaPrimeAdventure.Character
 			if (!_instance || _instance != this)
 				return;
 			_gwambaCanvas.RootElement.style.display = DisplayStyle.None;
-			_animator.SetFloat(IsOn, 0f);
-			_animator.SetFloat(WalkSpeed, 0f);
+			_animator.SetFloat(IsOn, 0F);
+			_animator.SetFloat(WalkSpeed, 0F);
 			DisableInputs();
 		}
 		private void EnableInputs()
@@ -212,7 +211,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
 			_rigidbody.Sleep();
-			_movementAction = 0f;
+			_movementAction = 0F;
 		}
 		private IEnumerator Start()
 		{
@@ -302,14 +301,14 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
-			_movementAction = 0f;
-			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 0.5f)
-				if (movement.ReadValue<Vector2>().x > 0f)
-					_movementAction = 1f;
-				else if (movement.ReadValue<Vector2>().x < 0f)
-					_movementAction = -1f;
-			if (_movementAction != 0f && (!_attackUsage || _comboAttackBuffer))
-				if (movement.ReadValue<Vector2>().y > 0.25f && !_isOnGround && _canAirJump)
+			_movementAction = 0F;
+			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 5E-1F)
+				if (movement.ReadValue<Vector2>().x > 0F)
+					_movementAction = 1F;
+				else if (movement.ReadValue<Vector2>().x < 0F)
+					_movementAction = -1F;
+			if (_movementAction != 0F && (!_attackUsage || _comboAttackBuffer))
+				if (movement.ReadValue<Vector2>().y > 25E-1F && !_isOnGround && _canAirJump)
 				{
 					_airJumpMethod = AirJumpMethod(_movementAction);
 					_rigidbody.linearVelocity = Vector2.zero;
@@ -325,10 +324,10 @@ namespace GwambaPrimeAdventure.Character
 							EffectsController.SoundEffect(_attackSound, transform.position);
 						while (!_isOnGround)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
-								EffectsController.SoundEffect(_collisionSound, _originCast);
+							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+								EffectsController.SurfaceSound(new Vector2(_originCast.x + WorldBuild.SNAP_LENGTH * dashMovement, _originCast.y));
 							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _airJumpMethod is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
@@ -338,7 +337,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AttackAirJump, false);
 					}
 				}
-				else if (movement.ReadValue<Vector2>().y < -0.25f && !_animator.GetBool(DashSlide) && _isOnGround)
+				else if (movement.ReadValue<Vector2>().y < -25E-1F && !_animator.GetBool(DashSlide) && _isOnGround)
 				{
 					_dashSlideMethod = DashSlideMethod(_movementAction);
 					IEnumerator DashSlideMethod(float dashMovement)
@@ -352,10 +351,10 @@ namespace GwambaPrimeAdventure.Character
 							EffectsController.SoundEffect(_attackSound, transform.position);
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
-								EffectsController.SoundEffect(_collisionSound, _originCast);
+							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+								EffectsController.SurfaceSound(new Vector2(_originCast.x + WorldBuild.SNAP_LENGTH * dashMovement, _originCast.y));
 							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _dashSlideMethod is null)
 								break;
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
@@ -367,10 +366,7 @@ namespace GwambaPrimeAdventure.Character
 			}
 		};
 		private void FootStepSound(float stepPositionX)
-		{
-			EffectsController.SoundEffect(_stepSound, new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
-			EffectsController.SurfaceSound((Vector2)transform.position + new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
-		}
+			=> EffectsController.SurfaceSound((Vector2)transform.position + new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
 		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
@@ -383,15 +379,15 @@ namespace GwambaPrimeAdventure.Character
 						_bunnyHopBoost = (ushort)_gwambaCanvas.BunnyHop.Length;
 				}
 			}
-			else if (jump.canceled && _isJumping && _rigidbody.linearVelocityY > 0f)
+			else if (jump.canceled && _isJumping && _rigidbody.linearVelocityY > 0F)
 			{
-				(_isJumping, _lastJumpTime) = (false, 0f);
+				(_isJumping, _lastJumpTime) = (false, 0F);
 				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
 			}
 		};
 		private Action<InputAction.CallbackContext> AttackUseInput => attackUse =>
 		{
-			if ((_attackDelay > 0f && !_comboAttackBuffer) || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || !isActiveAndEnabled || _animator.GetBool(Stun))
+			if ((_attackDelay > 0F && !_comboAttackBuffer) || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || !isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
 			if (attackUse.started && !_attackUsage)
 				_animator.SetTrigger(Attack);
@@ -401,7 +397,7 @@ namespace GwambaPrimeAdventure.Character
 		private void StartAttackSound() => EffectsController.SoundEffect(_attackSound, transform.position);
 		private Action<InputAction.CallbackContext> InteractionInput => interaction =>
 		{
-			if (!_isOnGround || _movementAction != 0f || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
+			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
 			LayerMask mask = WorldBuild.SystemMask + WorldBuild.CharacterMask + WorldBuild.SceneMask + WorldBuild.ItemMask;
 			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, mask))
@@ -414,11 +410,11 @@ namespace GwambaPrimeAdventure.Character
 		};
 		public Predicate<ushort> DamagerHurt => damage =>
 		{
-			if (_invencibility || damage <= 0f)
+			if (_invencibility || damage <= 0F)
 				return false;
 			EffectsController.SoundEffect(_hurtSound, transform.position);
 			_vitality -= (short)damage;
-			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0f ? _vitality : 0f); i--)
+			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0F ? _vitality : 0F); i--)
 			{
 				_gwambaCanvas.Vitality[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 				_gwambaCanvas.Vitality[i - 1].style.borderBottomColor = new StyleColor(_gwambaCanvas.MissingColor);
@@ -427,7 +423,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
 			}
 			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-			if (_vitality <= 0f)
+			if (_vitality <= 0F)
 			{
 				EffectsController.SoundEffect(_deathSound, transform.position);
 				SaveController.Load(out SaveFile saveFile);
@@ -435,7 +431,7 @@ namespace GwambaPrimeAdventure.Character
 				SaveController.WriteSave(saveFile);
 				_invencibility = false;
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-					gwambaDamager.Alpha = 1f;
+					gwambaDamager.Alpha = 1F;
 				OnDisable();
 				_animator.SetBool(Idle, false);
 				_animator.SetBool(Walk, false);
@@ -459,13 +455,13 @@ namespace GwambaPrimeAdventure.Character
 		public UnityAction<ushort, float> DamagerStun => (stunStrength, stunTime) =>
 		{
 			_stunResistance -= (short)stunStrength;
-			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0f ? _stunResistance : 0f); i--)
+			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0F ? _stunResistance : 0F); i--)
 				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			if (_stunResistance <= 0f && !_animator.GetBool(Death))
+			if (_stunResistance <= 0F && !_animator.GetBool(Death))
 			{
 				_animator.SetBool(Stun, !(_invencibility = false));
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-					gwambaDamager.Alpha = 1f;
+					gwambaDamager.Alpha = 1F;
 				_stunTimer = stunTime;
 				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
 					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
@@ -484,7 +480,7 @@ namespace GwambaPrimeAdventure.Character
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				gwambaDamager.DamagerDamaged.Add(destructible);
 				_attackDelay = _delayAfterAttack;
-				for (ushort amount = 0; amount < (destructible.Health <= 0f ? gwambaDamager.AttackDamage + 1f : gwambaDamager.AttackDamage); amount++)
+				for (ushort amount = 0; amount < (destructible.Health <= 0F ? gwambaDamager.AttackDamage + 1F : gwambaDamager.AttackDamage); amount++)
 					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
 					{
 						_vitality += 1;
@@ -498,7 +494,7 @@ namespace GwambaPrimeAdventure.Character
 						}
 						for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
 							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-						_stunResistance = (short)(_stunResistance < _gwambaCanvas.StunResistance.Length ? _stunResistance + 1f : _stunResistance);
+						_stunResistance = (short)(_stunResistance < _gwambaCanvas.StunResistance.Length ? _stunResistance + 1F : _stunResistance);
 						for (ushort i = 0; i < _stunResistance; i++)
 							_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 					}
@@ -514,34 +510,34 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (_invencibility)
 			{
-				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0f;
-				if (_invencibility && (_showInvencibilityTimer -= Time.deltaTime) <= 0f)
+				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0F;
+				if (_invencibility && (_showInvencibilityTimer -= Time.deltaTime) <= 0F)
 				{
 					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-						gwambaDamager.Alpha = gwambaDamager.Alpha >= 1f ? _invencibilityValue : 1f;
+						gwambaDamager.Alpha = gwambaDamager.Alpha >= 1F ? _invencibilityValue : 1F;
 					_showInvencibilityTimer = _timeStep;
 				}
 				if (!_invencibility)
 					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-						gwambaDamager.Alpha = 1f;
+						gwambaDamager.Alpha = 1F;
 			}
 			if (_animator.GetBool(Stun))
-				if ((_stunTimer -= Time.deltaTime) <= 0f)
+				if ((_stunTimer -= Time.deltaTime) <= 0F)
 				{
 					_animator.SetBool(Stun, !(_invencibility = true));
 					EnableInputs();
 				}
-			if (_fadeTimer > 0f)
-				if ((_fadeTimer -= Time.deltaTime) <= 0f)
-					(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
-			if (!_animator.GetBool(DashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0f && !_downStairs && (_lastGroundedTime > 0f || _lastJumpTime > 0f))
+			if (_fadeTimer > 0F)
+				if ((_fadeTimer -= Time.deltaTime) <= 0F)
+					(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
+			if (!_animator.GetBool(DashSlide) && !_isOnGround && Mathf.Abs(_rigidbody.linearVelocityY) != 0F && !_downStairs && (_lastGroundedTime > 0F || _lastJumpTime > 0F))
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
-			if (_attackDelay > 0f)
-				if ((_attackDelay -= Time.deltaTime) <= 0f)
+			if (_attackDelay > 0F)
+				if ((_attackDelay -= Time.deltaTime) <= 0F)
 					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
 						gwambaDamager.DamagerDamaged.Clear();
 		}
-		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0f ? _bunnyHopBoost * callBackValue : 1f;
+		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0F ? _bunnyHopBoost * callBackValue : 1F;
 		private void FixedUpdate()
 		{
 			if (!_instance || _instance != this)
@@ -552,46 +548,46 @@ namespace GwambaPrimeAdventure.Character
 			{
 				if (_isOnGround)
 				{
-					if (_movementAction == 0f || (_animator.GetBool(Fall) || Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f))
+					if (_movementAction == 0F || (_animator.GetBool(Fall) || Mathf.Abs(_rigidbody.linearVelocityX) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT))
 						_animator.SetBool(Idle, true);
 					else if (_animator.GetBool(Idle))
 						_animator.SetBool(Idle, false);
-					if (!_animator.GetBool(Walk) && _movementAction != 0f)
+					if (!_animator.GetBool(Walk) && _movementAction != 0F)
 						_animator.SetBool(Walk, true);
-					else if (_animator.GetBool(Walk) && _movementAction == 0f)
+					else if (_animator.GetBool(Walk) && _movementAction == 0F)
 						_animator.SetBool(Walk, false);
 					if (_animator.GetBool(Jump))
 						_animator.SetBool(Jump, false);
 					if (_animator.GetBool(Fall))
 						_animator.SetBool(Fall, false);
-					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0f ? _bunnyHopBoost : (ushort)0f);
-					if (_bunnyHopBoost <= 0f && _isHoping)
+					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0F);
+					if (_bunnyHopBoost <= 0F && _isHoping)
 					{
 						_hopActive = _isHoping = false;
 						for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
 							_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 					}
-					if (_fallDamage > 0f && _bunnyHopBoost <= 0f && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+					if (_fallDamage > 0F && _bunnyHopBoost <= 0F && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						DamagerHurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-						EffectsController.SoundEffect(_collisionSound, transform.position);
-						(_fallStarted, _fallDamage) = (false, 0f);
-						if (_invencibility && _fadeTimer <= 0f)
+						EffectsController.SurfaceSound(new Vector2(transform.position.x, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+						(_fallStarted, _fallDamage) = (false, 0F);
+						if (_invencibility && _fadeTimer <= 0F)
 							_fadeTimer = _timeToFadeShow;
 						else
-							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 					}
-					if (_movementAction != 0f)
+					if (_movementAction != 0F)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * _movementAction, Local.y - _bottomCheckerOffset);
-						_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, 1f - WorldBuild.SNAP_LENGTH);
-						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - _bottomStairsChecker.x);
+						_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _bottomStairsChecker.y - WorldBuild.SNAP_LENGTH);
+						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * _movementAction, Local.y + 5e-1f);
-							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _topWallChecker - WorldBuild.SNAP_LENGTH);
-							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y + _topStairsChecker.x);
+							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _topStairsChecker.y - WorldBuild.SNAP_LENGTH);
+							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
 							{
 								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
 								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
@@ -606,28 +602,28 @@ namespace GwambaPrimeAdventure.Character
 							}
 						}
 					}
-					else if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
+					else if (Mathf.Abs(_rigidbody.linearVelocityX) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT)
 					{
 						_jokerValue.y = Mathf.Min(Mathf.Abs(_rigidbody.linearVelocityX), Mathf.Abs(_frictionAmount)) * Mathf.Sign(_rigidbody.linearVelocityX);
 						_rigidbody.AddForceX(-_jokerValue.y * _rigidbody.mass, ForceMode2D.Impulse);
 						_animator.SetFloat(WalkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) / (_longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost)));
 					}
 				}
-				else if (Mathf.Abs(_rigidbody.linearVelocityY) > 1e-3f && !_animator.GetBool(AirJump))
+				else if (Mathf.Abs(_rigidbody.linearVelocityY) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT && !_animator.GetBool(AirJump))
 				{
 					if (_animator.GetBool(Idle))
 						_animator.SetBool(Idle, false);
 					if (_animator.GetBool(Walk))
 						_animator.SetBool(Walk, false);
-					if (!_animator.GetBool(Jump) && _rigidbody.linearVelocityY > 0f)
+					if (!_animator.GetBool(Jump) && _rigidbody.linearVelocityY > 0F)
 						_animator.SetBool(Jump, true);
-					else if (_animator.GetBool(Jump) && _rigidbody.linearVelocityY < 0f)
+					else if (_animator.GetBool(Jump) && _rigidbody.linearVelocityY < 0F)
 						_animator.SetBool(Jump, false);
-					if (!_animator.GetBool(Fall) && _rigidbody.linearVelocityY < 0f)
+					if (!_animator.GetBool(Fall) && _rigidbody.linearVelocityY < 0F)
 						_animator.SetBool(Fall, true);
-					else if (_animator.GetBool(Fall) && _rigidbody.linearVelocityY > 0f)
+					else if (_animator.GetBool(Fall) && _rigidbody.linearVelocityY > 0F)
 						_animator.SetBool(Fall, false);
-					if (_animator.GetBool(AttackJump) && _rigidbody.linearVelocityY < 0f)
+					if (_animator.GetBool(AttackJump) && _rigidbody.linearVelocityY < 0F)
 						_animator.SetBool(AttackJump, false);
 					if (_animator.GetBool(Fall))
 					{
@@ -637,37 +633,37 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_fallDamage = Mathf.Abs(_fallStart - transform.position.y);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
-								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (1f, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
+								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (1F, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
 							else if (!_invencibility)
-								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
+								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 						}
 						else
-							(_fallStarted, _fallStart, _fallDamage) = (true, transform.position.y, 0f);
+							(_fallStarted, _fallStart, _fallDamage) = (true, transform.position.y, 0F);
 					}
 					else
 					{
 						if (!_invencibility)
-							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0f, $"X 0");
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 						if (_rigidbody.gravityScale > _gravityScale)
 							_rigidbody.gravityScale = _gravityScale;
-						if (_fallDamage > 0f)
-							_fallDamage = 0f;
+						if (_fallDamage > 0F)
+							_fallDamage = 0F;
 					}
 					if (_attackUsage)
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
 				}
 				_downStairs = false;
-				if (!_isOnGround && _canDownStairs && _movementAction != 0f && _lastJumpTime <= 0f)
+				if (!_isOnGround && _canDownStairs && _movementAction != 0F && _lastJumpTime <= 0F)
 				{
-					_jokerValue.x = 0f;
+					_jokerValue.x = 0F;
 					do
 					{
 						_jokerValue.x += WorldBuild.SNAP_LENGTH;
 						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _jokerValue.x) * _movementAction, Local.y - _collider.bounds.extents.y);
-						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1f + WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
-						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10f) / 10f != Mathf.Round(_castHit.point.y * 10f) / 10f;
+						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1F + WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10F) / 10F != Mathf.Round(_castHit.point.y * 10F) / 10F;
 					}
-					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * 6f);
+					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * _downStairsQueryLimit);
 					if (_downStairs)
 						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
@@ -677,26 +673,26 @@ namespace GwambaPrimeAdventure.Character
 				{
 					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
 					_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
-					_jokerValue.z = (Mathf.Abs(_jokerValue.x * _movementAction) > 0f ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
+					_jokerValue.z = (Mathf.Abs(_jokerValue.x * _movementAction) > 0F ? _acceleration : _decceleration) + BunnyHop(_potencyBoost);
 					_rigidbody.AddForceX(Mathf.Pow(Mathf.Abs(_jokerValue.y) * _jokerValue.z, _velocityPower) * Mathf.Sign(_jokerValue.y) * _rigidbody.mass);
-					if (_movementAction != 0f && !_attackUsage)
+					if (_movementAction != 0F && !_attackUsage)
 					{
-						if (Mathf.Abs(_rigidbody.linearVelocityX) > 1e-3f)
-							transform.TurnScaleX(_rigidbody.linearVelocityX < 0f);
-						else if (Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f)
+						if (Mathf.Abs(_rigidbody.linearVelocityX) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT)
+							transform.TurnScaleX(_rigidbody.linearVelocityX < 0F);
+						else if (Mathf.Abs(_rigidbody.linearVelocityX) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT)
 							transform.TurnScaleX(_movementAction);
 						if (_isOnGround)
-							_animator.SetFloat(WalkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= 1e-3f ? 1f : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
+							_animator.SetFloat(WalkSpeed, Mathf.Abs(_rigidbody.linearVelocityX) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT ? 1F : Mathf.Abs(_rigidbody.linearVelocityX) / _jokerValue.x);
 					}
 				}
 				if (_attackUsage && !_animator.GetBool(AttackAirJump))
 					_rigidbody.linearVelocityX *= _attackVelocityCut;
 			}
-			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
+			if (!_isJumping && _lastJumpTime > 0F && _lastGroundedTime > 0F)
 			{
 				_animator.SetBool(AttackJump, _comboAttackBuffer);
-				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0f);
-				if (_bunnyHopBoost > 0f)
+				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0F);
+				if (_bunnyHopBoost > 0F)
 				{
 					_isHoping = true;
 					for (ushort i = 0; i < _bunnyHopBoost; i++)
@@ -713,9 +709,9 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y);
+			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2F) * -transform.up.y);
 			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
-			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
