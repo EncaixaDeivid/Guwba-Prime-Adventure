@@ -6,13 +6,13 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class DeathEnemy : EnemyProvider, IDestructible
 	{
 		private bool _isDead = false;
-		private float _deathTime = 0f;
+		private float _deathTime = 0F;
 		[Header("Death Enemy")]
 		[SerializeField, Tooltip("The death statitics of this enemy.")] private DeathStatistics _statistics;
 		private void Update()
 		{
 			if (_isDead)
-				if ((_deathTime -= Time.deltaTime) <= 0f)
+				if ((_deathTime -= Time.deltaTime) <= 0F)
 				{
 					_isDead = false;
 					if (_statistics.ChildEnemy)
@@ -37,7 +37,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_isDead)
 				return false;
-			if (Health - (short)damage <= 0f)
+			if (Health - (short)damage <= 0F)
 			{
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
