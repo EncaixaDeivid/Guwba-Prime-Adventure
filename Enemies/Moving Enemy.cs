@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using GwambaPrimeAdventure.Character;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -12,7 +11,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _onGround = false;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
-		protected float _stoppedTime = 0f;
+		protected float _stoppedTime = 0F;
 		protected short _movementSide = 1;
 		[Header("Moving Enemy")]
 		[SerializeField, Tooltip("The moving statitics of this enemy.")] private MovingStatistics _moving;
@@ -39,7 +38,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_originCast = new Vector2(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
 			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
 			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
-			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0f, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
 		}
 		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
 		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
