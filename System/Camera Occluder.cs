@@ -56,8 +56,8 @@ namespace GwambaPrimeAdventure
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (gameObject.TryGetComponent<OcclusionObject>(out var hiddenObject))
-				hiddenObject.Execution(activate);
+			if (gameObject.TryGetComponent<OcclusionObject>(out var occlusion))
+				occlusion.Execution(activate);
 		}
 		private void OnTriggerEnter2D(Collider2D other) => SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => SetOtherChildren(other.gameObject, false);
