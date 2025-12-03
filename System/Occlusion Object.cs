@@ -22,8 +22,8 @@ namespace GwambaPrimeAdventure
 			StateController[] children = GetComponentsInChildren<StateController>();
 			yield return new WaitUntil(() =>
 			{
-				foreach (StateController child in children)
-					if (!child.enabled)
+				for (ushort i = 0; i < children.Length; i++)
+					if (!children[i].enabled)
 						return false;
 				return true;
 			});
