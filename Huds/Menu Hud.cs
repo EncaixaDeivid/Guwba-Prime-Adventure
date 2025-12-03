@@ -29,7 +29,7 @@ namespace GwambaPrimeAdventure.Hud
 		{
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
