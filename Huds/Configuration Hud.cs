@@ -118,9 +118,9 @@ namespace GwambaPrimeAdventure.Hud
 			DialogSpeed.value = settings.DialogSpeed;
 			ScreenBrightness.value = settings.ScreenBrightness;
 			FrameRate.value = settings.FrameRate;
-			GeneralVolume.value = settings.GeneralVolume;
-			EffectsVolume.value = settings.EffectsVolume;
-			MusicVolume.value = settings.MusicVolume;
+			GeneralVolume.value = (int)(settings.GeneralVolume * 100);
+			EffectsVolume.value = (int)(settings.EffectsVolume * 100);
+			MusicVolume.value = (int)(settings.MusicVolume * 100);
 			FrameRateText.text = settings.FrameRate.ToString();
 		}
 	};
