@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Connection
 		{
 			List<Resolution> resolutions = new();
 			foreach (Resolution resolution in Screen.resolutions)
-				if (resolution.width % WorldBuild.PIXEL_PERFECT_WIDTH == 0f && resolution.height % WorldBuild.PIXEL_PERFECT_HEIGHT == 0f)
+				if (resolution.width % WorldBuild.PIXEL_PERFECT_WIDTH == 0 && resolution.height % WorldBuild.PIXEL_PERFECT_HEIGHT == 0)
 					resolutions.Add(resolution);
 			return resolutions.ToArray();
 		}
@@ -45,11 +45,11 @@ namespace GwambaPrimeAdventure.Connection
 					EffectsVolumeToggle = true,
 					MusicVolumeToggle = true,
 					InfinityFPS = false,
-					DialogSpeed = .05f,
-					ScreenBrightness = 1f,
-					GeneralVolume = 1f,
-					EffectsVolume = 1f,
-					MusicVolume = 1f,
+					DialogSpeed = 5E-2F,
+					ScreenBrightness = 1F,
+					GeneralVolume = 1F,
+					EffectsVolume = 1F,
+					MusicVolume = 1F,
 					FrameRate = 60
 				};
 		}
