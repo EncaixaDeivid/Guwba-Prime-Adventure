@@ -21,7 +21,7 @@ namespace GwambaPrimeAdventure
 			base.Awake();
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.DESTROY_COPY_TIME);
 				return;
 			}
 			_instance = this;
@@ -43,7 +43,7 @@ namespace GwambaPrimeAdventure
 				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			CinemachineCamera camera = GetComponent<CinemachineCamera>();
-			GetComponent<BoxCollider2D>().size = new Vector2(camera.Lens.OrthographicSize * 2f * camera.Lens.Aspect, camera.Lens.OrthographicSize * 2f);
+			GetComponent<BoxCollider2D>().size = new Vector2(camera.Lens.OrthographicSize * 2F * camera.Lens.Aspect, camera.Lens.OrthographicSize * 2F);
 			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
 			DontDestroyOnLoad(gameObject);
 		}
@@ -70,8 +70,8 @@ namespace GwambaPrimeAdventure
 				IEnumerator RestoreDamping()
 				{
 					yield return new WaitTime(this, _waitTime, true);
-					float time = 0f;
-					while (time < 1f)
+					float time = 0F;
+					while (time < 1F)
 					{
 						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
 						time += Time.deltaTime;
