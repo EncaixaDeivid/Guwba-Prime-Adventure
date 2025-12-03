@@ -318,11 +318,8 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_animator.SetBool(AirJump, !(_canAirJump = false));
 						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
-						if (_comboAttackBuffer)
-							EffectsController.SoundEffect(_attackSound, transform.position);
-						else
-							EffectsController.SoundEffect(_airJumpSound, transform.position);
 						transform.TurnScaleX(dashMovement);
+						EffectsController.SoundEffect(_airJumpSound, transform.position);
 						while (!_isOnGround)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
@@ -344,12 +341,9 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_animator.SetBool(DashSlide, true);
 						_animator.SetBool(AttackSlide, _comboAttackBuffer);
-						if (_comboAttackBuffer)
-							EffectsController.SoundEffect(_attackSound, transform.position);
-						else
-							EffectsController.SoundEffect(_dashSlideSound, transform.position);
 						transform.TurnScaleX(dashMovement);
 						_jokerValue.z = transform.position.x;
+						EffectsController.SoundEffect(_dashSlideSound, transform.position);
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * dashMovement, Local.y);
@@ -694,10 +688,6 @@ namespace GwambaPrimeAdventure.Character
 			if (!_isJumping && _lastJumpTime > 0f && _lastGroundedTime > 0f)
 			{
 				_animator.SetBool(AttackJump, _comboAttackBuffer);
-				if (_comboAttackBuffer)
-					EffectsController.SoundEffect(_attackSound, transform.position);
-				else
-					EffectsController.SoundEffect(_jumpSound, transform.position);
 				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0f);
 				if (_bunnyHopBoost > 0f)
 				{
@@ -706,6 +696,7 @@ namespace GwambaPrimeAdventure.Character
 						_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BunnyHopColor);
 				}
 				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
+				EffectsController.SoundEffect(_jumpSound, transform.position);
 			}
 			(_isOnGround, _canDownStairs) = (false, _isOnGround);
 		}
