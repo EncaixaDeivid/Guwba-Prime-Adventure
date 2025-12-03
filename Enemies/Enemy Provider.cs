@@ -32,7 +32,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_sender.SetFormat(MessageFormat.Event);
 				_sender.Send(MessagePath.Enemy);
 			}
-			if ((_controller.Vitality -= (short)damage) <= 0f)
+			if ((_controller.Vitality -= (short)damage) <= 0F)
 				Destroy(gameObject);
 			return true;
 		}
@@ -43,7 +43,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_controller.StunTimer = stunTime;
 				_controller.Rigidbody.Sleep();
 			}
-			if ((_controller.ArmorResistance -= (short)stunStength) <= 0f)
+			if ((_controller.ArmorResistance -= (short)stunStength) <= 0F)
 			{
 				_controller.Rigidbody.Sleep();
 				_controller.StunTimer = _controller.ProvidenceStatistics.StunnedTime;
