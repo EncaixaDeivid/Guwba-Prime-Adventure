@@ -8,7 +8,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 	{
 		private readonly Sender _sender = Sender.Create();
 		private ushort _index = 0;
-		private float _timer = 0f;
+		private float _timer = 0F;
 		private bool _active = false;
 		private bool _use = false;
 		private bool _returnActive;
@@ -26,8 +26,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		private void Update()
 		{
-			if (_timer < 0f)
-				if ((_timer -= Time.deltaTime) <= 0f)
+			if (_timer < 0F)
+				if ((_timer -= Time.deltaTime) <= 0F)
 					if (_use)
 					{
 						_use = false;
@@ -47,7 +47,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_sender.SetToggle(false);
 			_sender.Send(MessagePath.System);
 			_sender.Send(MessagePath.Character);
-			_index = (ushort)(_index < _locations.Length - 1f ? _index + 1f : 0f);
+			_index = (ushort)(_index < _locations.Length - 1F ? _index + 1F : 0F);
 		}
 		private void Timer()
 		{
