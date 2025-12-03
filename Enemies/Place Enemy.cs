@@ -36,12 +36,12 @@ namespace GwambaPrimeAdventure.Enemy
 						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
 							_appearFadeEvent = AppearFade(message.ToggleValue.Value);
 						else if (message.Format == MessageFormat.Event && _reactToDamage)
-							_appearFadeEvent = AppearFade(_tilemap.color.a <= 0f);
+							_appearFadeEvent = AppearFade(_tilemap.color.a <= 0F);
 						IEnumerator AppearFade(bool appear)
 						{
 							Color color = _tilemap.color;
 							if (appear)
-								for (float i = 0f; _tilemap.color.a < 1f; i += 1e-1f)
+								for (float i = 0F; _tilemap.color.a < 1F; i += 1E-1F)
 								{
 									yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 									color.a = i;
@@ -49,7 +49,7 @@ namespace GwambaPrimeAdventure.Enemy
 									yield return null;
 								}
 							else
-								for (float i = 1f; _tilemap.color.a > 0f; i -= 1e-1f)
+								for (float i = 1F; _tilemap.color.a > 0F; i -= 1E-1F)
 								{
 									yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 									color.a = i;
