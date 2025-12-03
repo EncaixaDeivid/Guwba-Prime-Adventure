@@ -48,13 +48,12 @@ namespace GwambaPrimeAdventure.Connection
 		}
 		private void Update()
 		{
-			if (_soundSources != null && _soundSources.Count > 0)
-				foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
-					if ((_soundSources[source.Key] -= Time.deltaTime) <= 0f)
-					{
-						_soundSources.Remove(source.Key);
-						Destroy(source.Key.gameObject);
-					}
+			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
+				if ((_soundSources[source.Key] -= Time.deltaTime) <= 0f)
+				{
+					_soundSources.Remove(source.Key);
+					Destroy(source.Key.gameObject);
+				}
 		}
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
