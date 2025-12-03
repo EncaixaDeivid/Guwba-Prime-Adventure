@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 namespace GwambaPrimeAdventure
 {
@@ -37,7 +37,7 @@ namespace GwambaPrimeAdventure
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (_collisionOcclusion && other.TryGetComponent<IOccludee>(out var occludee) && occludee.Occlude)
+			if (_collisionOcclusion && other.TryGetComponent<IOccludee>(out var occludee) && occludee.Occlude && !other.transform.parent)
 				other.transform.SetParent(transform);
 		}
 		public void Receive(MessageData message)
