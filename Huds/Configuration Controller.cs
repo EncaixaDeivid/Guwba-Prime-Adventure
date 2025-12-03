@@ -175,6 +175,24 @@ namespace GwambaPrimeAdventure.Hud
 			Screen.brightness = settings.ScreenBrightness = brightness.newValue;
 			SettingsController.WriteSave(settings);
 		};
+		private EventCallback<ChangeEvent<float>> GeneralVolume => volume =>
+		{
+			SettingsController.Load(out Settings settings);
+			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue) * 20f);
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> EffectsVolume => volume =>
+		{
+			SettingsController.Load(out Settings settings);
+			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue) * 20f);
+			SettingsController.WriteSave(settings);
+		};
+		private EventCallback<ChangeEvent<float>> MusicVolume => volume =>
+		{
+			SettingsController.Load(out Settings settings);
+			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue) * 20f);
+			SettingsController.WriteSave(settings);
+		};
 		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
 		{
 			SettingsController.Load(out Settings settings);
@@ -182,24 +200,6 @@ namespace GwambaPrimeAdventure.Hud
 			if (!settings.InfinityFPS)
 				Application.targetFrameRate = settings.FrameRate;
 			_configurationHud.FrameRateText.text = frameRate.newValue.ToString();
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<int>> GeneralVolume => volume =>
-		{
-			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue / 100f) * 20f);
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<int>> EffectsVolume => volume =>
-		{
-			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue / 100f) * 20f);
-			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<int>> MusicVolume => volume =>
-		{
-			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue / 100f) * 20f);
 			SettingsController.WriteSave(settings);
 		};
 		private Action YesBackLevel => () =>
