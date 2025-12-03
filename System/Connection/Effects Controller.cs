@@ -10,7 +10,8 @@ namespace GwambaPrimeAdventure.Connection
 	{
 		private static EffectsController _instance;
 		private Light2DBase[] _lightsStack;
-		private readonly Dictionary<AudioSource, float> _soundSources = new();
+		private readonly List<AudioSource> _soundSources = new();
+		private readonly List<float> _sourceTimers = new();
 		private bool _canHitStop = true;
 		[SerializeField] private SurfaceSound[] _surfaceSounds;
 		[SerializeField] private AudioSource _sourceObject;
@@ -32,21 +33,22 @@ namespace GwambaPrimeAdventure.Connection
 		}
 		private void OnEnable()
 		{
-			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
-				source.Key.UnPause();
+			foreach (AudioSource source in _soundSources.ToArray())
+				source.UnPause();
 		}
 		private void OnDisable()
 		{
-			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
-				source.Key.Pause();
+			foreach (AudioSource source in _soundSources.ToArray())
+				source.Pause();
 		}
 		private void Update()
 		{
-			foreach (KeyValuePair<AudioSource, float> source in _soundSources.ToArray())
-				if ((_soundSources[source.Key] -= Time.deltaTime) <= 0f)
+			for (ushort i = 0; i < _sourceTimers.Count; i++)
+				if ((_sourceTimers[i] -= Time.deltaTime) <= 0f)
 				{
-					_soundSources.Remove(source.Key);
-					Destroy(source.Key.gameObject);
+					Destroy(_soundSources[i].gameObject);
+					_soundSources.RemoveAt(i);
+					_sourceTimers.RemoveAt(i);
 				}
 		}
 		private void PrvateHitStop(float stopTime, float slowTime)
@@ -92,16 +94,17 @@ namespace GwambaPrimeAdventure.Connection
 			AudioSource source = Instantiate(_sourceObject, originSound, Quaternion.identity);
 			source.clip = clip;
 			source.mute = !settings.EffectsVolumeToggle && !settings.GeneralVolumeToggle;
-			_soundSources.Add(source, clip.length);
+			_soundSources.Add(source);
+			_sourceTimers.Add(clip.length);
 			source.Play();
 		}
 		private void PrivateSurfaceSound(Vector2 originPosition)
 		{
 			if (Physics2D.OverlapPoint(originPosition, WorldBuild.SceneMask).TryGetComponent<Surface>(out var surface))
-				foreach (SurfaceSound surfaceSound in _surfaceSounds)
-					if (surfaceSound.Tiles.Contains(surface.CheckForTile(originPosition)))
+				for (ushort i = 0; i < _surfaceSounds.Length; i++)
+					if (_surfaceSounds[i].Tiles.Contains(surface.CheckForTile(originPosition)))
 					{
-						PrivateSoundEffect(surfaceSound.Clip, originPosition);
+						PrivateSoundEffect(_surfaceSounds[i].Clip, originPosition);
 						return;
 					}
 		}
