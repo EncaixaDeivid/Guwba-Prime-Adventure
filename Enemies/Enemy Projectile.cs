@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
