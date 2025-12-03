@@ -14,11 +14,11 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _retreat = false;
 		private bool _runTowards = false;
 		private ushort _runnedTimes = 0;
-		private float _timeRun = 0f;
-		private float _dashedTime = 0f;
-		private float _dashTime = 0f;
-		private float _retreatTime = 0f;
-		private float _retreatLocation = 0f;
+		private float _timeRun = 0F;
+		private float _dashedTime = 0F;
+		private float _dashTime = 0F;
+		private float _retreatTime = 0F;
+		private float _retreatLocation = 0F;
 		[Header("Runner Enemy")]
 		[SerializeField, Tooltip("The runner statitics of this enemy.")] private RunnerStatistics _statistics;
 		private new void Awake()
@@ -46,7 +46,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopRunning)
-				if ((_stoppedTime -= Time.deltaTime) <= 0f)
+				if ((_stoppedTime -= Time.deltaTime) <= 0F)
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
 					_sender.SetFormat(MessageFormat.State);
@@ -57,19 +57,19 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_stopWorking)
 				return;
 			if (_statistics.TimedDash && !_isDashing)
-				if ((_dashTime -= Time.deltaTime) <= 0f)
+				if ((_dashTime -= Time.deltaTime) <= 0F)
 				{
 					(_dashedTime, _isDashing) = (_statistics.TimeDashing, true);
 					InvencibleDash();
 				}
 			if (_statistics.RunFromTarget)
 			{
-				if (_timeRun > 0f && !_isDashing)
+				if (_timeRun > 0F && !_isDashing)
 				{
 					_isDashing = true;
 					InvencibleDash();
 				}
-				if ((_timeRun -= Time.deltaTime) <= 0f && _isDashing)
+				if ((_timeRun -= Time.deltaTime) <= 0F && _isDashing)
 				{
 					if (_statistics.RunTowardsAfter && _runnedTimes >= _statistics.TimesToRun)
 						(_runnedTimes, _runTowards) = (0, true);
@@ -79,11 +79,11 @@ namespace GwambaPrimeAdventure.Enemy
 					InvencibleDash();
 				}
 			}
-			if (!_retreat && _retreatTime > 0f)
-				if ((_retreatTime -= Time.deltaTime) <= 0f)
+			if (!_retreat && _retreatTime > 0F)
+				if ((_retreatTime -= Time.deltaTime) <= 0F)
 					_canRetreat = true;
 			if (_isDashing)
-				if ((_dashedTime -= Time.deltaTime) <= 0f)
+				if ((_dashedTime -= Time.deltaTime) <= 0F)
 				{
 					_dashTime = _statistics.TimeToDash;
 					_sender.SetFormat(MessageFormat.State);
@@ -97,7 +97,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _detected && !_isDashing && OnGround && !_retreat)
-				Rigidbody.linearVelocityX = 0f;
+				Rigidbody.linearVelocityX = 0F;
 			if (_stopWorking)
 				return;
 			if (_statistics.LookPerception && !_detected)
@@ -111,10 +111,10 @@ namespace GwambaPrimeAdventure.Enemy
 					}
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
-			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x;
+			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x;
 			_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
-			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0f, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
-			if (_statistics.RunFromTarget && _timeRun <= 0f && _detected)
+			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+			if (_statistics.RunFromTarget && _timeRun <= 0F && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
 				if (_runTowards)
@@ -126,7 +126,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				_invencibility = _retreat = false;
 				if (_statistics.DetectionStop)
-					(_stoppedTime, _stopWorking, Rigidbody.linearVelocityX) = (_statistics.StopTime, _stopRunning = true, 0f);
+					(_stoppedTime, _stopWorking, Rigidbody.linearVelocityX) = (_statistics.StopTime, _stopRunning = true, 0F);
 				else if (_statistics.EventRetreat)
 				{
 					_retreatTime = _statistics.TimeToRetreat;
@@ -147,7 +147,7 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
-			_originCast += new Vector2(_collider.bounds.extents.x * ((_retreat ? -1f : 1f) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
+			_originCast += new Vector2(_collider.bounds.extents.x * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
 			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
 			if (OnGround && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
 				if (_retreat)
@@ -187,8 +187,8 @@ namespace GwambaPrimeAdventure.Enemy
 				return false;
 			if (_statistics.ReactToDamage && _canRetreat)
 			{
-				(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
-				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
+				(_stoppedTime, _stopWorking, _retreatLocation) = (0F, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
+				transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1F : 1F));
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
 				_sender.Send(MessagePath.Enemy);
@@ -204,11 +204,11 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						base.Receive(message);
 						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && !message.ToggleValue.Value)
-							Rigidbody.linearVelocityX = 0f;
+							Rigidbody.linearVelocityX = 0F;
 						if (message.Format == MessageFormat.Event && _statistics.ReactToDamage && _canRetreat)
 						{
-							(_stoppedTime, _stopWorking, _retreatLocation) = (0f, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
-							transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1f : 1f));
+							(_stoppedTime, _stopWorking, _retreatLocation) = (0F, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
+							transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1F : 1F));
 							_sender.SetFormat(MessageFormat.State);
 							_sender.SetToggle(false);
 							_sender.Send(MessagePath.Enemy);
