@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Hud
 		{
 			if (Instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			Instance = this;
@@ -178,19 +178,19 @@ namespace GwambaPrimeAdventure.Hud
 		private EventCallback<ChangeEvent<float>> GeneralVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue) * 20f);
+			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> EffectsVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue) * 20f);
+			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<float>> MusicVolume => volume =>
 		{
 			SettingsController.Load(out Settings settings);
-			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue) * 20f);
+			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
 		};
 		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
@@ -233,12 +233,8 @@ namespace GwambaPrimeAdventure.Hud
 					_configurationHud.OutLevel.style.display = DisplayStyle.None;
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
-				for (ushort i = 1; i <= 10f; i++)
-					if (SceneManager.GetActiveScene().name.Contains($"{i}"))
-					{
-						_configurationHud.SaveGame.style.display = DisplayStyle.None;
-						break;
-					}
+				if (SceneManager.GetActiveScene().name.Contains($"{1..(WorldBuild.LEVELS_COUNT + 1)}"))
+					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 			}
 		}
 		internal void SetActive(bool isActive) => _isActive = isActive;
