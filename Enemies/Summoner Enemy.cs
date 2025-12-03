@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
@@ -15,9 +14,9 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _waitStop = false;
 		private ushort _randomSummonIndex = 0;
 		private float[] _summonTime;
-		private float _fullStopTime = 0f;
-		private float _stopTime = 0f;
-		private float _gravityScale = 0f;
+		private float _fullStopTime = 0F;
+		private float _stopTime = 0F;
+		private float _gravityScale = 0F;
 		[Header("Summoner Enemy")]
 		[SerializeField, Tooltip("The summoner statitics of this enemy.")] private SummonerStatistics _statistics;
 		private new void Awake()
@@ -38,7 +37,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private IEnumerator Start()
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length);
+			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length + 1);
 			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
 				_isSummonTime[i] = true;
 			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
@@ -61,7 +60,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetToggle(false);
 					_sender.Send(MessagePath.Enemy);
 					if (summon.ParalyzeToSummon)
-						Rigidbody.gravityScale = 0f;
+						Rigidbody.gravityScale = 0F;
 					_waitStop = summon.WaitStop;
 					_fullStopTime = _stopTime = summon.TimeToStop;
 					yield return null;
@@ -78,8 +77,8 @@ namespace GwambaPrimeAdventure.Enemy
 					else
 						position = summon.SummonPoints[summonIndex.y];
 					Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1f ? summonIndex.x + 1f : 0f);
-					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1f ? summonIndex.y + 1f : 0f);
+					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1F ? summonIndex.x + 1F : 0F);
+					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1F ? summonIndex.y + 1F : 0F);
 				}
 				_summonEvent = null;
 			}
@@ -94,8 +93,8 @@ namespace GwambaPrimeAdventure.Enemy
 					_stopPermanently[summonIndex] = true;
 				return;
 			}
-			if (_summonTime[summonIndex] > 0f)
-				if ((_summonTime[summonIndex] -= Time.deltaTime) <= 0f)
+			if (_summonTime[summonIndex] > 0F)
+				if ((_summonTime[summonIndex] -= Time.deltaTime) <= 0F)
 				{
 					if (_isSummonTime[summonIndex])
 					{
@@ -113,11 +112,11 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_stopTime > 0f)
+			if (_stopTime > 0F)
 			{
-				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2f && !_waitStop && _summonEvent is not null)
+				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2F && !_waitStop && _summonEvent is not null)
 					_summonEvent.MoveNext();
-				if (_stopTime <= 0f)
+				if (_stopTime <= 0F)
 				{
 					_sender.SetToggle(true);
 					_sender.Send(MessagePath.Enemy);
@@ -141,9 +140,9 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
 							_stopSummon = !message.ToggleValue.Value;
-						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0f)
+						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0F)
 							if (_statistics.RandomReactSummons)
-								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length)]);
+								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length + 1)]);
 							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && message.NumberValue.Value >= 0)
 								Summon(_statistics.EventSummons[message.NumberValue.Value]);
 						return;
