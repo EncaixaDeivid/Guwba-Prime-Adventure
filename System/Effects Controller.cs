@@ -74,7 +74,7 @@ namespace GwambaPrimeAdventure
 		{
 			foreach (Surface surface in _surfaces)
 				foreach (TilesSound tileSound in _surfaceSound.TilesSounds)
-					if (surface.CheckForTile(tileSound.Tiles, originPosition))
+					if (tileSound.Tiles.Contains(surface.CheckForTile(originPosition)))
 						AudioSource.PlayClipAtPoint(tileSound.Source.clip, originPosition);
 		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
