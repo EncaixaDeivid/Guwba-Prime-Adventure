@@ -9,7 +9,9 @@ namespace GwambaPrimeAdventure
 	{
 		private static EffectsController _instance;
 		private Light2DBase[] _lightsStack;
+		private Surface[] _surfaces;
 		private bool _canHitStop = true;
+		[SerializeField] private SurfaceSound _surfaceSound;
 		private new void Awake()
 		{
 			base.Awake();
@@ -25,6 +27,11 @@ namespace GwambaPrimeAdventure
 		{
 			base.OnDestroy();
 			StopAllCoroutines();
+		}
+		private IEnumerator Start()
+		{
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			_surfaces = FindObjectsByType<Surface>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
 		}
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
@@ -63,8 +70,16 @@ namespace GwambaPrimeAdventure
 				_lightsStack[^1].enabled = true;
 			}
 		}
+		private void PrivateSurfaceSound(Vector2 originPosition)
+		{
+			foreach (Surface surface in _surfaces)
+				foreach (TilesSound tileSound in _surfaceSound.TilesSounds)
+					if (surface.CheckForTile(tileSound.Tiles, originPosition))
+						AudioSource.PlayClipAtPoint(tileSound.Source.clip, originPosition);
+		}
 		public static void HitStop(float stopTime, float slowTime) => _instance.PrvateHitStop(stopTime, slowTime);
 		public static void OnGlobalLight(Light2DBase globalLight) => _instance.PrivateGlobalLight(globalLight, true);
 		public static void OffGlobalLight(Light2DBase globalLight) => _instance.PrivateGlobalLight(globalLight, false);
+		public static void SurfaceSound(Vector2 originPosition) => _instance.PrivateSurfaceSound(originPosition);
 	};
 };
