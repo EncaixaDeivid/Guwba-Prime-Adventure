@@ -8,8 +8,11 @@ namespace GwambaPrimeAdventure
 	public sealed class Surface : MonoBehaviour, ILoader
 	{
 		private Tilemap _tilemap;
-		private void Awake() => _tilemap = GetComponent<Tilemap>();
-		public IEnumerator Load() { yield return null; }
-		internal Tile CheckForTile(Vector2 originPosition) => _tilemap.GetTile<Tile>(_tilemap.WorldToCell(originPosition));
+		public IEnumerator Load()
+		{
+			_tilemap = GetComponent<Tilemap>();
+			yield return null;
+		}
+		public Tile CheckForTile(Vector2 originPosition) => _tilemap.GetTile<Tile>(_tilemap.WorldToCell(originPosition));
 	};
 };
