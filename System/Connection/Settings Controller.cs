@@ -14,10 +14,10 @@ namespace GwambaPrimeAdventure.Connection
 		public bool InfinityFPS;
 		public float DialogSpeed;
 		public float ScreenBrightness;
+		public float GeneralVolume;
+		public float EffectsVolume;
+		public float MusicVolume;
 		public ushort FrameRate;
-		public ushort GeneralVolume;
-		public ushort EffectsVolume;
-		public ushort MusicVolume;
 	};
 	public static class SettingsController
 	{
@@ -47,10 +47,10 @@ namespace GwambaPrimeAdventure.Connection
 					InfinityFPS = false,
 					DialogSpeed = .05f,
 					ScreenBrightness = 1f,
-					FrameRate = 60,
-					GeneralVolume = 100,
-					EffectsVolume = 100,
-					MusicVolume = 100
+					GeneralVolume = 1f,
+					EffectsVolume = 1f,
+					MusicVolume = 1f,
+					FrameRate = 60
 				};
 		}
 		public static void WriteSave(Settings settings) => FileEncoder.WriteData(settings, SettingsPath);
