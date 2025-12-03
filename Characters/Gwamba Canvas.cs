@@ -8,7 +8,7 @@ namespace GwambaPrimeAdventure.Character
 	internal sealed class GwambaCanvas : MonoBehaviour
 	{
 		private static GwambaCanvas _instance;
-		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar background."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar background."), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		internal Color BackgroundColor { get; private set; }
 		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's vitality bar border.")] internal Color BorderColor { get; private set; }
 		[field: SerializeField, BoxGroup("Visual"), ColorUsage(true, true), Tooltip("The color of Gwamba's stun resistance bar.")] internal Color StunResistanceColor
@@ -20,9 +20,9 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of recover vitality that Gwamba have.")] private ushort _recoverVitality;
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of stun resistance that Gwamba have.")] private ushort _stunResistance;
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of bunny hop that Gwamba have.")] private ushort _bunnyHop;
-		[SerializeField, BoxGroup("Visual"), Min(0f), Tooltip("The total width of Gwamba's vitality bar.")] private float _totalWidth;
-		[SerializeField, BoxGroup("Visual"), Min(0f), Tooltip("The norder width of Gwamba's vitality bar.")] private float _borderWidth;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[SerializeField, BoxGroup("Visual"), Min(0F), Tooltip("The total width of Gwamba's vitality bar.")] private float _totalWidth;
+		[SerializeField, BoxGroup("Visual"), Min(0F), Tooltip("The norder width of Gwamba's vitality bar.")] private float _borderWidth;
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _vitalityVisual;
 		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _vitalityPieceVisual;
 		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _recoverVitalityVisual;
@@ -46,7 +46,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
 			_instance = this;
@@ -87,7 +87,7 @@ namespace GwambaPrimeAdventure.Character
 			{
 				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
 				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(MissingColor);
-				recoverVitalityPieceClone.style.width = new StyleLength(new Length(_totalWidth / _recoverVitality - _borderWidth * 2f, LengthUnit.Pixel));
+				recoverVitalityPieceClone.style.width = new StyleLength(new Length(_totalWidth / _recoverVitality - _borderWidth * 2F, LengthUnit.Pixel));
 				recoverVitality.Add(recoverVitalityPieceClone);
 				RecoverVitality[i] = recoverVitality[i + 1];
 			}
@@ -99,7 +99,7 @@ namespace GwambaPrimeAdventure.Character
 			{
 				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
 				stunResistancePieceClone.style.backgroundColor = new StyleColor(StunResistanceColor);
-				stunResistancePieceClone.style.width = new StyleLength(new Length(_totalWidth / _stunResistance - _borderWidth * 2f, LengthUnit.Pixel));
+				stunResistancePieceClone.style.width = new StyleLength(new Length(_totalWidth / _stunResistance - _borderWidth * 2F, LengthUnit.Pixel));
 				stunResistance.Add(stunResistancePieceClone);
 				StunResistance[i] = stunResistance[i + 1];
 			}
@@ -111,7 +111,7 @@ namespace GwambaPrimeAdventure.Character
 			{
 				VisualElement bunnyHopPieceClone = new() { name = bunnyHopPiece.name };
 				bunnyHopPieceClone.style.backgroundColor = new StyleColor(MissingColor);
-				bunnyHopPieceClone.style.width = new StyleLength(new Length(_totalWidth / _bunnyHop - _borderWidth * 2f, LengthUnit.Pixel));
+				bunnyHopPieceClone.style.width = new StyleLength(new Length(_totalWidth / _bunnyHop - _borderWidth * 2F, LengthUnit.Pixel));
 				bunnyHop.Add(bunnyHopPieceClone);
 				BunnyHop[i] = bunnyHop[i + 1];
 			}
