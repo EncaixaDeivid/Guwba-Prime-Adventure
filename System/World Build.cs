@@ -8,7 +8,7 @@ namespace GwambaPrimeAdventure
 		public const ushort LEVELS_COUNT = 10;
 		public const float FIELD_SPACE_LENGTH = 8F;
 		public const float SNAP_LENGTH = 1F / 16F;
-		public const float DESTROY_COPY_TIME = 1E-3F;
+		public const float MINIMUM_TIME_SPACE_LIMIT = 1E-3F;
 		public enum Layers
 		{
 			System,
