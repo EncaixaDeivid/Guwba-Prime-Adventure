@@ -14,7 +14,7 @@ namespace GwambaPrimeAdventure.Story
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private string _text = "";
 		private ushort _speachIndex = 0;
-		private float _dialogTime = 0f;
+		private float _dialogTime = 0F;
 		private bool _nextSlide = false;
 		[Header("Interaction Objects")]
 		[SerializeField, Tooltip("The object that handles the hud of the dialog.")] private DialogHud _dialogHudObject;
@@ -30,12 +30,12 @@ namespace GwambaPrimeAdventure.Story
 		private void OnEnable()
 		{
 			if (_animator)
-				_animator.SetFloat(IsOn, 1f);
+				_animator.SetFloat(IsOn, 1F);
 		}
 		private void OnDisable()
 		{
 			if (_animator)
-				_animator.SetFloat(IsOn, 0f);
+				_animator.SetFloat(IsOn, 0F);
 		}
 		private IEnumerator TextDigitation()
 		{
@@ -61,7 +61,7 @@ namespace GwambaPrimeAdventure.Story
 			{
 				SettingsController.Load(out Settings settings);
 				_dialogTime = settings.DialogSpeed;
-				if (_speachIndex < _dialogObject.Speachs.Length - 1f)
+				if (_speachIndex < _dialogObject.Speachs.Length - 1F)
 				{
 					if (_storyTeller && _dialogObject.Speachs[_speachIndex].NextSlide)
 					{
@@ -105,7 +105,7 @@ namespace GwambaPrimeAdventure.Story
 				}
 			}
 			else
-				_dialogTime = 0f;
+				_dialogTime = 0F;
 		}
 		public void Interaction()
 		{
