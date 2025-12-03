@@ -7,7 +7,7 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class ItemGenerator : StateController
 	{
 		private readonly List<GameObject> _itemsGenerated = new();
-		private float _timeGeneration = 0f;
+		private float _timeGeneration = 0F;
 		private bool _continueGeneration = true;
 		[Header("Generation Statistics")]
 		[SerializeField, Tooltip("The item to be generated.")] private GameObject _generatedItem;
@@ -18,8 +18,8 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, HideIf(nameof(_existentItems)), ShowIf(nameof(_especifiedGeneration)), Tooltip("If this generator will destroy the entire object.")] private bool _destroyObject;
 		private void Update()
 		{
-			if (_continueGeneration && _timeGeneration > 0f)
-				if ((_timeGeneration -= Time.deltaTime) <= 0f)
+			if (_continueGeneration && _timeGeneration > 0F)
+				if ((_timeGeneration -= Time.deltaTime) <= 0F)
 				{
 					_timeGeneration = _generationTime;
 					_itemsGenerated.Add(Instantiate(_generatedItem, transform.position, transform.rotation));
