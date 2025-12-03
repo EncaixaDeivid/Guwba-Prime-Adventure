@@ -23,9 +23,9 @@ namespace GwambaPrimeAdventure.Enemy
 		private ushort _sequentialJumpIndex = 0;
 		private short[] _jumpCount;
 		private float[] _timedJumpTime;
-		private float _jumpTime = 0f;
-		private float _stopTime = 0f;
-		private float _otherTarget = 0f;
+		private float _jumpTime = 0F;
+		private float _stopTime = 0F;
+		private float _otherTarget = 0F;
 		[Header("Jumper Enemy")]
 		[SerializeField, Tooltip("The jumper statitics of this enemy.")] private JumperStatistics _statistics;
 		private new void Awake()
@@ -66,7 +66,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private Action<InputAction.CallbackContext> Jump => jump =>
 		{
-			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0f)
+			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0F)
 			{
 				_jumpTime = _statistics.TimeToJump;
 				_targetPosition = GwambaStateMarker.Localization;
@@ -87,12 +87,12 @@ namespace GwambaPrimeAdventure.Enemy
 			_isJumping = true;
 			Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
 			if (_follow = !_statistics.UnFollow)
-				transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f));
+				transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F));
 		}
 		private async void TimedJump(ushort jumpIndex)
 		{
-			if (_timedJumpTime[jumpIndex] > 0f)
-				if ((_timedJumpTime[jumpIndex] -= Time.deltaTime) <= 0f)
+			if (_timedJumpTime[jumpIndex] > 0F)
+				if ((_timedJumpTime[jumpIndex] -= Time.deltaTime) <= 0F)
 				{
 					Rigidbody.AddForceY(_statistics.TimedJumps[jumpIndex].Strength * Rigidbody.mass, ForceMode2D.Impulse);
 					while (OnGround)
@@ -111,7 +111,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_sender.SetFormat(MessageFormat.State);
 						_sender.SetToggle(false);
 						_sender.Send(MessagePath.Enemy);
-						Rigidbody.linearVelocityX = 0f;
+						Rigidbody.linearVelocityX = 0F;
 					}
 				}
 		}
@@ -119,17 +119,17 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned || _stopWorking)
 				return;
-			if (_stopTime > 0f)
-				if ((_stopTime -= Time.deltaTime) <= 0f)
+			if (_stopTime > 0F)
+				if ((_stopTime -= Time.deltaTime) <= 0F)
 				{
 					_isJumping = true;
 					Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
 					if (_follow = !_statistics.UnFollow)
-						transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f));
+						transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F));
 				}
 			if (!OnGround || _detected || _isJumping)
 				return;
-			if (_jumpTime > 0f)
+			if (_jumpTime > 0F)
 				_jumpTime -= Time.deltaTime;
 			if (!_isJumping)
 				if (_statistics.SequentialTimmedJumps)
@@ -152,7 +152,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_onJump && OnGround)
 			{
 				if (_follow)
-					Rigidbody.linearVelocityX = 0f;
+					Rigidbody.linearVelocityX = 0F;
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(!(_onJump = _isJumping = _detected = _contunuosFollow = _follow = false));
 				_sender.Send(MessagePath.Enemy);
@@ -177,7 +177,7 @@ namespace GwambaPrimeAdventure.Enemy
 					else
 					{
 						_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
-						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0f ? -1f : 1f);
+						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0F ? -1F : 1F);
 						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CharacterMask))
 							if (ray.collider.TryGetComponent<IDestructible>(out _))
 							{
@@ -192,16 +192,16 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_contunuosFollow)
 				{
 					if (_statistics.RandomFollow)
-						_targetPosition.x = UnityEngine.Random.Range(-1, 1) >= 0f ? GwambaStateMarker.Localization.x : _otherTarget;
+						_targetPosition.x = UnityEngine.Random.Range(-1, 1) >= 0F ? GwambaStateMarker.Localization.x : _otherTarget;
 					else if (_useTarget)
 						_targetPosition.x = _otherTarget;
 					else
 						_targetPosition.x = GwambaStateMarker.Localization.x;
-					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1f : 1f);
+					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F);
 					if (_turnFollow)
 						transform.TurnScaleX(_movementSide);
 				}
-				Rigidbody.linearVelocityX = Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget ? _movementSide * _statistics.MovementSpeed : 0f;
+				Rigidbody.linearVelocityX = Mathf.Abs(_targetPosition.x - transform.position.x) > _statistics.DistanceToTarget ? _movementSide * _statistics.MovementSpeed : 0F;
 			}
 			base.FixedUpdate();
 		}
@@ -209,9 +209,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			while (!OnGround || _detected || !isActiveAndEnabled || IsStunned)
 				await Task.Yield();
-			if (_stopJump || _jumpTime > 0f)
+			if (_stopJump || _jumpTime > 0F)
 				return;
-			if (_jumpCount[jumpIndex]-- <= 0f)
+			if (_jumpCount[jumpIndex]-- <= 0F)
 			{
 				Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
 				while (OnGround)
@@ -228,7 +228,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_sender.SetFormat(MessageFormat.State);
 					_sender.SetToggle(false);
 					_sender.Send(MessagePath.Enemy);
-					Rigidbody.linearVelocityX = 0f;
+					Rigidbody.linearVelocityX = 0F;
 				}
 			}
 		}
