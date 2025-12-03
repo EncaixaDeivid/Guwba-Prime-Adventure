@@ -5,7 +5,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Summoner Enemy", menuName = "Enemy Statistics/Summoner", order = 6)]
 	public sealed class SummonerStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("The summons that will be activate on an event."), Header("Summoner Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		[field: SerializeField, Tooltip("The summons that will be activate on an event."), Header("Summoner Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
 		public SummonObject[] EventSummons { get; private set; }
 		[field: SerializeField, Tooltip("The summons that will be activate with time.")] public SummonObject[] TimedSummons { get; private set; }
 		[field: SerializeField, Tooltip("The collection of the summon point structure.")] public SummonPointStructure[] SummonPointStructures { get; private set; }
