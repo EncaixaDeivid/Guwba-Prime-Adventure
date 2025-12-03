@@ -100,9 +100,9 @@ namespace GwambaPrimeAdventure.Hud
 			FrameRate.highValue = 240;
 			DialogSpeed.lowValue = 0f;
 			ScreenBrightness.lowValue = 0f;
-			GeneralVolume.lowValue = 1e-3f;
-			EffectsVolume.lowValue = 1e-3f;
-			MusicVolume.lowValue = 1e-3f;
+			GeneralVolume.lowValue = 1e-4f;
+			EffectsVolume.lowValue = 1e-4f;
+			MusicVolume.lowValue = 1e-4f;
 			FrameRate.lowValue = 10;
 			foreach (Resolution resolution in SettingsController.PixelPerfectResolutions())
 				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
