@@ -13,7 +13,7 @@ namespace GwambaPrimeAdventure
 		{
 			if (_instance)
 			{
-				Destroy(gameObject, 1e-3f);
+				Destroy(gameObject, WorldBuild.DESTROY_COPY_TIME);
 				return;
 			}
 			_instance = this;
