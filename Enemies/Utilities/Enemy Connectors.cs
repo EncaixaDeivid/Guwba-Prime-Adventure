@@ -12,8 +12,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected IDestructible _destructibleEnemy;
 		protected short _vitality;
 		protected short _armorResistance = 0;
-		protected float _fadeTime = 0f;
-		protected float _stunTimer = 0f;
+		protected float _fadeTime = 0F;
+		protected float _stunTimer = 0F;
 		protected bool _stunned = false;
 	};
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D)), RequireComponent(typeof(CinemachineImpulseSource), typeof(Collider2D))]
@@ -32,8 +32,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected ushort _internalBreakPoint = 0;
 		protected ushort _pointToReturn = 0;
 		protected ushort _internalReturnPoint = 0;
-		protected float _deathTimer = 0f;
-		protected float _stunTimer = 0f;
+		protected float _deathTimer = 0F;
+		protected float _stunTimer = 0F;
 		protected bool _breakInUse = false;
 	};
 	public interface IJumper
