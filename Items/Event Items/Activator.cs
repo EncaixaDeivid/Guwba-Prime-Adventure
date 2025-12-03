@@ -26,12 +26,12 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private void OnEnable()
 		{
 			if (_animator)
-				_animator.SetFloat(IsOn, 1f);
+				_animator.SetFloat(IsOn, 1F);
 		}
 		private void OnDisable()
 		{
 			if (_animator)
-				_animator.SetFloat(IsOn, 0f);
+				_animator.SetFloat(IsOn, 0F);
 		}
 		public IEnumerator Load()
 		{
