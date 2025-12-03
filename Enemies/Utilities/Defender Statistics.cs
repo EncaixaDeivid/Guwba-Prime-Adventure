@@ -5,7 +5,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Defender Enemy", menuName = "Enemy Statistics/Defender", order = 8)]
 	public sealed class DefenderStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("The amount of damage that this object have to receive real damage."), Header("Defender Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2f, order = 1)]
+		[field: SerializeField, Tooltip("The amount of damage that this object have to receive real damage."), Header("Defender Enemy", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
 		public short BiggerDamage { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will stop moving when become invencible.\nRequires: Moving Enemy.")] public bool InvencibleStop { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy will become invencible when hurted.")] public bool InvencibleHurted { get; private set; }
