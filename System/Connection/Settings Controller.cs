@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.IO;
-using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Connection
 {
 	public struct Settings
@@ -22,14 +21,6 @@ namespace GwambaPrimeAdventure.Connection
 	public static class SettingsController
 	{
 		private static readonly string SettingsPath = $@"{Application.persistentDataPath}\Settings.txt";
-		public static Resolution[] PixelPerfectResolutions()
-		{
-			List<Resolution> resolutions = new();
-			foreach (Resolution resolution in Screen.resolutions)
-				if (resolution.width % WorldBuild.PIXEL_PERFECT_WIDTH == 0 && resolution.height % WorldBuild.PIXEL_PERFECT_HEIGHT == 0)
-					resolutions.Add(resolution);
-			return resolutions.ToArray();
-		}
 		public static bool FileExists() => File.Exists(SettingsPath);
 		public static void Load(out Settings settings)
 		{
@@ -38,7 +29,7 @@ namespace GwambaPrimeAdventure.Connection
 			else
 				settings = new Settings()
 				{
-					ScreenResolution = new Vector2Int(PixelPerfectResolutions()[^1].width, PixelPerfectResolutions()[^1].height),
+					ScreenResolution = new Vector2Int(WorldBuild.PixelPerfectResolutions()[^1].width, WorldBuild.PixelPerfectResolutions()[^1].height),
 					FullScreenMode = FullScreenMode.FullScreenWindow,
 					DialogToggle = true,
 					GeneralVolumeToggle = true,
