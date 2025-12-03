@@ -53,9 +53,9 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private void OnTriggerEnter2D(Collider2D collision) => DestroyOnCollision();
 		public bool Hurt(ushort damage)
 		{
-			if (damage < _biggerDamage || _vitality <= 0f)
+			if (damage < _biggerDamage || _vitality <= 0F)
 				return false;
-			if ((_vitality -= (short)damage) <= 0f)
+			if ((_vitality -= (short)damage) <= 0F)
 				Execute();
 			return true;
 		}
