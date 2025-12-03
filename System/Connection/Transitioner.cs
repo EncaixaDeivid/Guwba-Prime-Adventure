@@ -18,11 +18,8 @@ namespace GwambaPrimeAdventure.Connection
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(_transicionHud);
-				for (float i = 0f; transicionHud.RootElement.style.opacity.value < 1f; i += 0.1f)
-				{
-					transicionHud.RootElement.style.opacity = i;
-					yield return null;
-				}
+				for (float i = 0F; transicionHud.RootElement.style.opacity.value < 1F; i += 1E-1F)
+					yield return transicionHud.RootElement.style.opacity = i;
 				SceneField newScene = scene ?? _sceneTransicion;
 				if (newScene != gameObject.scene.name)
 					if (newScene.SceneName.Contains($"{1..(WorldBuild.LEVELS_COUNT + 1)}"))
@@ -32,12 +29,9 @@ namespace GwambaPrimeAdventure.Connection
 					yield return new WaitUntil(() => asyncOperation.isDone);
 				else
 				{
-					transicionHud.LoadingBar.highValue = 100f;
+					transicionHud.LoadingBar.highValue = 100F;
 					while (!asyncOperation.isDone)
-					{
-						transicionHud.LoadingBar.value = asyncOperation.progress * 100f;
-						yield return null;
-					}
+						yield return transicionHud.LoadingBar.value = asyncOperation.progress * 100F;
 				}
 				asyncOperation.allowSceneActivation = true;
 			}
