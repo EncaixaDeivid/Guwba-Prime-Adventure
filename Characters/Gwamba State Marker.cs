@@ -74,6 +74,7 @@ namespace GwambaPrimeAdventure.Character
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
+		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba collides while on air jump or dash slide.")] private AudioClip _collisionSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets hurt.")] private AudioClip _hurtSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets stunned.")] private AudioClip _stunSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba die.")] private AudioClip _deathSound;
@@ -93,7 +94,6 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba steps while walking.")] private AudioClip _stepSound;
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the air jump.")] private AudioClip _airJumpSound;
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the dash slide.")] private AudioClip _dashSlideSound;
-		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba collides while on air jump or dash slide.")] private AudioClip _collisionSound;
 		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
 		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of acceleration Gwamba will apply to the movement.")] private float _acceleration;
 		[SerializeField, BoxGroup("Movement"), Min(0f), Tooltip("The amount of decceleration Gwamba will apply to the movement.")] private float _decceleration;
@@ -106,7 +106,6 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
 		[SerializeField, BoxGroup("Jump"), Tooltip("The sound to play when Gwamba execute a jump.")] private AudioClip _jumpSound;
-		[SerializeField, BoxGroup("Jump"), Tooltip("The sound to play when Gwamba fall on the ground.")] private AudioClip _fallSound;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that Gwamba can Jump on the air.")] private float _airJumpStrenght;
 		[SerializeField, BoxGroup("Jump"), Min(0f), Tooltip("The amount of strenght that will be added on the bunny hop.")] private float _jumpBoost;
@@ -580,7 +579,7 @@ namespace GwambaPrimeAdventure.Character
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						DamagerHurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-						EffectsController.SoundEffect(_fallSound, transform.position);
+						EffectsController.SoundEffect(_collisionSound, transform.position);
 						(_fallStarted, _fallDamage) = (false, 0f);
 						if (_invencibility && _fadeTimer <= 0f)
 							_fadeTimer = _timeToFadeShow;
