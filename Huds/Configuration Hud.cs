@@ -9,31 +9,9 @@ namespace GwambaPrimeAdventure.Hud
 	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _settingsGroup;
-		[SerializeField, Tooltip("User interface element.")] private string _confirmationGroup;
-		[SerializeField, Tooltip("User interface element.")] private string _screenResolution;
-		[SerializeField, Tooltip("User interface element.")] private string _fullScreenModes;
-		[SerializeField, Tooltip("User interface element.")] private string _dialogToggle;
-		[SerializeField, Tooltip("User interface element.")] private string _generalVolumeToggle;
-		[SerializeField, Tooltip("User interface element.")] private string _effectsVolumeToggle;
-		[SerializeField, Tooltip("User interface element.")] private string _musicVolumeToggle;
-		[SerializeField, Tooltip("User interface element.")] private string _inifinityFPSToggle;
-		[SerializeField, Tooltip("User interface element.")] private string _dialogSpeed;
-		[SerializeField, Tooltip("User interface element.")] private string _screenBrightness;
-		[SerializeField, Tooltip("User interface element.")] private string _frameRate;
-		[SerializeField, Tooltip("User interface element.")] private string _generalVolume;
-		[SerializeField, Tooltip("User interface element.")] private string _effectsVolume;
-		[SerializeField, Tooltip("User interface element.")] private string _musicVolume;
-		[SerializeField, Tooltip("User interface element.")] private string _closeButton;
-		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
-		[SerializeField, Tooltip("User interface element.")] private string _saveGameButton;
-		[SerializeField, Tooltip("User interface element.")] private string _yesButton;
-		[SerializeField, Tooltip("User interface element.")] private string _noButton;
-		[SerializeField, Tooltip("User interface element.")] private string _frameRateText;
 		internal VisualElement RootElement { get; private set; }
 		internal GroupBox Settings { get; private set; }
-		internal GroupBox Confirmation { get; private set; }
+		internal GroupBox ConfirmationButtons { get; private set; }
 		internal DropdownField ScreenResolution { get; private set; }
 		internal DropdownField FullScreenModes { get; private set; }
 		internal Toggle DialogToggle { get; private set; }
@@ -62,27 +40,27 @@ namespace GwambaPrimeAdventure.Hud
 			}
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
-			Settings = RootElement.Q<GroupBox>(_settingsGroup);
-			Confirmation = RootElement.Q<GroupBox>(_confirmationGroup);
-			ScreenResolution = RootElement.Q<DropdownField>(_screenResolution);
-			FullScreenModes = RootElement.Q<DropdownField>(_fullScreenModes);
-			DialogToggle = RootElement.Q<Toggle>(_dialogToggle);
-			GeneralVolumeToggle = RootElement.Q<Toggle>(_generalVolumeToggle);
-			EffectsVolumeToggle = RootElement.Q<Toggle>(_effectsVolumeToggle);
-			MusicVolumeToggle = RootElement.Q<Toggle>(_musicVolumeToggle);
-			InfinityFPS = RootElement.Q<Toggle>(_inifinityFPSToggle);
-			DialogSpeed = RootElement.Q<Slider>(_dialogSpeed);
-			ScreenBrightness = RootElement.Q<Slider>(_screenBrightness);
-			GeneralVolume = RootElement.Q<Slider>(_generalVolume);
-			EffectsVolume = RootElement.Q<Slider>(_effectsVolume);
-			MusicVolume = RootElement.Q<Slider>(_musicVolume);
-			FrameRate = RootElement.Q<SliderInt>(_frameRate);
-			Close = RootElement.Q<Button>(_closeButton);
-			OutLevel = RootElement.Q<Button>(_outLevelButton);
-			SaveGame = RootElement.Q<Button>(_saveGameButton);
-			Yes = RootElement.Q<Button>(_yesButton);
-			No = RootElement.Q<Button>(_noButton);
-			FrameRateText =  RootElement.Q<Label>(_frameRateText);
+			Settings = RootElement.Q<GroupBox>(nameof(Settings));
+			ConfirmationButtons = RootElement.Q<GroupBox>(nameof(ConfirmationButtons));
+			ScreenResolution = RootElement.Q<DropdownField>(nameof(ScreenResolution));
+			FullScreenModes = RootElement.Q<DropdownField>(nameof(FullScreenModes));
+			DialogToggle = RootElement.Q<Toggle>(nameof(DialogToggle));
+			GeneralVolumeToggle = RootElement.Q<Toggle>(nameof(GeneralVolumeToggle));
+			EffectsVolumeToggle = RootElement.Q<Toggle>(nameof(EffectsVolumeToggle));
+			MusicVolumeToggle = RootElement.Q<Toggle>(nameof(MusicVolumeToggle));
+			InfinityFPS = RootElement.Q<Toggle>(nameof(InfinityFPS));
+			DialogSpeed = RootElement.Q<Slider>(nameof(DialogSpeed));
+			ScreenBrightness = RootElement.Q<Slider>(nameof(ScreenBrightness));
+			GeneralVolume = RootElement.Q<Slider>(nameof(GeneralVolume));
+			EffectsVolume = RootElement.Q<Slider>(nameof(EffectsVolume));
+			MusicVolume = RootElement.Q<Slider>(nameof(MusicVolume));
+			FrameRate = RootElement.Q<SliderInt>(nameof(FrameRate));
+			Close = RootElement.Q<Button>(nameof(Close));
+			OutLevel = RootElement.Q<Button>(nameof(OutLevel));
+			SaveGame = RootElement.Q<Button>(nameof(SaveGame));
+			Yes = RootElement.Q<Button>(nameof(Yes));
+			No = RootElement.Q<Button>(nameof(No));
+			FrameRateText =  RootElement.Q<Label>(nameof(FrameRateText));
 		}
 		private IEnumerator Start()
 		{
