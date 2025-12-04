@@ -312,6 +312,7 @@ namespace GwambaPrimeAdventure.Character
 				{
 					_airJumpMethod = AirJumpMethod(_movementAction);
 					_rigidbody.linearVelocity = Vector2.zero;
+					_isJumping = false;
 					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
 					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 					IEnumerator AirJumpMethod(float dashMovement)
