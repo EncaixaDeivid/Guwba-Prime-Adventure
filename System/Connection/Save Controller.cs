@@ -69,10 +69,7 @@ namespace GwambaPrimeAdventure.Connection
 			FilesController.SaveData((actualSave, newName));
 			string actualPath = $@"{Application.persistentDataPath}\{FilesController.Select(actualSave)}.txt";
 			if (File.Exists(actualPath))
-			{
-				File.Delete(actualPath);
 				FileEncoder.WriteData(FileEncoder.ReadData<SaveFile>(actualPath), $@"{Application.persistentDataPath}\{newName}.txt");
-			}
 		}
 		public static string DeleteData(ushort actualSave)
 		{
