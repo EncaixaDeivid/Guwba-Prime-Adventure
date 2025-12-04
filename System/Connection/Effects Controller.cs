@@ -10,8 +10,6 @@ namespace GwambaPrimeAdventure.Connection
 	{
 		private static EffectsController _instance;
 		private readonly List<Light2DBase> _lightsStack = new();
-		private readonly List<AudioSource> _soundSources = new();
-		private readonly List<float> _sourceTimers = new();
 		private Collider2D _surfaceCollider;
 		private bool _canHitStop = true;
 		[SerializeField] private SurfaceSound[] _surfaceSounds;
@@ -31,26 +29,7 @@ namespace GwambaPrimeAdventure.Connection
 		{
 			base.OnDestroy();
 			StopAllCoroutines();
-		}
-		private void OnEnable()
-		{
-			foreach (AudioSource source in _soundSources.ToArray())
-				source.UnPause();
-		}
-		private void OnDisable()
-		{
-			foreach (AudioSource source in _soundSources.ToArray())
-				source.Pause();
-		}
-		private void Update()
-		{
-			for (ushort i = 0; i < _sourceTimers.Count; i++)
-				if ((_sourceTimers[i] -= Time.deltaTime) <= 0f)
-				{
-					Destroy(_soundSources[i].gameObject);
-					_soundSources.RemoveAt(i);
-					_sourceTimers.RemoveAt(i);
-				}
+			_lightsStack.Clear();
 		}
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
@@ -85,13 +64,28 @@ namespace GwambaPrimeAdventure.Connection
 			AudioSource source = Instantiate(_sourceObject, originSound, Quaternion.identity);
 			source.clip = clip;
 			source.mute = !settings.EffectsVolumeToggle && !settings.GeneralVolumeToggle;
-			_soundSources.Add(source);
-			_sourceTimers.Add(clip.length);
-			source.Play();
+			StartCoroutine(SoundPlay(source, clip.length));
+			IEnumerator SoundPlay(AudioSource source, float playTime)
+			{
+				source.Play();
+				while (source)
+				{
+					if ((playTime -= Time.deltaTime) <= 0F)
+						Destroy(source.gameObject);
+					yield return new WaitUntil(() =>
+					{
+						if (!isActiveAndEnabled && source.isPlaying)
+							source.Pause();
+						if (isActiveAndEnabled && !source.isPlaying)
+							source.UnPause();
+						return isActiveAndEnabled;
+					});
+				}
+			}
 		}
 		private void PrivateSurfaceSound(Vector2 originPosition)
 		{
-			if ((_surfaceCollider = Physics2D.OverlapPoint(originPosition, WorldBuild.SceneMask)) && _surfaceCollider.TryGetComponent<Surface>(out var surface))
+			if ((_surfaceCollider = Physics2D.OverlapCircle(originPosition, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask)) && _surfaceCollider.TryGetComponent<Surface>(out var surface))
 				for (ushort i = 0; i < _surfaceSounds.Length; i++)
 					if (_surfaceSounds[i].Tiles.Contains(surface.CheckForTile(originPosition)))
 					{
