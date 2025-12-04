@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/System/Huds/Scripts/Menu%20Hud.uss?fileID=7433441132597879392&amp;guid=25a12649ca3c9d046a7776e74317c908&amp;type=3#Menu Hud" />
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Buttons">
-            <ui:VisualElement name="LogoBrand" class="Titulo Botoes" />
+            <ui:VisualElement name="LogoBrand" />
             <ui:GroupBox name="MainButtons">
                 <ui:Button text="Jogar" name="Play" class="Button" />
                 <ui:Button text="Configurações" name="Configurations" class="Button" />
