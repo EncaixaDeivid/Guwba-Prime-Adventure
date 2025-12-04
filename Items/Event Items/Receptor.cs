@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_specificsObjects.Length > 0F)
+			if (_specificsObjects.Length > 0)
 				foreach (string specificObject in _specificsObjects)
 					if (saveFile.GeneralObjects.Contains(specificObject))
 						Activate();
