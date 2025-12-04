@@ -78,9 +78,9 @@ namespace GwambaPrimeAdventure.Hud
 			FrameRate.highValue = 240;
 			DialogSpeed.lowValue = 0F;
 			ScreenBrightness.lowValue = 0F;
-			GeneralVolume.lowValue = 1E-4F;
-			EffectsVolume.lowValue = 1E-4F;
-			MusicVolume.lowValue = 1E-4F;
+			GeneralVolume.lowValue = WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
+			EffectsVolume.lowValue = WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
+			MusicVolume.lowValue = WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
 			FrameRate.lowValue = 10;
 			foreach (Resolution resolution in WorldBuild.PixelPerfectResolutions())
 				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
