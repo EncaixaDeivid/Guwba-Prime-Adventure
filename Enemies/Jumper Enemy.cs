@@ -87,7 +87,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_isJumping = true;
 			Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
 			if (_follow = !_statistics.UnFollow)
-				transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F));
+				transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1 : 1));
 		}
 		private async void TimedJump(ushort jumpIndex)
 		{
@@ -125,7 +125,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_isJumping = true;
 					Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
 					if (_follow = !_statistics.UnFollow)
-						transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F));
+						transform.TurnScaleX(_movementSide = (short)(_targetPosition.x < transform.position.x ? -1 : 1));
 				}
 			if (!OnGround || _detected || _isJumping)
 				return;
@@ -197,7 +197,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_targetPosition.x = _otherTarget;
 					else
 						_targetPosition.x = GwambaStateMarker.Localization.x;
-					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1F : 1F);
+					_movementSide = (short)(_targetPosition.x < transform.position.x ? -1 : 1);
 					if (_turnFollow)
 						transform.TurnScaleX(_movementSide);
 				}
@@ -211,7 +211,7 @@ namespace GwambaPrimeAdventure.Enemy
 				await Task.Yield();
 			if (_stopJump || _jumpTime > 0F)
 				return;
-			if (_jumpCount[jumpIndex]-- <= 0F)
+			if (_jumpCount[jumpIndex]-- <= 0)
 			{
 				Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
 				while (OnGround)
