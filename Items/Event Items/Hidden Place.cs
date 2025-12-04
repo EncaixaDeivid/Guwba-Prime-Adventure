@@ -3,16 +3,17 @@ using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Collections;
 using NaughtyAttributes;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
-	[RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Light2DBase)), RequireComponent(typeof(Receptor))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer)), RequireComponent(typeof(TilemapCollider2D), typeof(CompositeCollider2D), typeof(Light2DBase))]
+	[RequireComponent(typeof(Receptor))]
 	internal sealed class HiddenPlace : StateController, IReceptorSignal
 	{
 		private Tilemap _tilemap;
-		private TilemapCollider2D _collider;
+		private TilemapRenderer _tilemapRenderer;
+		private TilemapCollider2D _tilemapCollider;
 		private Light2DBase _selfLight;
 		private Light2DBase _followLight;
 		private readonly Sender _sender = Sender.Create();
@@ -33,7 +34,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		{
 			base.Awake();
 			_tilemap = GetComponent<Tilemap>();
-			_collider = GetComponent<TilemapCollider2D>();
+			_tilemapRenderer = GetComponent<TilemapRenderer>();
+			_tilemapCollider = GetComponent<TilemapCollider2D>();
 			_selfLight = GetComponent<Light2DBase>();
 			_followLight = GetComponentInChildren<Light2DBase>();
 			_sender.SetFormat(MessageFormat.State);
@@ -76,30 +78,36 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				color.a = alpha;
 				_tilemap.color = color;
 			}
-			if (_instantly)
-			{
-				if (appear)
-					Occlusion();
-				Color color = _tilemap.color;
-				color.a = appear ? 1F : 0F;
-				_tilemap.color = color;
-				if (!appear)
-					Occlusion();
-			}
-			else if (appear)
+			if (appear)
 			{
 				Occlusion();
-				for (float i = 0F; _tilemap.color.a < 1F; i += 1E-1F)
-					yield return OpacityLevel(i);
+				_tilemapRenderer.enabled = true;
+				if (_instantly)
+				{
+					Color color = _tilemap.color;
+					color.a = 1F;
+					_tilemap.color = color;
+				}
+				else
+					for (float i = 0F; _tilemap.color.a < 1F; i += 1E-1F)
+						yield return OpacityLevel(i);
 			}
 			else
 			{
-				for (float i = 1F; _tilemap.color.a > 0F; i -= 1E-1F)
-					yield return OpacityLevel(i);
+				if (_instantly)
+				{
+					Color color = _tilemap.color;
+					color.a = 1F;
+					_tilemap.color = color;
+				}
+				else
+					for (float i = 1F; _tilemap.color.a > 0F; i -= 1E-1F)
+						yield return OpacityLevel(i);
+				_tilemapRenderer.enabled = false;
 				Occlusion();
 			}
 			if (_haveColliders)
-				_collider.enabled = appear;
+				_tilemapCollider.enabled = appear;
 			if (_otherPlace && !onFirst)
 				if (!_otherPlace._appearFirst && _otherPlace._activation)
 					StartCoroutine(_otherPlace.Fade(true));
