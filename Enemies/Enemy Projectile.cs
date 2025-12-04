@@ -45,7 +45,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_oldCellPosition != _cellPosition)
 			{
 				_oldCellPosition = _cellPosition;
-				if (_pointToJump == 0F)
+				if (_pointToJump == 0)
 				{
 					if (_pointToBreak >= _internalBreakPoint)
 						if (_pointToReturn++ >= _internalReturnPoint)
@@ -69,7 +69,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_angleMulti++;
 					}
 				}
-				else if (_pointToJump > 0F)
+				else if (_pointToJump > 0)
 					_pointToJump--;
 			}
 		}
@@ -201,9 +201,9 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0F)
+			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0)
 				return false;
-			if ((_vitality -= (short)damage) <= 0F)
+			if ((_vitality -= (short)damage) <= 0)
 				Death();
 			return true;
 		}
