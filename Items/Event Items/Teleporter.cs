@@ -47,7 +47,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_sender.SetToggle(false);
 			_sender.Send(MessagePath.System);
 			_sender.Send(MessagePath.Character);
-			_index = (ushort)(_index < _locations.Length - 1F ? _index + 1F : 0F);
+			_index = (ushort)(_index < _locations.Length - 1 ? _index + 1 : 0);
 		}
 		private void Timer()
 		{
