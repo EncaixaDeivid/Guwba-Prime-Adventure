@@ -6,8 +6,6 @@ namespace GwambaPrimeAdventure
 	public sealed class TransicionHud : MonoBehaviour
 	{
 		private static TransicionHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _loadingBarProgress;
 		public VisualElement RootElement { get; private set; }
 		public ProgressBar LoadingBar { get; private set; }
 		private void Awake()
@@ -19,7 +17,7 @@ namespace GwambaPrimeAdventure
 			}
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
-			LoadingBar = RootElement.Q<ProgressBar>(_loadingBarProgress);
+			LoadingBar = RootElement.Q<ProgressBar>(nameof(LoadingBar));
 		}
 	};
 };
