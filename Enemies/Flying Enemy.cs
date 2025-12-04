@@ -77,11 +77,11 @@ namespace GwambaPrimeAdventure.Enemy
 				transform.TurnScaleX(_pointOrigin.x < Rigidbody.position.x);
 				_returnOrigin = Vector2.Distance(Rigidbody.position, _pointOrigin) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
 			}
-			else if (_trail.Length > 0F)
+			else if (_trail.Length > 0)
 			{
 				if (Vector2.Distance(Rigidbody.position, _trail[_pointIndex]) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT)
 					if (_repeatWay)
-						_pointIndex = (ushort)(_pointIndex < _trail.Length - 1F ? _pointIndex + 1F : 0F);
+						_pointIndex = (ushort)(_pointIndex < _trail.Length - 1 ? _pointIndex + 1 : 0);
 					else if (_normal)
 					{
 						_pointIndex += 1;
@@ -90,7 +90,7 @@ namespace GwambaPrimeAdventure.Enemy
 					else if (!_normal)
 					{
 						_pointIndex -= 1;
-						_normal = _pointIndex == 0F;
+						_normal = _pointIndex == 0;
 					}
 				Rigidbody.MovePosition(Vector2.MoveTowards(Rigidbody.position, _trail[_pointIndex], Time.fixedDeltaTime * _statistics.MovementSpeed));
 				transform.TurnScaleX(_trail[_pointIndex].x < Rigidbody.position.x);
@@ -149,7 +149,7 @@ namespace GwambaPrimeAdventure.Enemy
 							_originCast += _selfCollider.radius * (_targetPoint - _originCast).normalized;
 						}
 						if (_detected)
-							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x ? -1F : 1F);
+							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
 						break;
 					}
 			if (_detected || _returnDash)
