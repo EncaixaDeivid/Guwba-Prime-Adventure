@@ -61,7 +61,7 @@ namespace GwambaPrimeAdventure.Story
 			{
 				SettingsController.Load(out Settings settings);
 				_dialogTime = settings.DialogSpeed;
-				if (_speachIndex < _dialogObject.Speachs.Length - 1F)
+				if (_speachIndex < _dialogObject.Speachs.Length - 1)
 				{
 					if (_storyTeller && _dialogObject.Speachs[_speachIndex].NextSlide)
 					{
