@@ -27,8 +27,7 @@ namespace GwambaPrimeAdventure
 						return false;
 				return true;
 			});
-			for (ushort i = 0; i < transform.childCount; i++)
-				transform.GetChild(i).gameObject.SetActive(_initialActive);
+			Execution(_initialActive);
 		}
 		internal void Execution(bool activate)
 		{
@@ -43,8 +42,7 @@ namespace GwambaPrimeAdventure
 		public void Receive(MessageData message)
 		{
 			if (this == message.AdditionalData as OcclusionObject && message.Format == MessageFormat.State && message.ToggleValue.HasValue)
-				for (ushort i = 0; i < transform.childCount; i++)
-					transform.GetChild(i).gameObject.SetActive(message.ToggleValue.Value);
+				Execution(message.ToggleValue.Value);
 		}
 	};
 };
