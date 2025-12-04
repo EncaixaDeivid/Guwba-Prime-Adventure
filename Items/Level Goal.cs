@@ -39,7 +39,7 @@ namespace GwambaPrimeAdventure.Item
 			}
 			if (_enterInDialog && settings.DialogToggle)
 				GetComponent<IInteractable>().Interaction();
-			else if (ushort.Parse($"{gameObject.scene.name[^1]}") - 1 >= 0f && !saveFile.DeafetedBosses[ushort.Parse($"{gameObject.scene.name[^1]}") - 1])
+			else if (ushort.Parse($"{gameObject.scene.name[^1]}") - 1 >= 0 && !saveFile.DeafetedBosses[ushort.Parse($"{gameObject.scene.name[^1]}") - 1])
 				GetComponent<Transitioner>().Transicion(_goToBoss);
 			else
 				GetComponent<Transitioner>().Transicion();
