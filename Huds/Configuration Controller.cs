@@ -226,7 +226,7 @@ namespace GwambaPrimeAdventure.Hud
 			{
 				_configurationHud.RootElement.style.display = DisplayStyle.Flex;
 				StateController.SetState(false);
-				if (SceneManager.GetActiveScene().name == _menuScene || SceneManager.GetActiveScene().name != _levelSelectorScene)
+				if (SceneManager.GetActiveScene().name == _menuScene)
 				{
 					_configurationHud.OutLevel.style.display = DisplayStyle.None;
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
@@ -235,6 +235,11 @@ namespace GwambaPrimeAdventure.Hud
 				{
 					_configurationHud.OutLevel.style.display = DisplayStyle.Flex;
 					_configurationHud.SaveGame.style.display = DisplayStyle.Flex;
+				}
+				else
+				{
+					_configurationHud.OutLevel.style.display = DisplayStyle.Flex;
+					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
 			}
 		}
