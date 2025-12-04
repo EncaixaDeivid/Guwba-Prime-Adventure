@@ -12,6 +12,7 @@ namespace GwambaPrimeAdventure.Connection
 		private Light2DBase[] _lightsStack;
 		private readonly List<AudioSource> _soundSources = new();
 		private readonly List<float> _sourceTimers = new();
+		private Collider2D _surfaceCollider;
 		private bool _canHitStop = true;
 		[SerializeField] private SurfaceSound[] _surfaceSounds;
 		[SerializeField] private AudioSource _sourceObject;
@@ -100,7 +101,7 @@ namespace GwambaPrimeAdventure.Connection
 		}
 		private void PrivateSurfaceSound(Vector2 originPosition)
 		{
-			if (Physics2D.OverlapPoint(originPosition, WorldBuild.SceneMask).TryGetComponent<Surface>(out var surface))
+			if ((_surfaceCollider = Physics2D.OverlapPoint(originPosition, WorldBuild.SceneMask)) && _surfaceCollider.TryGetComponent<Surface>(out var surface))
 				for (ushort i = 0; i < _surfaceSounds.Length; i++)
 					if (_surfaceSounds[i].Tiles.Contains(surface.CheckForTile(originPosition)))
 					{
