@@ -11,7 +11,7 @@ namespace GwambaPrimeAdventure.Hud
 		private static ConfigurationHud _instance;
 		internal VisualElement RootElement { get; private set; }
 		internal GroupBox Settings { get; private set; }
-		internal GroupBox ConfirmationButtons { get; private set; }
+		internal GroupBox Confirmation { get; private set; }
 		internal DropdownField ScreenResolution { get; private set; }
 		internal DropdownField FullScreenModes { get; private set; }
 		internal Toggle DialogToggle { get; private set; }
@@ -41,7 +41,7 @@ namespace GwambaPrimeAdventure.Hud
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
 			Settings = RootElement.Q<GroupBox>(nameof(Settings));
-			ConfirmationButtons = RootElement.Q<GroupBox>(nameof(ConfirmationButtons));
+			Confirmation = RootElement.Q<GroupBox>(nameof(Confirmation));
 			ScreenResolution = RootElement.Q<DropdownField>(nameof(ScreenResolution));
 			FullScreenModes = RootElement.Q<DropdownField>(nameof(FullScreenModes));
 			DialogToggle = RootElement.Q<Toggle>(nameof(DialogToggle));
