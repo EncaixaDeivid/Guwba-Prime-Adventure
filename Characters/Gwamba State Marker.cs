@@ -71,7 +71,7 @@ namespace GwambaPrimeAdventure.Character
 		private bool _isHoping = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2f)]
+		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the menu.")] private SceneField _menuScene;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets hurt.")] private AudioClip _hurtSound;
@@ -365,7 +365,8 @@ namespace GwambaPrimeAdventure.Character
 					}
 			}
 		};
-		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+		private void FootStepSound(float stepPositionX)
+			=> EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
 		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
