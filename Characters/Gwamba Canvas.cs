@@ -22,18 +22,6 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Visual"), Tooltip("The total of bunny hop that Gwamba have.")] private ushort _bunnyHop;
 		[SerializeField, BoxGroup("Visual"), Min(0F), Tooltip("The total width of Gwamba's vitality bar.")] private float _totalWidth;
 		[SerializeField, BoxGroup("Visual"), Min(0F), Tooltip("The norder width of Gwamba's vitality bar.")] private float _borderWidth;
-		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _vitalityVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _vitalityPieceVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _recoverVitalityVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _recoverVitalityPieceVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _stunResistanceVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _stunResistancePieceVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _bunnyHopVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _bunnyHopPieceVisual;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _fallDamageTextObject;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _lifeTextObject;
-		[SerializeField, BoxGroup("Elements"), Tooltip("User interface element.")] private string _coinTextObject;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement[] Vitality { get; private set; }
 		internal VisualElement[] RecoverVitality { get; private set; }
@@ -55,18 +43,18 @@ namespace GwambaPrimeAdventure.Character
 			RecoverVitality = new VisualElement[_recoverVitality];
 			StunResistance = new VisualElement[_stunResistance];
 			BunnyHop = new VisualElement[_bunnyHop];
-			FallDamageText = RootElement.Q<Label>(_fallDamageTextObject);
-			LifeText = RootElement.Q<Label>(_lifeTextObject);
-			CoinText = RootElement.Q<Label>(_coinTextObject);
+			FallDamageText = RootElement.Q<Label>(nameof(FallDamageText));
+			LifeText = RootElement.Q<Label>(nameof(LifeText));
+			CoinText = RootElement.Q<Label>(nameof(CoinText));
 		}
 		internal IEnumerator StartUI()
 		{
-			VisualElement vitality = RootElement.Q<VisualElement>(_vitalityVisual);
+			VisualElement vitality = RootElement.Q<VisualElement>(nameof(Vitality));
 			vitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement vitalityPiece = RootElement.Q<VisualElement>(_vitalityPieceVisual);
+			VisualElement VitalityPiece = RootElement.Q<VisualElement>(nameof(VitalityPiece));
 			for (ushort i = 0; i < _vitality; i++)
 			{
-				VisualElement vitalityPieceClone = new() { name = vitalityPiece.name };
+				VisualElement vitalityPieceClone = new() { name = VitalityPiece.name };
 				vitalityPieceClone.style.backgroundColor = new StyleColor(BackgroundColor);
 				vitalityPieceClone.style.borderBottomColor = new StyleColor(BorderColor);
 				vitalityPieceClone.style.borderLeftColor = new StyleColor(BorderColor);
@@ -79,43 +67,43 @@ namespace GwambaPrimeAdventure.Character
 				vitality.Add(vitalityPieceClone);
 				Vitality[i] = vitality[i + 1];
 			}
-			vitality.Remove(vitalityPiece);
-			VisualElement recoverVitality = RootElement.Q<VisualElement>(_recoverVitalityVisual);
+			vitality.Remove(VitalityPiece);
+			VisualElement recoverVitality = RootElement.Q<VisualElement>(nameof(RecoverVitality));
 			recoverVitality.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement recoverVitalityPiece = RootElement.Q<VisualElement>(_recoverVitalityPieceVisual);
+			VisualElement RecoverVitalityPiece = RootElement.Q<VisualElement>(nameof(RecoverVitalityPiece));
 			for (ushort i = 0; i < _recoverVitality; i++)
 			{
-				VisualElement recoverVitalityPieceClone = new() { name = recoverVitalityPiece.name };
+				VisualElement recoverVitalityPieceClone = new() { name = RecoverVitalityPiece.name };
 				recoverVitalityPieceClone.style.backgroundColor = new StyleColor(MissingColor);
 				recoverVitalityPieceClone.style.width = new StyleLength(new Length(_totalWidth / _recoverVitality - _borderWidth * 2F, LengthUnit.Pixel));
 				recoverVitality.Add(recoverVitalityPieceClone);
 				RecoverVitality[i] = recoverVitality[i + 1];
 			}
-			recoverVitality.Remove(recoverVitalityPiece);
-			VisualElement stunResistance = RootElement.Q<VisualElement>(_stunResistanceVisual);
+			recoverVitality.Remove(RecoverVitalityPiece);
+			VisualElement stunResistance = RootElement.Q<VisualElement>(nameof(StunResistance));
 			stunResistance.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement stunResistancePiece = RootElement.Q<VisualElement>(_stunResistancePieceVisual);
+			VisualElement StunResistancePiece = RootElement.Q<VisualElement>(nameof(StunResistancePiece));
 			for (ushort i = 0; i < _stunResistance; i++)
 			{
-				VisualElement stunResistancePieceClone = new() { name = stunResistancePiece.name };
+				VisualElement stunResistancePieceClone = new() { name = StunResistancePiece.name };
 				stunResistancePieceClone.style.backgroundColor = new StyleColor(StunResistanceColor);
 				stunResistancePieceClone.style.width = new StyleLength(new Length(_totalWidth / _stunResistance - _borderWidth * 2F, LengthUnit.Pixel));
 				stunResistance.Add(stunResistancePieceClone);
 				StunResistance[i] = stunResistance[i + 1];
 			}
-			stunResistance.Remove(stunResistancePiece);
-			VisualElement bunnyHop = RootElement.Q<VisualElement>(_bunnyHopVisual);
+			stunResistance.Remove(StunResistancePiece);
+			VisualElement bunnyHop = RootElement.Q<VisualElement>(nameof(BunnyHop));
 			bunnyHop.style.width = new StyleLength(new Length(_totalWidth, LengthUnit.Pixel));
-			VisualElement bunnyHopPiece = RootElement.Q<VisualElement>(_bunnyHopPieceVisual);
+			VisualElement BunnyHopPiece = RootElement.Q<VisualElement>(nameof(BunnyHopPiece));
 			for (ushort i = 0; i < _bunnyHop; i++)
 			{
-				VisualElement bunnyHopPieceClone = new() { name = bunnyHopPiece.name };
+				VisualElement bunnyHopPieceClone = new() { name = BunnyHopPiece.name };
 				bunnyHopPieceClone.style.backgroundColor = new StyleColor(MissingColor);
 				bunnyHopPieceClone.style.width = new StyleLength(new Length(_totalWidth / _bunnyHop - _borderWidth * 2F, LengthUnit.Pixel));
 				bunnyHop.Add(bunnyHopPieceClone);
 				BunnyHop[i] = bunnyHop[i + 1];
 			}
-			bunnyHop.Remove(bunnyHopPiece);
+			bunnyHop.Remove(BunnyHopPiece);
 			yield return null;
 		}
 	};
