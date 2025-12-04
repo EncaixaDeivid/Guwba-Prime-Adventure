@@ -6,16 +6,6 @@ namespace GwambaPrimeAdventure.Hud
 	internal sealed class MenuHud : MonoBehaviour
 	{
 		private static MenuHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _buttonsGroup;
-		[SerializeField, Tooltip("User interface element.")] private string _savesGroup;
-		[SerializeField, Tooltip("User interface element.")] private string _playButton;
-		[SerializeField, Tooltip("User interface element.")] private string _configurationsButton;
-		[SerializeField, Tooltip("User interface element.")] private string _quitButton;
-		[SerializeField, Tooltip("User interface element.")] private string _backButton;
-		[SerializeField, Tooltip("User interface element.")] private string _saveNameTextField;
-		[SerializeField, Tooltip("User interface element.")] private string _loadButton;
-		[SerializeField, Tooltip("User interface element.")] private string _deleteButton;
 		internal GroupBox Buttons { get; private set; }
 		internal GroupBox Saves { get; private set; }
 		internal Button Play { get; private set; }
@@ -34,21 +24,21 @@ namespace GwambaPrimeAdventure.Hud
 			}
 			_instance = this;
 			VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-			Buttons = root.Q<GroupBox>(_buttonsGroup);
-			Play = root.Q<Button>(_playButton);
-			Configurations = root.Q<Button>(_configurationsButton);
-			Quit = root.Q<Button>(_quitButton);
-			Saves = root.Q<GroupBox>(_savesGroup);
-			Back = root.Q<Button>(_backButton);
+			Buttons = root.Q<GroupBox>(nameof(Buttons));
+			Play = root.Q<Button>(nameof(Play));
+			Configurations = root.Q<Button>(nameof(Configurations));
+			Quit = root.Q<Button>(nameof(Quit));
+			Saves = root.Q<GroupBox>(nameof(Saves));
+			Back = root.Q<Button>(nameof(Back));
 			SaveName = new TextField[4];
 			for (ushort i = 0; i < SaveName.Length; i++)
-				SaveName[i] = root.Q<TextField>(_saveNameTextField + $"{i + 1}");
+				SaveName[i] = root.Q<TextField>(nameof(SaveName) + $"{i + 1}");
 			Load = new Button[4];
 			for (ushort i = 0; i < Load.Length; i++)
-				Load[i] = root.Q<Button>(_loadButton + $"{i + 1}");
+				Load[i] = root.Q<Button>(nameof(Load) + $"{i + 1}");
 			Delete = new Button[4];
 			for (ushort i = 0; i < Delete.Length; i++)
-				Delete[i] = root.Q<Button>(_deleteButton + $"{i + 1}");
+				Delete[i] = root.Q<Button>(nameof(Delete) + $"{i + 1}");
 		}
 	};
 };
