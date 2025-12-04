@@ -226,15 +226,16 @@ namespace GwambaPrimeAdventure.Hud
 			{
 				_configurationHud.RootElement.style.display = DisplayStyle.Flex;
 				StateController.SetState(false);
-				if (SceneManager.GetActiveScene().name != _levelSelectorScene)
-					_configurationHud.SaveGame.style.display = DisplayStyle.None;
-				else if (SceneManager.GetActiveScene().name == _menuScene)
+				if (SceneManager.GetActiveScene().name == _menuScene || SceneManager.GetActiveScene().name != _levelSelectorScene)
 				{
 					_configurationHud.OutLevel.style.display = DisplayStyle.None;
 					_configurationHud.SaveGame.style.display = DisplayStyle.None;
 				}
-				if (SceneManager.GetActiveScene().name.Contains($"{1..(WorldBuild.LEVELS_COUNT + 1)}"))
-					_configurationHud.SaveGame.style.display = DisplayStyle.None;
+				else if (SceneManager.GetActiveScene().name == _levelSelectorScene)
+				{
+					_configurationHud.OutLevel.style.display = DisplayStyle.Flex;
+					_configurationHud.SaveGame.style.display = DisplayStyle.Flex;
+				}
 			}
 		}
 		internal void SetActive(bool isActive) => _isActive = isActive;
