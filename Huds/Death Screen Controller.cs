@@ -115,7 +115,7 @@ namespace GwambaPrimeAdventure.Hud
 			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				if (saveFile.Lifes < 0F)
+				if (saveFile.Lifes < 0)
 				{
 					_deathScreenHud.Text.text = "Game Over";
 					_deathScreenHud.Continue.style.display = DisplayStyle.None;
