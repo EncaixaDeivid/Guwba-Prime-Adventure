@@ -6,8 +6,6 @@ namespace GwambaPrimeAdventure.Story
 	internal sealed class StorySceneHud : MonoBehaviour
 	{
 		private static StorySceneHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _sceneImageVisual;
 		internal VisualElement SceneImage { get; private set; }
 		private void Awake()
 		{
@@ -17,7 +15,7 @@ namespace GwambaPrimeAdventure.Story
 				return;
 			}
 			_instance = this;
-			SceneImage = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(_sceneImageVisual);
+			SceneImage = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(SceneImage));
 		}
 	};
 };
