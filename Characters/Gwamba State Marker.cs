@@ -306,10 +306,7 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			_movementAction = 0F;
 			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > _movementInputZone)
-				if (movement.ReadValue<Vector2>().x > 0F)
-					_movementAction = 1F;
-				else if (movement.ReadValue<Vector2>().x < 0F)
-					_movementAction = -1F;
+				_movementAction = movement.ReadValue<Vector2>().x > 0F ? 1F : -1F;
 			if (_movementAction != 0F && (!_attackUsage || _comboAttackBuffer))
 				if (movement.ReadValue<Vector2>().y > _airJumpInputZone && !_isOnGround && _canAirJump)
 				{
