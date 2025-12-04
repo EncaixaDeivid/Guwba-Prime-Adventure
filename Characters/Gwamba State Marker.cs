@@ -311,18 +311,18 @@ namespace GwambaPrimeAdventure.Character
 				if (movement.ReadValue<Vector2>().y > _airJumpInputZone && !_isOnGround && _canAirJump)
 				{
 					_airJumpMethod = AirJumpMethod(_movementAction);
-					_rigidbody.linearVelocity = Vector2.zero;
-					_isJumping = false;
-					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
-					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 					IEnumerator AirJumpMethod(float dashMovement)
 					{
 						_animator.SetBool(AirJump, !(_canAirJump = false));
 						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
+						_rigidbody.linearVelocity = Vector2.zero;
+						_isJumping = false;
+						_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
+						_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 						EffectsController.SoundEffect(_airJumpSound, transform.position);
 						if (_comboAttackBuffer)
-							EffectsController.SoundEffect(_attackSound, transform.position);
+							StartAttackSound();
 						while (!_isOnGround)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
@@ -349,7 +349,7 @@ namespace GwambaPrimeAdventure.Character
 						_jokerValue.z = transform.position.x;
 						EffectsController.SoundEffect(_dashSlideSound, transform.position);
 						if (_comboAttackBuffer)
-							EffectsController.SoundEffect(_attackSound, transform.position);
+							StartAttackSound();
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
@@ -366,8 +366,7 @@ namespace GwambaPrimeAdventure.Character
 					}
 			}
 		};
-		private void FootStepSound(float stepPositionX)
-			=> EffectsController.SurfaceSound((Vector2)transform.position + new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
 		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
@@ -560,7 +559,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(Jump, false);
 					if (_animator.GetBool(Fall))
 						_animator.SetBool(Fall, false);
-					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0F);
+					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0);
 					if (_bunnyHopBoost <= 0 && _isHoping)
 					{
 						_hopActive = _isHoping = false;
@@ -701,7 +700,7 @@ namespace GwambaPrimeAdventure.Character
 				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 				EffectsController.SoundEffect(_jumpSound, transform.position);
 				if (_comboAttackBuffer)
-					EffectsController.SoundEffect(_attackSound, transform.position);
+					StartAttackSound();
 			}
 			(_isOnGround, _canDownStairs) = (false, _isOnGround);
 		}
