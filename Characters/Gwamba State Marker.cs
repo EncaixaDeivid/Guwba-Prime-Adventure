@@ -93,6 +93,8 @@ namespace GwambaPrimeAdventure.Character
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the air jump.")] private AudioClip _airJumpSound;
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the dash slide.")] private AudioClip _dashSlideSound;
+		[SerializeField, BoxGroup("Movement"), Range(1E-1F, 1F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _airJumpInputZone;
+		[SerializeField, BoxGroup("Movement"), Range(-1E-1F, -1F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _dashSlideInputZone;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of acceleration Gwamba will apply to the movement.")] private float _acceleration;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of decceleration Gwamba will apply to the movement.")] private float _decceleration;
@@ -308,7 +310,7 @@ namespace GwambaPrimeAdventure.Character
 				else if (movement.ReadValue<Vector2>().x < 0F)
 					_movementAction = -1F;
 			if (_movementAction != 0F && (!_attackUsage || _comboAttackBuffer))
-				if (movement.ReadValue<Vector2>().y > 25E-2F && !_isOnGround && _canAirJump)
+				if (movement.ReadValue<Vector2>().y > _airJumpInputZone && !_isOnGround && _canAirJump)
 				{
 					_airJumpMethod = AirJumpMethod(_movementAction);
 					_rigidbody.linearVelocity = Vector2.zero;
@@ -337,7 +339,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AttackAirJump, false);
 					}
 				}
-				else if (movement.ReadValue<Vector2>().y < -25E-2F && !_animator.GetBool(DashSlide) && _isOnGround)
+				else if (movement.ReadValue<Vector2>().y < _dashSlideInputZone && !_animator.GetBool(DashSlide) && _isOnGround)
 				{
 					_dashSlideMethod = DashSlideMethod(_movementAction);
 					IEnumerator DashSlideMethod(float dashMovement)
