@@ -31,10 +31,10 @@ namespace GwambaPrimeAdventure.Hud
 			_menuHud.Configurations.clicked += OpenConfigurations;
 			_menuHud.Quit.clicked += Quit;
 			_menuHud.Back.clicked += Back;
-			_menuHud.SaveName[0].RegisterCallback(ChangeName1);
-			_menuHud.SaveName[1].RegisterCallback(ChangeName2);
-			_menuHud.SaveName[2].RegisterCallback(ChangeName3);
-			_menuHud.SaveName[3].RegisterCallback(ChangeName4);
+			_menuHud.SaveName[0].RegisterValueChangedCallback(ChangeName1);
+			_menuHud.SaveName[1].RegisterValueChangedCallback(ChangeName2);
+			_menuHud.SaveName[2].RegisterValueChangedCallback(ChangeName3);
+			_menuHud.SaveName[3].RegisterValueChangedCallback(ChangeName4);
 			_menuHud.Load[0].clicked += SelectSaveFile1;
 			_menuHud.Load[1].clicked += SelectSaveFile2;
 			_menuHud.Load[2].clicked += SelectSaveFile3;
@@ -55,10 +55,10 @@ namespace GwambaPrimeAdventure.Hud
 			_menuHud.Configurations.clicked += OpenConfigurations;
 			_menuHud.Quit.clicked -= Quit;
 			_menuHud.Back.clicked -= Back;
-			_menuHud.SaveName[0].UnregisterCallback(ChangeName1);
-			_menuHud.SaveName[1].UnregisterCallback(ChangeName2);
-			_menuHud.SaveName[2].UnregisterCallback(ChangeName3);
-			_menuHud.SaveName[3].UnregisterCallback(ChangeName4);
+			_menuHud.SaveName[0].UnregisterValueChangedCallback(ChangeName1);
+			_menuHud.SaveName[1].UnregisterValueChangedCallback(ChangeName2);
+			_menuHud.SaveName[2].UnregisterValueChangedCallback(ChangeName3);
+			_menuHud.SaveName[3].UnregisterValueChangedCallback(ChangeName4);
 			_menuHud.Load[0].clicked -= SelectSaveFile1;
 			_menuHud.Load[1].clicked -= SelectSaveFile2;
 			_menuHud.Load[2].clicked -= SelectSaveFile3;
@@ -90,30 +90,10 @@ namespace GwambaPrimeAdventure.Hud
 			_isPlay = false;
 			ConfigurationController.Instance.SetActive(true);
 		};
-		private EventCallback<KeyUpEvent> ChangeName1 => eventCallback =>
-		{
-			if (eventCallback.keyCode != KeyCode.KeypadEnter)
-				return;
-			SaveController.RenameData(1, _menuHud.SaveName[0].text);
-		};
-		private EventCallback<KeyUpEvent> ChangeName2 => eventCallback =>
-		{
-			if (eventCallback.keyCode != KeyCode.KeypadEnter)
-				return;
-			SaveController.RenameData(2, _menuHud.SaveName[1].text);
-		};
-		private EventCallback<KeyUpEvent> ChangeName3 => eventCallback =>
-		{
-			if (eventCallback.keyCode != KeyCode.KeypadEnter)
-				return;
-			SaveController.RenameData(3, _menuHud.SaveName[2].text);
-		};
-		private EventCallback<KeyUpEvent> ChangeName4 => eventCallback =>
-		{
-			if (eventCallback.keyCode != KeyCode.KeypadEnter)
-				return;
-			SaveController.RenameData(4, _menuHud.SaveName[3].text);
-		};
+		private EventCallback<ChangeEvent<string>> ChangeName1 => write => SaveController.RenameData(1, write.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName2 => write => SaveController.RenameData(2, write.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName3 => write => SaveController.RenameData(3, write.newValue);
+		private EventCallback<ChangeEvent<string>> ChangeName4 => write => SaveController.RenameData(4, write.newValue);
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
