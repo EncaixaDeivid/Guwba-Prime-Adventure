@@ -121,7 +121,7 @@ namespace GwambaPrimeAdventure.Hud
 		private EventCallback<ChangeEvent<string>> ScreenResolution => resolution =>
 		{
 			SettingsController.Load(out Settings settings);
-			string[] dimensions = resolution.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			Span<string> dimensions = resolution.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			settings.ScreenResolution = new Vector2Int(ushort.Parse(dimensions[0]), ushort.Parse(dimensions[1]));
 			Screen.SetResolution(settings.ScreenResolution.x, settings.ScreenResolution.y, settings.FullScreenMode);
 			SettingsController.WriteSave(settings);
