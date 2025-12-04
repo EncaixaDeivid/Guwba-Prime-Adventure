@@ -40,7 +40,8 @@ namespace GwambaPrimeAdventure
 					resolutions.Add(resolution);
 			return resolutions.ToArray();
 		}
-		public static void TurnScaleX(this Transform transform, float valueChanger) => transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
+		public static void TurnScaleX(this Transform transform, float valueChanger)
+			=> transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
 		public static void TurnScaleX(this Transform transform, bool conditionChanger) => TurnScaleX(transform, conditionChanger ? -1F : 1F);
 	};
 };
