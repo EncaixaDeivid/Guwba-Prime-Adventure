@@ -399,8 +399,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			LayerMask mask = WorldBuild.SystemMask + WorldBuild.CharacterMask + WorldBuild.SceneMask + WorldBuild.ItemMask;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, mask))
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, WorldBuild.SystemMask + WorldBuild.CharacterMask + WorldBuild.SceneMask + WorldBuild.ItemMask))
 				if (collider.TryGetComponent<IInteractable>(out _))
 				{
 					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -410,11 +409,11 @@ namespace GwambaPrimeAdventure.Character
 		};
 		public Predicate<ushort> DamagerHurt => damage =>
 		{
-			if (_invencibility || damage <= 0F)
+			if (_invencibility || damage <= 0)
 				return false;
 			EffectsController.SoundEffect(_hurtSound, transform.position);
 			_vitality -= (short)damage;
-			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0F ? _vitality : 0F); i--)
+			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0 ? _vitality : 0); i--)
 			{
 				_gwambaCanvas.Vitality[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 				_gwambaCanvas.Vitality[i - 1].style.borderBottomColor = new StyleColor(_gwambaCanvas.MissingColor);
@@ -423,7 +422,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
 			}
 			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
-			if (_vitality <= 0F)
+			if (_vitality <= 0)
 			{
 				EffectsController.SoundEffect(_deathSound, transform.position);
 				SaveController.Load(out SaveFile saveFile);
@@ -455,9 +454,9 @@ namespace GwambaPrimeAdventure.Character
 		public UnityAction<ushort, float> DamagerStun => (stunStrength, stunTime) =>
 		{
 			_stunResistance -= (short)stunStrength;
-			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0F ? _stunResistance : 0F); i--)
+			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0 ? _stunResistance : 0); i--)
 				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-			if (_stunResistance <= 0F && !_animator.GetBool(Death))
+			if (_stunResistance <= 0 && !_animator.GetBool(Death))
 			{
 				_animator.SetBool(Stun, !(_invencibility = false));
 				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
@@ -480,7 +479,7 @@ namespace GwambaPrimeAdventure.Character
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
 				gwambaDamager.DamagerDamaged.Add(destructible);
 				_attackDelay = _delayAfterAttack;
-				for (ushort amount = 0; amount < (destructible.Health <= 0F ? gwambaDamager.AttackDamage + 1F : gwambaDamager.AttackDamage); amount++)
+				for (ushort amount = 0; amount < (destructible.Health <= 0 ? gwambaDamager.AttackDamage + 1 : gwambaDamager.AttackDamage); amount++)
 					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
 					{
 						_vitality += 1;
@@ -494,7 +493,7 @@ namespace GwambaPrimeAdventure.Character
 						}
 						for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
 							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-						_stunResistance = (short)(_stunResistance < _gwambaCanvas.StunResistance.Length ? _stunResistance + 1F : _stunResistance);
+						_stunResistance = (short)(_stunResistance < _gwambaCanvas.StunResistance.Length ? _stunResistance + 1 : _stunResistance);
 						for (ushort i = 0; i < _stunResistance; i++)
 							_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
 					}
@@ -561,13 +560,13 @@ namespace GwambaPrimeAdventure.Character
 					if (_animator.GetBool(Fall))
 						_animator.SetBool(Fall, false);
 					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0F);
-					if (_bunnyHopBoost <= 0F && _isHoping)
+					if (_bunnyHopBoost <= 0 && _isHoping)
 					{
 						_hopActive = _isHoping = false;
 						for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
 							_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 					}
-					if (_fallDamage > 0F && _bunnyHopBoost <= 0F && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+					if (_fallDamage > 0F && _bunnyHopBoost <= 0 && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
@@ -692,7 +691,7 @@ namespace GwambaPrimeAdventure.Character
 			{
 				_animator.SetBool(AttackJump, _comboAttackBuffer);
 				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0F);
-				if (_bunnyHopBoost > 0F)
+				if (_bunnyHopBoost > 0)
 				{
 					_isHoping = true;
 					for (ushort i = 0; i < _bunnyHopBoost; i++)
