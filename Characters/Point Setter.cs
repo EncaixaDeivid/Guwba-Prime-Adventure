@@ -29,7 +29,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SaveController.Load(out SaveFile saveFile);
-			if (gameObject.scene.name == _hubbyWorldScene && saveFile.LastLevelEntered != "")
+			if (gameObject.scene.name == _hubbyWorldScene && !string.IsNullOrEmpty(saveFile.LastLevelEntered))
 				if (saveFile.LastLevelEntered.Contains($"{_selfIndex}"))
 					_sender.Send(MessagePath.Character);
 		}
