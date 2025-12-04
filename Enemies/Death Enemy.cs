@@ -37,7 +37,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_isDead)
 				return false;
-			if (Health - (short)damage <= 0F)
+			if (Health - (short)damage <= 0)
 			{
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
