@@ -73,12 +73,12 @@ namespace GwambaPrimeAdventure.Enemy
 					if (summon.Self)
 						position = transform.position;
 					else if (summon.Random)
-						position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length)];
+						position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length + 1)];
 					else
 						position = summon.SummonPoints[summonIndex.y];
 					Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1F ? summonIndex.x + 1F : 0F);
-					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1F ? summonIndex.y + 1F : 0F);
+					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1 ? summonIndex.x + 1 : 0);
+					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1 ? summonIndex.y + 1 : 0);
 				}
 				_summonEvent = null;
 			}
@@ -140,7 +140,7 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
 							_stopSummon = !message.ToggleValue.Value;
-						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0F)
+						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0)
 							if (_statistics.RandomReactSummons)
 								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length + 1)]);
 							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && message.NumberValue.Value >= 0)
