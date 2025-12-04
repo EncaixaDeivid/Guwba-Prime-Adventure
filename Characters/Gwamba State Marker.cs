@@ -327,7 +327,7 @@ namespace GwambaPrimeAdventure.Character
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
-								EffectsController.SurfaceSound(new Vector2(_originCast.x + WorldBuild.SNAP_LENGTH * dashMovement, _originCast.y));
+								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _airJumpMethod is null)
 								break;
 							_lastGroundedTime = _jumpCoyoteTime;
@@ -354,7 +354,7 @@ namespace GwambaPrimeAdventure.Character
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
-								EffectsController.SurfaceSound(new Vector2(_originCast.x + WorldBuild.SNAP_LENGTH * dashMovement, _originCast.y));
+								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _dashSlideMethod is null)
 								break;
 							_rigidbody.linearVelocityX = _dashSpeed * dashMovement;
@@ -703,7 +703,7 @@ namespace GwambaPrimeAdventure.Character
 			}
 			(_isOnGround, _canDownStairs) = (false, _isOnGround);
 		}
-		private void GroundCheck()
+		private void OnCollisionStay2D(Collision2D collision)
 		{
 			if (!_instance || _instance != this)
 				return;
@@ -711,8 +711,6 @@ namespace GwambaPrimeAdventure.Character
 			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
 		}
-		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
-		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (other.TryGetComponent<ICollectable>(out var collectable))
