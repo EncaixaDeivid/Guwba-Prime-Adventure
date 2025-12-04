@@ -7,7 +7,7 @@
 #RootElement{
 	background-color: rgb(255, 255, 255);
 }
-#BackgroundImage{
+#SceneImage{
 	position: absolute;
 	opacity: 0;
 	flex-grow: 1;
