@@ -9,7 +9,7 @@ namespace GwambaPrimeAdventure.Connection
 	public sealed class EffectsController : StateController
 	{
 		private static EffectsController _instance;
-		private Light2DBase[] _lightsStack;
+		private readonly List<Light2DBase> _lightsStack = new();
 		private readonly List<AudioSource> _soundSources = new();
 		private readonly List<float> _sourceTimers = new();
 		private Collider2D _surfaceCollider;
@@ -25,7 +25,7 @@ namespace GwambaPrimeAdventure.Connection
 				return;
 			}
 			_instance = this;
-			_lightsStack = new Light2DBase[] { GetComponent<Light2DBase>() };
+			_lightsStack.Add(GetComponent<Light2DBase>());
 		}
 		private new void OnDestroy()
 		{
@@ -61,7 +61,7 @@ namespace GwambaPrimeAdventure.Connection
 				_canHitStop = false;
 				Time.timeScale = slowTime;
 				yield return new WaitTime(this, stopTime, true);
-				Time.timeScale = 1f;
+				Time.timeScale = 1F;
 				_canHitStop = true;
 			}
 		}
@@ -69,23 +69,13 @@ namespace GwambaPrimeAdventure.Connection
 		{
 			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight && _lightsStack[0])
 			{
-				Light2DBase[] lights;
-				foreach (Light2DBase light in lights = _lightsStack)
-					if (light)
-						light.enabled = false;
+				for (ushort i = 0; i < _lightsStack.Count; i++)
+					if (_lightsStack[i])
+						_lightsStack[i].enabled = false;
 				if (active)
-				{
-					_lightsStack = new Light2DBase[_lightsStack.Length + 1];
-					for (ushort i = 0; i < lights.Length; i++)
-						_lightsStack[i] = lights[i];
-					_lightsStack[^1] = globalLight;
-				}
+					_lightsStack.Add(globalLight);
 				else
-				{
-					_lightsStack = new Light2DBase[_lightsStack.Length - 1];
-					for (ushort i = 0; i < _lightsStack.Length; i++)
-						_lightsStack[i] = lights[i];
-				}
+					_lightsStack.Remove(globalLight);
 				_lightsStack[^1].enabled = true;
 			}
 		}
