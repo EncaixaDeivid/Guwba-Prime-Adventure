@@ -93,6 +93,7 @@ namespace GwambaPrimeAdventure.Character
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the air jump.")] private AudioClip _airJumpSound;
 		[SerializeField, BoxGroup("Movement"), Tooltip("The sound to play when Gwamba executes the dash slide.")] private AudioClip _dashSlideSound;
+		[SerializeField, BoxGroup("Movement"), Range(1E-1F, 1F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementInputZone;
 		[SerializeField, BoxGroup("Movement"), Range(1E-1F, 1F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _airJumpInputZone;
 		[SerializeField, BoxGroup("Movement"), Range(-1E-1F, -1F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _dashSlideInputZone;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of speed that Gwamba moves yourself.")] private float _movementSpeed;
@@ -304,7 +305,7 @@ namespace GwambaPrimeAdventure.Character
 			if (!isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
 			_movementAction = 0F;
-			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > 5E-1F)
+			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > _movementInputZone)
 				if (movement.ReadValue<Vector2>().x > 0F)
 					_movementAction = 1F;
 				else if (movement.ReadValue<Vector2>().x < 0F)
