@@ -6,12 +6,6 @@ namespace GwambaPrimeAdventure.Hud
 	internal sealed class DeathScreenHud : MonoBehaviour
 	{
 		private static DeathScreenHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _curtainVisual;
-		[SerializeField, Tooltip("User interface element.")] private string _textLabel;
-		[SerializeField, Tooltip("User interface element.")] private string _continueButton;
-		[SerializeField, Tooltip("User interface element.")] private string _outLevelButton;
-		[SerializeField, Tooltip("User interface element.")] private string _gameOverButton;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement Curtain { get; private set; }
 		internal Label Text { get; private set; }
@@ -27,11 +21,11 @@ namespace GwambaPrimeAdventure.Hud
 			}
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
-			Curtain = RootElement.Q<VisualElement>(_curtainVisual);
-			Text = RootElement.Q<Label>(_textLabel);
-			Continue = RootElement.Q<Button>(_continueButton);
-			OutLevel = RootElement.Q<Button>(_outLevelButton);
-			GameOver = RootElement.Q<Button>(_gameOverButton);
+			Curtain = RootElement.Q<VisualElement>(nameof(Curtain));
+			Text = RootElement.Q<Label>(nameof(Text));
+			Continue = RootElement.Q<Button>(nameof(Continue));
+			OutLevel = RootElement.Q<Button>(nameof(OutLevel));
+			GameOver = RootElement.Q<Button>(nameof(GameOver));
 		}
 	};
 };
