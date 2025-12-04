@@ -6,11 +6,6 @@ namespace GwambaPrimeAdventure.Story
 	internal sealed class DialogHud : MonoBehaviour
 	{
 		static private DialogHud _instance;
-		[Header("Elements")]
-		[SerializeField, Tooltip("User interface element.")] private string _characterIcon;
-		[SerializeField, Tooltip("User interface element.")] private string _characterName;
-		[SerializeField, Tooltip("User interface element.")] private string _characterSpeach;
-		[SerializeField, Tooltip("User interface element.")] private string _advanceSpeach;
 		internal VisualElement RootElement { get; private set; }
 		internal VisualElement CharacterIcon { get; private set; }
 		internal Label CharacterName { get; private set; }
@@ -25,10 +20,10 @@ namespace GwambaPrimeAdventure.Story
 			}
 			_instance = this;
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
-			CharacterIcon = RootElement.Q<VisualElement>(_characterIcon);
-			CharacterName = RootElement.Q<Label>(_characterName);
-			CharacterSpeach = RootElement.Q<Label>(_characterSpeach);
-			AdvanceSpeach = RootElement.Q<Button>(_advanceSpeach);
+			CharacterIcon = RootElement.Q<VisualElement>(nameof(CharacterIcon));
+			CharacterName = RootElement.Q<Label>(nameof(CharacterName));
+			CharacterSpeach = RootElement.Q<Label>(nameof(CharacterSpeach));
+			AdvanceSpeach = RootElement.Q<Button>(nameof(AdvanceSpeach));
 		}
 	};
 };
