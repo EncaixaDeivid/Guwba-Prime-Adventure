@@ -316,8 +316,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AirJump, !(_canAirJump = false));
 						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
 						transform.TurnScaleX(dashMovement);
-						_rigidbody.linearVelocity = Vector2.zero;
-						_isJumping = false;
+						(_isJumping, _rigidbody.linearVelocity) = (false, Vector2.zero);
 						_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
 						_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 						EffectsController.SoundEffect(_airJumpSound, transform.position);
