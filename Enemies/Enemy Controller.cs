@@ -49,7 +49,7 @@ namespace GwambaPrimeAdventure.Enemy
 				enemy.enabled = false;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_destructibleEnemy = _selfEnemies[0];
-			for (ushort i = 0; i < _selfEnemies.Length - 1F; i++)
+			for (ushort i = 0; i < _selfEnemies.Length - 1; i++)
 				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					_destructibleEnemy = _selfEnemies[i + 1];
 			foreach (EnemyProvider enemy in _selfEnemies)
@@ -67,7 +67,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (SceneInitiator.IsInTrancision())
 				return;
 			if (_statistics.FadeOverTime)
-				if ((_fadeTime -= Time.deltaTime) <= 0)
+				if ((_fadeTime -= Time.deltaTime) <= 0F)
 					Destroy(gameObject);
 			if (_stunned)
 				if ((_stunTimer -= Time.deltaTime) <= 0F)
