@@ -308,7 +308,7 @@ namespace GwambaPrimeAdventure.Character
 				else if (movement.ReadValue<Vector2>().x < 0F)
 					_movementAction = -1F;
 			if (_movementAction != 0F && (!_attackUsage || _comboAttackBuffer))
-				if (movement.ReadValue<Vector2>().y > 25E-1F && !_isOnGround && _canAirJump)
+				if (movement.ReadValue<Vector2>().y > 25E-2F && !_isOnGround && _canAirJump)
 				{
 					_airJumpMethod = AirJumpMethod(_movementAction);
 					_rigidbody.linearVelocity = Vector2.zero;
@@ -337,7 +337,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AttackAirJump, false);
 					}
 				}
-				else if (movement.ReadValue<Vector2>().y < -25E-1F && !_animator.GetBool(DashSlide) && _isOnGround)
+				else if (movement.ReadValue<Vector2>().y < -25E-2F && !_animator.GetBool(DashSlide) && _isOnGround)
 				{
 					_dashSlideMethod = DashSlideMethod(_movementAction);
 					IEnumerator DashSlideMethod(float dashMovement)
