@@ -4,18 +4,18 @@ using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class TeleporterEnemy : EnemyProvider, ITeleporter
+	internal sealed class TeleporterEnemy : EnemyProvider, ILoader, ITeleporter
 	{
 		private bool _canTeleport = true;
 		private ushort _teleportIndex = 0;
 		private float _teleportTime = 0F;
 		[Header("Teleporter Enemy")]
 		[SerializeField, Tooltip("The teleporter statitics of this enemy.")] private TeleporterStatistics _statistics;
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			for (ushort i = 0; i < _statistics.TeleportPointStructures.Length; i++)
 				Instantiate(_statistics.TeleportPointStructures[i].TeleportPointObject, _statistics.TeleportPointStructures[i].InstancePoint, Quaternion.identity).GetTouch(this, i);
+			yield return null;
 		}
 		private void Update()
 		{
