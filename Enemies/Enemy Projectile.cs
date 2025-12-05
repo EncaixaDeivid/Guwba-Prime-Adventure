@@ -70,7 +70,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void CellInstanceRange()
 		{
-			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, WorldBuild.SceneMask).distance;
+			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, WorldBuild.SCENE_MASK).distance;
 			if (_statistics.UseQuantity)
 				distance = _statistics.QuantityToSummon;
 			for (ushort i = 0; i < distance; i++)
