@@ -131,7 +131,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_isDashing)
 			{
 				_originCast = Rigidbody.position + _selfCollider.offset + (_targetPoint - _originCast).normalized;
-				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, _selfCollider.radius / 2f, WorldBuild.SCENE_MASK))
+				if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, _selfCollider.radius / 2f, WorldBuild.SCENE_LAYER))
 					if (_statistics.DetectionStop)
 						(_stopWorking, _stoppedTime) = (_returnDash = _afterDash = true, _statistics.AfterTime);
 					else
@@ -140,16 +140,16 @@ namespace GwambaPrimeAdventure.Enemy
 			else
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
-				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, WorldBuild.CHARACTER_MASK))
+				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER))
 					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_originCast = Rigidbody.position + _selfCollider.offset;
 						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _selfCollider.radius); i++)
 						{
-							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK))
+							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 								break;
-							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, WorldBuild.CHARACTER_MASK))
+							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, WorldBuild.CHARACTER_LAYER))
 								break;
 							_originCast += _selfCollider.radius * (_targetPoint - _originCast).normalized;
 						}
