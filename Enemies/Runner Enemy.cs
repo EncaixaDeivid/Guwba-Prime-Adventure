@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class RunnerEnemy : MovingEnemy, IConnector, IDestructible
+	internal sealed class RunnerEnemy : MovingEnemy, ILoader, IConnector, IDestructible
 	{
 		private RaycastHit2D _blockCast;
 		private bool _stopRunning = false;
@@ -24,13 +25,17 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			(_timeRun, _dashTime) = (_statistics.RunOfTime, _statistics.TimeToDash);
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
+		}
+		public IEnumerator Load()
+		{
+			(_timeRun, _dashTime) = (_statistics.RunOfTime, _statistics.TimeToDash);
+			yield return null;
 		}
 		private void InvencibleDash()
 		{
