@@ -108,7 +108,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.LookPerception && !_detected)
 			{
 				_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, transform.right * _movementSide, _statistics.LookDistance, WorldBuild.CHARACTER_MASK))
+				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, transform.right * _movementSide, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER))
 					if (ray.collider.TryGetComponent<IDestructible>(out _))
 					{
 						_detected = true;
@@ -118,7 +118,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_originCast = (Vector2)transform.position + _collider.offset;
 			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x;
 			_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
-			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK);
+			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
 			if (_statistics.RunFromTarget && _timeRun <= 0F && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
@@ -153,7 +153,7 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
 			_originCast += new Vector2(_collider.bounds.extents.x * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x, _collider.bounds.extents.y * -transform.up.y);
-			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK);
+			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
 			if (OnGround && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
 				if (_retreat)
 					RetreatUse();
