@@ -14,6 +14,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private bool _waitStop = false;
 		private ushort _randomSummonIndex = 0;
 		private float[] _summonTime;
+		private float[] _structureTime;
 		private float _fullStopTime = 0F;
 		private float _stopTime = 0F;
 		private float _gravityScale = 0F;
@@ -26,6 +27,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_isSummonTime = new bool[_statistics.TimedSummons.Length];
 			_stopPermanently = new bool[_statistics.TimedSummons.Length];
 			_summonTime = new float[_statistics.TimedSummons.Length];
+			_structureTime = new float[_statistics.SummonPointStructures.Length];
 			_gravityScale = Rigidbody.gravityScale;
 			Sender.Include(this);
 		}
@@ -112,6 +114,12 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
+			for (ushort i = 0; i < _structureTime.Length; i++)
+				if (_structureTime[i] > 0F)
+					if ((_structureTime[i] -= Time.deltaTime) < 0F)
+					{
+
+					}
 			if (_stopTime > 0F)
 			{
 				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2F && !_waitStop && _summonEvent is not null)
@@ -131,7 +139,11 @@ namespace GwambaPrimeAdventure.Enemy
 				for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
 					IndexedSummon(i);
 		}
-		public void OnSummon(ushort summonIndex) => Summon(_statistics.SummonPointStructures[summonIndex].Summon);
+		public void OnSummon(ushort summonIndex)
+		{
+			_structureTime[summonIndex] = _statistics.SummonPointStructures[summonIndex].TimeToUse;
+			Summon(_statistics.SummonPointStructures[summonIndex].Summon);
+		}
 		public void Receive(MessageData message)
 		{
 			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
