@@ -3,8 +3,7 @@ using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D))]
-	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(CircleCollider2D)), RequireComponent(typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGoal : StateController
 	{
 		private static LevelGoal _instance;
@@ -14,6 +13,7 @@ namespace GwambaPrimeAdventure.Item
 		[SerializeField, Tooltip("If this object will be saved as already existent object.")] private bool _saveOnSpecifics;
 		private new void Awake()
 		{
+			base.Awake();
 			if (_instance)
 			{
 				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
