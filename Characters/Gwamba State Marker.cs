@@ -326,7 +326,7 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK))
 								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _airJumpMethod is null)
 								break;
@@ -353,7 +353,7 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK))
 								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _dashSlideMethod is null)
 								break;
@@ -398,7 +398,8 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, WorldBuild.SystemMask + WorldBuild.CharacterMask + WorldBuild.SceneMask + WorldBuild.ItemMask))
+			LayerMask mask = WorldBuild.SYSTEM_MASK + WorldBuild.CHARACTER_MASK + WorldBuild.SCENE_MASK + WorldBuild.ITEM_MASK;
+			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, mask))
 				if (collider.TryGetComponent<IInteractable>(out _))
 				{
 					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
@@ -581,15 +582,15 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - _bottomStairsChecker.x);
 						_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _bottomStairsChecker.y - WorldBuild.SNAP_LENGTH);
-						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK))
 						{
 							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y + _topStairsChecker.x);
 							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _topStairsChecker.y - WorldBuild.SNAP_LENGTH);
-							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask))
+							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK))
 							{
 								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
 								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
-								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, WorldBuild.SceneMask))
+								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, WorldBuild.SCENE_MASK))
 									if (lineCast.collider == _castHit.collider)
 									{
 										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
@@ -658,7 +659,7 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_jokerValue.x += WorldBuild.SNAP_LENGTH;
 						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _jokerValue.x) * _movementAction, Local.y - _collider.bounds.extents.y);
-						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1F + WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1F + WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK);
 						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10F) / 10F != Mathf.Round(_castHit.point.y * 10F) / 10F;
 					}
 					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * _downStairsQueryLimit);
@@ -709,7 +710,7 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2F) * -transform.up.y);
 			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
-			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
+			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_MASK);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
