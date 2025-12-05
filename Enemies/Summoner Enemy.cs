@@ -5,7 +5,7 @@ using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class SummonerEnemy : EnemyProvider, ISummoner, IConnector
+	internal sealed class SummonerEnemy : EnemyProvider, ILoader, ISummoner, IConnector
 	{
 		private IEnumerator _summonEvent;
 		private bool[] _isSummonTime;
@@ -24,11 +24,6 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_sender.SetFormat(MessageFormat.State);
-			_isSummonTime = new bool[_statistics.TimedSummons.Length];
-			_stopPermanently = new bool[_statistics.TimedSummons.Length];
-			_summonTime = new float[_statistics.TimedSummons.Length];
-			_structureTime = new float[_statistics.SummonPointStructures.Length];
-			_gravityScale = Rigidbody.gravityScale;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -36,9 +31,13 @@ namespace GwambaPrimeAdventure.Enemy
 			base.OnDestroy();
 			Sender.Exclude(this);
 		}
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			_isSummonTime = new bool[_statistics.TimedSummons.Length];
+			_stopPermanently = new bool[_statistics.TimedSummons.Length];
+			_summonTime = new float[_statistics.TimedSummons.Length];
+			_structureTime = new float[_statistics.SummonPointStructures.Length];
+			_gravityScale = Rigidbody.gravityScale;
 			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length + 1);
 			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
 				_isSummonTime[i] = true;
@@ -46,6 +45,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_summonTime[i] = _statistics.TimedSummons[i].SummonTime;
 			for (ushort i = 0; i < _statistics.SummonPointStructures.Length; i++)
 				Instantiate(_statistics.SummonPointStructures[i].SummonPointObject, _statistics.SummonPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
+			yield return null;
 		}
 		private async void Summon(SummonObject summon)
 		{
