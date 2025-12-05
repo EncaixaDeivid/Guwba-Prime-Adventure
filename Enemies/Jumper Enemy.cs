@@ -166,7 +166,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (!_detected && _statistics.LookPerception)
 					if (_statistics.CircularDetection)
 					{
-						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, WorldBuild.CHARACTER_MASK))
+						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER))
 							if (collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = collider.transform.position;
@@ -178,7 +178,7 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
 						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0F ? -1F : 1F);
-						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CHARACTER_MASK))
+						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER))
 							if (ray.collider.TryGetComponent<IDestructible>(out _))
 							{
 								_targetPosition = ray.collider.transform.position;
