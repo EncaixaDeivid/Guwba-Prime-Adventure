@@ -1,9 +1,10 @@
 using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class DefenderEnemy : EnemyProvider, IConnector, IDestructible
+	internal sealed class DefenderEnemy : EnemyProvider, ILoader, IConnector, IDestructible
 	{
 		private bool _invencible = false;
 		private float _timeOperation = 0F;
@@ -13,13 +14,17 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_sender.SetFormat(MessageFormat.State);
-			_timeOperation = _statistics.TimeToInvencible;
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
 			Sender.Exclude(this);
+		}
+		public IEnumerator Load()
+		{
+			_timeOperation = _statistics.TimeToInvencible;
+			yield return null;
 		}
 		private void Update()
 		{
