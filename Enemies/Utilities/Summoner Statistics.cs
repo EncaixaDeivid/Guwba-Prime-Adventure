@@ -19,5 +19,6 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("The object to activate the summon.")] public SummonPoint SummonPointObject { get; private set; }
 		[field: SerializeField, Tooltip("Which summon event the summon point will activate.")] public SummonObject Summon { get; private set; }
 		[field: SerializeField, Tooltip("The point where the summon point will be.")] public Vector2 Point { get; private set; }
+		[field: SerializeField, Tooltip("The amount of time to summon again.")] public float TimeToUse { get; private set; }
 	};
 };
