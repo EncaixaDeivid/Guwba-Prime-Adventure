@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
-	internal sealed class FlyingEnemy : MovingEnemy, IConnector
+	internal sealed class FlyingEnemy : MovingEnemy, ILoader, IConnector
 	{
 		private CircleCollider2D _selfCollider;
 		private Vector2[] _trail;
@@ -23,6 +24,15 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			base.Awake();
 			_selfCollider = _collider as CircleCollider2D;
+			Sender.Include(this);
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			Sender.Exclude(this);
+		}
+		public IEnumerator Load()
+		{
 			PolygonCollider2D trail = GetComponent<PolygonCollider2D>();
 			_trail = new Vector2[trail.points.Length];
 			for (ushort i = 0; i < trail.points.Length; i++)
@@ -32,12 +42,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_trail[i] = trail.points[i];
 			_movementDirection = Vector2.right * _movementSide;
 			_pointOrigin = Rigidbody.position;
-			Sender.Include(this);
-		}
-		private new void OnDestroy()
-		{
-			base.OnDestroy();
-			Sender.Exclude(this);
+			yield return null;
 		}
 		private void Chase()
 		{
