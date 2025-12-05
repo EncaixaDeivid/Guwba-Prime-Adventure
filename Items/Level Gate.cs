@@ -6,8 +6,7 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
 namespace GwambaPrimeAdventure.Item
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D))]
-	[RequireComponent(typeof(Transitioner), typeof(IInteractable))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D)), RequireComponent(typeof(Transitioner), typeof(IInteractable))]
 	internal sealed class LevelGate : MonoBehaviour, IInteractable
 	{
 		private LevelGateHud _levelGate;
