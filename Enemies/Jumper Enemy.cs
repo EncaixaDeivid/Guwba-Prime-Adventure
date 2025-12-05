@@ -8,7 +8,7 @@ using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent]
-	internal sealed class JumperEnemy : MovingEnemy, IJumper, IConnector
+	internal sealed class JumperEnemy : MovingEnemy, ILoader, IJumper, IConnector
 	{
 		private InputController _inputController;
 		private Vector2 _targetPosition;
@@ -31,7 +31,6 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
-			_timedJumpTime = new float[_statistics.TimedJumps.Length];
 			if (_statistics.UseInput)
 			{
 				_inputController = new InputController();
@@ -52,17 +51,18 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private new IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return base.Start();
+			_timedJumpTime = new float[_statistics.TimedJumps.Length];
+			_jumpCount = new short[_statistics.JumpPointStructures.Length];
 			for (ushort i = 0; i < _statistics.TimedJumps.Length; i++)
 				_timedJumpTime[i] = _statistics.TimedJumps[i].TimeToExecute;
-			_jumpCount = new short[_statistics.JumpPointStructures.Length];
 			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
 			{
 				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
 				_jumpCount[i] = (short)_statistics.JumpPointStructures[i].JumpCount;
 			}
+			yield return null;
 		}
 		private Action<InputAction.CallbackContext> Jump => jump =>
 		{
