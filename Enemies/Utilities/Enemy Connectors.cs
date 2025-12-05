@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace GwambaPrimeAdventure.Enemy.Utility
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource)), SelectionBase]
 	public abstract class Control : StateController
 	{
 		protected Rigidbody2D _rigidbody;
@@ -16,7 +15,6 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected float _stunTimer = 0F;
 		protected bool _stunned = false;
 	};
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D)), RequireComponent(typeof(CinemachineImpulseSource), typeof(Collider2D))]
 	public abstract class Projectile : StateController
 	{
 		protected Rigidbody2D _rigidbody;
