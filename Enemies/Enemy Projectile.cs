@@ -6,6 +6,7 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D)), RequireComponent(typeof(CinemachineImpulseSource), typeof(Collider2D))]
 	internal sealed class EnemyProjectile : Projectile, IDestructible
 	{
 		[Header("Projectile")]
@@ -16,12 +17,6 @@ namespace GwambaPrimeAdventure.Enemy
 			base.Awake();
 			_rigidbody = GetComponent<Rigidbody2D>();
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
-			_vitality = (short)_statistics.Vitality;
-			_pointToJump = _statistics.JumpPoints;
-			_breakInUse = _statistics.UseBreak;
-			_internalBreakPoint = _statistics.BreakPoint;
-			_internalReturnPoint = _statistics.ReturnPoint;
-			_deathTimer = _statistics.TimeToFade;
 		}
 		private new void OnDestroy()
 		{
@@ -101,6 +96,12 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void Start()
 		{
+			_vitality = (short)_statistics.Vitality;
+			_pointToJump = _statistics.JumpPoints;
+			_breakInUse = _statistics.UseBreak;
+			_internalBreakPoint = _statistics.BreakPoint;
+			_internalReturnPoint = _statistics.ReturnPoint;
+			_deathTimer = _statistics.TimeToFade;
 			if (_statistics.RandomBreak)
 			{
 				_internalBreakPoint = (ushort)Random.Range(_statistics.BreakPoint, _statistics.ReturnPoint - _statistics.MinimumRandomValue);
