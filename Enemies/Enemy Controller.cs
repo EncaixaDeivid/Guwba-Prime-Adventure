@@ -5,7 +5,8 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	internal sealed class EnemyController : Control, ILoader, IConnector, IOccludee, IDestructible
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource)), SelectionBase]
+	internal sealed class EnemyController : Control, IConnector, IOccludee, IDestructible
    {
 		private EnemyProvider[] _selfEnemies;
 		[Header("Enemy Statistics")]
@@ -25,9 +26,10 @@ namespace GwambaPrimeAdventure.Enemy
 			_selfEnemies = GetComponents<EnemyProvider>();
 			_rigidbody = GetComponent<Rigidbody2D>();
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
-			_vitality = (short)_statistics.Vitality;
-			_armorResistance = (short)_statistics.HitResistance;
-			_fadeTime = _statistics.TimeToFadeAway;
+			_destructibleEnemy = _selfEnemies[0];
+			for (ushort i = 0; i < _selfEnemies.Length - 1; i++)
+				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
+					_destructibleEnemy = _selfEnemies[i + 1];
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -45,22 +47,20 @@ namespace GwambaPrimeAdventure.Enemy
 		private void OnDisable() => Rigidbody.Sleep();
 		private IEnumerator Start()
 		{
+			SaveController.Load(out SaveFile saveFile);
+			if (_statistics.SaveOnSpecifics && saveFile.GeneralObjects.Contains(name))
+			{
+				Destroy(gameObject);
+				yield break;
+			}
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = false;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			_destructibleEnemy = _selfEnemies[0];
-			for (ushort i = 0; i < _selfEnemies.Length - 1; i++)
-				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
-					_destructibleEnemy = _selfEnemies[i + 1];
+			_vitality = (short)_statistics.Vitality;
+			_armorResistance = (short)_statistics.HitResistance;
+			_fadeTime = _statistics.TimeToFadeAway;
 			foreach (EnemyProvider enemy in _selfEnemies)
 				enemy.enabled = true;
-		}
-		public IEnumerator Load()
-		{
-			SaveController.Load(out SaveFile saveFile);
-			if (_statistics.SaveOnSpecifics && saveFile.GeneralObjects.Contains(name))
-				Destroy(gameObject);
-			yield return null;
 		}
 		private void Update()
 		{
