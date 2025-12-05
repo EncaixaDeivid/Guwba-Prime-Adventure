@@ -33,15 +33,13 @@ namespace GwambaPrimeAdventure.Enemy
 			transform.TurnScaleX(_movementSide = (short)((GwambaStateMarker.Localization.x < transform.position.x ? -1 : 1) * (_moving.InvertMovementSide ? -1 : 1)));
 		}
 		protected void FixedUpdate() => _onGround = false;
-		private void GroundCheck()
+		private void OnCollisionStay2D(Collision2D collision)
 		{
 			_originCast = new Vector2(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
 			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
 			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SceneMask);
 		}
-		private void OnCollisionEnter2D(Collision2D collision) => GroundCheck();
-		private void OnCollisionStay2D(Collision2D collision) => GroundCheck();
 		public void Receive(MessageData message)
 		{
 			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
