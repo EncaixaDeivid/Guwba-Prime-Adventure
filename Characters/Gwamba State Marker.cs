@@ -365,8 +365,7 @@ namespace GwambaPrimeAdventure.Character
 					}
 			}
 		};
-		private void FootStepSound(float stepPositionX)
-			=> EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y));
 		private Action<InputAction.CallbackContext> JumpInput => jump =>
 		{
 			if (jump.started)
