@@ -7,6 +7,7 @@ namespace GwambaPrimeAdventure.Item
 	internal sealed class LevelGoal : StateController
 	{
 		private static LevelGoal _instance;
+		private bool _blocked = false;
 		[Header("Scene Interactions")]
 		[SerializeField, Tooltip("If this will go direct to the boss.")] private SceneField _goToBoss;
 		[SerializeField, Tooltip("If theres a dialog after the goal.")] private bool _enterInDialog;
@@ -23,8 +24,9 @@ namespace GwambaPrimeAdventure.Item
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
-			if (!GwambaStateMarker.EqualObject(other.gameObject))
+			if (_blocked || !GwambaStateMarker.EqualObject(other.gameObject))
 				return;
+			_blocked = true;
 			SaveController.Load(out SaveFile saveFile);
 			SettingsController.Load(out Settings settings);
 			if (!saveFile.LevelsCompleted[ushort.Parse($"{gameObject.scene.name[^1]}") - 1])
