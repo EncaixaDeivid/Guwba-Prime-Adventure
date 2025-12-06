@@ -5,9 +5,9 @@ namespace GwambaPrimeAdventure
 	public abstract class StateController : MonoBehaviour
 	{
 		private static UnityAction<bool> _state;
-		protected void Awake() => _state += InstanceState;
-		protected void OnDestroy() => _state -= InstanceState;
-		private UnityAction<bool> InstanceState => newState => enabled = newState;
+		protected void Awake() => _state += NewState;
+		protected void OnDestroy() => _state -= NewState;
+		private void NewState(bool state) => enabled = state;
 		public static void SetState(bool newState) => _state?.Invoke(newState);
 		protected sealed class WaitTime : CustomYieldInstruction
 		{
@@ -18,9 +18,9 @@ namespace GwambaPrimeAdventure
 			{
 				get
 				{
-					if (_time > 0f && _instance.isActiveAndEnabled)
-						_time -= Time.deltaTime / (_unscaled ? Time.timeScale : 1f);
-					return _time > 0f;
+					if (_time > 0F && _instance.isActiveAndEnabled)
+						_time -= Time.deltaTime / (_unscaled ? Time.timeScale : 1F);
+					return _time > 0F;
 				}
 			}
 			public WaitTime(StateController instance, float time, bool unscaled = false)
