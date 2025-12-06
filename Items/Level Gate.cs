@@ -12,7 +12,6 @@ namespace GwambaPrimeAdventure.Item
 		private CinemachineCamera _gateCamera;
 		private readonly Sender _sender = Sender.Create();
 		private bool _isOnInteraction = false;
-		private bool _canInteract = false;
 		private short _defaultPriority;
 		[Header("Scene Status")]
 		[SerializeField, Tooltip("The object that handles the hud of the level gate.")] private LevelGateHud _levelGateObject;
@@ -27,8 +26,6 @@ namespace GwambaPrimeAdventure.Item
 			_sender.SetAdditionalData(gameObject);
 			_levelGate = Instantiate(_levelGateObject, transform);
 		}
-		private void OnEnable() => _canInteract = true;
-		private void OnDisable() => _canInteract = false;
 		private void OnDestroy()
 		{
 			SaveController.Load(out SaveFile saveFile);
@@ -58,7 +55,7 @@ namespace GwambaPrimeAdventure.Item
 		private void ShowScenes() => _sender.Send(MessagePath.Story);
 		private void OnTriggerExit2D(Collider2D other)
 		{
-			if (!_canInteract || !_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
+			if (!_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
 				return;
 			_isOnInteraction = false;
 			_gateCamera.Priority.Value = _defaultPriority;
