@@ -46,7 +46,7 @@ namespace GwambaPrimeAdventure.Story
 			if (_nextSlide)
 			{
 				_nextSlide = false;
-				yield return _storyTeller.NextSlide();
+				yield return StartCoroutine(_storyTeller.NextSlide());
 				_dialogHud.RootElement.style.display = DisplayStyle.Flex;
 			}
 			foreach (char letter in _text.ToCharArray())
