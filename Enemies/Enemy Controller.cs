@@ -43,8 +43,8 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private void OnEnable() => Rigidbody.WakeUp();
-		private void OnDisable() => Rigidbody.Sleep();
+		private void OnEnable() => Rigidbody.simulated = true;
+		private void OnDisable() => Rigidbody.simulated = false;
 		private IEnumerator Start()
 		{
 			SaveController.Load(out SaveFile saveFile);
