@@ -35,6 +35,8 @@ namespace GwambaPrimeAdventure.Connection
 			};
 		internal static string SaveData((ushort actualSaveFile, string newSaveName) set = default)
 		{
+			if (File.Exists(Select(set.actualSaveFile)))
+				File.Delete(Select(set.actualSaveFile));
 			FilesArchive newFilesArchive = LoadFiles();
 			string newSaveName = set.actualSaveFile switch
 			{
