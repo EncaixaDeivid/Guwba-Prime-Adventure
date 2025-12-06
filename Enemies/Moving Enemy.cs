@@ -6,8 +6,8 @@ namespace GwambaPrimeAdventure.Enemy
 {
 	internal abstract class MovingEnemy : EnemyProvider, IConnector
 	{
-		protected Vector2 _originCast;
-		protected Vector2 _sizeCast;
+		protected Vector2 _originCast = Vector2.zero;
+		protected Vector2 _sizeCast = Vector2.zero;
 		private bool _onGround = false;
 		protected bool _detected = false;
 		protected bool _isDashing = false;
@@ -35,9 +35,9 @@ namespace GwambaPrimeAdventure.Enemy
 		protected void FixedUpdate() => _onGround = false;
 		private void OnCollisionStay2D(Collision2D collision)
 		{
-			_originCast = new Vector2(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
+			_originCast.Set(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
 			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
-			_sizeCast = new Vector2(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
+			_sizeCast.Set(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
 		}
 		public void Receive(MessageData message)
