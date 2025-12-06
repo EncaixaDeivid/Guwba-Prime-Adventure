@@ -34,6 +34,10 @@ namespace GwambaPrimeAdventure.Hud
 			_menuHud.SaveName[1].RegisterValueChangedCallback(ChangeName2);
 			_menuHud.SaveName[2].RegisterValueChangedCallback(ChangeName3);
 			_menuHud.SaveName[3].RegisterValueChangedCallback(ChangeName4);
+			_menuHud.RenameFile[0].clicked += RenameFile1;
+			_menuHud.RenameFile[1].clicked += RenameFile2;
+			_menuHud.RenameFile[2].clicked += RenameFile3;
+			_menuHud.RenameFile[3].clicked += RenameFile4;
 			_menuHud.Load[0].clicked += SelectSaveFile1;
 			_menuHud.Load[1].clicked += SelectSaveFile2;
 			_menuHud.Load[2].clicked += SelectSaveFile3;
@@ -58,6 +62,10 @@ namespace GwambaPrimeAdventure.Hud
 			_menuHud.SaveName[1].UnregisterValueChangedCallback(ChangeName2);
 			_menuHud.SaveName[2].UnregisterValueChangedCallback(ChangeName3);
 			_menuHud.SaveName[3].UnregisterValueChangedCallback(ChangeName4);
+			_menuHud.RenameFile[0].clicked -= RenameFile1;
+			_menuHud.RenameFile[1].clicked -= RenameFile2;
+			_menuHud.RenameFile[2].clicked -= RenameFile3;
+			_menuHud.RenameFile[3].clicked -= RenameFile4;
 			_menuHud.Load[0].clicked -= SelectSaveFile1;
 			_menuHud.Load[1].clicked -= SelectSaveFile2;
 			_menuHud.Load[2].clicked -= SelectSaveFile3;
@@ -89,10 +97,19 @@ namespace GwambaPrimeAdventure.Hud
 			_isPlay = false;
 			ConfigurationController.Instance.SetActive(true);
 		}
-		private void ChangeName1(ChangeEvent<string> write) => SaveController.RenameData(1, write.newValue);
-		private void ChangeName2(ChangeEvent<string> write)=> SaveController.RenameData(2, write.newValue);
-		private void ChangeName3(ChangeEvent<string> write) => SaveController.RenameData(3, write.newValue);
-		private void ChangeName4(ChangeEvent<string> write) => SaveController.RenameData(4, write.newValue);
+		private void ChangeName1(ChangeEvent<string> write) => _menuHud.RenameFile[0].enabledSelf = write.newValue != FilesController.Select(1);
+		private void ChangeName2(ChangeEvent<string> write) => _menuHud.RenameFile[1].enabledSelf = write.newValue != FilesController.Select(2);
+		private void ChangeName3(ChangeEvent<string> write) => _menuHud.RenameFile[2].enabledSelf = write.newValue != FilesController.Select(3);
+		private void ChangeName4(ChangeEvent<string> write) => _menuHud.RenameFile[3].enabledSelf = write.newValue != FilesController.Select(4);
+		private void SetNesFileName(ushort fileIndex)
+		{
+			SaveController.RenameData(fileIndex, _menuHud.SaveName[fileIndex - 1].text);
+			_menuHud.RenameFile[fileIndex - 1].enabledSelf = false;
+		}
+		private void RenameFile1() => SetNesFileName(1);
+		private void RenameFile2() => SetNesFileName(2);
+		private void RenameFile3() => SetNesFileName(3);
+		private void RenameFile4() => SetNesFileName(4);
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
