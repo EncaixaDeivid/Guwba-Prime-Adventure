@@ -1,10 +1,9 @@
 using UnityEngine;
-using System.Collections;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item.EventItem
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Collider2D), typeof(Receptor))]
-	internal sealed class DestructiveObject : StateController, ILoader, IReceptorSignal, IDestructible
+	internal sealed class DestructiveObject : StateController, IReceptorSignal, IDestructible
 	{
 		private readonly Sender _sender = Sender.Create();
 		[Header("Destructive Object")]
@@ -21,27 +20,21 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			_sender.SetAdditionalData(_occlusionObject);
 			_sender.SetToggle(true);
 		}
-		public IEnumerator Load()
+		private void Start()
 		{
 			SaveController.Load(out SaveFile saveFile);
 			if (_saveOnSpecifics && saveFile.GeneralObjects.Contains(name))
 				Destroy(gameObject);
-			yield return null;
 		}
-		private void SaveObject()
+		public void Execute()
 		{
-			SaveController.Load(out SaveFile saveFile);
+			if (_occlusionObject)
+				_sender.Send(MessagePath.System); SaveController.Load(out SaveFile saveFile);
 			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 			{
 				saveFile.GeneralObjects.Add(name);
 				SaveController.WriteSave(saveFile);
 			}
-		}
-		public void Execute()
-		{
-			if (_occlusionObject)
-				_sender.Send(MessagePath.System);
-			SaveObject();
 			Destroy(gameObject);
 		}
 		private void DestroyOnCollision()
