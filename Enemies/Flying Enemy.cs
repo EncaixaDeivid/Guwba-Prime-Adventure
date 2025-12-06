@@ -9,9 +9,9 @@ namespace GwambaPrimeAdventure.Enemy
 	{
 		private CircleCollider2D _selfCollider;
 		private Vector2[] _trail;
-		private Vector2 _movementDirection;
-		private Vector2 _pointOrigin;
-		private Vector2 _targetPoint;
+		private Vector2 _movementDirection = Vector2.zero;
+		private Vector2 _pointOrigin = Vector2.zero;
+		private Vector2 _targetPoint = Vector2.zero;
 		private bool _normal = true;
 		private bool _returnOrigin = false;
 		private bool _afterDash = false;
