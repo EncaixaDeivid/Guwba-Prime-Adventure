@@ -24,11 +24,11 @@ namespace GwambaPrimeAdventure.Character
 		private readonly Sender _sender = Sender.Create();
 		private IEnumerator _airJumpEvent;
 		private IEnumerator _dashSlideEvent;
-		private Vector2 _originCast = Vector2.one;
-		private Vector2 _sizeCast = Vector2.one;
-		private Vector2 _airJumpGuardedForce = Vector2.one;
-		private Vector2 _surfaceLocal = Vector2.one;
-		private Vector3 _jokerValue = Vector3.one;
+		private Vector2 _originCast = Vector2.zero;
+		private Vector2 _sizeCast = Vector2.zero;
+		private Vector2 _velocityGuarded = Vector2.zero;
+		private Vector2 _surfaceLocal = Vector2.zero;
+		private Vector3 _jokerValue = Vector3.zero;
 		private RaycastHit2D _castHit;
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private readonly int Idle = Animator.StringToHash(nameof(Idle));
@@ -205,8 +205,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
-			if (_airJumpEvent is not null)
-				_rigidbody.linearVelocity = _airJumpGuardedForce;
+			_rigidbody.linearVelocity = _velocityGuarded;
 			_rigidbody.WakeUp();
 		}
 		private void DisableInputs()
@@ -215,10 +214,9 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Disable();
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
-			if (_airJumpEvent is not null)
-				_airJumpGuardedForce = _rigidbody.linearVelocity;
-			_rigidbody.Sleep();
+			_velocityGuarded = _rigidbody.linearVelocity;
 			_movementAction = 0F;
+			_rigidbody.Sleep();
 		}
 		private IEnumerator Start()
 		{
