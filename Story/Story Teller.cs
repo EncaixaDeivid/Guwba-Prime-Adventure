@@ -23,20 +23,22 @@ namespace GwambaPrimeAdventure.Story
 		internal void ShowScene()
 		{
 			_storySceneHud = Instantiate(_storySceneHudObject, transform);
-			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
+			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex = 0].Image);
 			StartCoroutine(FadeImage(true));
 		}
 		internal IEnumerator NextSlide()
 		{
-			yield return FadeImage(false);
+			if (_storySceneObject.SceneComponents[_imageIndex].Equals(_storySceneObject.SceneComponents[^1]))
+				yield break;
+			yield return StartCoroutine(FadeImage(false));
 			_imageIndex = (ushort)(_imageIndex < _storySceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
 			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
-			yield return FadeImage(true);
-			while (_storySceneObject.SceneComponents[_imageIndex].OffDialog)
+			yield return StartCoroutine(FadeImage(true));
+			while (_storySceneObject.SceneComponents[_imageIndex].OffDialog && !_storySceneObject.SceneComponents[_imageIndex].Equals(_storySceneObject.SceneComponents[^1]))
 			{
 				yield return new WaitForSeconds(_storySceneObject.SceneComponents[_imageIndex].TimeToDesapear);
 				if (_storySceneObject.SceneComponents[_imageIndex].JumpToNext)
-					yield return NextSlide();
+					yield return StartCoroutine(NextSlide());
 			}
 		}
 		internal void CloseScene() => StartCoroutine(FadeImage(false));
