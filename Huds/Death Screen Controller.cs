@@ -1,8 +1,6 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
-using System;
 using System.Collections;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
@@ -51,7 +49,7 @@ namespace GwambaPrimeAdventure.Hud
 			_deathScreenHud.GameOver.clicked += GameOver;
 			DontDestroyOnLoad(gameObject);
 		}
-		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		private void SceneLoaded(Scene scene, LoadSceneMode loadMode)
 		{
 			if (scene.name == _levelSelectorScene || scene.name == _menuScene)
 				Destroy(gameObject);
@@ -65,8 +63,8 @@ namespace GwambaPrimeAdventure.Hud
 				_deathScreenHud.Curtain.style.display = DisplayStyle.None;
 				_deathScreenHud.RootElement.style.display = DisplayStyle.None;
 			}
-		};
-		private Action Continue => () =>
+		}
+		private void Continue()
 		{
 			if (_bossScene != null && SceneManager.GetActiveScene().name == _bossScene)
 				GetComponent<Transitioner>().Transicion(_bossScene);
@@ -101,13 +99,13 @@ namespace GwambaPrimeAdventure.Hud
 				_deathScreenHud.GameOver.style.display = DisplayStyle.None;
 				_deathScreenHud.Curtain.style.display = DisplayStyle.None;
 			}
-		};
-		private Action OutLevel => () => GetComponent<Transitioner>().Transicion(_levelSelectorScene);
-		private Action GameOver => () =>
+		}
+		private void OutLevel() => GetComponent<Transitioner>().Transicion(_levelSelectorScene);
+		private void GameOver()
 		{
 			SaveController.RefreshData();
 			GetComponent<Transitioner>().Transicion();
-		};
+		}
 		public void Receive(MessageData message)
 		{
 			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && !message.ToggleValue.Value)
