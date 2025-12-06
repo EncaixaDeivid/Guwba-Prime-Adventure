@@ -63,12 +63,13 @@ namespace GwambaPrimeAdventure.Connection
 			SettingsController.Load(out Settings settings);
 			AudioSource source = Instantiate(_sourceObject, originSound, Quaternion.identity);
 			source.clip = clip;
+			source.volume = 1F;
 			source.mute = !settings.EffectsVolumeToggle || !settings.GeneralVolumeToggle;
+			source.Play();
 			StartCoroutine(SoundPlay(source, clip.length));
 			IEnumerator SoundPlay(AudioSource source, float playTime)
 			{
-				source.Play();
-				while ((playTime -= Time.deltaTime) <= 0F)
+				while ((playTime -= Time.deltaTime) > 0F)
 				{
 					yield return new WaitUntil(() =>
 					{
@@ -79,6 +80,7 @@ namespace GwambaPrimeAdventure.Connection
 						return isActiveAndEnabled;
 					});
 				}
+				InfoLogger.Informer.LogInfo(source);
 				Destroy(source.gameObject);
 			}
 		}
