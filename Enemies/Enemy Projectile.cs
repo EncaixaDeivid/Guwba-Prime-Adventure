@@ -75,7 +75,7 @@ namespace GwambaPrimeAdventure.Enemy
 				distance = _statistics.QuantityToSummon;
 			for (ushort i = 0; i < distance; i++)
 			{
-				_cellPosition += new Vector2Int((short)transform.up.x, (short)transform.up.y);
+				_cellPosition.Set((int)(_cellPosition.x + transform.up.x), (int)(_cellPosition.y + transform.up.y));
 				CellInstance();
 			}
 		}
@@ -118,7 +118,7 @@ namespace GwambaPrimeAdventure.Enemy
 						else
 							_internalReturnPoint--;
 			}
-			_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+			_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
 			_oldCellPosition = _cellPosition;
 			if (_statistics.SideMovement)
 				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90F : -90F, Vector3.forward);
@@ -140,7 +140,7 @@ namespace GwambaPrimeAdventure.Enemy
 				else if (_statistics.SecondProjectile)
 					if (_statistics.InCell)
 					{
-						_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+						_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
 						CellInstanceRange();
 					}
 					else
@@ -170,7 +170,7 @@ namespace GwambaPrimeAdventure.Enemy
 			{
 				if (_statistics.UseQuantity && _statistics.QuantityToSummon == _projectiles.Count || _statistics.StayInPlace)
 					return;
-				_cellPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+				_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
 				CellInstance();
 			}
 			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
