@@ -6,9 +6,9 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class ShooterEnemy : EnemyProvider, IConnector, IDestructible
 	{
-		private Vector2 _originCast;
-		private Vector2 _directionCast;
-		private Vector2 _targetDirection;
+		private Vector2 _originCast = Vector2.zero;
+		private Vector2 _directionCast = Vector2.zero;
+		private Vector2 _targetDirection = Vector2.zero;
 		private float _shootInterval = 0F;
 		private float _timeStop = 0F;
 		private bool _hasTarget = false;
