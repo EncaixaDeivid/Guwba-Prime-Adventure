@@ -34,7 +34,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			if (_specificsObjects.Length > 0)
 				foreach (string specificObject in _specificsObjects)
 					if (saveFile.GeneralObjects.Contains(specificObject))
-						Activate();
+						_receptor.Execute();
 			yield return null;
 		}
 		private void Update()
@@ -43,7 +43,6 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				if ((_signalTimer -= Time.deltaTime) <= 0F)
 					NormalSignal();
 		}
-		private void Activate() => _receptor.Execute();
 		private void NormalSignal()
 		{
 			if (_onlyOneActivation)
@@ -56,7 +55,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					if (_signalActivator == activator1X1 && !_usedActivators.Contains(activator1X1))
 					{
 						_usedActivators.Add(activator1X1);
-						Activate();
+						_receptor.Execute();
 						return;
 					}
 			}
@@ -68,7 +67,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				if (_signals >= _quantityNeeded)
 				{
 					_signals = 0;
-					Activate();
+					_receptor.Execute();
 				}
 			}
 			else if (_oneNeeded)
@@ -76,7 +75,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				foreach (Activator activator in _activators)
 					if (activator == _signalActivator)
 					{
-						Activate();
+						_receptor.Execute();
 						if (_oneActivation)
 							_onlyOneActivation = true;
 						return;
@@ -90,7 +89,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				if (_signals >= _activators.Length)
 				{
 					_signals = 0;
-					Activate();
+					_receptor.Execute();
 				}
 			}
 		}
