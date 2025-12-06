@@ -68,6 +68,7 @@ namespace GwambaPrimeAdventure.Character
 		private bool _hopActive = false;
 		private bool _isHoping = false;
 		private bool _fallStarted = false;
+		private bool _keepGroundDash = false;
 		private bool _invencibility = false;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
@@ -213,6 +214,8 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Interaction.Disable();
 			_rigidbody.simulated = false;
 			_movementAction = 0F;
+			if (_dashSlideEvent is not null && _isOnGround)
+				_keepGroundDash = true;
 		}
 		private IEnumerator Start()
 		{
@@ -361,7 +364,7 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(DashSlide, (_dashSlideEvent = null) is not null);
 						_animator.SetBool(AttackSlide, false);
 					}
-			}
+				}
 		}
 		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y));
 		private void JumpInput(InputAction.CallbackContext jump)
@@ -700,7 +703,7 @@ namespace GwambaPrimeAdventure.Character
 				if (_comboAttackBuffer)
 					StartAttackSound();
 			}
-			(_isOnGround, _canDownStairs) = (false, _isOnGround);
+			(_isOnGround, _canDownStairs) = (_keepGroundDash, _isOnGround);
 		}
 		private void OnCollisionStay2D(Collision2D collision)
 		{
@@ -709,6 +712,8 @@ namespace GwambaPrimeAdventure.Character
 			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2F) * -transform.up.y);
 			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
+			if (_keepGroundDash)
+				_keepGroundDash = false;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
