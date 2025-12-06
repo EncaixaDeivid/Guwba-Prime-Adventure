@@ -601,7 +601,7 @@ namespace GwambaPrimeAdventure.Character
 									if (lineCast.collider == _castHit.collider)
 									{
 										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
-										transform.position = new Vector3(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x, 0F);
+										transform.position = new Vector2(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x);
 										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 										break;
 									}
@@ -671,7 +671,7 @@ namespace GwambaPrimeAdventure.Character
 					}
 					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * _downStairsQueryLimit);
 					if (_downStairs)
-						transform.position = new Vector3(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance, 0F);
+						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
 				}
 				if (_airJumpEvent is not null)
 					_airJumpEvent.MoveNext();
