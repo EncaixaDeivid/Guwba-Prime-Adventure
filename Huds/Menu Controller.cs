@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using System;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
@@ -71,17 +70,17 @@ namespace GwambaPrimeAdventure.Hud
 			_inputController.Commands.HideHud.Disable();
 			_inputController.Dispose();
 		}
-		private Action<InputAction.CallbackContext> HideHud => _ => Back.Invoke();
-		private Action Play => () =>
+		private void HideHud(InputAction.CallbackContext hideHud) => Back();
+		private void Play()
 		{
 			_menuHud.Buttons.style.display = DisplayStyle.None;
 			_menuHud.Saves.style.display = DisplayStyle.Flex;
 			_isPlay = true;
 			ConfigurationController.Instance.SetActive(false);
-		};
-		private Action OpenConfigurations => () => ConfigurationController.Instance.OpenCloseConfigurations();
-		private Action Quit => () => Application.Quit();
-		private Action Back => () =>
+		}
+		private void OpenConfigurations() => ConfigurationController.Instance.OpenCloseConfigurations();
+		private void Quit() => Application.Quit();
+		private void Back()
 		{
 			if (!_isPlay)
 				return;
@@ -89,11 +88,11 @@ namespace GwambaPrimeAdventure.Hud
 			_menuHud.Buttons.style.display = DisplayStyle.Flex;
 			_isPlay = false;
 			ConfigurationController.Instance.SetActive(true);
-		};
-		private EventCallback<ChangeEvent<string>> ChangeName1 => write => SaveController.RenameData(1, write.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName2 => write => SaveController.RenameData(2, write.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName3 => write => SaveController.RenameData(3, write.newValue);
-		private EventCallback<ChangeEvent<string>> ChangeName4 => write => SaveController.RenameData(4, write.newValue);
+		}
+		private void ChangeName1(ChangeEvent<string> write) => SaveController.RenameData(1, write.newValue);
+		private void ChangeName2(ChangeEvent<string> write)=> SaveController.RenameData(2, write.newValue);
+		private void ChangeName3(ChangeEvent<string> write) => SaveController.RenameData(3, write.newValue);
+		private void ChangeName4(ChangeEvent<string> write) => SaveController.RenameData(4, write.newValue);
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
@@ -106,13 +105,13 @@ namespace GwambaPrimeAdventure.Hud
 				SettingsController.WriteSave(settings);
 			}
 		}
-		private Action SelectSaveFile1 => () => SetSaveFile(1);
-		private Action SelectSaveFile2 => () => SetSaveFile(2);
-		private Action SelectSaveFile3 => () => SetSaveFile(3);
-		private Action SelectSaveFile4 => () => SetSaveFile(4);
-		private Action DeleteSaveFile1 => () => _menuHud.SaveName[0].value = SaveController.DeleteData(1);
-		private Action DeleteSaveFile2 => () => _menuHud.SaveName[1].value = SaveController.DeleteData(2);
-		private Action DeleteSaveFile3 => () => _menuHud.SaveName[2].value = SaveController.DeleteData(3);
-		private Action DeleteSaveFile4 => () => _menuHud.SaveName[3].value = SaveController.DeleteData(4);
+		private void SelectSaveFile1() => SetSaveFile(1);
+		private void SelectSaveFile2() => SetSaveFile(2);
+		private void SelectSaveFile3() => SetSaveFile(3);
+		private void SelectSaveFile4() => SetSaveFile(4);
+		private void DeleteSaveFile1() => _menuHud.SaveName[0].value = SaveController.DeleteData(1);
+		private void DeleteSaveFile2() => _menuHud.SaveName[1].value = SaveController.DeleteData(2);
+		private void DeleteSaveFile3() => _menuHud.SaveName[2].value = SaveController.DeleteData(3);
+		private void DeleteSaveFile4() => _menuHud.SaveName[3].value = SaveController.DeleteData(4);
 	};
 };
