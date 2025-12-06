@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace GwambaPrimeAdventure.Enemy
 {
-	[RequireComponent(typeof(Transform), typeof(EnemyController))]
+	[RequireComponent(typeof(Transform), typeof(EnemyController), typeof(Collider2D))]
 	internal abstract class EnemyProvider : StateController, IDestructible
 	{
 		private EnemyController _controller;
