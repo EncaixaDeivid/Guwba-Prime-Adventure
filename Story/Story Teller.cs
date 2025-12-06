@@ -34,13 +34,21 @@ namespace GwambaPrimeAdventure.Story
 			_imageIndex = (ushort)(_imageIndex < _storySceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
 			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
 			yield return StartCoroutine(FadeImage(true));
-			while (_storySceneObject.SceneComponents[_imageIndex].OffDialog && !_storySceneObject.SceneComponents[_imageIndex].Equals(_storySceneObject.SceneComponents[^1]))
+			if (_storySceneObject.SceneComponents[_imageIndex].OffDialog)
 			{
 				yield return new WaitForSeconds(_storySceneObject.SceneComponents[_imageIndex].TimeToDesapear);
 				if (_storySceneObject.SceneComponents[_imageIndex].JumpToNext)
 					yield return StartCoroutine(NextSlide());
 			}
 		}
-		internal void CloseScene() => StartCoroutine(FadeImage(false));
+		internal void CloseScene()
+		{
+			StartCoroutine(DestroyScene());
+			IEnumerator DestroyScene()
+			{
+				yield return StartCoroutine(FadeImage(false));
+				Destroy(_storySceneHud.gameObject);
+			}
+		}
 	};
 };
