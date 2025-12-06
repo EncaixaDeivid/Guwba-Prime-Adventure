@@ -10,6 +10,7 @@ namespace GwambaPrimeAdventure.Story
 		private DialogHud _dialogHud;
 		private StoryTeller _storyTeller;
 		private Animator _animator;
+		private WaitForSeconds _dialogWait;
 		private readonly Sender _sender = Sender.Create();
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private string _text = "";
@@ -39,20 +40,21 @@ namespace GwambaPrimeAdventure.Story
 		}
 		private IEnumerator TextDigitation()
 		{
-			_dialogHud.CharacterIcon.style.backgroundImage = new StyleBackground(_dialogObject.Speachs[_speachIndex].Model);
-			_dialogHud.CharacterName.text = _dialogObject.Speachs[_speachIndex].CharacterName;
-			_text = _dialogObject.Speachs[_speachIndex].SpeachText;
-			_dialogHud.CharacterSpeach.text = "";
 			if (_nextSlide)
 			{
 				_nextSlide = false;
 				yield return StartCoroutine(_storyTeller.NextSlide());
 				_dialogHud.RootElement.style.display = DisplayStyle.Flex;
 			}
+			_dialogWait = new WaitForSeconds(_dialogTime);
+			_dialogHud.CharacterIcon.style.backgroundImage = new StyleBackground(_dialogObject.Speachs[_speachIndex].Model);
+			_dialogHud.CharacterName.text = _dialogObject.Speachs[_speachIndex].CharacterName;
+			_text = _dialogObject.Speachs[_speachIndex].SpeachText;
+			_dialogHud.CharacterSpeach.text = "";
 			foreach (char letter in _text.ToCharArray())
 			{
 				_dialogHud.CharacterSpeach.text += letter;
-				yield return new WaitForSeconds(_dialogTime);
+				yield return _dialogWait;
 			}
 		}
 		private void AdvanceSpeach()
