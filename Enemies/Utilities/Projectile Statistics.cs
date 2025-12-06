@@ -1,53 +1,219 @@
 using UnityEngine;
-using NaughtyAttributes;
-namespace GwambaPrimeAdventure.Enemy.Utility
+using Unity.Cinemachine;
+using System.Collections;
+using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
+using GwambaPrimeAdventure.Enemy.Utility;
+namespace GwambaPrimeAdventure.Enemy
 {
-	[CreateAssetMenu(fileName = "Enemy Projectile", menuName = "Enemy Statistics/Projectile", order = 11)]
-	public sealed class ProjectileStatistics : ScriptableObject
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D)), RequireComponent(typeof(CinemachineImpulseSource), typeof(Collider2D))]
+	internal sealed class EnemyProjectile : Projectile, IDestructible
 	{
-		[field: SerializeField, Tooltip("The second projectile this will instantiate."), Header("Projectile Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
-		public Projectile SecondProjectile { get; private set; }
-		[field: SerializeField, Tooltip("If this peojectile will move in side ways.")] public bool SideMovement { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile will move in the opposite way.")] public bool InvertSide { get; private set; }
-		[field: SerializeField, Tooltip("The angle the second projectile will be instantiated.")] public float BaseAngle { get; private set; }
-		[field: SerializeField, Tooltip("The angle the second projectile have to be spreaded.")] public float SpreadAngle { get; private set; }
-		[field: SerializeField, Tooltip("The amount of time this projectile will exists after fade away.")] public float TimeToFade { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile won't move.")] public bool StayInPlace { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The velocity of the screen shake when colliding on the scene.")] public Vector2 CollideShake { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will pursue the player endless.")] public bool EndlessPursue { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")] public ForceMode2D ForceMode { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")] public bool UseForce { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")] public bool ParabolicMovement { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The amount of speed this projectile will move.")] public float MovementSpeed { get; private set; }
-		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If the rotation of this projectile impacts its movement.")] public bool RotationMatter { get; private set; }
-		[field: SerializeField, Tooltip("If the rotation of this projectile will be used.")] public bool UseSelfRotation { get; private set; }
-		[field: SerializeField, Tooltip("The amount of speed the rotation spins.")] public float RotationSpeed { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] public bool UseQuantity { get; private set; }
-		[field: SerializeField, ShowIf(nameof(UseQuantity)), Tooltip("The amount of second projectiles to instantiate.")] public ushort QuantityToSummon { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile will instantiate another after its death.")] public bool InDeath { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InDeath)), Tooltip("The enemy that will be instantiate on death.")] public Control EnemyOnDeath { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile receives no type of damage.")] public bool NoDamage { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("If this projectile won't get stunned.")] public bool NoStun { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile won't hit at contact.")] public bool NoHit { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The velocity of the screen shake on the hurt.")] public Vector2 HurtShake { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("If this projectile won't die when hit.")] public bool NoDeathHit { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("If this projectile won't die when hit a wall.")] public bool NoDeathCollision { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of damage this projectile will cause to a target.")] public ushort Damage { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time this projectile will stun.")] public float StunTime { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time to stop the game when hit is given.")] public float HitStopTime { get; private set; }
-		[field: SerializeField, HideIf(nameof(NoHit)), Tooltip("The amount of time to slow the game when hit is given.")] public float HitSlowTime { get; private set; }
-		[field: SerializeField, Tooltip("If the second projectile will be instantiated in a cell."), Header("Cell Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
-		public bool InCell { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the second projectile will instantiate in a continuos sequence.")] public bool ContinuosSummon { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the instantiation of the second projectile will break after a moment.")] public bool UseBreak { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the instantiation of the second projectile will always break after the first.")] public bool AlwaysBreak { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the points of break are randomized between the maximum and minimum.")] public bool RandomBreak { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("If the break point is restricted at a specific break point.")] public bool ExtrictRandom { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The amount of cell points to jump the instantiation.")] public ushort JumpPoints { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The exact point where the break of the instantiantion start.")] public ushort BreakPoint { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The exact point where the instantiation returns.")] public ushort ReturnPoint { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The minimum value the break point can break.")] public ushort MinimumRandomValue { get; private set; }
-		[field: SerializeField, ShowIf(nameof(InCell)), Tooltip("The distance of the range ray to the instantiation.")] public float DistanceRay { get; private set; }
+		[Header("Projectile")]
+		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
+		public short Health => _vitality;
+		private new void Awake()
+		{
+			base.Awake();
+			_rigidbody = GetComponent<Rigidbody2D>();
+			_screenShaker = GetComponent<CinemachineImpulseSource>();
+		}
+		private new void OnDestroy()
+		{
+			base.OnDestroy();
+			StopAllCoroutines();
+		}
+		private void CommonInstance()
+		{
+			Quaternion rotation;
+			for (ushort i = 0; i < _statistics.QuantityToSummon; i++)
+			{
+				if (_statistics.UseSelfRotation)
+					rotation = Quaternion.AngleAxis(transform.eulerAngles.z + _statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
+				else
+					rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
+				Instantiate(_statistics.SecondProjectile, transform.position, rotation);
+			}
+		}
+		private void CellInstance()
+		{
+			if (_oldCellPosition != _cellPosition)
+			{
+				_oldCellPosition = _cellPosition;
+				if (_pointToJump == 0)
+				{
+					if (_pointToBreak >= _internalBreakPoint)
+						if (_pointToReturn++ >= _internalReturnPoint)
+						{
+							_pointToBreak = 0;
+							_breakInUse = _statistics.AlwaysBreak;
+						}
+					if (!_breakInUse || _pointToBreak < _internalBreakPoint)
+					{
+						if (_breakInUse)
+						{
+							_pointToBreak++;
+							_pointToReturn = 0;
+						}
+						_pointToJump = _statistics.JumpPoints;
+						Quaternion rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
+						if (_statistics.UseQuantity)
+							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation));
+						else
+							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation);
+						_angleMulti++;
+					}
+				}
+				else if (_pointToJump > 0)
+					_pointToJump--;
+			}
+		}
+		private void CellInstanceRange()
+		{
+			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, WorldBuild.SCENE_LAYER).distance;
+			if (_statistics.UseQuantity)
+				distance = _statistics.QuantityToSummon;
+			for (ushort i = 0; i < distance; i++)
+			{
+				_cellPosition.Set((int)(_cellPosition.x + transform.up.x), (int)(_cellPosition.y + transform.up.y));
+				CellInstance();
+			}
+		}
+		private IEnumerator ParabolicProjectile()
+		{
+			float time = 0F;
+			float x;
+			float y;
+			while (time > _statistics.TimeToFade)
+			{
+				time += Time.fixedDeltaTime;
+				x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
+				y = Mathf.Sin(_statistics.BaseAngle * Mathf.Deg2Rad);
+				_rigidbody.MovePosition(_statistics.MovementSpeed * time * new Vector2(x, y - 5E-1F * -Physics2D.gravity.y * Mathf.Pow(time, 2)));
+				yield return null;
+			}
+			_parabolicEvent = null;
+		}
+		private void Start()
+		{
+			_vitality = (short)_statistics.Vitality;
+			_pointToJump = _statistics.JumpPoints;
+			_breakInUse = _statistics.UseBreak;
+			_internalBreakPoint = _statistics.BreakPoint;
+			_internalReturnPoint = _statistics.ReturnPoint;
+			_deathTimer = _statistics.TimeToFade;
+			if (_statistics.RandomBreak)
+			{
+				_internalBreakPoint = (ushort)Random.Range(_statistics.BreakPoint, _statistics.ReturnPoint - _statistics.MinimumRandomValue);
+				if (_internalReturnPoint - _internalBreakPoint < _statistics.MinimumRandomValue)
+					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
+						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+							_internalReturnPoint++;
+						else
+							_internalBreakPoint--;
+				else if (_statistics.ExtrictRandom && _internalReturnPoint - _internalBreakPoint > _statistics.MinimumRandomValue)
+					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
+						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+							_internalBreakPoint++;
+						else
+							_internalReturnPoint--;
+			}
+			_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
+			_oldCellPosition = _cellPosition;
+			if (_statistics.SideMovement)
+				transform.rotation = Quaternion.AngleAxis(_statistics.InvertSide ? 90F : -90F, Vector3.forward);
+			if (_statistics.SecondProjectile && _statistics.InCell && !_statistics.ContinuosSummon)
+				CellInstanceRange();
+			else if (_statistics.SecondProjectile && !_statistics.InCell && !_statistics.InDeath)
+				CommonInstance();
+			if (!_statistics.StayInPlace)
+				if (_statistics.UseForce)
+					_rigidbody.AddForce((_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed, _statistics.ForceMode);
+				else if (!_statistics.RotationMatter)
+					_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
+		}
+		private void Death()
+		{
+			if (_statistics.InDeath)
+				if (_statistics.EnemyOnDeath)
+					Instantiate(_statistics.EnemyOnDeath, transform.position, _statistics.EnemyOnDeath.transform.rotation);
+				else if (_statistics.SecondProjectile)
+					if (_statistics.InCell)
+					{
+						_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
+						CellInstanceRange();
+					}
+					else
+						CommonInstance();
+			Destroy(gameObject);
+		}
+		private void Update()
+		{
+			if (_rigidbody.IsSleeping())
+				if ((_stunTimer -= Time.deltaTime) <= 0F)
+					_rigidbody.WakeUp();
+			if ((_deathTimer -= Time.deltaTime) <= 0F)
+				Death();
+		}
+		private void FixedUpdate()
+		{
+			if (_rigidbody.IsSleeping())
+				return;
+			if (_statistics.EndlessPursue)
+			{
+				transform.TurnScaleX(GwambaStateMarker.Localization.x < transform.position.x);
+				transform.up = Vector2.MoveTowards(transform.up, (GwambaStateMarker.Localization - (Vector2)transform.position).normalized, Time.fixedDeltaTime * _statistics.RotationSpeed);
+				_rigidbody.linearVelocity = transform.up * _statistics.MovementSpeed;
+				return;
+			}
+			if (_statistics.SecondProjectile && _statistics.InCell && _statistics.ContinuosSummon)
+			{
+				if (_statistics.UseQuantity && _statistics.QuantityToSummon == _projectiles.Count || _statistics.StayInPlace)
+					return;
+				_cellPosition.Set((int)transform.position.x, (int)transform.position.y);
+				CellInstance();
+			}
+			_rigidbody.rotation += _statistics.RotationSpeed * Time.fixedDeltaTime;
+			if (_statistics.ParabolicMovement)
+				if (_parabolicEvent is null)
+					_parabolicEvent = ParabolicProjectile();
+				else
+					_parabolicEvent?.MoveNext();
+			else if (!_statistics.StayInPlace && _statistics.RotationMatter)
+				_rigidbody.linearVelocity = (_statistics.InvertSide ? -transform.up : transform.up) * _statistics.MovementSpeed;
+		}
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (_statistics.NoHit)
+				return;
+			if (other.TryGetComponent<IDestructible>(out var destructible) && destructible.Hurt(_statistics.Damage))
+			{
+				destructible.Stun(_statistics.Damage, _statistics.StunTime);
+				_screenShaker.GenerateImpulse(_statistics.HurtShake);
+				EffectsController.HitStop(_statistics.HitStopTime, _statistics.HitSlowTime);
+				if (!_statistics.NoDeathHit)
+					Death();
+			}
+			else if (!_statistics.NoDeathCollision)
+			{
+				_screenShaker.GenerateImpulse(_statistics.CollideShake);
+				Death();
+			}
+		}
+		public bool Hurt(ushort damage)
+		{
+			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0)
+				return false;
+			if ((_vitality -= (short)damage) <= 0)
+				Death();
+			return true;
+		}
+		public void Stun(ushort stunStength, float stunTime)
+		{
+			if (_rigidbody.IsSleeping())
+				return;
+			_rigidbody.Sleep();
+			_stunTimer = stunTime;
+		}
 	};
 };
