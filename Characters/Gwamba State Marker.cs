@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Character
 		private IEnumerator _dashSlideEvent;
 		private Vector2 _originCast = Vector2.zero;
 		private Vector2 _sizeCast = Vector2.zero;
-		private Vector2 _velocityGuarded = Vector2.zero;
+		private Vector2 _guardedLinearVelocity = Vector2.zero;
 		private Vector2 _surfaceLocal = Vector2.zero;
 		private Vector3 _jokerValue = Vector3.zero;
 		private RaycastHit2D _castHit;
@@ -205,7 +205,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
-			_rigidbody.linearVelocity = _velocityGuarded;
+			_rigidbody.linearVelocity = _guardedLinearVelocity;
 			_rigidbody.WakeUp();
 		}
 		private void DisableInputs()
@@ -214,7 +214,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Disable();
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
-			_velocityGuarded = _rigidbody.linearVelocity;
+			_guardedLinearVelocity = _rigidbody.linearVelocity;
 			_movementAction = 0F;
 			_rigidbody.Sleep();
 		}
@@ -601,7 +601,7 @@ namespace GwambaPrimeAdventure.Character
 									if (lineCast.collider == _castHit.collider)
 									{
 										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
-										transform.position.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x, 0F);
+										transform.position = new Vector3(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x, 0F);
 										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 										break;
 									}
@@ -671,7 +671,7 @@ namespace GwambaPrimeAdventure.Character
 					}
 					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * _downStairsQueryLimit);
 					if (_downStairs)
-						transform.position.Set(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance, 0F);
+						transform.position = new Vector3(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance, 0F);
 				}
 				if (_airJumpEvent is not null)
 					_airJumpEvent.MoveNext();
