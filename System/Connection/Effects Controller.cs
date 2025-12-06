@@ -80,7 +80,6 @@ namespace GwambaPrimeAdventure.Connection
 						return isActiveAndEnabled;
 					});
 				}
-				InfoLogger.Informer.LogInfo(source);
 				Destroy(source.gameObject);
 			}
 		}
