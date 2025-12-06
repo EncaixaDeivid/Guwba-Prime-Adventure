@@ -71,37 +71,35 @@ namespace GwambaPrimeAdventure.Hud
 			if (_bossScene != null && SceneManager.GetActiveScene().name == _bossScene)
 				GetComponent<Transitioner>().Transicion(_bossScene);
 			else
-			{
 				StartCoroutine(Curtain());
-				IEnumerator Curtain()
-				{
-					_deathScreenHud.Text.style.display = DisplayStyle.None;
-					_deathScreenHud.Continue.style.display = DisplayStyle.None;
-					_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
-					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
-					_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
-					for (float i = 0F; _deathScreenHud.Curtain.style.opacity.value < 1F; i += 5E-2F)
-						yield return _deathScreenHud.Curtain.style.opacity = i;
-					_sender.SetToggle(true);
-					_sender.SetFormat(MessageFormat.Event);
-					_sender.Send(MessagePath.System);
-					_sender.Send(MessagePath.Character);
-					_sender.SetFormat(MessageFormat.State);
-					_sender.Send(MessagePath.Item);
-					for (float i = 1F; _deathScreenHud.Curtain.style.opacity.value > 0F; i -= 5E-2F)
-						yield return _deathScreenHud.Curtain.style.opacity = i;
-					_sender.Send(MessagePath.Character);
-					_sender.SetFormat(MessageFormat.None);
-					_sender.Send(MessagePath.Enemy);
-					ConfigurationController.Instance.SetActive(true);
-					_deathScreenHud.RootElement.style.display = DisplayStyle.None;
-					_deathScreenHud.Text.text = "You have died";
-					_deathScreenHud.Text.style.display = DisplayStyle.Flex;
-					_deathScreenHud.Continue.style.display = DisplayStyle.Flex;
-					_deathScreenHud.OutLevel.style.display = DisplayStyle.Flex;
-					_deathScreenHud.GameOver.style.display = DisplayStyle.None;
-					_deathScreenHud.Curtain.style.display = DisplayStyle.None;
-				}
+			IEnumerator Curtain()
+			{
+				_deathScreenHud.Text.style.display = DisplayStyle.None;
+				_deathScreenHud.Continue.style.display = DisplayStyle.None;
+				_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
+				_deathScreenHud.GameOver.style.display = DisplayStyle.None;
+				_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
+				for (float i = 0F; _deathScreenHud.Curtain.style.opacity.value < 1F; i += 5E-2F)
+					yield return _deathScreenHud.Curtain.style.opacity = i;
+				_sender.SetToggle(true);
+				_sender.SetFormat(MessageFormat.Event);
+				_sender.Send(MessagePath.System);
+				_sender.Send(MessagePath.Character);
+				_sender.SetFormat(MessageFormat.State);
+				_sender.Send(MessagePath.Item);
+				for (float i = 1F; _deathScreenHud.Curtain.style.opacity.value > 0F; i -= 5E-2F)
+					yield return _deathScreenHud.Curtain.style.opacity = i;
+				_sender.Send(MessagePath.Character);
+				_sender.SetFormat(MessageFormat.None);
+				_sender.Send(MessagePath.Enemy);
+				ConfigurationController.Instance.SetActive(true);
+				_deathScreenHud.RootElement.style.display = DisplayStyle.None;
+				_deathScreenHud.Text.text = "You have died";
+				_deathScreenHud.Text.style.display = DisplayStyle.Flex;
+				_deathScreenHud.Continue.style.display = DisplayStyle.Flex;
+				_deathScreenHud.OutLevel.style.display = DisplayStyle.Flex;
+				_deathScreenHud.GameOver.style.display = DisplayStyle.None;
+				_deathScreenHud.Curtain.style.display = DisplayStyle.None;
 			}
 		};
 		private Action OutLevel => () => GetComponent<Transitioner>().Transicion(_levelSelectorScene);
