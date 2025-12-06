@@ -55,6 +55,11 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				_tilemapCollider.enabled = _fadeActivation;
 			}
 		}
+		private void FixedUpdate()
+		{
+			if (_follow)
+				_followLight.transform.position = GwambaStateMarker.Localization;
+		}
 		private IEnumerator Fade(bool appear)
 		{
 			bool onFirst = false;
@@ -121,11 +126,6 @@ namespace GwambaPrimeAdventure.Item.EventItem
 					StartCoroutine(_otherPlace.Fade(true));
 				else if (!_otherPlace._fadeFirst && !_otherPlace._activation)
 					StartCoroutine(_otherPlace.Fade(false));
-		}
-		private void FixedUpdate()
-		{
-			if (_follow)
-				_followLight.transform.position = GwambaStateMarker.Localization;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
