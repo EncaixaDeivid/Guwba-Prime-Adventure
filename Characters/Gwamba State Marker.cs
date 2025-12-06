@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -274,10 +273,10 @@ namespace GwambaPrimeAdventure.Character
 			}
 			transform.TurnScaleX(_turnLeft);
 			_gravityScale = _rigidbody.gravityScale;
-			SceneLoaded.Invoke(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+			SceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 			yield return null;
 		}
-		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		private void SceneLoaded(Scene scene, LoadSceneMode loadMode)
 		{
 			if (scene.name == _menuScene)
 			{
@@ -298,7 +297,7 @@ namespace GwambaPrimeAdventure.Character
 					bunnyHop.style.display = DisplayStyle.None;
 				_gwambaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
-		};
+		}
 		private void MovementInput(InputAction.CallbackContext movement)
 		{
 			if (!isActiveAndEnabled || _animator.GetBool(Stun))
