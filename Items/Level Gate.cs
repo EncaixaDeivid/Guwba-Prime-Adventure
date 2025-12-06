@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Cinemachine;
-using System;
 using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
@@ -51,9 +50,9 @@ namespace GwambaPrimeAdventure.Item
 			_defaultPriority = (short)_gateCamera.Priority.Value;
 			yield return null;
 		}
-		private Action EnterLevel => () => GetComponent<Transitioner>().Transicion(_levelScene);
-		private Action EnterBoss => () => GetComponent<Transitioner>().Transicion(_bossScene);
-		private Action ShowScenes => () => _sender.Send(MessagePath.Story);
+		private void EnterLevel() => GetComponent<Transitioner>().Transicion(_levelScene);
+		private void EnterBoss() => GetComponent<Transitioner>().Transicion(_bossScene);
+		private void ShowScenes() => _sender.Send(MessagePath.Story);
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (!_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
