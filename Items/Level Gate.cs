@@ -2,12 +2,12 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System;
 using System.Collections;
-using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Character;
+using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(BoxCollider2D)), RequireComponent(typeof(Transitioner), typeof(IInteractable))]
-	internal sealed class LevelGate : MonoBehaviour, IInteractable
+	internal sealed class LevelGate : MonoBehaviour, ILoader, IInteractable
 	{
 		private LevelGateHud _levelGate;
 		private CinemachineCamera _gateCamera;
@@ -36,9 +36,8 @@ namespace GwambaPrimeAdventure.Item
 			if (saveFile.DeafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
 				_levelGate.Scenes.clicked -= ShowScenes;
 		}
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_levelGate.transform.localPosition = _offsetPosition;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
@@ -50,6 +49,7 @@ namespace GwambaPrimeAdventure.Item
 			_levelGate.Boss.SetEnabled(false);
 			_levelGate.Scenes.SetEnabled(false);
 			_defaultPriority = (short)_gateCamera.Priority.Value;
+			yield return null;
 		}
 		private Action EnterLevel => () => GetComponent<Transitioner>().Transicion(_levelScene);
 		private Action EnterBoss => () => GetComponent<Transitioner>().Transicion(_bossScene);
