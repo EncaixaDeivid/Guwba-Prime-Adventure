@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Unity.Cinemachine;
-using System;
 using System.Collections;
 using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
@@ -300,7 +299,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.FallDamageText.style.display = DisplayStyle.None;
 			}
 		};
-		private Action<InputAction.CallbackContext> MovementInput => movement =>
+		private void MovementInput(InputAction.CallbackContext movement)
 		{
 			if (!isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
@@ -364,9 +363,9 @@ namespace GwambaPrimeAdventure.Character
 						_animator.SetBool(AttackSlide, false);
 					}
 			}
-		};
+		}
 		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y));
-		private Action<InputAction.CallbackContext> JumpInput => jump =>
+		private void JumpInput(InputAction.CallbackContext jump)
 		{
 			if (jump.started)
 			{
@@ -383,8 +382,8 @@ namespace GwambaPrimeAdventure.Character
 				(_isJumping, _lastJumpTime) = (false, 0F);
 				_rigidbody.AddForceY(_rigidbody.linearVelocityY * _jumpCut * -_rigidbody.mass, ForceMode2D.Impulse);
 			}
-		};
-		private Action<InputAction.CallbackContext> AttackUseInput => attackUse =>
+		}
+		private void AttackUseInput(InputAction.CallbackContext attackUse)
 		{
 			if ((_attackDelay > 0F && !_comboAttackBuffer) || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || !isActiveAndEnabled || _animator.GetBool(Stun))
 				return;
@@ -392,9 +391,9 @@ namespace GwambaPrimeAdventure.Character
 				_animator.SetTrigger(Attack);
 			if (attackUse.canceled && _comboAttackBuffer)
 				_animator.SetTrigger(AttackCombo);
-		};
+		}
 		private void StartAttackSound() => EffectsController.SoundEffect(_attackSound, transform.position);
-		private Action<InputAction.CallbackContext> InteractionInput => interaction =>
+		private void InteractionInput(InputAction.CallbackContext interaction)
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
@@ -406,8 +405,8 @@ namespace GwambaPrimeAdventure.Character
 						interactable.Interaction();
 					return;
 				}
-		};
-		public Predicate<ushort> DamagerHurt => damage =>
+		}
+		public bool DamagerHurt(ushort damage)
 		{
 			if (_invencibility || damage <= 0)
 				return false;
@@ -450,8 +449,8 @@ namespace GwambaPrimeAdventure.Character
 				return true;
 			}
 			return true;
-		};
-		public UnityAction<ushort, float> DamagerStun => (stunStrength, stunTime) =>
+		}
+		public void DamagerStun(ushort stunStrength, float stunTime)
 		{
 			_stunResistance -= (short)stunStrength;
 			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0 ? _stunResistance : 0); i--)
@@ -467,8 +466,8 @@ namespace GwambaPrimeAdventure.Character
 				EffectsController.SoundEffect(_stunSound, transform.position);
 				DisableInputs();
 			}
-		};
-		private UnityAction<GwambaDamager, IDestructible> DamagerAttack => (gwambaDamager, destructible) =>
+		}
+		private void DamagerAttack(GwambaDamager gwambaDamager, IDestructible destructible)
 		{
 			if (destructible.Hurt(gwambaDamager.AttackDamage))
 			{
@@ -504,7 +503,7 @@ namespace GwambaPrimeAdventure.Character
 							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BorderColor);
 					}
 			}
-		};
+		}
 		private void Update()
 		{
 			if (_invencibility)
@@ -570,7 +569,7 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
-						DamagerHurt.Invoke((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
+						DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
 						EffectsController.SurfaceSound(new Vector2(transform.position.x, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
 						(_fallStarted, _fallDamage) = (false, 0F);
 						if (_invencibility && _fadeTimer <= 0F)
