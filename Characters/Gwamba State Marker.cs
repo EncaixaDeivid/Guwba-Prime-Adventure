@@ -24,9 +24,11 @@ namespace GwambaPrimeAdventure.Character
 		private readonly Sender _sender = Sender.Create();
 		private IEnumerator _airJumpEvent;
 		private IEnumerator _dashSlideEvent;
-		private Vector2 _originCast;
-		private Vector2 _sizeCast;
-		private Vector3 _jokerValue;
+		private Vector2 _originCast = Vector2.one;
+		private Vector2 _sizeCast = Vector2.one;
+		private Vector2 _airJumpGuardedForce = Vector2.one;
+		private Vector2 _surfaceLocal = Vector2.one;
+		private Vector3 _jokerValue = Vector3.one;
 		private RaycastHit2D _castHit;
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private readonly int Idle = Animator.StringToHash(nameof(Idle));
@@ -68,7 +70,6 @@ namespace GwambaPrimeAdventure.Character
 		private bool _hopActive = false;
 		private bool _isHoping = false;
 		private bool _fallStarted = false;
-		private bool _keepGroundDash = false;
 		private bool _invencibility = false;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Control"), Tooltip("The scene of the hubby world.")] private SceneField _hubbyWorldScene;
@@ -204,7 +205,9 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
-			_rigidbody.simulated = true;
+			if (_airJumpEvent is not null)
+				_rigidbody.linearVelocity = _airJumpGuardedForce;
+			_rigidbody.WakeUp();
 		}
 		private void DisableInputs()
 		{
@@ -212,10 +215,10 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Disable();
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
-			_rigidbody.simulated = false;
+			if (_airJumpEvent is not null)
+				_airJumpGuardedForce = _rigidbody.linearVelocity;
+			_rigidbody.Sleep();
 			_movementAction = 0F;
-			if (_dashSlideEvent is not null && _isOnGround)
-				_keepGroundDash = true;
 		}
 		private IEnumerator Start()
 		{
@@ -325,8 +328,8 @@ namespace GwambaPrimeAdventure.Character
 							StartAttackSound();
 						while (!_isOnGround)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
-							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
+							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
+							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _airJumpEvent is null)
@@ -352,8 +355,8 @@ namespace GwambaPrimeAdventure.Character
 							StartAttackSound();
 						while (Mathf.Abs(transform.position.x - _jokerValue.z) < _dashDistance)
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
-							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
+							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
+							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
 							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 								EffectsController.SurfaceSound(_castHit.point);
 							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death) || _dashSlideEvent is null)
@@ -366,7 +369,11 @@ namespace GwambaPrimeAdventure.Character
 					}
 				}
 		}
-		private void FootStepSound(float stepPositionX) => EffectsController.SurfaceSound(new Vector2(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y));
+		private void FootStepSound(float stepPositionX)
+		{
+			_surfaceLocal.Set(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y);
+			EffectsController.SurfaceSound(_surfaceLocal);
+		}
 		private void JumpInput(InputAction.CallbackContext jump)
 		{
 			if (jump.started)
@@ -572,7 +579,8 @@ namespace GwambaPrimeAdventure.Character
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-						EffectsController.SurfaceSound(new Vector2(transform.position.x, transform.position.y - _collider.bounds.extents.y - WorldBuild.SNAP_LENGTH));
+						_surfaceLocal.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
+						EffectsController.SurfaceSound(_surfaceLocal);
 						(_fallStarted, _fallDamage) = (false, 0F);
 						if (_invencibility && _fadeTimer <= 0F)
 							_fadeTimer = _timeToFadeShow;
@@ -581,21 +589,21 @@ namespace GwambaPrimeAdventure.Character
 					}
 					if (_movementAction != 0F)
 					{
-						_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - _bottomStairsChecker.x);
-						_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _bottomStairsChecker.y - WorldBuild.SNAP_LENGTH);
+						_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - _bottomStairsChecker.x);
+						_sizeCast.Set(WorldBuild.SNAP_LENGTH, _bottomStairsChecker.y - WorldBuild.SNAP_LENGTH);
 						if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 						{
-							_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y + _topStairsChecker.x);
-							_sizeCast = new Vector2(WorldBuild.SNAP_LENGTH, _topStairsChecker.y - WorldBuild.SNAP_LENGTH);
+							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y + _topStairsChecker.x);
+							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _topStairsChecker.y - WorldBuild.SNAP_LENGTH);
 							if (!Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 							{
-								_originCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
-								_sizeCast = new Vector2(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
+								_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
+								_sizeCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
 								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, WorldBuild.SCENE_LAYER))
 									if (lineCast.collider == _castHit.collider)
 									{
 										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
-										transform.position = new Vector2(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x);
+										transform.position.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x, 0F);
 										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 										break;
 									}
@@ -659,13 +667,13 @@ namespace GwambaPrimeAdventure.Character
 					do
 					{
 						_jokerValue.x += WorldBuild.SNAP_LENGTH;
-						_originCast = new Vector2(Local.x - (_collider.bounds.extents.x - _jokerValue.x) * _movementAction, Local.y - _collider.bounds.extents.y);
+						_originCast.Set(Local.x - (_collider.bounds.extents.x - _jokerValue.x) * _movementAction, Local.y - _collider.bounds.extents.y);
 						_castHit = Physics2D.Raycast(_originCast, -transform.up, 1F + WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
 						_downStairs = _castHit && Mathf.Round((transform.position.y - _collider.bounds.extents.y) * 10F) / 10F != Mathf.Round(_castHit.point.y * 10F) / 10F;
 					}
 					while (!_downStairs && _jokerValue.x < WorldBuild.SNAP_LENGTH * _downStairsQueryLimit);
 					if (_downStairs)
-						transform.position = new Vector2(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance);
+						transform.position.Set(transform.position.x + _jokerValue.x * _movementAction, transform.position.y - _castHit.distance, 0F);
 				}
 				if (_airJumpEvent is not null)
 					_airJumpEvent.MoveNext();
@@ -703,17 +711,15 @@ namespace GwambaPrimeAdventure.Character
 				if (_comboAttackBuffer)
 					StartAttackSound();
 			}
-			(_isOnGround, _canDownStairs) = (_keepGroundDash, _isOnGround);
+			(_isOnGround, _canDownStairs) = (false, _isOnGround);
 		}
 		private void OnCollisionStay2D(Collision2D collision)
 		{
 			if (!_instance || _instance != this)
 				return;
-			_originCast = new Vector2(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2F) * -transform.up.y);
-			_sizeCast = new Vector2(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
+			_originCast.Set(Local.x, Local.y + (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2F) * -transform.up.y);
+			_sizeCast.Set(_collider.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
 			_isOnGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
-			if (_keepGroundDash)
-				_keepGroundDash = false;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
