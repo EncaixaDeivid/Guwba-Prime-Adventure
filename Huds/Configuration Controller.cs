@@ -97,6 +97,10 @@ namespace GwambaPrimeAdventure.Hud
 			_configurationHud.MusicVolume.RegisterValueChangedCallback(MusicVolume);
 			_configurationHud.Yes.clicked += YesBackLevel;
 			_configurationHud.No.clicked += NoBackLevel;
+			SettingsController.Load(out Settings settings);
+			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume) * 20F);
+			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume) * 20F);
+			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume) * 20F);
 			DontDestroyOnLoad(gameObject);
 		}
 		private IEnumerator StartLoad()
