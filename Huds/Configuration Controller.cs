@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
@@ -105,95 +104,95 @@ namespace GwambaPrimeAdventure.Hud
 			_configurationHud.RootElement.style.display = DisplayStyle.None;
 			yield return new WaitUntil(() => _isActive = !SceneInitiator.IsInTrancision());
 		}
-		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) => StartCoroutine(StartLoad());
-		private Action<InputAction.CallbackContext> HideHudAction => _ => OpenCloseConfigurations();
-		private Action CloseConfigurations => () =>
+		private void SceneLoaded(Scene scene, LoadSceneMode loadMode) => StartCoroutine(StartLoad());
+		private void HideHudAction(InputAction.CallbackContext hideHud) => OpenCloseConfigurations();
+		private void CloseConfigurations()
 		{
 			_configurationHud.RootElement.style.display = DisplayStyle.None;
 			StateController.SetState(true);
-		};
-		private Action OutLevel => () =>
+		}
+		private void OutLevel()
 		{
 			_configurationHud.Settings.style.display = DisplayStyle.None;
 			_configurationHud.Confirmation.style.display = DisplayStyle.Flex;
-		};
-		private Action SaveGame => () => SaveController.SaveData();
-		private EventCallback<ChangeEvent<string>> ScreenResolution => resolution =>
+		}
+		private void SaveGame() => SaveController.SaveData();
+		private void ScreenResolution(ChangeEvent<string> resolution)
 		{
 			SettingsController.Load(out Settings settings);
 			Span<string> dimensions = resolution.newValue.Split(new char[] { 'x', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			settings.ScreenResolution = new Vector2Int(ushort.Parse(dimensions[0]), ushort.Parse(dimensions[1]));
 			Screen.SetResolution(settings.ScreenResolution.x, settings.ScreenResolution.y, settings.FullScreenMode);
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<string>> FullScreenModes => screenMode =>
+		}
+		private void FullScreenModes(ChangeEvent<string> screenMode)
 		{
 			SettingsController.Load(out Settings settings);
 			Screen.fullScreenMode = settings.FullScreenMode = Enum.Parse<FullScreenMode>(screenMode.newValue);
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> DialogToggle => toggle =>
+		}
+		private void DialogToggle(ChangeEvent<bool> toggle)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.DialogToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> GeneralVolumeToggle => toggle =>
+		}
+		private void GeneralVolumeToggle(ChangeEvent<bool> toggle)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.GeneralVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> EffectsVolumeToggle => toggle =>
+		}
+		private void EffectsVolumeToggle(ChangeEvent<bool> toggle)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.EffectsVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> MusicVolumeToggle => toggle =>
+		}
+		private void MusicVolumeToggle(ChangeEvent<bool> toggle)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.MusicVolumeToggle = toggle.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<bool>> InfinityFPS => toggle =>
+		}
+		private void InfinityFPS(ChangeEvent<bool> toggle)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.InfinityFPS = toggle.newValue;
 			Application.targetFrameRate = settings.InfinityFPS ? -1 : settings.FrameRate;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> DialogSpeed => value =>
+		}
+		private void DialogSpeed(ChangeEvent<float> value)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.DialogSpeed = value.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> ScreenBrightness => brightness =>
+		}
+		private void ScreenBrightness(ChangeEvent<float> brightness)
 		{
 			SettingsController.Load(out Settings settings);
 			Screen.brightness = settings.ScreenBrightness = brightness.newValue;
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> GeneralVolume => volume =>
+		}
+		private void GeneralVolume(ChangeEvent<float> volume)
 		{
 			SettingsController.Load(out Settings settings);
 			_mixer.SetFloat(nameof(GeneralVolume), Mathf.Log10(settings.GeneralVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> EffectsVolume => volume =>
+		}
+		private void EffectsVolume(ChangeEvent<float> volume)
 		{
 			SettingsController.Load(out Settings settings);
 			_mixer.SetFloat(nameof(EffectsVolume), Mathf.Log10(settings.EffectsVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<float>> MusicVolume => volume =>
+		}
+		private void MusicVolume(ChangeEvent<float> volume)
 		{
 			SettingsController.Load(out Settings settings);
 			_mixer.SetFloat(nameof(MusicVolume), Mathf.Log10(settings.MusicVolume = volume.newValue) * 20F);
 			SettingsController.WriteSave(settings);
-		};
-		private EventCallback<ChangeEvent<int>> FrameRate => frameRate =>
+		}
+		private void FrameRate(ChangeEvent<int> frameRate)
 		{
 			SettingsController.Load(out Settings settings);
 			settings.FrameRate = (ushort)frameRate.newValue;
@@ -201,27 +200,27 @@ namespace GwambaPrimeAdventure.Hud
 				Application.targetFrameRate = settings.FrameRate;
 			_configurationHud.FrameRateText.text = frameRate.newValue.ToString();
 			SettingsController.WriteSave(settings);
-		};
-		private Action YesBackLevel => () =>
+		}
+		private void YesBackLevel()
 		{
-			CloseConfigurations.Invoke();
+			CloseConfigurations();
 			_isActive = false;
 			if (SceneManager.GetActiveScene().name != _levelSelectorScene)
 				GetComponent<Transitioner>().Transicion(_levelSelectorScene);
 			else
 				GetComponent<Transitioner>().Transicion(_menuScene);
-		};
-		private Action NoBackLevel => () =>
+		}
+		private void NoBackLevel()
 		{
 			_configurationHud.Settings.style.display = DisplayStyle.Flex;
 			_configurationHud.Confirmation.style.display = DisplayStyle.None;
-		};
+		}
 		internal void OpenCloseConfigurations()
 		{
 			if (!_isActive)
 				return;
 			if (DisplayStyle.Flex == _configurationHud.RootElement.style.display)
-				CloseConfigurations.Invoke();
+				CloseConfigurations();
 			else
 			{
 				_configurationHud.RootElement.style.display = DisplayStyle.Flex;
