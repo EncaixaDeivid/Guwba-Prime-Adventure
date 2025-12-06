@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 using System.Collections;
 using System.Threading.Tasks;
 using GwambaPrimeAdventure.Character;
@@ -64,7 +63,7 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			yield return null;
 		}
-		private Action<InputAction.CallbackContext> Jump => jump =>
+		private void Jump(InputAction.CallbackContext jump)
 		{
 			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0F)
 			{
@@ -72,7 +71,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_targetPosition = GwambaStateMarker.Localization;
 				BasicJump();
 			}
-		};
+		}
 		private void BasicJump()
 		{
 			_detected = true;
