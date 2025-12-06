@@ -21,8 +21,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected CinemachineImpulseSource _screenShaker;
 		protected readonly List<Projectile> _projectiles = new();
 		protected IEnumerator _parabolicEvent;
-		protected Vector2Int _oldCellPosition = new();
-		protected Vector2Int _cellPosition = new();
+		protected Vector2Int _oldCellPosition = Vector2Int.zero;
+		protected Vector2Int _cellPosition = Vector2Int.zero;
 		protected short _vitality;
 		protected ushort _angleMulti = 0;
 		protected ushort _pointToJump = 0;
