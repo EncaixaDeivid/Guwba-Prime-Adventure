@@ -1,38 +1,58 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/System/Huds/Scripts/Menu%20Hud.uss?fileID=7433441132597879392&amp;guid=25a12649ca3c9d046a7776e74317c908&amp;type=3#Menu Hud" />
+    <Style src="project://database/Assets/Huds/Designs/Menu%20Hud.uss?fileID=7433441132597879392&amp;guid=25a12649ca3c9d046a7776e74317c908&amp;type=3#Menu Hud"/>
     <ui:VisualElement name="RootElement">
         <ui:GroupBox name="Buttons">
-            <ui:VisualElement name="LogoBrand" />
+            <ui:VisualElement name="LogoBrand"/>
             <ui:GroupBox name="MainButtons">
-                <ui:Button text="Jogar" name="Play" class="Button" />
-                <ui:Button text="Configurações" name="Configurations" class="Button" />
-                <ui:Button text="Sair" name="Quit" class="Button" />
+                <ui:Button text="Jogar" name="Play" class="Button"/>
+                <ui:Button text="Configura&#231;&#245;es" name="Configurations" class="Button"/>
+                <ui:Button text="Sair" name="Quit" class="Button"/>
             </ui:GroupBox>
         </ui:GroupBox>
         <ui:GroupBox name="Saves">
-            <ui:Button name="Back" text="Voltar" />
+            <ui:Button name="Back" text="Voltar"/>
             <ui:GroupBox name="Saves1">
                 <ui:GroupBox name="Save1">
-                    <ui:TextField name="SaveName1" value="Save file 1" />
-                    <ui:Button text="Carregar" name="Load1" />
-                    <ui:Button text="Deletar" name="Delete1" />
+                    <ui:GroupBox name="FileName1">
+                        <ui:TextField name="SaveName1" value="Save file 1"/>
+                        <ui:Button text="&gt;" name="RenameFile1" enabled="False"/>
+                    </ui:GroupBox>
+                    <ui:GroupBox name="FileControl1">
+                        <ui:Button text="Carregar" name="Load1"/>
+                        <ui:Button text="Deletar" name="Delete1"/>
+                    </ui:GroupBox>
                 </ui:GroupBox>
                 <ui:GroupBox name="Save2">
-                    <ui:TextField name="SaveName2" value="Save file 2" />
-                    <ui:Button text="Carregar" name="Load2" />
-                    <ui:Button text="Deletar" name="Delete2" />
+                    <ui:GroupBox name="FileName2">
+                        <ui:TextField name="SaveName2" value="Save file 2"/>
+                        <ui:Button text="&gt;" name="RenameFile2" enabled="False"/>
+                    </ui:GroupBox>
+                    <ui:GroupBox name="FileControl2">
+                        <ui:Button text="Carregar" name="Load2"/>
+                        <ui:Button text="Deletar" name="Delete2"/>
+                    </ui:GroupBox>
                 </ui:GroupBox>
             </ui:GroupBox>
             <ui:GroupBox name="Saves2">
                 <ui:GroupBox name="Save3">
-                    <ui:TextField name="SaveName3" value="Save file 3" />
-                    <ui:Button text="Carregar" name="Load3" />
-                    <ui:Button text="Deletar" name="Delete3" />
+                    <ui:GroupBox name="FileName3">
+                        <ui:TextField name="SaveName3" value="Save file 3"/>
+                        <ui:Button text="&gt;" name="RenameFile3" enabled="False"/>
+                    </ui:GroupBox>
+                    <ui:GroupBox name="FileControl3">
+                        <ui:Button text="Carregar" name="Load3"/>
+                        <ui:Button text="Deletar" name="Delete3"/>
+                    </ui:GroupBox>
                 </ui:GroupBox>
                 <ui:GroupBox name="Save4">
-                    <ui:TextField name="SaveName4" value="Save file 4" />
-                    <ui:Button text="Carregar" name="Load4" />
-                    <ui:Button text="Deletar" name="Delete4" />
+                    <ui:GroupBox name="FileName4">
+                        <ui:TextField name="SaveName4" value="Save file 4"/>
+                        <ui:Button text="&gt;" name="RenameFile4" enabled="False"/>
+                    </ui:GroupBox>
+                    <ui:GroupBox name="FileControl4">
+                        <ui:Button text="Carregar" name="Load4"/>
+                        <ui:Button text="Deletar" name="Delete4"/>
+                    </ui:GroupBox>
                 </ui:GroupBox>
             </ui:GroupBox>
         </ui:GroupBox>
