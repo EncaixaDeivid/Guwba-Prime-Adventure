@@ -10,8 +10,8 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class JumperEnemy : MovingEnemy, ILoader, IJumper, IConnector
 	{
 		private InputController _inputController;
-		private Vector2 _targetPosition;
-		private Vector2 _direction;
+		private Vector2 _targetPosition = Vector2.zero;
+		private Vector2 _direction = Vector2.zero;
 		private bool _isJumping = false;
 		private bool _onJump = false;
 		private bool _stopJump = false;
@@ -175,7 +175,7 @@ namespace GwambaPrimeAdventure.Enemy
 					}
 					else
 					{
-						_originCast = new Vector2(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
+						_originCast.Set(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
 						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0F ? -1F : 1F);
 						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER))
 							if (ray.collider.TryGetComponent<IDestructible>(out _))
