@@ -68,10 +68,8 @@ namespace GwambaPrimeAdventure.Connection
 			IEnumerator SoundPlay(AudioSource source, float playTime)
 			{
 				source.Play();
-				while (source)
+				while ((playTime -= Time.deltaTime) <= 0F)
 				{
-					if ((playTime -= Time.deltaTime) <= 0F)
-						Destroy(source.gameObject);
 					yield return new WaitUntil(() =>
 					{
 						if (!isActiveAndEnabled && source.isPlaying)
@@ -81,6 +79,7 @@ namespace GwambaPrimeAdventure.Connection
 						return isActiveAndEnabled;
 					});
 				}
+				Destroy(source.gameObject);
 			}
 		}
 		private void PrivateSurfaceSound(Vector2 originPosition)
