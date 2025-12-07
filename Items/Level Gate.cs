@@ -12,6 +12,8 @@ namespace GwambaPrimeAdventure.Item
 		private LevelGateHud _levelGate;
 		private CinemachineCamera _gateCamera;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _worldSpaceSize = Vector2.zero;
+		private Vector2 _defaultUIScale = new(WorldBuild.UI_SCALE_WIDTH, WorldBuild.UI_SCALE_HEIGHt);
 		private bool _isOnInteraction = false;
 		private short _defaultPriority;
 		[Header("Scene Status")]
@@ -31,16 +33,14 @@ namespace GwambaPrimeAdventure.Item
 		}
 		private void OnDestroy()
 		{
-			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked -= EnterLevel;
-			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
-				_levelGate.Boss.clicked -= EnterBoss;
-			if (saveFile.DeafetedBosses[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
-				_levelGate.Scenes.clicked -= ShowScenes;
+			_levelGate.Boss.clicked -= EnterBoss;
+			_levelGate.Scenes.clicked -= ShowScenes;
 		}
 		public IEnumerator Load()
 		{
 			_levelGate.transform.localPosition = _offsetPosition;
+			_worldSpaceSize = _levelGate.Document.worldSpaceSize;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
 			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
@@ -62,6 +62,8 @@ namespace GwambaPrimeAdventure.Item
 			_levelGate.Level.SetEnabled(false);
 			_levelGate.Boss.SetEnabled(false);
 			_levelGate.Scenes.SetEnabled(false);
+			_levelGate.Document.panelSettings = _worldSpacePanelSettings;
+			_levelGate.Document.worldSpaceSize = _worldSpaceSize;
 		}
 		public void Interaction()
 		{
@@ -70,6 +72,8 @@ namespace GwambaPrimeAdventure.Item
 			_levelGate.Level.SetEnabled(true);
 			_levelGate.Boss.SetEnabled(true);
 			_levelGate.Scenes.SetEnabled(true);
+			_levelGate.Document.worldSpaceSize = _defaultUIScale;
+			_levelGate.Document.panelSettings = _screenOverlayPanelSettings;
 		}
 	};
 };
