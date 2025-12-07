@@ -4,12 +4,17 @@ using UnityEngine.U2D;
 using System.Collections;
 namespace GwambaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera), typeof(SortingGroup))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Camera))]
 	internal sealed class BackgroundController : StateController, ILoader
 	{
 		private static BackgroundController _instance;
+		private Transform[] _childrenTransforms;
+		private SpriteRenderer[] _childrenRederers;
+		private Vector2[] _startPosition;
+		private Vector2 _speed = Vector2.zero;
+		private Vector2 _movement = Vector2.zero;
 		[Header("Background Interaction")]
-		[SerializeField, Tooltip("The object that handles the backgrounds.")] private BackgroundMover _backgroundMover;
+		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundObject;
 		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
 		[SerializeField, Tooltip("The amount of speed that the background will move.")] private Vector2 _backgroundSpeed;
 		[SerializeField, Tooltip("The amount to slow for each layer that is after the first.")] private Vector2 _slowSpeed;
@@ -27,40 +32,54 @@ namespace GwambaPrimeAdventure
 		}
 		public IEnumerator Load()
 		{
-			BackgroundMover childBackground;
+			_childrenTransforms = new Transform[_backgroundImages.Length];
+			_childrenRederers = new SpriteRenderer[_backgroundImages.Length];
+			_startPosition = new Vector2[_backgroundImages.Length];
 			Transform child;
-			SpriteRenderer renderer;
 			SpriteRenderer childRenderer;
 			Vector3 childOffset = Vector2.zero;
 			ushort childIndex;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
-				childBackground = Instantiate(_backgroundMover, transform);
-				childBackground.transform.position = (Vector2)childBackground.transform.position + _positionOffset;
-				renderer = childBackground.GetComponent<SpriteRenderer>();
-				renderer.sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
-				renderer.sortingOrder = _backgroundImages.Length - 1 - i;
-				childBackground.GetComponent<SortingGroup>().sortingOrder = renderer.sortingOrder;
+				_childrenTransforms[i] = Instantiate(_backgroundObject, transform);
+				_startPosition[i] = _childrenTransforms[i].transform.position = (Vector2)_childrenTransforms[i].transform.position;
+				_childrenRederers[i] = _childrenTransforms[i].GetComponent<SpriteRenderer>();
+				_childrenRederers[i].sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
+				_childrenRederers[i].sortingOrder = _backgroundImages.Length - 1 - i;
+				_childrenTransforms[i].GetComponent<SortingGroup>().sortingOrder = _childrenRederers[i].sortingOrder;
 				childIndex = 0;
 				for (short x = -1; x <= 1; x++)
 					for (short y = -1; y <= 1; y++)
 						if (x != 0 || y != 0)
 						{
-							child = childBackground.transform.GetChild(childIndex++);
-							childOffset.Set(renderer.bounds.size.x * x, renderer.bounds.size.y * y, 0F);
+							child = _childrenTransforms[i].transform.GetChild(childIndex++);
+							childOffset.Set(_childrenRederers[i].bounds.size.x * x, _childrenRederers[i].bounds.size.y * y, 0F);
 							child.position += childOffset;
 							childRenderer = child.GetComponent<SpriteRenderer>();
-							childRenderer.sprite = renderer.sprite;
-							childRenderer.sortingOrder = renderer.sortingOrder;
+							childRenderer.sprite = _childrenRederers[i].sprite;
+							childRenderer.sortingOrder = _childrenRederers[i].sortingOrder;
 						}
-				childBackground.SetBackground(_backgroundSpeed - i * _slowSpeed, renderer.bounds.size, _positionOffset);
 			}
 			yield return null;
 		}
-		private IEnumerator Start()
+		private void LateUpdate()
 		{
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			transform.DetachChildren();
+			if (SceneInitiator.IsInTrancision())
+				return;
+			for (ushort i = 0; i < _childrenTransforms.Length; i++)
+			{
+				_speed = _backgroundSpeed - (i * _slowSpeed);
+				_movement.Set((transform.position.x + _positionOffset.x) * (1F - _speed.x), (transform.position.y + _positionOffset.y) * (1F - _speed.y));
+				_childrenTransforms[i].transform.position = _startPosition[i] + _movement;
+				if (transform.position.x * _speed.x > _startPosition[i].x + _childrenRederers[i].bounds.size.x)
+					_startPosition[i].x += _childrenRederers[i].bounds.size.x;
+				else if (transform.position.x * _speed.x < _startPosition[i].x - _childrenRederers[i].bounds.size.x)
+					_startPosition[i].x -= _childrenRederers[i].bounds.size.x;
+				if (transform.position.y * _speed.y > _startPosition[i].y + _childrenRederers[i].bounds.size.y)
+					_startPosition[i].y += _childrenRederers[i].bounds.size.y;
+				else if (transform.position.y * _speed.y < _startPosition[i].y - _childrenRederers[i].bounds.size.y)
+					_startPosition[i].y -= _childrenRederers[i].bounds.size.y;
+			}
 		}
 	};
 };
