@@ -289,18 +289,15 @@ namespace GwambaPrimeAdventure.Character
 			}
 			if (_didStart)
 				StartCoroutine(StartLoad());
-			if (scene.name == _hubbyWorldScene)
-			{
-				foreach (VisualElement vitality in _gwambaCanvas.Vitality)
-					vitality.style.display = DisplayStyle.None;
-				foreach (VisualElement recoverVitality in _gwambaCanvas.RecoverVitality)
-					recoverVitality.style.display = DisplayStyle.None;
-				foreach (VisualElement stunResistance in _gwambaCanvas.StunResistance)
-					stunResistance.style.display = DisplayStyle.None;
-				foreach (VisualElement bunnyHop in _gwambaCanvas.BunnyHop)
-					bunnyHop.style.display = DisplayStyle.None;
-				_gwambaCanvas.FallDamageText.style.display = DisplayStyle.None;
-			}
+			foreach (VisualElement vitality in _gwambaCanvas.Vitality)
+				vitality.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			foreach (VisualElement recoverVitality in _gwambaCanvas.RecoverVitality)
+				recoverVitality.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			foreach (VisualElement stunResistance in _gwambaCanvas.StunResistance)
+				stunResistance.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			foreach (VisualElement bunnyHop in _gwambaCanvas.BunnyHop)
+				bunnyHop.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			_gwambaCanvas.FallDamageText.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
 		}
 		private void MovementInput(InputAction.CallbackContext movement)
 		{
