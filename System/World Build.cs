@@ -7,6 +7,8 @@ namespace GwambaPrimeAdventure
 		public const float FIELD_SPACE_LENGTH = 8F;
 		public const float PIXELS_PER_UNIT = 16F;
 		public const float SNAP_LENGTH = 1F / PIXELS_PER_UNIT;
+		public const float SCALE_SNAP = 0.0625F;
+		public const float ROTATE_SNAP = 7.5F;
 		public const float MINIMUM_TIME_SPACE_LIMIT = 1E-4F;
 		public const int SYSTEM_LAYER = 1 << 3;
 		public const int UI_LAYER = 1 << 5;
