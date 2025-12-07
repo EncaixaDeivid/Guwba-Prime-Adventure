@@ -17,13 +17,12 @@ namespace GwambaPrimeAdventure
 			{
 				yield return StartCoroutine(_loader[i].Load());
 				progressBar.value -= progress;
-				progress = (i + 1F) / _loader.Count;
-				progressBar.value += progress;
+				progressBar.value += progress = (i + 1F) / _loader.Count;
 			}
 			if (_loader.Count <= 0)
-				progressBar.value += (_progressIndex += 1) / _progressIndex;
+				progressBar.value += ++_progressIndex / _progressIndex;
 			else
-				progressBar.value += (_progressIndex += 1) - progressBar.value;
+				progressBar.value += ++_progressIndex - progressBar.value;
 			_loader.Clear();
 			transform.DetachChildren();
 			Destroy(gameObject);
