@@ -8,17 +8,13 @@ namespace GwambaPrimeAdventure
 	internal sealed class BackgroundController : StateController, ILoader
 	{
 		private static BackgroundController _instance;
-		private Transform[] _childrenTransforms;
-		private SpriteRenderer[] _childrenRenderers;
-		private float _startPosition = 0F;
-		private float _movementX = 0F;
-		[Header("Background Objects")]
-		[SerializeField, Tooltip("The object that handles the backgrounds.")] private Transform _backgroundTransform;
+		[Header("Background Interaction")]
+		[SerializeField, Tooltip("The object that handles the backgrounds.")] private BackgroundMover _backgroundMover;
 		[SerializeField, Tooltip("The handler of the background.")] private SpriteAtlas _backgroundHandler;
+		[SerializeField, Tooltip("The amount of speed that the background will move.")] private Vector2 _backgroundSpeed;
+		[SerializeField, Tooltip("The amount to slow for each layer that is after the first.")] private Vector2 _slowSpeed;
+		[SerializeField, Tooltip("The offset of the camera relative to center of the screen.")] private Vector2 _positionOffset;
 		[SerializeField, Tooltip("The name of the images that are placed in each background.")] private string[] _backgroundImages;
-		[Header("Background Stats")]
-		[SerializeField, Tooltip("The amount of speed that the background will move.")] private float _backgroundSpeed;
-		[SerializeField, Tooltip("The amount to slow for each layer that is after the first.")] private float _slowSpeed;
 		private new void Awake()
 		{
 			base.Awake();
@@ -28,40 +24,43 @@ namespace GwambaPrimeAdventure
 				return;
 			}
 			_instance = this;
-			_childrenTransforms = new Transform[_backgroundImages.Length];
-			_childrenRenderers = new SpriteRenderer[_backgroundImages.Length];
 		}
 		public IEnumerator Load()
 		{
-			Vector2 imageSize;
+			BackgroundMover childBackground;
+			Transform child;
+			SpriteRenderer renderer;
+			SpriteRenderer childRenderer;
+			Vector3 childOffset = Vector2.zero;
+			ushort childIndex;
 			for (ushort i = 0; i < _backgroundImages.Length; i++)
 			{
-				_childrenTransforms[i] = Instantiate(_backgroundTransform, transform);
-				_childrenRenderers[i] = _childrenTransforms[i].GetComponent<SpriteRenderer>();
-				_childrenRenderers[i].sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
-				_childrenRenderers[i].sortingOrder = _backgroundImages.Length - 1 - i;
-				_childrenTransforms[i].GetComponent<SortingGroup>().sortingOrder = _childrenRenderers[i].sortingOrder;
-				imageSize = _childrenRenderers[i].sprite.bounds.size;
-				_childrenTransforms[i].GetChild(0).position = new Vector2(_childrenTransforms[i].position.x - imageSize.x, _childrenTransforms[i].position.y);
-				_childrenTransforms[i].GetChild(1).position = new Vector2(_childrenTransforms[i].position.x + imageSize.x, _childrenTransforms[i].position.y);
-				for (ushort childIndex = 0; childIndex < _childrenTransforms[i].childCount; childIndex++)
-					_childrenTransforms[i].GetChild(childIndex).GetComponent<SpriteRenderer>().sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
+				childBackground = Instantiate(_backgroundMover, transform);
+				childBackground.transform.position = (Vector2)childBackground.transform.position + _positionOffset;
+				renderer = childBackground.GetComponent<SpriteRenderer>();
+				renderer.sprite = _backgroundHandler.GetSprite(_backgroundImages[i]);
+				renderer.sortingOrder = _backgroundImages.Length - 1 - i;
+				childBackground.GetComponent<SortingGroup>().sortingOrder = renderer.sortingOrder;
+				childIndex = 0;
+				for (short x = -1; x <= 1; x++)
+					for (short y = -1; y <= 1; y++)
+						if (x != 0 || y != 0)
+						{
+							child = childBackground.transform.GetChild(childIndex++);
+							childOffset.Set(renderer.bounds.size.x * x, renderer.bounds.size.y * y, 0F);
+							child.position += childOffset;
+							childRenderer = child.GetComponent<SpriteRenderer>();
+							childRenderer.sprite = renderer.sprite;
+							childRenderer.sortingOrder = renderer.sortingOrder;
+						}
+				childBackground.SetBackground(_backgroundSpeed - i * _slowSpeed, renderer.bounds.size, _positionOffset);
 			}
 			yield return null;
 		}
-		private void LateUpdate()
+		private IEnumerator Start()
 		{
-			if (SceneInitiator.IsInTrancision())
-				return;
-			for (ushort i = 0; i < _backgroundImages.Length; i++)
-			{
-				_movementX = 1F - (_backgroundSpeed - (i * _slowSpeed));
-				_childrenTransforms[i].position = new Vector2(_startPosition + transform.position.x * _movementX, transform.position.y);
-				if (transform.position.x * (1F - _movementX) > _startPosition + _childrenRenderers[i].sprite.bounds.size.x)
-					_startPosition += _childrenRenderers[i].sprite.bounds.size.x;
-				else if (transform.position.x * (1F - _movementX) < _startPosition - _childrenRenderers[i].sprite.bounds.size.x)
-					_startPosition -= _childrenRenderers[i].sprite.bounds.size.x;
-			}
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
+			transform.DetachChildren();
 		}
 	};
 };
