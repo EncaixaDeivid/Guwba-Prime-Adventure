@@ -1,8 +1,10 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Items/Designs/Level%20Gate%20Hud.uss?fileID=7433441132597879392&amp;guid=19cc52b042dc0de46b9f68dac1510972&amp;type=3#Level Gate Hud" />
     <engine:VisualElement name="RootElement">
-        <engine:Button name="Level" enabled="False" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" enable-rich-text="false" emoji-fallback-support="false" />
-        <engine:Button name="Boss" enabled="False" emoji-fallback-support="false" enable-rich-text="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
-        <engine:Button name="Scenes" enabled="False" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
+        <engine:GroupBox name="ButtonsDisplay">
+            <engine:Button name="Level" enabled="False" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" enable-rich-text="false" emoji-fallback-support="false" />
+            <engine:Button name="Boss" enabled="False" emoji-fallback-support="false" enable-rich-text="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
+            <engine:Button name="Scenes" enabled="False" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
+        </engine:GroupBox>
     </engine:VisualElement>
 </engine:UXML>
