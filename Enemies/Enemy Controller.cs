@@ -5,7 +5,7 @@ using GwambaPrimeAdventure.Connection;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource)), SelectionBase]
+	[DisallowMultipleComponent, SelectionBase, RequireComponent(typeof(Transform), typeof(Rigidbody2D), typeof(Collider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
 	internal sealed class EnemyController : Control, IConnector, IOccludee, IDestructible
    {
 		private EnemyProvider[] _selfEnemies;
