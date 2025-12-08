@@ -14,6 +14,7 @@ namespace GwambaPrimeAdventure.Item
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _transitionSize = Vector2.zero;
 		private Vector2 _worldSpaceSize = Vector2.zero;
+		private Vector2 _activeSize = Vector2.one;
 		private Vector2 _defaultUISize = new(WorldBuild.UI_SCALE_WIDTH, WorldBuild.UI_SCALE_HEIGHt);
 		private bool _isOnInteraction = false;
 		private bool _isOnTransicion = false;
@@ -26,7 +27,6 @@ namespace GwambaPrimeAdventure.Item
 		[SerializeField, Tooltip("The scene of the level.")] private SceneField _levelScene;
 		[SerializeField, Tooltip("The scene of the boss.")] private SceneField _bossScene;
 		[SerializeField, Tooltip("The offset that the hud will be.")] private Vector2 _offsetPosition;
-		[SerializeField, Tooltip("The size of the hud when it become active.")] private Vector2 _activeSize;
 		[SerializeField, Tooltip("Where the this camera have to be in the hierarchy.")] private short _overlayPriority;
 		private void Awake()
 		{
@@ -45,6 +45,8 @@ namespace GwambaPrimeAdventure.Item
 		{
 			_levelGate.transform.localPosition = _offsetPosition;
 			_transitionSize = _worldSpaceSize = _levelGate.Document.worldSpaceSize;
+			_activeSize *= _gateCamera.Lens.OrthographicSize * 2F * WorldBuild.PIXELS_PER_UNIT;
+			_activeSize.x *= WorldBuild.HEIGHT_WIDTH_PROPORTION;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
 			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
