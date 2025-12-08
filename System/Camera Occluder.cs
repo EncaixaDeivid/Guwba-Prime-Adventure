@@ -5,17 +5,13 @@ using Unity.Cinemachine;
 using System.Collections;
 namespace GwambaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CinemachineCamera), typeof(Rigidbody2D))]
-	[RequireComponent(typeof(BoxCollider2D))]
-	internal sealed class CameraOccluder : StateController, IConnector
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(CinemachineCamera), typeof(CinemachineFollow)), RequireComponent(typeof(Rigidbody2D),typeof(BoxCollider2D))]
+	internal sealed class CameraOccluder : StateController
 	{
 		private static CameraOccluder _instance;
-		private Vector2 _positionDamping = new();
-		[Header("Camera Objects")]
-		[SerializeField, Tooltip("The object that handles the follow of the camera.")] private CinemachineFollow _cinemachineFollow;
+		private CinemachineFollow _cinemachineFollow;
+		[Header("Interactions")]
 		[SerializeField, Tooltip("The scene of the menu.")] private SceneField _menuScene;
-		[SerializeField, Tooltip("The amount of time to wait to start restoring.")] private float _waitTime;
-		public MessagePath Path => MessagePath.System;
 		private new void Awake()
 		{
 			base.Awake();
@@ -24,9 +20,9 @@ namespace GwambaPrimeAdventure
 				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
+			_cinemachineFollow = GetComponent<CinemachineFollow>();
 			_instance = this;
 			SceneManager.sceneLoaded += SceneLoaded;
-			Sender.Include(this);
 		}
 		private new void OnDestroy()
 		{
@@ -35,8 +31,9 @@ namespace GwambaPrimeAdventure
 				return;
 			StopAllCoroutines();
 			SceneManager.sceneLoaded -= SceneLoaded;
-			Sender.Exclude(this);
 		}
+		private void OnEnable() => _cinemachineFollow.enabled = true;
+		private void OnDisable() => _cinemachineFollow.enabled = false;
 		private IEnumerator Start()
 		{
 			if (!_instance || _instance != this)
@@ -44,7 +41,6 @@ namespace GwambaPrimeAdventure
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			CinemachineCamera camera = GetComponent<CinemachineCamera>();
 			GetComponent<BoxCollider2D>().size = new Vector2(camera.Lens.OrthographicSize * 2F * camera.Lens.Aspect, camera.Lens.OrthographicSize * 2F);
-			_positionDamping = _cinemachineFollow.TrackerSettings.PositionDamping;
 			DontDestroyOnLoad(gameObject);
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
@@ -61,24 +57,5 @@ namespace GwambaPrimeAdventure
 		}
 		private void OnTriggerEnter2D(Collider2D other) => SetOtherChildren(other.gameObject, true);
 		private void OnTriggerExit2D(Collider2D other) => SetOtherChildren(other.gameObject, false);
-		public void Receive(MessageData message)
-		{
-			if (message.Format == MessageFormat.Event)
-			{
-				_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.zero;
-				StartCoroutine(RestoreDamping());
-				IEnumerator RestoreDamping()
-				{
-					yield return new WaitTime(this, _waitTime, true);
-					float time = 0F;
-					while (time < 1F)
-					{
-						_cinemachineFollow.TrackerSettings.PositionDamping = Vector2.Lerp(Vector2.zero, _positionDamping, time);
-						time += Time.deltaTime;
-						yield return new WaitUntil(() => isActiveAndEnabled);
-					}
-				}
-			}
-		}
 	};
 };
