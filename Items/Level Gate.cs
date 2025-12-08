@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.Cinemachine;
 using System.Collections;
-using System.Threading.Tasks;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Item
@@ -13,9 +12,11 @@ namespace GwambaPrimeAdventure.Item
 		private LevelGateHud _levelGate;
 		private CinemachineCamera _gateCamera;
 		private readonly Sender _sender = Sender.Create();
+		private Vector2 _transitionSize = Vector2.zero;
 		private Vector2 _worldSpaceSize = Vector2.zero;
-		private Vector2 _defaultUIScale = new(WorldBuild.UI_SCALE_WIDTH, WorldBuild.UI_SCALE_HEIGHt);
+		private Vector2 _defaultUISize = new(WorldBuild.UI_SCALE_WIDTH, WorldBuild.UI_SCALE_HEIGHt);
 		private bool _isOnInteraction = false;
+		private bool _isOnTransicion = false;
 		private short _defaultPriority;
 		[Header("Scene Status")]
 		[SerializeField, Tooltip("The brain responsable for controlling the camera.")] private CinemachineBrain _brain;
@@ -43,7 +44,7 @@ namespace GwambaPrimeAdventure.Item
 		public IEnumerator Load()
 		{
 			_levelGate.transform.localPosition = _offsetPosition;
-			_worldSpaceSize = _levelGate.Document.worldSpaceSize;
+			_transitionSize = _worldSpaceSize = _levelGate.Document.worldSpaceSize;
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
 			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
@@ -56,57 +57,67 @@ namespace GwambaPrimeAdventure.Item
 		private void EnterLevel() => GetComponent<Transitioner>().Transicion(_levelScene);
 		private void EnterBoss() => GetComponent<Transitioner>().Transicion(_bossScene);
 		private void ShowScenes() => _sender.Send(MessagePath.Story);
-		private async void OnHud()
+		private IEnumerator OnHud()
 		{
 			_isOnInteraction = true;
+			while (_isOnTransicion)
+				yield return null;
 			_gateCamera.Priority.Value = _overlayPriority;
+			_isOnTransicion = true;
 			float time;
 			float elapsedTime = 0F;
 			while (_isOnInteraction && _levelGate.Document.worldSpaceSize != _activeSize)
 			{
 				time = elapsedTime / _brain.DefaultBlend.Time;
-				_levelGate.Document.worldSpaceSize = Vector2.Lerp(_worldSpaceSize, _activeSize, time);
+				_levelGate.Document.worldSpaceSize = Vector2.Lerp(_transitionSize, _activeSize, time);
 				elapsedTime = elapsedTime >= _brain.DefaultBlend.Time ? _brain.DefaultBlend.Time : elapsedTime + Time.deltaTime;
-				await Task.Yield();
+				yield return null;
 			}
+			_transitionSize = _levelGate.Document.worldSpaceSize;
+			_isOnTransicion = false;
 			if (!_isOnInteraction)
-				return;
+				yield break;
 			_levelGate.Level.SetEnabled(true);
 			_levelGate.Boss.SetEnabled(true);
 			_levelGate.Scenes.SetEnabled(true);
-			_levelGate.Document.worldSpaceSize = _defaultUIScale;
+			_levelGate.Document.worldSpaceSize = _defaultUISize;
 			_levelGate.Document.panelSettings = _screenOverlayPanelSettings;
 		}
-		private async void OffHud()
+		private IEnumerator OffHud()
 		{
 			_isOnInteraction = false;
+			while (_isOnTransicion)
+				yield return null;
 			_gateCamera.Priority.Value = _defaultPriority;
 			_levelGate.Level.SetEnabled(false);
 			_levelGate.Boss.SetEnabled(false);
 			_levelGate.Scenes.SetEnabled(false);
 			_levelGate.Document.panelSettings = _worldSpacePanelSettings;
 			_levelGate.Document.worldSpaceSize = _activeSize;
+			_isOnTransicion = true;
 			float time;
 			float elapsedTime = 0F;
 			while (!_isOnInteraction && _levelGate.Document.worldSpaceSize != _worldSpaceSize)
 			{
 				time = elapsedTime / _brain.DefaultBlend.Time;
-				_levelGate.Document.worldSpaceSize = Vector2.Lerp(_activeSize, _worldSpaceSize, time);
+				_levelGate.Document.worldSpaceSize = Vector2.Lerp(_transitionSize, _worldSpaceSize, time);
 				elapsedTime = elapsedTime >= _brain.DefaultBlend.Time ? _brain.DefaultBlend.Time : elapsedTime + Time.deltaTime;
-				await Task.Yield();
+				yield return null;
 			}
+			_transitionSize = _levelGate.Document.worldSpaceSize;
+			_isOnTransicion = false;
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
 			if (_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
 				return;
-			OnHud();
+			StartCoroutine(OnHud());
 		}
 		private void OnTriggerExit2D(Collider2D other)
 		{
 			if (!_isOnInteraction || !GwambaStateMarker.EqualObject(other.gameObject))
 				return;
-			OffHud();
+			StartCoroutine(OffHud());
 		}
 	};
 };
