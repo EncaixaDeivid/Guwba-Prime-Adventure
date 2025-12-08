@@ -7,7 +7,6 @@ namespace GwambaPrimeAdventure
 	internal sealed class ObjectLoader : MonoBehaviour
 	{
 		private static readonly List<ILoader> _loader = new();
-		private static ushort _progressIndex = 0;
 		public IEnumerator Load(ProgressBar progressBar)
 		{
 			_loader.Clear();
@@ -20,9 +19,9 @@ namespace GwambaPrimeAdventure
 				progressBar.value += progress = (i + 1F) / _loader.Count;
 			}
 			if (_loader.Count <= 0)
-				progressBar.value += ++_progressIndex / _progressIndex;
+				progressBar.value += ++SceneInitiator.ProgressIndex / SceneInitiator.ProgressIndex;
 			else
-				progressBar.value += ++_progressIndex - progressBar.value;
+				progressBar.value += ++SceneInitiator.ProgressIndex - progressBar.value;
 			_loader.Clear();
 			transform.DetachChildren();
 			Destroy(gameObject);
