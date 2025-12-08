@@ -25,6 +25,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("If this object will receive a signal.")] private bool _isReceptor;
 		[SerializeField, ShowIf(nameof(_isReceptor)), Tooltip("The amount o time to appear/fade again after the activation.")] private float _timeToFadeAppearAgain;
 		[SerializeField, ShowIf(nameof(_isReceptor)), Tooltip("If the activation of the receive signal will fade the place.")] private bool _fadeActivation;
+		[SerializeField, ShowIf(nameof(_isReceptor)), Tooltip("If this place won't use his own collider.")] private bool _useOtherCollider;
 		[SerializeField, Tooltip("If the other hidden place will appear first.")] private bool _appearFirst;
 		[SerializeField, Tooltip("If the other hidden place will fade first.")] private bool _fadeFirst;
 		[SerializeField, Tooltip("If this object will appear/fade instantly.")] private bool _instantly;
@@ -52,7 +53,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			if (_isReceptor)
 			{
 				_tilemapRenderer.enabled = _fadeActivation;
-				_tilemapCollider.enabled = _fadeActivation;
+				_tilemapCollider.enabled = _fadeActivation && !_useOtherCollider;
 			}
 		}
 		private void FixedUpdate()
