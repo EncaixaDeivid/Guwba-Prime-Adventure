@@ -10,7 +10,8 @@ namespace GwambaPrimeAdventure
 		public const float SCALE_SNAP = 0.0625F;
 		public const float ROTATE_SNAP = 7.5F;
 		public const float MINIMUM_TIME_SPACE_LIMIT = 1E-4F;
-		public const float WIDTH_HEIGHt_PROPORTION = 0.5625F;
+		public const float WIDTH_HEIGHT_PROPORTION = 0.5625F;
+		public const float HEIGHT_WIDTH_PROPORTION = 1.777778F;
 		public const int SYSTEM_LAYER = 1 << 3;
 		public const int UI_LAYER = 1 << 5;
 		public const int CHARACTER_LAYER = 1 << 6;
@@ -19,9 +20,9 @@ namespace GwambaPrimeAdventure
 		public const int ENEMY_LAYER = 1 << 9;
 		public const int BOSS_LAYER = 1 << 10;
 		public const ushort PIXEL_PERFECT_WIDTH = 320;
-		public const ushort PIXEL_PERFECT_HEIGHT = (ushort)(PIXEL_PERFECT_WIDTH * WIDTH_HEIGHt_PROPORTION);
+		public const ushort PIXEL_PERFECT_HEIGHT = (ushort)(PIXEL_PERFECT_WIDTH * WIDTH_HEIGHT_PROPORTION);
 		public const ushort UI_SCALE_WIDTH = 1920;
-		public const ushort UI_SCALE_HEIGHt = (ushort)(UI_SCALE_WIDTH * WIDTH_HEIGHt_PROPORTION);
+		public const ushort UI_SCALE_HEIGHt = (ushort)(UI_SCALE_WIDTH * WIDTH_HEIGHT_PROPORTION);
 		public const ushort LEVELS_COUNT = 10;
 		public static Resolution[] PixelPerfectResolutions()
 		{
