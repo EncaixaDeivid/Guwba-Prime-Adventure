@@ -9,7 +9,7 @@ using NaughtyAttributes;
 using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Character
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup)), SelectionBase]
+	[DisallowMultipleComponent, SelectionBase, RequireComponent(typeof(Transform), typeof(Animator), typeof(SortingGroup))]
 	[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D), typeof(CircleCollider2D)), RequireComponent(typeof(CinemachineImpulseSource))]
 	public sealed class GwambaStateMarker : StateController, ILoader, IConnector
 	{
@@ -105,7 +105,6 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of distance Gwamba will go in both dashes.")] private float _dashDistance;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of max speed to increase on the bunny hop.")] private float _velocityBoost;
 		[SerializeField, BoxGroup("Movement"), Min(0F), Tooltip("The amount of acceleration/decceleration to increase on the bunny hop.")] private float _potencyBoost;
-		[SerializeField, BoxGroup("Movement"), Tooltip("If Gwamba will look firstly to the left.")] private bool _turnLeft;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
 		[SerializeField, BoxGroup("Jump"), Tooltip("The sound to play when Gwamba execute a jump.")] private AudioClip _jumpSound;
 		[SerializeField, BoxGroup("Jump"), Min(0F), Tooltip("The amount of strenght that Gwamba can Jump.")] private float _jumpStrenght;
@@ -161,12 +160,12 @@ namespace GwambaPrimeAdventure.Character
 			StopAllCoroutines();
 			_airJumpEvent = null;
 			_dashSlideEvent = null;
-			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+			for (ushort i = 0; i < _gwambaDamagers.Length; i++)
 			{
-				gwambaDamager.DamagerHurt -= DamagerHurt;
-				gwambaDamager.DamagerStun -= DamagerStun;
-				gwambaDamager.DamagerAttack -= DamagerAttack;
-				gwambaDamager.Alpha = 1F;
+				_gwambaDamagers[i].DamagerHurt -= DamagerHurt;
+				_gwambaDamagers[i].DamagerStun -= DamagerStun;
+				_gwambaDamagers[i].DamagerAttack -= DamagerAttack;
+				_gwambaDamagers[i].Alpha = 1F;
 			}
 			_inputController.Commands.Movement.started -= MovementInput;
 			_inputController.Commands.Movement.performed -= MovementInput;
@@ -184,7 +183,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (_gwambaCanvas.RootElement != null)
+			if (_gwambaCanvas.RootElement is not null)
 				_gwambaCanvas.RootElement.style.display = DisplayStyle.Flex;
 			_animator.SetFloat(IsOn, 1F);
 			_animator.SetFloat(WalkSpeed, 1F);
@@ -259,7 +258,6 @@ namespace GwambaPrimeAdventure.Character
 			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
 				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 			_animator.SetBool(Death, _hopActive = _isHoping = false);
-			transform.TurnScaleX(_turnLeft);
 		}
 		public IEnumerator Load()
 		{
@@ -269,13 +267,12 @@ namespace GwambaPrimeAdventure.Character
 			SaveController.Load(out SaveFile saveFile);
 			(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			(_vitality, _stunResistance) = ((short)_gwambaCanvas.Vitality.Length, (short)_gwambaCanvas.StunResistance.Length);
-			foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
+			for (ushort i = 0; i < _gwambaDamagers.Length; i++)
 			{
-				gwambaDamager.DamagerHurt += DamagerHurt;
-				gwambaDamager.DamagerStun += DamagerStun;
-				gwambaDamager.DamagerAttack += DamagerAttack;
+				_gwambaDamagers[i].DamagerHurt += DamagerHurt;
+				_gwambaDamagers[i].DamagerStun += DamagerStun;
+				_gwambaDamagers[i].DamagerAttack += DamagerAttack;
 			}
-			transform.TurnScaleX(_turnLeft);
 			_gravityScale = _rigidbody.gravityScale;
 			SceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 			yield return null;
@@ -289,15 +286,16 @@ namespace GwambaPrimeAdventure.Character
 			}
 			if (_didStart)
 				StartCoroutine(StartLoad());
-			foreach (VisualElement vitality in _gwambaCanvas.Vitality)
-				vitality.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
-			foreach (VisualElement recoverVitality in _gwambaCanvas.RecoverVitality)
-				recoverVitality.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
-			foreach (VisualElement stunResistance in _gwambaCanvas.StunResistance)
-				stunResistance.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
-			foreach (VisualElement bunnyHop in _gwambaCanvas.BunnyHop)
-				bunnyHop.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			for (ushort i = 0; i < _gwambaCanvas.Vitality.Length; i++)
+				_gwambaCanvas.Vitality[i].style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			for (ushort i = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
+				_gwambaCanvas.RecoverVitality[i].style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			for (ushort i = 0; i < _gwambaCanvas.StunResistance.Length; i++)
+				_gwambaCanvas.StunResistance[i].style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
+				_gwambaCanvas.BunnyHop[i].style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
 			_gwambaCanvas.FallDamageText.style.display = scene.name != _hubbyWorldScene ? DisplayStyle.Flex : DisplayStyle.None;
+			transform.TurnScaleX(EffectsController.TurnToLeft);
 		}
 		private void MovementInput(InputAction.CallbackContext movement)
 		{
@@ -401,11 +399,10 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			LayerMask layers = WorldBuild.SYSTEM_LAYER + WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER;
-			foreach (Collider2D collider in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, layers))
-				if (collider.TryGetComponent<IInteractable>(out _))
+			foreach (Collider2D other in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER))
+				if (other.TryGetComponent<IInteractable>(out _))
 				{
-					foreach (IInteractable interactable in collider.GetComponents<IInteractable>())
+					foreach (IInteractable interactable in other.GetComponents<IInteractable>())
 						interactable.Interaction();
 					return;
 				}
@@ -432,8 +429,8 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.LifeText.text = $"X {saveFile.Lifes -= 1}";
 				SaveController.WriteSave(saveFile);
 				_invencibility = false;
-				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-					gwambaDamager.Alpha = 1F;
+				for (ushort i = 0; i < _gwambaDamagers.Length; i++)
+					_gwambaDamagers[i].Alpha = 1F;
 				OnDisable();
 				_animator.SetBool(Idle, false);
 				_animator.SetBool(Walk, false);
@@ -462,8 +459,8 @@ namespace GwambaPrimeAdventure.Character
 			if (_stunResistance <= 0 && !_animator.GetBool(Death))
 			{
 				_animator.SetBool(Stun, !(_invencibility = false));
-				foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-					gwambaDamager.Alpha = 1F;
+				for (ushort i = 0; i < _gwambaDamagers.Length; i++)
+					_gwambaDamagers[i].Alpha = 1F;
 				_stunTimer = stunTime;
 				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
 					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
@@ -515,13 +512,13 @@ namespace GwambaPrimeAdventure.Character
 				_invencibility = (_timerOfInvencibility -= Time.deltaTime) > 0F;
 				if (_invencibility && (_showInvencibilityTimer -= Time.deltaTime) <= 0F)
 				{
-					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-						gwambaDamager.Alpha = gwambaDamager.Alpha >= 1F ? _invencibilityValue : 1F;
+					for (ushort i = 0; i < _gwambaDamagers.Length; i++)
+						_gwambaDamagers[i].Alpha = _gwambaDamagers[i].Alpha >= 1F ? _invencibilityValue : 1F;
 					_showInvencibilityTimer = _timeStep;
 				}
 				if (!_invencibility)
-					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-						gwambaDamager.Alpha = 1F;
+					for (ushort i = 0; i < _gwambaDamagers.Length; i++)
+						_gwambaDamagers[i].Alpha = 1F;
 			}
 			if (_animator.GetBool(Stun))
 				if ((_stunTimer -= Time.deltaTime) <= 0F)
@@ -536,8 +533,8 @@ namespace GwambaPrimeAdventure.Character
 				(_lastGroundedTime, _lastJumpTime) = (_lastGroundedTime - Time.deltaTime, _lastJumpTime - Time.deltaTime);
 			if (_attackDelay > 0F)
 				if ((_attackDelay -= Time.deltaTime) <= 0F)
-					foreach (GwambaDamager gwambaDamager in _gwambaDamagers)
-						gwambaDamager.DamagerDamaged.Clear();
+					for (ushort i = 0; i < _gwambaDamagers.Length; i++)
+						_gwambaDamagers[i].DamagerDamaged.Clear();
 		}
 		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0F ? _bunnyHopBoost * callBackValue : 1F;
 		private void FixedUpdate()
@@ -728,8 +725,8 @@ namespace GwambaPrimeAdventure.Character
 		public static bool EqualObject(params GameObject[] othersObjects)
 		{
 			if (_instance)
-				foreach (GameObject other in othersObjects)
-					if (other == _instance.gameObject)
+				for (ushort i = 0; i < othersObjects.Length; i++)
+					if (_instance.gameObject == othersObjects[i])
 						return true;
 			return false;
 		}
@@ -737,13 +734,16 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue)
 				if (message.ToggleValue.Value)
+				{
 					Reanimate();
+					transform.TurnScaleX(EffectsController.TurnToLeft);
+				}
 				else if (message.AdditionalData is Vector2 position)
 					transform.position = position;
 			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && message.ToggleValue.Value)
 			{
-				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 				OnEnable();
+				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 			}
 		}
 	};
