@@ -11,7 +11,6 @@ namespace GwambaPrimeAdventure
 		public const float ROTATE_SNAP = 7.5F;
 		public const float MINIMUM_TIME_SPACE_LIMIT = 1E-4F;
 		public const float WIDTH_HEIGHt_PROPORTION = 0.5625F;
-		public const double HEIGHt_WIDTH_PROPORTION = 1.7777777777777777777777777777778d;
 		public const int SYSTEM_LAYER = 1 << 3;
 		public const int UI_LAYER = 1 << 5;
 		public const int CHARACTER_LAYER = 1 << 6;
@@ -34,8 +33,7 @@ namespace GwambaPrimeAdventure
 		}
 		public static void TurnScaleX(this Transform transform, float valueChanger)
 		{
-			float scaleX = Mathf.Abs(transform.localScale.x) * valueChanger;
-			transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
 		}
 		public static void TurnScaleX(this Transform transform, bool conditionChanger) => TurnScaleX(transform, conditionChanger ? -1F : 1F);
 	};
