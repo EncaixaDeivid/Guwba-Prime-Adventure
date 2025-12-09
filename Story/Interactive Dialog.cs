@@ -127,7 +127,7 @@ namespace GwambaPrimeAdventure.Story
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.Event && gameObject == message.AdditionalData as GameObject)
+			if (MessageFormat.Event == message.Format && gameObject == message.AdditionalData as GameObject)
 				Interaction();
 		}
 	};
