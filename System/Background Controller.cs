@@ -49,9 +49,9 @@ namespace GwambaPrimeAdventure
 				_childrenRederers[i].sortingOrder = _backgroundImages.Length - 1 - i;
 				_childrenTransforms[i].GetComponent<SortingGroup>().sortingOrder = _childrenRederers[i].sortingOrder;
 				childIndex = 0;
-				for (short x = -1; x <= 1; x++)
-					for (short y = -1; y <= 1; y++)
-						if (x != 0 || y != 0)
+				for (short x = -1; 1 >= x; x++)
+					for (short y = -1; 1 >= y; y++)
+						if (0 != x || 0 != y)
 						{
 							child = _childrenTransforms[i].transform.GetChild(childIndex++);
 							childOffset.Set(_childrenRederers[i].bounds.size.x * x, _childrenRederers[i].bounds.size.y * y, 0F);
@@ -67,7 +67,7 @@ namespace GwambaPrimeAdventure
 		{
 			if (SceneInitiator.IsInTrancision())
 				return;
-			for (ushort i = 0; i < _childrenTransforms.Length; i++)
+			for (ushort i = 0; _childrenTransforms.Length > i; i++)
 			{
 				_speed = _backgroundSpeed - (i * _slowSpeed);
 				_movement.Set((transform.position.x + _positionOffset.x) * (1F - _speed.x), (transform.position.y + _positionOffset.y) * (1F - _speed.y));
