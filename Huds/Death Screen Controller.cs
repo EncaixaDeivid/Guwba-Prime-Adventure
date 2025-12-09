@@ -108,7 +108,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && !message.ToggleValue.Value)
+			if (MessageFormat.Event == message.Format && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
 				if (saveFile.Lifes < 0)
