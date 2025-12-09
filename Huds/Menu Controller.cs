@@ -101,15 +101,15 @@ namespace GwambaPrimeAdventure.Hud
 		private void ChangeName2(ChangeEvent<string> write) => _menuHud.RenameFile[1].enabledSelf = write.newValue != FilesController.Select(2);
 		private void ChangeName3(ChangeEvent<string> write) => _menuHud.RenameFile[2].enabledSelf = write.newValue != FilesController.Select(3);
 		private void ChangeName4(ChangeEvent<string> write) => _menuHud.RenameFile[3].enabledSelf = write.newValue != FilesController.Select(4);
-		private void SetNesFileName(ushort fileIndex)
+		private void SetFileName(ushort fileIndex)
 		{
 			SaveController.RenameData(fileIndex, _menuHud.SaveName[fileIndex - 1].text);
 			_menuHud.RenameFile[fileIndex - 1].enabledSelf = false;
 		}
-		private void RenameFile1() => SetNesFileName(1);
-		private void RenameFile2() => SetNesFileName(2);
-		private void RenameFile3() => SetNesFileName(3);
-		private void RenameFile4() => SetNesFileName(4);
+		private void RenameFile1() => SetFileName(1);
+		private void RenameFile2() => SetFileName(2);
+		private void RenameFile3() => SetFileName(3);
+		private void RenameFile4() => SetFileName(4);
 		private void SetSaveFile(ushort newSaveFile)
 		{
 			SaveController.SetActualSaveFile(newSaveFile);
