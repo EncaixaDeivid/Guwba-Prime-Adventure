@@ -723,7 +723,7 @@ namespace GwambaPrimeAdventure.Character
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue)
+			if (MessageFormat.Event == message.Format && message.ToggleValue.HasValue)
 				if (message.ToggleValue.Value)
 				{
 					Reanimate();
@@ -731,7 +731,7 @@ namespace GwambaPrimeAdventure.Character
 				}
 				else if (message.AdditionalData is Vector2 position)
 					transform.position = position;
-			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && message.ToggleValue.Value)
+			if (MessageFormat.State == message.Format && message.ToggleValue.HasValue && message.ToggleValue.Value)
 			{
 				OnEnable();
 				(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
