@@ -43,14 +43,14 @@ namespace GwambaPrimeAdventure.Connection
 			string actualPath = $@"{Application.persistentDataPath}\{actualSaveFile}.txt";
 			if (File.Exists(actualPath))
 			{
-				if (actualSaveFile != FilesController.Select(1) && actualSaveFile != FilesController.Select(2) && actualSaveFile != FilesController.Select(3) && actualSaveFile != FilesController.Select(4))
+				if (FilesController.Select(1) != actualSaveFile && FilesController.Select(2) != actualSaveFile && FilesController.Select(3) != actualSaveFile && FilesController.Select(4) != actualSaveFile)
 				{
 					File.Delete(actualPath);
 					return saveFile;
 				}
 				saveFile = FileEncoder.ReadData<SaveFile>(actualPath);
 				saveFile.Books = new Dictionary<string, bool>();
-				for (ushort i = 0; i < saveFile.BooksName.Count; i++)
+				for (ushort i = 0; saveFile.BooksName.Count > i; i++)
 					saveFile.Books.Add(saveFile.BooksName[i], saveFile.BooksValue[i]);
 			}
 			return saveFile;
