@@ -9,6 +9,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private Vector2 _originCast = Vector2.zero;
 		private Vector2 _directionCast = Vector2.zero;
 		private Vector2 _targetDirection = Vector2.zero;
+		private InstantiateParameters _projectileInstance;
 		private float _shootInterval = 0F;
 		private float _timeStop = 0F;
 		private bool _hasTarget = false;
@@ -19,6 +20,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private new void Awake()
 		{
 			base.Awake();
+			_projectileInstance = new() { parent = transform, worldSpace = false };
 			Sender.Include(this);
 		}
 		private new void OnDestroy()
@@ -34,11 +36,11 @@ namespace GwambaPrimeAdventure.Enemy
 					rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90F, Vector3.forward);
 				else
 					rotation = Quaternion.AngleAxis(_statistics.RayAngleDirection * (_statistics.TurnRay ? (transform.localScale.x < 0F ? -1F : 1F) : 1F), Vector3.forward);
-			foreach (Projectile projectile in _statistics.Projectiles)
+			for (ushort i = 0; i < _statistics.Projectiles.Length; i++)
 				if (_statistics.PureInstance)
-					Instantiate(projectile, _statistics.SpawnPoint, projectile.transform.rotation, new InstantiateParameters() { parent = transform, worldSpace = false }).transform.SetParent(null);
+					Instantiate(_statistics.Projectiles[i], _statistics.SpawnPoint, _statistics.Projectiles[i].transform.rotation, _projectileInstance).transform.SetParent(null);
 				else
-					Instantiate(projectile, _statistics.SpawnPoint, rotation, new InstantiateParameters() { parent = transform, worldSpace = false }).transform.SetParent(null);
+					Instantiate(_statistics.Projectiles[i], _statistics.SpawnPoint, rotation, _projectileInstance).transform.SetParent(null);
 			if (_statistics.InvencibleShoot)
 			{
 				_sender.SetFormat(MessageFormat.Event);
@@ -128,7 +130,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this && message.Format == MessageFormat.Event && _statistics.ReactToDamage)
 					{
