@@ -22,7 +22,6 @@ namespace GwambaPrimeAdventure.Character
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
-		private readonly Collider2D[] _temporaryInteraction;
 		private IEnumerator _airJumpEvent;
 		private IEnumerator _dashSlideEvent;
 		private Vector2 _originCast = Vector2.zero;
@@ -33,7 +32,6 @@ namespace GwambaPrimeAdventure.Character
 		private Vector2 _guardedLinearVelocity = Vector2.zero;
 		private Vector3 _jokerValue = Vector3.zero;
 		private RaycastHit2D _castHit;
-		private readonly ContactFilter2D _interactionFilter = new() { layerMask = WorldBuild.SYSTEM_LAYER + WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER, useTriggers = true };
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private readonly int Idle = Animator.StringToHash(nameof(Idle));
 		private readonly int Walk = Animator.StringToHash(nameof(Walk));
@@ -61,7 +59,7 @@ namespace GwambaPrimeAdventure.Character
 		private float _movementAction = 0F;
 		private float _lastGroundedTime = 0F;
 		private float _lastJumpTime = 0F;
-		private float _fallStart = 0F;
+		private float _startOfFall = 0F;
 		private float _fallDamage = 0F;
 		private float _attackDelay = 0F;
 		private bool _didStart = false;
@@ -402,10 +400,10 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			for (int i = Physics2D.OverlapCollider(_collider, _interactionFilter, _temporaryInteraction); i > 0; i--)
-				if (_temporaryInteraction[i].TryGetComponent<IInteractable>(out _))
+			foreach (Collider2D other in Physics2D.OverlapBoxAll(Local, _collider.size, 0F, WorldBuild.SYSTEM_LAYER + WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER))
+				if (other.TryGetComponent<IInteractable>(out _))
 				{
-					foreach (IInteractable interactable in _temporaryInteraction[i].GetComponents<IInteractable>())
+					foreach (IInteractable interactable in other.GetComponents<IInteractable>())
 						interactable.Interaction();
 					return;
 				}
@@ -569,7 +567,7 @@ namespace GwambaPrimeAdventure.Character
 						for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
 							_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
 					}
-					if (_fallDamage > 0F && _bunnyHopBoost <= 0 && SceneManager.GetActiveScene().name != _hubbyWorldScene)
+					if (_fallStarted && _bunnyHopBoost <= 0 && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
@@ -629,14 +627,14 @@ namespace GwambaPrimeAdventure.Character
 							_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
 						if (_fallStarted)
 						{
-							_fallDamage = Mathf.Abs(_fallStart - transform.position.y);
+							_fallDamage = Mathf.Abs(_startOfFall - transform.position.y);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
-								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (1F, $"X " + (_fallDamage / _fallDamageDistance).ToString("F1"));
+								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (1F, $"X {_fallDamage / _fallDamageDistance:F1}");
 							else if (!_invencibility)
 								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 						}
 						else
-							(_fallStarted, _fallStart, _fallDamage) = (true, transform.position.y, 0F);
+							(_fallStarted, _startOfFall, _fallDamage) = (true, transform.position.y, 0F);
 					}
 					else
 					{
@@ -644,8 +642,8 @@ namespace GwambaPrimeAdventure.Character
 							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 						if (_rigidbody.gravityScale > _gravityScale)
 							_rigidbody.gravityScale = _gravityScale;
-						if (_fallDamage > 0F)
-							_fallDamage = 0F;
+						if (_fallStarted)
+							(_fallStarted, _fallDamage) = (false, 0F);
 					}
 					if (_attackUsage)
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
