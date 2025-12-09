@@ -249,7 +249,7 @@ namespace GwambaPrimeAdventure.Hud
 		internal void SetActive(bool isActive) => _isActive = isActive;
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+			if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 				_isActive = message.ToggleValue.Value;
 		}
 	};
