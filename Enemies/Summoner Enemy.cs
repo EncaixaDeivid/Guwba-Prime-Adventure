@@ -116,10 +116,7 @@ namespace GwambaPrimeAdventure.Enemy
 				return;
 			for (ushort i = 0; i < _structureTime.Length; i++)
 				if (_structureTime[i] > 0F)
-					if ((_structureTime[i] -= Time.deltaTime) < 0F)
-					{
-
-					}
+					_structureTime[i] -= Time.deltaTime;
 			if (_stopTime > 0F)
 			{
 				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2F && !_waitStop && _summonEvent is not null)
@@ -141,6 +138,8 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void OnSummon(ushort summonIndex)
 		{
+			if (_structureTime[summonIndex] > 0F)
+				return;
 			_structureTime[summonIndex] = _statistics.SummonPointStructures[summonIndex].TimeToUse;
 			Summon(_statistics.SummonPointStructures[summonIndex].Summon);
 		}
