@@ -41,7 +41,7 @@ namespace GwambaPrimeAdventure
 		}
 		public void Receive(MessageData message)
 		{
-			if (this == message.AdditionalData as OcclusionObject && message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+			if (this == message.AdditionalData as OcclusionObject && MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 				Execution(message.ToggleValue.Value);
 		}
 	};
