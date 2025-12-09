@@ -22,7 +22,7 @@ namespace GwambaPrimeAdventure
 			StateController[] states = GetComponentsInChildren<StateController>(true);
 			yield return new WaitUntil(() =>
 			{
-				for (ushort i = 0; i < states.Length; i++)
+				for (ushort i = 0; states.Length > i; i++)
 					if (states[i] && !states[i].enabled)
 						return false;
 				return true;
@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure
 		}
 		internal void Execution(bool activate)
 		{
-			for (ushort i = 0; i < transform.childCount; i++)
+			for (ushort i = 0; transform.childCount > i; i++)
 				transform.GetChild(i).gameObject.SetActive(activate);
 		}
 		private void OnTriggerEnter2D(Collider2D other)
