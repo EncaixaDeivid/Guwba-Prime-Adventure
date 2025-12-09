@@ -12,13 +12,13 @@ namespace GwambaPrimeAdventure
 			_loader.Clear();
 			GetComponentsInChildren<ILoader>(_loader);
 			float progress = 0F;
-			for (ushort i = 0; i < _loader.Count; i++)
+			for (ushort i = 0; _loader.Count > i; i++)
 			{
 				yield return StartCoroutine(_loader[i].Load());
 				progressBar.value -= progress;
 				progressBar.value += progress = (i + 1F) / _loader.Count;
 			}
-			if (_loader.Count <= 0)
+			if (0 >= _loader.Count)
 				progressBar.value += ++SceneInitiator.ProgressIndex / SceneInitiator.ProgressIndex;
 			else
 				progressBar.value += ++SceneInitiator.ProgressIndex - progressBar.value;
