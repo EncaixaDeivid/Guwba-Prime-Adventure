@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace GwambaPrimeAdventure
 {
 	public sealed class Sender
@@ -16,15 +17,20 @@ namespace GwambaPrimeAdventure
 		}
 		private static readonly Dictionary<MessagePath, List<IConnector>> _connectors = new();
 		private MessageData _messageData;
-		public static void Include(IConnector connector)
+		private static bool _onSend = false;
+		public static async void Include(IConnector connector)
 		{
+			if (_onSend)
+				await Task.Yield();
 			if (!_connectors.ContainsKey(connector.Path))
 				_connectors.Add(connector.Path, new List<IConnector>() { connector });
 			else if (!_connectors[connector.Path].Contains(connector))
 				_connectors[connector.Path].Add(connector);
 		}
-		public static void Exclude(IConnector connector)
+		public static async void Exclude(IConnector connector)
 		{
+			if (_onSend)
+				await Task.Yield();
 			if (_connectors.ContainsKey(connector.Path))
 			{
 				if (_connectors[connector.Path].Contains(connector))
@@ -40,10 +46,11 @@ namespace GwambaPrimeAdventure
 		public void SetNumber(ushort value) => _messageData.NumberValue = (ushort)(Mathf.Abs(value));
 		public void Send(MessagePath path)
 		{
+			_onSend = true;
 			if (_connectors.ContainsKey(path))
 				for (ushort i = 0; i < _connectors[path].Count; i++)
-					if (_connectors[path][i] is not null && _connectors[path][i].Path == path)
-						_connectors[path][i].Receive(_messageData);
+					_connectors[path][i]?.Receive(_messageData);
+			_onSend = false;
 		}
 	};
 };
