@@ -28,7 +28,7 @@ namespace GwambaPrimeAdventure.Character
 		private Vector2 _sizeCast = Vector2.zero;
 		private Vector2 _startCast = Vector2.zero;
 		private Vector2 _endCast = Vector2.zero;
-		private Vector2 _surfaceLocal = Vector2.zero;
+		private Vector2 _localOfSurface = Vector2.zero;
 		private Vector2 _guardedLinearVelocity = Vector2.zero;
 		private Vector3 _jokerValue = Vector3.zero;
 		private RaycastHit2D _castHit;
@@ -246,18 +246,18 @@ namespace GwambaPrimeAdventure.Character
 		{
 			for (ushort i = 0; i < (_vitality = (short)_gwambaCanvas.Vitality.Length); i++)
 			{
-				_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
-				_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
-				_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
+				_gwambaCanvas.Vitality[i].style.backgroundColor = _gwambaCanvas.BackgroundColor;
+				_gwambaCanvas.Vitality[i].style.borderBottomColor = _gwambaCanvas.BorderColor;
+				_gwambaCanvas.Vitality[i].style.borderLeftColor = _gwambaCanvas.BorderColor;
+				_gwambaCanvas.Vitality[i].style.borderRightColor = _gwambaCanvas.BorderColor;
+				_gwambaCanvas.Vitality[i].style.borderTopColor = _gwambaCanvas.BorderColor;
 			}
 			for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
-				_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.RecoverVitality[i].style.backgroundColor = _gwambaCanvas.MissingColor;
 			for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
-				_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+				_gwambaCanvas.StunResistance[i].style.backgroundColor = _gwambaCanvas.StunResistanceColor;
 			for (ushort i = _bunnyHopBoost = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
-				_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
 			_animator.SetBool(Death, _hopActive = _isHoping = false);
 		}
 		public IEnumerator Load()
@@ -365,8 +365,8 @@ namespace GwambaPrimeAdventure.Character
 		}
 		private void FootStepSound(float stepPositionX)
 		{
-			_surfaceLocal.Set(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y);
-			EffectsController.SurfaceSound(_surfaceLocal);
+			_localOfSurface.Set(transform.position.x + stepPositionX, transform.position.y - _collider.bounds.extents.y);
+			EffectsController.SurfaceSound(_localOfSurface);
 		}
 		private void JumpInput(InputAction.CallbackContext jump)
 		{
@@ -416,11 +416,11 @@ namespace GwambaPrimeAdventure.Character
 			_vitality -= (short)damage;
 			for (ushort i = (ushort)_gwambaCanvas.Vitality.Length; i > (_vitality >= 0 ? _vitality : 0); i--)
 			{
-				_gwambaCanvas.Vitality[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
-				_gwambaCanvas.Vitality[i - 1].style.borderBottomColor = new StyleColor(_gwambaCanvas.MissingColor);
-				_gwambaCanvas.Vitality[i - 1].style.borderLeftColor = new StyleColor(_gwambaCanvas.MissingColor);
-				_gwambaCanvas.Vitality[i - 1].style.borderRightColor = new StyleColor(_gwambaCanvas.MissingColor);
-				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.Vitality[i - 1].style.backgroundColor = _gwambaCanvas.MissingColor;
+				_gwambaCanvas.Vitality[i - 1].style.borderBottomColor = _gwambaCanvas.MissingColor;
+				_gwambaCanvas.Vitality[i - 1].style.borderLeftColor = _gwambaCanvas.MissingColor;
+				_gwambaCanvas.Vitality[i - 1].style.borderRightColor = _gwambaCanvas.MissingColor;
+				_gwambaCanvas.Vitality[i - 1].style.borderTopColor = _gwambaCanvas.MissingColor;
 			}
 			(_timerOfInvencibility, _invencibility) = (_invencibilityTime, true);
 			if (_vitality <= 0)
@@ -456,7 +456,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			_stunResistance -= (short)stunStrength;
 			for (ushort i = (ushort)_gwambaCanvas.StunResistance.Length; i > (_stunResistance >= 0 ? _stunResistance : 0); i--)
-				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = _gwambaCanvas.MissingColor;
 			if (_stunResistance <= 0 && !_animator.GetBool(Death))
 			{
 				_animator.SetBool(Stun, !(_invencibility = false));
@@ -464,7 +464,7 @@ namespace GwambaPrimeAdventure.Character
 					_gwambaDamagers[i].Alpha = 1F;
 				_stunTimer = stunTime;
 				for (ushort i = 0; i < (_stunResistance = (short)_gwambaCanvas.StunResistance.Length); i++)
-					_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+					_gwambaCanvas.StunResistance[i].style.backgroundColor = _gwambaCanvas.StunResistanceColor;
 				EffectsController.SoundEffect(_stunSound, transform.position);
 				DisableInputs();
 			}
@@ -478,7 +478,7 @@ namespace GwambaPrimeAdventure.Character
 				_screenShaker.ImpulseDefinition.ImpulseDuration = gwambaDamager.AttackShakeTime;
 				_screenShaker.GenerateImpulse(gwambaDamager.AttackShake);
 				EffectsController.HitStop(_hitStopTime, _hitSlowTime);
-				gwambaDamager.DamagerDamaged.Add(destructible);
+				gwambaDamager.damagedes.Add(destructible);
 				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; amount < (destructible.Health <= 0 ? gwambaDamager.AttackDamage + 1 : gwambaDamager.AttackDamage); amount++)
 					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
@@ -486,23 +486,23 @@ namespace GwambaPrimeAdventure.Character
 						_vitality += 1;
 						for (ushort i = 0; i < _vitality; i++)
 						{
-							_gwambaCanvas.Vitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BackgroundColor);
-							_gwambaCanvas.Vitality[i].style.borderBottomColor = new StyleColor(_gwambaCanvas.BorderColor);
-							_gwambaCanvas.Vitality[i].style.borderLeftColor = new StyleColor(_gwambaCanvas.BorderColor);
-							_gwambaCanvas.Vitality[i].style.borderRightColor = new StyleColor(_gwambaCanvas.BorderColor);
-							_gwambaCanvas.Vitality[i].style.borderTopColor = new StyleColor(_gwambaCanvas.BorderColor);
+							_gwambaCanvas.Vitality[i].style.backgroundColor = _gwambaCanvas.BackgroundColor;
+							_gwambaCanvas.Vitality[i].style.borderBottomColor = _gwambaCanvas.BorderColor;
+							_gwambaCanvas.Vitality[i].style.borderLeftColor = _gwambaCanvas.BorderColor;
+							_gwambaCanvas.Vitality[i].style.borderRightColor = _gwambaCanvas.BorderColor;
+							_gwambaCanvas.Vitality[i].style.borderTopColor = _gwambaCanvas.BorderColor;
 						}
 						for (ushort i = _recoverVitality = 0; i < _gwambaCanvas.RecoverVitality.Length; i++)
-							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = _gwambaCanvas.MissingColor;
 						_stunResistance = (short)(_stunResistance < _gwambaCanvas.StunResistance.Length ? _stunResistance + 1 : _stunResistance);
 						for (ushort i = 0; i < _stunResistance; i++)
-							_gwambaCanvas.StunResistance[i].style.backgroundColor = new StyleColor(_gwambaCanvas.StunResistanceColor);
+							_gwambaCanvas.StunResistance[i].style.backgroundColor = _gwambaCanvas.StunResistanceColor;
 					}
 					else if (_recoverVitality < _gwambaCanvas.RecoverVitality.Length)
 					{
 						_recoverVitality += 1;
 						for (ushort i = 0; i < _recoverVitality; i++)
-							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BorderColor);
+							_gwambaCanvas.RecoverVitality[i].style.backgroundColor = _gwambaCanvas.BorderColor;
 					}
 			}
 		}
@@ -535,7 +535,7 @@ namespace GwambaPrimeAdventure.Character
 			if (_attackDelay > 0F)
 				if ((_attackDelay -= Time.deltaTime) <= 0F)
 					for (ushort i = 0; i < _gwambaDamagers.Length; i++)
-						_gwambaDamagers[i].DamagerDamaged.Clear();
+						_gwambaDamagers[i].damagedes.Clear();
 		}
 		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0F ? _bunnyHopBoost * callBackValue : 0F;
 		private void FixedUpdate()
@@ -565,15 +565,15 @@ namespace GwambaPrimeAdventure.Character
 					{
 						_hopActive = _isHoping = false;
 						for (ushort i = 0; i < _gwambaCanvas.BunnyHop.Length; i++)
-							_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.MissingColor);
+							_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
 					}
 					if (_fallStarted && _bunnyHopBoost <= 0 && SceneManager.GetActiveScene().name != _hubbyWorldScene)
 					{
 						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
 						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
 						DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-						_surfaceLocal.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
-						EffectsController.SurfaceSound(_surfaceLocal);
+						_localOfSurface.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
+						EffectsController.SurfaceSound(_localOfSurface);
 						(_fallStarted, _fallDamage) = (false, 0F);
 						if (_invencibility && _fadeTimer <= 0F)
 							_fadeTimer = _timeToFadeShow;
@@ -592,8 +592,8 @@ namespace GwambaPrimeAdventure.Character
 							if (_castHit && _castHit.point.y <= _originCast.y + _sizeCast.y / 2F && _castHit.point.y >= _originCast.y - _sizeCast.y / 2F)
 							{
 								_jokerValue.z = Mathf.Abs(_castHit.point.y - (transform.position.y - _collider.bounds.extents.y));
-								_surfaceLocal.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.z);
-								transform.position = _surfaceLocal;
+								_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.z);
+								transform.position = _localOfSurface;
 								_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 							}
 						}
@@ -654,8 +654,8 @@ namespace GwambaPrimeAdventure.Character
 					_originCast.Set(Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsQueryLimit) * _movementAction, Local.y - _collider.bounds.extents.y);
 					if (_downStairs = _castHit = Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER))
 					{
-						_surfaceLocal.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y - _castHit.distance);
-						transform.position = _surfaceLocal;
+						_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y - _castHit.distance);
+						transform.position = _localOfSurface;
 					}
 				}
 				if (_airJumpEvent is not null)
@@ -687,7 +687,7 @@ namespace GwambaPrimeAdventure.Character
 				{
 					_isHoping = true;
 					for (ushort i = 0; i < _bunnyHopBoost; i++)
-						_gwambaCanvas.BunnyHop[i].style.backgroundColor = new StyleColor(_gwambaCanvas.BunnyHopColor);
+						_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.BunnyHopColor;
 				}
 				_rigidbody.AddForceY((_jumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
 				EffectsController.SoundEffect(_jumpSound, transform.position);
