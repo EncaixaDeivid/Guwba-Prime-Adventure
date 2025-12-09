@@ -19,7 +19,7 @@ namespace GwambaPrimeAdventure
 				get
 				{
 					if (_time > 0F && _instance.isActiveAndEnabled)
-						_time -= Time.deltaTime / (_unscaled ? Time.timeScale : 1F);
+						_time -= _unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
 					return _time > 0F;
 				}
 			}
