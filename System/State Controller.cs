@@ -18,9 +18,9 @@ namespace GwambaPrimeAdventure
 			{
 				get
 				{
-					if (_time > 0F && _instance.isActiveAndEnabled)
+					if (0F < _time && _instance.isActiveAndEnabled)
 						_time -= _unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
-					return _time > 0F;
+					return 0F < _time;
 				}
 			}
 			public WaitTime(StateController instance, float time, bool unscaled = false)
