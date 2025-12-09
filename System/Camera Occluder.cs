@@ -19,48 +19,50 @@ namespace GwambaPrimeAdventure
 				Destroy(gameObject, WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
 				return;
 			}
-			_cinemachineFollow = GetComponent<CinemachineFollow>();
 			_instance = this;
+			_cinemachineFollow = GetComponent<CinemachineFollow>();
 			SceneManager.sceneLoaded += SceneLoaded;
 		}
 		private new void OnDestroy()
 		{
 			base.OnDestroy();
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			StopAllCoroutines();
 			SceneManager.sceneLoaded -= SceneLoaded;
 		}
 		private void OnEnable()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			_cinemachineFollow.enabled = true;
 		}
 		private void OnDisable()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			_cinemachineFollow.enabled = false;
 		}
 		private IEnumerator Start()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			CinemachineCamera camera = GetComponent<CinemachineCamera>();
-			GetComponent<BoxCollider2D>().size = WorldBuild.OrthographicToRealSize(camera.Lens.OrthographicSize);
+			GetComponent<BoxCollider2D>().size = WorldBuild.OrthographicToRealSize(GetComponent<CinemachineCamera>().Lens.OrthographicSize);
 			DontDestroyOnLoad(gameObject);
 		}
 		private void SceneLoaded(Scene scene, LoadSceneMode loadMode)
 		{
-			_cinemachineFollow.enabled = true;
 			if (scene.name == _menuScene)
+			{
 				Destroy(gameObject);
+				return;
+			}
+			_cinemachineFollow.enabled = true;
 		}
 		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			if (gameObject.TryGetComponent<OcclusionObject>(out var occlusion))
 				occlusion.Execution(activate);
