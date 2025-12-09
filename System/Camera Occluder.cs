@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 using System.Collections;
@@ -53,11 +52,12 @@ namespace GwambaPrimeAdventure
 			GetComponent<BoxCollider2D>().size = WorldBuild.OrthographicToRealSize(camera.Lens.OrthographicSize);
 			DontDestroyOnLoad(gameObject);
 		}
-		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
+		private void SceneLoaded(Scene scene, LoadSceneMode loadMode)
 		{
+			_cinemachineFollow.enabled = true;
 			if (scene.name == _menuScene)
 				Destroy(gameObject);
-		};
+		}
 		private void SetOtherChildren(GameObject gameObject, bool activate)
 		{
 			if (!_instance || _instance != this)
