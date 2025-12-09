@@ -42,7 +42,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+			if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 				_stopWorking = !message.ToggleValue.Value;
 		}
 	};
