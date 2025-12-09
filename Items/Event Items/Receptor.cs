@@ -18,10 +18,10 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		[SerializeField, Tooltip("The activators that this will receive a signal.")] private Activator[] _activators;
 		[SerializeField, Tooltip("If this will receive a signal from specifics or existent objects.")] private string[] _specificsObjects;
 		[SerializeField, Tooltip("The amount of time to wait for active after receive the signal.")] private float _timeToActivate;
-		[SerializeField, Tooltip("If this will activate for every activator activated.")] private bool _1X1;
+		[SerializeField, Tooltip("If this will activate for every _activators[i] activated.")] private bool _1X1;
 		[SerializeField, HideIf(nameof(_1X1)), Tooltip("If are multiples activators needed to activate.")] private bool _multiplesNeeded;
 		[SerializeField, HideIf(nameof(_1X1)), ShowIf(nameof(_multiplesNeeded)), Tooltip("The quantity of multiples activators needed to activate.")] private ushort _quantityNeeded;
-		[SerializeField, HideIf(nameof(_1X1)), Tooltip("If is needed only one activator to activate.")] private bool _oneNeeded;
+		[SerializeField, HideIf(nameof(_1X1)), Tooltip("If is needed only one _activators[i] to activate.")] private bool _oneNeeded;
 		[SerializeField, HideIf(nameof(_1X1)), ShowIf(nameof(_oneNeeded)), Tooltip("If it will be inactive after one activation")] private bool _oneActivation;
 		private new void Awake()
 		{
@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		public IEnumerator Load()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (_specificsObjects.Length > 0)
+			if (0 < _specificsObjects.Length)
 				foreach (string specificObject in _specificsObjects)
 					if (saveFile.GeneralObjects.Contains(specificObject))
 						_receptor.Execute();
@@ -39,8 +39,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		private void Update()
 		{
-			if (_signalTimer > 0F)
-				if ((_signalTimer -= Time.deltaTime) <= 0F)
+			if (0F < _signalTimer)
+				if (0F >= (_signalTimer -= Time.deltaTime))
 					NormalSignal();
 		}
 		private void NormalSignal()
@@ -51,18 +51,18 @@ namespace GwambaPrimeAdventure.Item.EventItem
 				_usedActivators.Clear();
 			if (_1X1)
 			{
-				foreach (Activator activator1X1 in _activators)
-					if (_signalActivator == activator1X1 && !_usedActivators.Contains(activator1X1))
+				for (ushort i = 0; _activators.Length > i; i++)
+					if (_activators[i] == _signalActivator && !_usedActivators.Contains(_activators[i]))
 					{
-						_usedActivators.Add(activator1X1);
+						_usedActivators.Add(_activators[i]);
 						_receptor.Execute();
 						return;
 					}
 			}
 			else if (_multiplesNeeded)
 			{
-				foreach (Activator activator in _activators)
-					if (activator == _signalActivator)
+				for (ushort i = 0; _activators.Length > i; i++)
+					if (_activators[i] == _signalActivator)
 						_signals += 1;
 				if (_signals >= _quantityNeeded)
 				{
@@ -72,8 +72,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			}
 			else if (_oneNeeded)
 			{
-				foreach (Activator activator in _activators)
-					if (activator == _signalActivator)
+				for (ushort i = 0; _activators.Length > i; i++)
+					if (_activators[i] == _signalActivator)
 					{
 						_receptor.Execute();
 						if (_oneActivation)
@@ -83,10 +83,10 @@ namespace GwambaPrimeAdventure.Item.EventItem
 			}
 			else
 			{
-				foreach (Activator activator in _activators)
-					if (activator == _signalActivator)
+				for (ushort i = 0; _activators.Length > i; i++)
+					if (_activators[i] == _signalActivator)
 						_signals += 1;
-				if (_signals >= _activators.Length)
+				if (_activators.Length <= _signals)
 				{
 					_signals = 0;
 					_receptor.Execute();
@@ -96,7 +96,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		internal void ReceiveSignal(Activator signalActivator)
 		{
 			_signalActivator = signalActivator;
-			if (_timeToActivate > 0F)
+			if (0F < _timeToActivate)
 				_signalTimer = _timeToActivate;
 			else
 				NormalSignal();
