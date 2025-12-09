@@ -14,7 +14,7 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		private void Activate(bool activationKey, GameObject objectKey)
 		{
 			if (activationKey && Usable)
-				if (_objectsActivators != null)
+				if (_objectsActivators is not null)
 				{
 					foreach (GameObject activator in _objectsActivators)
 						if (activator != null && activator == objectKey)
