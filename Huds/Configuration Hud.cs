@@ -6,7 +6,7 @@ using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	internal sealed class ConfigurationHud : MonoBehaviour
+	internal sealed class ConfigurationHud : MonoBehaviour, ILoader
 	{
 		private static ConfigurationHud _instance;
 		internal VisualElement RootElement { get; private set; }
@@ -62,11 +62,10 @@ namespace GwambaPrimeAdventure.Hud
 			No = RootElement.Q<Button>(nameof(No));
 			FrameRateText =  RootElement.Q<Label>(nameof(FrameRateText));
 		}
-		private IEnumerator Start()
+		public IEnumerator Load()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				yield break;
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SettingsController.Load(out Settings settings);
 			if (!SettingsController.FileExists())
 				SettingsController.WriteSave(settings);
@@ -82,8 +81,8 @@ namespace GwambaPrimeAdventure.Hud
 			EffectsVolume.lowValue = WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
 			MusicVolume.lowValue = WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
 			FrameRate.lowValue = 10;
-			foreach (Resolution resolution in WorldBuild.PixelPerfectResolutions())
-				ScreenResolution.choices.Add($@"{resolution.width} x {resolution.height}");
+			for (ushort i = 0; WorldBuild.PixelPerfectResolutions().Length > i; i++)
+				ScreenResolution.choices.Add($@"{WorldBuild.PixelPerfectResolutions()[i].width} x {WorldBuild.PixelPerfectResolutions()[i].height}");
 			foreach (FullScreenMode mode in Enum.GetValues(typeof(FullScreenMode)))
 				FullScreenModes.choices.Add(mode.ToString());
 			ScreenResolution.value = $@"{settings.ScreenResolution.x} x {settings.ScreenResolution.y}";
@@ -100,6 +99,7 @@ namespace GwambaPrimeAdventure.Hud
 			EffectsVolume.value = settings.EffectsVolume;
 			MusicVolume.value = settings.MusicVolume;
 			FrameRateText.text = settings.FrameRate.ToString();
+			yield return null;
 		}
 	};
 };
