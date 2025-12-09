@@ -167,7 +167,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this)
+					if (enemy && this == enemy)
 					{
 						base.Receive(message);
 						return;
