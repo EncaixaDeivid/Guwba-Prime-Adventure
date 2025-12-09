@@ -24,6 +24,8 @@ namespace GwambaPrimeAdventure
 		public const ushort UI_SCALE_WIDTH = 1920;
 		public const ushort UI_SCALE_HEIGHt = (ushort)(UI_SCALE_WIDTH * WIDTH_HEIGHT_PROPORTION);
 		public const ushort LEVELS_COUNT = 10;
+		public static Vector2 OrthographicToRealSize(float orthographicSize) => new(orthographicSize * 2F * HEIGHT_WIDTH_PROPORTION, orthographicSize * 2F);
+		public static Vector2 OrthographicToScreenSize(float orthographicSize) => OrthographicToRealSize(orthographicSize) * PIXELS_PER_UNIT;
 		public static Resolution[] PixelPerfectResolutions()
 		{
 			List<Resolution> resolutions = new();
