@@ -37,14 +37,14 @@ namespace GwambaPrimeAdventure.Item
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.Coins < 100)
+			if (100 > saveFile.Coins)
 				saveFile.Coins += 1;
-			if (saveFile.Lifes < 100 && saveFile.Coins >= 100)
+			if (100 > saveFile.Lifes && 100 <= saveFile.Coins)
 			{
 				saveFile.Coins = 0;
 				saveFile.Lifes += 1;
 			}
-			if (saveFile.Lifes >= 100 && saveFile.Coins >= 99)
+			if (100 <= saveFile.Lifes && 99 <= saveFile.Coins)
 				saveFile.Coins = 100;
 			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
 				saveFile.GeneralObjects.Add(name);
