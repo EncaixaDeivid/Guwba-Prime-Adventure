@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void OnDestroy()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			_deathScreenHud.Continue.clicked -= Continue;
 			_deathScreenHud.OutLevel.clicked -= OutLevel;
@@ -41,7 +41,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private IEnumerator Start()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			_deathScreenHud.Continue.clicked += Continue;
@@ -66,7 +66,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void Continue()
 		{
-			if (_bossScene != null && SceneManager.GetActiveScene().name == _bossScene)
+			if (_bossScene is not null && SceneManager.GetActiveScene().name == _bossScene)
 				GetComponent<Transitioner>().Transicion(_bossScene);
 			else
 				StartCoroutine(Curtain());
@@ -77,7 +77,7 @@ namespace GwambaPrimeAdventure.Hud
 				_deathScreenHud.OutLevel.style.display = DisplayStyle.None;
 				_deathScreenHud.GameOver.style.display = DisplayStyle.None;
 				_deathScreenHud.Curtain.style.display = DisplayStyle.Flex;
-				for (float i = 0F; _deathScreenHud.Curtain.style.opacity.value < 1F; i += 5E-2F)
+				for (float i = 0F; 1F > _deathScreenHud.Curtain.style.opacity.value; i += 5E-2F)
 					yield return _deathScreenHud.Curtain.style.opacity = i;
 				_sender.SetToggle(true);
 				_sender.SetFormat(MessageFormat.Event);
@@ -85,7 +85,7 @@ namespace GwambaPrimeAdventure.Hud
 				_sender.Send(MessagePath.Character);
 				_sender.SetFormat(MessageFormat.State);
 				_sender.Send(MessagePath.Item);
-				for (float i = 1F; _deathScreenHud.Curtain.style.opacity.value > 0F; i -= 5E-2F)
+				for (float i = 1F; 0F < _deathScreenHud.Curtain.style.opacity.value; i -= 5E-2F)
 					yield return _deathScreenHud.Curtain.style.opacity = i;
 				_sender.Send(MessagePath.Character);
 				_sender.SetFormat(MessageFormat.None);
@@ -111,7 +111,7 @@ namespace GwambaPrimeAdventure.Hud
 			if (MessageFormat.Event == message.Format && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 			{
 				SaveController.Load(out SaveFile saveFile);
-				if (saveFile.Lifes < 0)
+				if (0 > saveFile.Lifes)
 				{
 					_deathScreenHud.Text.text = "Game Over";
 					_deathScreenHud.Continue.style.display = DisplayStyle.None;
