@@ -51,7 +51,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData as GameObject == gameObject && message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+			if (gameObject == message.AdditionalData as GameObject && MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 				if (message.ToggleValue.Value)
 				{
 					_isActive = true;
