@@ -99,7 +99,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.None && message.ToggleValue.HasValue)
+			if (MessageFormat.None == message.Format && message.ToggleValue.HasValue)
 			{
 				Rigidbody.Sleep();
 				foreach (EnemyProvider enemy in _selfEnemies)
