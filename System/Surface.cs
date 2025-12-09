@@ -3,8 +3,7 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 namespace GwambaPrimeAdventure
 {
-	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer))]
-	[RequireComponent(typeof(TilemapCollider2D))]
+	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(Tilemap), typeof(TilemapRenderer)), RequireComponent(typeof(TilemapCollider2D))]
 	public sealed class Surface : MonoBehaviour, ILoader
 	{
 		private Tilemap _tilemap;
