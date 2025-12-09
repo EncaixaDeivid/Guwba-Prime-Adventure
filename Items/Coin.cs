@@ -53,7 +53,7 @@ namespace GwambaPrimeAdventure.Item
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && message.ToggleValue.Value)
+			if (MessageFormat.State == message.Format && message.ToggleValue.HasValue && message.ToggleValue.Value)
 				_collider.enabled = _animator.enabled = _spriteRenderer.enabled = true;
 		}
 	};
