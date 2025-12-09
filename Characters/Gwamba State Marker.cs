@@ -231,7 +231,7 @@ namespace GwambaPrimeAdventure.Character
 			DisableInputs();
 			yield return new WaitWhile(() =>
 			{
-				transform.position = Vector2.zero;
+				transform.position = EffectsController.BeginingPosition;
 				return SceneInitiator.IsInTrancision();
 			});
 			if (_animator.GetBool(Death))
