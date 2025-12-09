@@ -33,6 +33,8 @@ namespace GwambaPrimeAdventure.Connection
 			StopAllCoroutines();
 			_lightsStack.Clear();
 		}
+		private void OnEnable() => AudioListener.pause = false;
+		private void OnDisable() => AudioListener.pause = true;
 		private void PrvateHitStop(float stopTime, float slowTime)
 		{
 			if (_canHitStop)
@@ -71,16 +73,10 @@ namespace GwambaPrimeAdventure.Connection
 			StartCoroutine(SoundPlay(source, clip.length));
 			IEnumerator SoundPlay(AudioSource source, float playTime)
 			{
-				while ((playTime -= Time.deltaTime) > 0F)
+				while (playTime > 0F)
 				{
-					yield return new WaitUntil(() =>
-					{
-						if (!isActiveAndEnabled && source.isPlaying)
-							source.Pause();
-						if (isActiveAndEnabled && !source.isPlaying)
-							source.UnPause();
-						return isActiveAndEnabled;
-					});
+					playTime -= Time.deltaTime;
+					yield return new WaitUntil(() => isActiveAndEnabled);
 				}
 				Destroy(source.gameObject);
 			}
