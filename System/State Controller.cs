@@ -4,11 +4,11 @@ namespace GwambaPrimeAdventure
 {
 	public abstract class StateController : MonoBehaviour
 	{
-		private static UnityAction<bool> _state;
-		protected void Awake() => _state += NewState;
-		protected void OnDestroy() => _state -= NewState;
+		protected static event UnityAction<bool> State;
+		protected void Awake() => State += NewState;
+		protected void OnDestroy() => State -= NewState;
 		private void NewState(bool state) => enabled = state;
-		public static void SetState(bool newState) => _state?.Invoke(newState);
+		public static void SetState(bool newState) => State?.Invoke(newState);
 		protected sealed class WaitTime : CustomYieldInstruction
 		{
 			private readonly StateController _instance;
