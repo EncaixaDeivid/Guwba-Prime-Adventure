@@ -33,7 +33,7 @@ namespace GwambaPrimeAdventure.Enemy
 			transform.TurnScaleX(_movementSide = (short)((GwambaStateMarker.Localization.x < transform.position.x ? -1 : 1) * (_moving.InvertMovementSide ? -1 : 1)));
 		}
 		protected void FixedUpdate() => _onGround = false;
-		private void OnCollisionStay2D(Collision2D collision)
+		protected void OnCollisionStay2D(Collision2D collision)
 		{
 			_originCast.Set(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
 			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
