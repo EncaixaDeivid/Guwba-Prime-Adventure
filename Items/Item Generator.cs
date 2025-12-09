@@ -18,8 +18,8 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, HideIf(nameof(_existentItems)), ShowIf(nameof(_especifiedGeneration)), Tooltip("If this generator will destroy the entire object.")] private bool _destroyObject;
 		private void Update()
 		{
-			if (_continueGeneration && _timeGeneration > 0F)
-				if ((_timeGeneration -= Time.deltaTime) <= 0F)
+			if (_continueGeneration && 0F < _timeGeneration)
+				if (0F >= (_timeGeneration -= Time.deltaTime))
 				{
 					_timeGeneration = _generationTime;
 					_itemsGenerated.Add(Instantiate(_generatedItem, transform.position, transform.rotation));
@@ -29,7 +29,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_itemsGenerated.RemoveAll(item => !item);
 				_continueGeneration = _quantityToGenerate != _itemsGenerated.Count;
 			}
-			else if (_especifiedGeneration && _quantityToGenerate == _itemsGenerated.Count)
+			else if (_especifiedGeneration && _itemsGenerated.Count == _quantityToGenerate)
 				if (_destroyObject)
 					Destroy(gameObject);
 				else
