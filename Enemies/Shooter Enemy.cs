@@ -132,7 +132,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this && message.Format == MessageFormat.Event && _statistics.ReactToDamage)
+					if (enemy && this == enemy && MessageFormat.Event == message.Format && _statistics.ReactToDamage)
 					{
 						_targetDirection = (GwambaStateMarker.Localization - (Vector2)transform.position).normalized;
 						transform.TurnScaleX(GwambaStateMarker.Localization.x < transform.position.x);
