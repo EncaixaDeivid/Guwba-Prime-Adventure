@@ -18,7 +18,7 @@ namespace GwambaPrimeAdventure.Item
 		public void Collect()
 		{
 			SaveController.Load(out SaveFile saveFile);
-			if (saveFile.Lifes < 100)
+			if (100 > saveFile.Lifes)
 				saveFile.Lifes += 1;
 			saveFile.LifesAcquired.Add(name);
 			if (_saveOnSpecifics && !saveFile.GeneralObjects.Contains(name))
