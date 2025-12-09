@@ -45,8 +45,7 @@ namespace GwambaPrimeAdventure.Item
 		{
 			_levelGate.transform.localPosition = _offsetPosition;
 			_transitionSize = _worldSpaceSize = _levelGate.Document.worldSpaceSize;
-			_activeSize *= _gateCamera.Lens.OrthographicSize * 2F * WorldBuild.PIXELS_PER_UNIT;
-			_activeSize.x *= WorldBuild.HEIGHT_WIDTH_PROPORTION;
+			_activeSize = WorldBuild.OrthographicToScreenSize(_gateCamera.Lens.OrthographicSize);
 			SaveController.Load(out SaveFile saveFile);
 			_levelGate.Level.clicked += EnterLevel;
 			if (saveFile.LevelsCompleted[ushort.Parse($"{_levelScene.SceneName[^1]}") - 1])
