@@ -35,7 +35,7 @@ namespace GwambaPrimeAdventure
 			{
 				if (_connectors[connector.Path].Contains(connector))
 					_connectors[connector.Path].Remove(connector);
-				if (_connectors[connector.Path].Count <= 0)
+				if (0 >= _connectors[connector.Path].Count)
 					_connectors.Remove(connector.Path);
 			}
 		}
@@ -48,7 +48,7 @@ namespace GwambaPrimeAdventure
 		{
 			_onSend = true;
 			if (_connectors.ContainsKey(path))
-				for (ushort i = 0; i < _connectors[path].Count; i++)
+				for (ushort i = 0; _connectors[path].Count > i; i++)
 					_connectors[path][i]?.Receive(_messageData);
 			_onSend = false;
 		}
