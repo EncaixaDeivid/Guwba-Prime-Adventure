@@ -5,11 +5,11 @@ namespace GwambaPrimeAdventure.Connection
 {
 	internal static class FileEncoder
 	{
-		private const string ScriptPassword = "BoLo%De%CeNoUrA%cOm%CoBeRtUrA%dE%cHoCoLaTe%AmArGo%!";
+		private const string ScriptPassword = "";
 		private static string ScriptData(string data)
 		{
 			string scriptedData = "";
-			for (ushort i = 0; i < data.Length; i++)
+			for (ushort i = 0; data.Length > i; i++)
 				scriptedData += (char)(data[i] ^ ScriptPassword[i % ScriptPassword.Length]);
 			return scriptedData;
 		}
