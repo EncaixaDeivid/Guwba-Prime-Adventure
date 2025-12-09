@@ -40,7 +40,7 @@ namespace GwambaPrimeAdventure
 				yield break;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			CinemachineCamera camera = GetComponent<CinemachineCamera>();
-			GetComponent<BoxCollider2D>().size = new Vector2(camera.Lens.OrthographicSize * 2F * WorldBuild.HEIGHT_WIDTH_PROPORTION, camera.Lens.OrthographicSize * 2F);
+			GetComponent<BoxCollider2D>().size = WorldBuild.OrthographicToRealSize(camera.Lens.OrthographicSize);
 			DontDestroyOnLoad(gameObject);
 		}
 		private UnityAction<Scene, LoadSceneMode> SceneLoaded => (scene, loadMode) =>
