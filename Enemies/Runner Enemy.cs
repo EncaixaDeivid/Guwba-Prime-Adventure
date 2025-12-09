@@ -205,12 +205,12 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this)
+					if (enemy && this == enemy)
 					{
 						base.Receive(message);
-						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue && !message.ToggleValue.Value)
+						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue && !message.ToggleValue.Value)
 							Rigidbody.linearVelocityX = 0F;
-						if (message.Format == MessageFormat.Event && _statistics.ReactToDamage && _canRetreat)
+						if (MessageFormat.Event == message.Format && _statistics.ReactToDamage && _canRetreat)
 						{
 							(_stoppedTime, _stopWorking, _retreatLocation) = (0F, _stopRunning = _canRetreat = !(_invencibility = _retreat = true), transform.position.x);
 							transform.TurnScaleX(_movementSide = (short)(GwambaStateMarker.Localization.x < transform.position.x ? -1 : 1));
