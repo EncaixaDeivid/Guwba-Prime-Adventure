@@ -15,17 +15,21 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		[field: SerializeField, Tooltip("If this projectile won't move.")] public bool StayInPlace { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The velocity of the screen shake when colliding on the scene.")] public Vector2 CollideShake { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If this projectile will pursue the player endless.")] public bool EndlessPursue { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")] public ForceMode2D ForceMode { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")] public bool UseForce { get; private set; }
-		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")] public bool ParabolicMovement { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("The fore mode to applied in the projectile.")]
+		public ForceMode2D ForceMode { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use force mode to move.")]
+		public bool UseForce { get; private set; }
+		[field: SerializeField, HideIf(EConditionOperator.Or, nameof(StayInPlace), nameof(EndlessPursue)), Tooltip("If this projectile will use parabolic movement.")]
+		public bool ParabolicMovement { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("The amount of speed this projectile will move.")] public float MovementSpeed { get; private set; }
 		[field: SerializeField, HideIf(nameof(StayInPlace)), Tooltip("If the rotation of this projectile impacts its movement.")] public bool RotationMatter { get; private set; }
 		[field: SerializeField, Tooltip("If the rotation of this projectile will be used.")] public bool UseSelfRotation { get; private set; }
 		[field: SerializeField, Tooltip("The amount of speed the rotation spins.")] public float RotationSpeed { get; private set; }
-		[field: SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] public bool UseQuantity { get; private set; }
-		[field: SerializeField, ShowIf(nameof(UseQuantity)), Tooltip("The amount of second projectiles to instantiate.")] public ushort QuantityToSummon { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile will instantiate another after its death.")] public bool InDeath { get; private set; }
 		[field: SerializeField, ShowIf(nameof(InDeath)), Tooltip("The enemy that will be instantiate on death.")] public Control EnemyOnDeath { get; private set; }
+		[field: SerializeField, Tooltip("If this projectile will instantiate another ones in an amount of quantity.")] public bool UseQuantity { get; private set; }
+		[field: SerializeField, ShowIf(EConditionOperator.Or, nameof(InDeath), nameof(UseQuantity)), Tooltip("The amount of second projectiles to instantiate.")]
+		public ushort QuantityToSummon { get; private set; }
 		[field: SerializeField, Tooltip("If this projectile receives no type of damage.")] public bool NoDamage { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of this projectile.")] public ushort Vitality { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("If this projectile won't get stunned.")] public bool NoStun { get; private set; }
