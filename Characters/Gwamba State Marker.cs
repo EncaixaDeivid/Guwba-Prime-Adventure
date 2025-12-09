@@ -247,7 +247,7 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				yield break;
-			yield return _gwambaCanvas.StartUI();
+			yield return _gwambaCanvas.StartCanvas();
 			SaveController.Load(out SaveFile saveFile);
 			(_gwambaCanvas.LifeText.text, _gwambaCanvas.CoinText.text) = ($"X {saveFile.Lifes}", $"X {saveFile.Coins}");
 			(_vitality, _stunResistance) = ((short)_gwambaCanvas.Vitality.Length, (short)_gwambaCanvas.StunResistance.Length);
