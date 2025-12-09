@@ -26,8 +26,8 @@ namespace GwambaPrimeAdventure.Item.EventItem
 		}
 		private void Update()
 		{
-			if (_timer > 0F)
-				if ((_timer -= Time.deltaTime) <= 0F)
+			if (0F < _timer)
+				if (0F >= (_timer -= Time.deltaTime))
 					if (_use)
 					{
 						_use = false;
