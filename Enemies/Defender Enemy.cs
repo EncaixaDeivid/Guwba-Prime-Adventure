@@ -73,9 +73,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this)
+					if (enemy && this == enemy)
 					{
-						if (message.Format == MessageFormat.Event && _statistics.ReactToDamage && message.ToggleValue.HasValue)
+						if (MessageFormat.Event == message.Format && _statistics.ReactToDamage && message.ToggleValue.HasValue)
 							if (_statistics.UseAlternatedTime && message.ToggleValue.Value)
 								(_invencible, _timeOperation) = (true, _statistics.TimeToDestructible);
 							else
