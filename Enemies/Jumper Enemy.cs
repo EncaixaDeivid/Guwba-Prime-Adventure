@@ -233,7 +233,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new async void Receive(MessageData message)
 		{
-			if (message.AdditionalData != null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && enemy == this)
 					{
