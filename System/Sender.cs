@@ -41,9 +41,9 @@ namespace GwambaPrimeAdventure
 		public void Send(MessagePath path)
 		{
 			if (_connectors.ContainsKey(path))
-				foreach (IConnector connector in _connectors[path].ToArray())
-					if (connector != null && connector.Path == path)
-						connector.Receive(_messageData);
+				for (ushort i = 0; i < _connectors[path].Count; i++)
+					if (_connectors[path][i] is not null && _connectors[path][i].Path == path)
+						_connectors[path][i].Receive(_messageData);
 		}
 	};
 };
