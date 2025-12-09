@@ -54,7 +54,7 @@ namespace GwambaPrimeAdventure.Connection
 		{
 			if ((active && !_lightsStack.Contains(globalLight) || !active && _lightsStack.Contains(globalLight)) && globalLight && _lightsStack[0])
 			{
-				for (ushort i = 0; i < _lightsStack.Count; i++)
+				for (ushort i = 0; _lightsStack.Count > i; i++)
 					if (_lightsStack[i])
 						_lightsStack[i].enabled = false;
 				if (active)
@@ -75,7 +75,7 @@ namespace GwambaPrimeAdventure.Connection
 			StartCoroutine(SoundPlay(source, clip.length));
 			IEnumerator SoundPlay(AudioSource source, float playTime)
 			{
-				while (playTime > 0F)
+				while (0F < playTime)
 				{
 					playTime -= Time.deltaTime;
 					yield return new WaitUntil(() => isActiveAndEnabled);
@@ -86,7 +86,7 @@ namespace GwambaPrimeAdventure.Connection
 		private void PrivateSurfaceSound(Vector2 originPosition)
 		{
 			if ((_surfaceCollider = Physics2D.OverlapCircle(originPosition, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER)) && _surfaceCollider.TryGetComponent<Surface>(out var surface))
-				for (ushort i = 0; i < _surfaceSounds.Length; i++)
+				for (ushort i = 0; _surfaceSounds.Length > i; i++)
 					if (_surfaceSounds[i].Tiles.Contains(surface.CheckForTile(originPosition)))
 					{
 						PrivateSoundEffect(_surfaceSounds[i].Clip, originPosition);
