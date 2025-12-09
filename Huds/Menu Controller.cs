@@ -52,7 +52,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void OnDestroy()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				return;
 			_menuHud.Play.clicked -= Play;
 			_menuHud.Configurations.clicked += OpenConfigurations;
