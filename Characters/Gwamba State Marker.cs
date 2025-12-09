@@ -617,7 +617,7 @@ namespace GwambaPrimeAdventure.Character
 					{
 						if (_rigidbody.gravityScale < _fallGravityMultiply * _gravityScale)
 							_rigidbody.gravityScale = _fallGravityMultiply * _gravityScale;
-						if (_fallStarted)
+						if (_fallStarted && !_isHubbyWorld)
 						{
 							_fallDamage = Mathf.Abs(_startOfFall - transform.position.y);
 							if (_fallDamage >= _fallDamageDistance * _fallDamageShowMultiply)
@@ -625,7 +625,7 @@ namespace GwambaPrimeAdventure.Character
 							else if (!_invencibility)
 								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 						}
-						else
+						else if (!_isHubbyWorld)
 							(_fallStarted, _startOfFall, _fallDamage) = (true, transform.position.y, 0F);
 					}
 					else
