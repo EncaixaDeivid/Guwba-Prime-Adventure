@@ -14,10 +14,10 @@ namespace GwambaPrimeAdventure.Story
 		private IEnumerator FadeImage(bool appear)
 		{
 			if (appear)
-				for (float i = 0F; _storySceneHud.SceneImage.style.opacity.value < 1F; i += 1E-1F)
+				for (float i = 0F; 1F > _storySceneHud.SceneImage.style.opacity.value; i += 1E-1F)
 					yield return _storySceneHud.SceneImage.style.opacity = i;
 			else
-				for (float i = 1F; _storySceneHud.SceneImage.style.opacity.value > 0F; i -= 1E-1F)
+				for (float i = 1F; 0F < _storySceneHud.SceneImage.style.opacity.value; i -= 1E-1F)
 					yield return _storySceneHud.SceneImage.style.opacity = i;
 		}
 		internal void ShowScene()
@@ -31,7 +31,7 @@ namespace GwambaPrimeAdventure.Story
 			if (_storySceneObject.SceneComponents[_imageIndex].Equals(_storySceneObject.SceneComponents[^1]))
 				yield break;
 			yield return StartCoroutine(FadeImage(false));
-			_imageIndex = (ushort)(_imageIndex < _storySceneObject.SceneComponents.Length - 1 ? _imageIndex + 1 : 0);
+			_imageIndex = (ushort)(_storySceneObject.SceneComponents.Length - 1 > _imageIndex ? _imageIndex + 1 : 0);
 			_storySceneHud.SceneImage.style.backgroundImage = Background.FromTexture2D(_storySceneObject.SceneComponents[_imageIndex].Image);
 			yield return StartCoroutine(FadeImage(true));
 			if (_storySceneObject.SceneComponents[_imageIndex].OffDialog)
