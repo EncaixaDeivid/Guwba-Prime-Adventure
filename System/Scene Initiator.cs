@@ -20,7 +20,7 @@ namespace GwambaPrimeAdventure
 		}
 		private IEnumerator Start()
 		{
-			if (!_instance || _instance != this)
+			if (!_instance || this != _instance)
 				yield break;
 			TransicionHud transicionHud = Instantiate(_transicionHud, transform);
 			(transicionHud.RootElement.style.opacity, transicionHud.LoadingBar.highValue, ProgressIndex) = (1F, _objectLoaders.Length, 0);
