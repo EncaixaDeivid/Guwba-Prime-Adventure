@@ -235,12 +235,12 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this)
+					if (enemy && this == enemy)
 					{
 						base.Receive(message);
-						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_stopJump = !message.ToggleValue.Value;
-						else if (message.Format == MessageFormat.Event && _statistics.ReactToDamage)
+						else if (MessageFormat.Event == message.Format && _statistics.ReactToDamage)
 						{
 							Rigidbody.AddForceY(_statistics.StrenghtReact * Rigidbody.mass, ForceMode2D.Impulse);
 							while (OnGround)
