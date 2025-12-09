@@ -35,7 +35,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void OnDestroy()
 		{
-			if (!Instance || Instance != this)
+			if (!Instance || this != Instance)
 				return;
 			_configurationHud.Close.clicked -= CloseConfigurations;
 			_configurationHud.OutLevel.clicked -= OutLevel;
@@ -60,7 +60,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void OnEnable()
 		{
-			if (!Instance || Instance != this)
+			if (!Instance || this != Instance)
 				return;
 			_inputController = new InputController();
 			_inputController.Commands.HideHud.canceled += HideHudAction;
@@ -68,7 +68,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private void OnDisable()
 		{
-			if (!Instance || Instance != this)
+			if (!Instance || this != Instance)
 				return;
 			_inputController.Commands.HideHud.canceled -= HideHudAction;
 			_inputController.Commands.HideHud.Disable();
@@ -76,7 +76,7 @@ namespace GwambaPrimeAdventure.Hud
 		}
 		private IEnumerator Start()
 		{
-			if (!Instance || Instance != this)
+			if (!Instance || this != Instance)
 				yield break;
 			yield return StartCoroutine(StartLoad());
 			_configurationHud.Close.clicked += CloseConfigurations;
