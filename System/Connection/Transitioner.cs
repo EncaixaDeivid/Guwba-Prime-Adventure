@@ -22,10 +22,10 @@ namespace GwambaPrimeAdventure.Connection
 				SaveController.Load(out SaveFile saveFile);
 				StateController.SetState(false);
 				TransicionHud transicionHud = Instantiate(_transicionHud);
-				for (float i = 0F; transicionHud.RootElement.style.opacity.value < 1F; i += 1E-1F)
+				for (float i = 0F; 1F > transicionHud.RootElement.style.opacity.value; i += 1E-1F)
 					yield return transicionHud.RootElement.style.opacity = i;
 				SceneField newScene = scene ?? _sceneTransicion;
-				if (newScene != gameObject.scene.name)
+				if (gameObject.scene.name != newScene)
 					if (newScene.SceneName.Contains($"{1..(WorldBuild.LEVELS_COUNT + 1)}"))
 						saveFile.LastLevelEntered = newScene;
 				AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Single);
