@@ -40,7 +40,7 @@ namespace GwambaPrimeAdventure.Character
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.Format == MessageFormat.Event && message.ToggleValue.HasValue && message.ToggleValue.Value && this == _instance)
+			if (MessageFormat.Event == message.Format && message.ToggleValue.HasValue && message.ToggleValue.Value && this == _instance)
 				_sender.Send(MessagePath.Character);
 		}
 	};
