@@ -147,11 +147,11 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && enemy == this)
+					if (enemy && this == enemy)
 					{
-						if (message.Format == MessageFormat.State && message.ToggleValue.HasValue)
+						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_stopSummon = !message.ToggleValue.Value;
-						else if (message.Format == MessageFormat.Event && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0)
+						else if (MessageFormat.Event == message.Format && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0)
 							if (_statistics.RandomReactSummons)
 								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length + 1)]);
 							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && message.NumberValue.Value >= 0)
