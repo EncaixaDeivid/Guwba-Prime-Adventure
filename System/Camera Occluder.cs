@@ -32,8 +32,18 @@ namespace GwambaPrimeAdventure
 			StopAllCoroutines();
 			SceneManager.sceneLoaded -= SceneLoaded;
 		}
-		private void OnEnable() => _cinemachineFollow.enabled = true;
-		private void OnDisable() => _cinemachineFollow.enabled = false;
+		private void OnEnable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			_cinemachineFollow.enabled = true;
+		}
+		private void OnDisable()
+		{
+			if (!_instance || _instance != this)
+				return;
+			_cinemachineFollow.enabled = false;
+		}
 		private IEnumerator Start()
 		{
 			if (!_instance || _instance != this)
