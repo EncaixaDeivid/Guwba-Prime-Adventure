@@ -20,16 +20,19 @@ namespace GwambaPrimeAdventure.Character
 		private Rigidbody2D _rigidbody;
 		private BoxCollider2D _collider;
 		private CinemachineImpulseSource _screenShaker;
-		private InputController _inputController;
+		private readonly InputController _inputController = new();
 		private readonly Sender _sender = Sender.Create();
+		private readonly Collider2D[] _temporaryInteraction;
 		private IEnumerator _airJumpEvent;
 		private IEnumerator _dashSlideEvent;
-		private Vector2 _originCast = Vector2.zero;
-		private Vector2 _sizeCast = Vector2.zero;
+		private readonly Vector2 _originCast = Vector2.zero;
+		private readonly Vector2 _sizeCast = Vector2.zero;
+		private readonly Vector2 _surfaceLocal = Vector2.zero;
 		private Vector2 _guardedLinearVelocity = Vector2.zero;
-		private Vector2 _surfaceLocal = Vector2.zero;
 		private Vector3 _jokerValue = Vector3.zero;
+		private RaycastHit2D[] _multipleCastHits;
 		private RaycastHit2D _castHit;
+		private readonly ContactFilter2D _interactionFilter = new() { layerMask = WorldBuild.SYSTEM_LAYER + WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER, useTriggers = true };
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private readonly int Idle = Animator.StringToHash(nameof(Idle));
 		private readonly int Walk = Animator.StringToHash(nameof(Walk));
@@ -140,7 +143,6 @@ namespace GwambaPrimeAdventure.Character
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
 			_gwambaCanvas = GetComponentInChildren<GwambaCanvas>();
 			_gwambaDamagers = GetComponentsInChildren<GwambaDamager>();
-			_inputController = new InputController();
 			_inputController.Commands.Movement.started += MovementInput;
 			_inputController.Commands.Movement.performed += MovementInput;
 			_inputController.Commands.Movement.canceled += MovementInput;
@@ -399,10 +401,10 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || _movementAction != 0F || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			foreach (Collider2D other in Physics2D.OverlapBoxAll(Local, _collider.size, transform.eulerAngles.z, WorldBuild.CHARACTER_LAYER + WorldBuild.SCENE_LAYER + WorldBuild.ITEM_LAYER))
-				if (other.TryGetComponent<IInteractable>(out _))
+			for (int i = Physics2D.OverlapCollider(_collider, _interactionFilter, _temporaryInteraction); i > 0; i--)
+				if (_temporaryInteraction[i].TryGetComponent<IInteractable>(out _))
 				{
-					foreach (IInteractable interactable in other.GetComponents<IInteractable>())
+					foreach (IInteractable interactable in _temporaryInteraction[i].GetComponents<IInteractable>())
 						interactable.Interaction();
 					return;
 				}
@@ -536,7 +538,7 @@ namespace GwambaPrimeAdventure.Character
 					for (ushort i = 0; i < _gwambaDamagers.Length; i++)
 						_gwambaDamagers[i].DamagerDamaged.Clear();
 		}
-		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0F ? _bunnyHopBoost * callBackValue : 1F;
+		private float BunnyHop(float callBackValue) => _bunnyHopBoost > 0F ? _bunnyHopBoost * callBackValue : 0F;
 		private void FixedUpdate()
 		{
 			if (!_instance || _instance != this)
@@ -591,10 +593,11 @@ namespace GwambaPrimeAdventure.Character
 							{
 								_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
 								_sizeCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
-								foreach (RaycastHit2D lineCast in Physics2D.LinecastAll(_originCast, _sizeCast, WorldBuild.SCENE_LAYER))
-									if (lineCast.collider == _castHit.collider)
+								_multipleCastHits = Physics2D.LinecastAll(_originCast, _sizeCast, WorldBuild.SCENE_LAYER);
+								for (ushort i = 0; i < _multipleCastHits.Length; i ++)
+									if (_multipleCastHits[i].collider == _castHit.collider)
 									{
-										_jokerValue.x = Mathf.Abs(lineCast.point.y - (transform.position.y - _collider.bounds.extents.y));
+										_jokerValue.x = Mathf.Abs(_multipleCastHits[i].point.y - (transform.position.y - _collider.bounds.extents.y));
 										transform.position = new Vector2(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.x);
 										_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
 										break;
