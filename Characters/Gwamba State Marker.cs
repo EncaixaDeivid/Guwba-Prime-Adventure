@@ -65,6 +65,7 @@ namespace GwambaPrimeAdventure.Character
 		private bool _isHubbyWorld = false;
 		private bool _didStart = false;
 		private bool _isOnGround = false;
+		private bool _offGround = false;
 		private bool _canDownStairs = false;
 		private bool _downStairs = false;
 		private bool _isJumping = false;
@@ -550,7 +551,35 @@ namespace GwambaPrimeAdventure.Character
 						transform.position = _localOfSurface;
 					}
 				}
-				if (!_isOnGround && !_downStairs && Mathf.Abs(_rigidbody.linearVelocityY) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT && !_animator.GetBool(AirJump))
+				if (_isOnGround && _offGround)
+				{
+					_offGround = false;
+					if (_animator.GetBool(Jump))
+						_animator.SetBool(Jump, false);
+					if (_animator.GetBool(Fall))
+						_animator.SetBool(Fall, false);
+					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0);
+					if (0 >= _bunnyHopBoost && _isHoping)
+					{
+						_hopActive = _isHoping = false;
+						for (ushort i = 0; _gwambaCanvas.BunnyHop.Length > i; i++)
+							_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
+					}
+					if (_fallStarted && 0 >= _bunnyHopBoost && !_isHubbyWorld)
+					{
+						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
+						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
+						DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
+						_localOfSurface.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
+						EffectsController.SurfaceSound(_localOfSurface);
+						(_fallStarted, _fallDamage) = (false, 0F);
+						if (_invencibility && 0F >= _fadeTimer)
+							_fadeTimer = _timeToFadeShow;
+						else
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
+					}
+				}
+				else if (!_isOnGround && !_downStairs && Mathf.Abs(_rigidbody.linearVelocityY) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT && !_animator.GetBool(AirJump))
 				{
 					if (_animator.GetBool(Idle))
 						_animator.SetBool(Idle, false);
@@ -662,62 +691,22 @@ namespace GwambaPrimeAdventure.Character
 				if (_comboAttackBuffer)
 					StartAttackSound();
 			}
-		}
-		private bool CheckGround(Collision2D collision)
-		{
-			if (WorldBuild.SCENE_LAYER == collision.gameObject.layer)
-			{
-				_jokerValue.y = Local.y - _collider.bounds.extents.y;
-				for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
-					if (_jokerValue.y + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.y && _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.y)
-						return true;
-			}
-			return false;
-		}
-		private void OnCollisionEnter2D(Collision2D collision)
-		{
-			if (!_instance || this != _instance)
-				return;
-			if (CheckGround(collision))
-			{
-				if (_animator.GetBool(Jump))
-					_animator.SetBool(Jump, false);
-				if (_animator.GetBool(Fall))
-					_animator.SetBool(Fall, false);
-				(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), _lastJumpTime > 0F ? _bunnyHopBoost : (ushort)0);
-				if (0 >= _bunnyHopBoost && _isHoping)
-				{
-					_hopActive = _isHoping = false;
-					for (ushort i = 0; _gwambaCanvas.BunnyHop.Length > i; i++)
-						_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
-				}
-				if (_fallStarted && 0 >= _bunnyHopBoost && !_isHubbyWorld)
-				{
-					_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
-					_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
-					DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-					_localOfSurface.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
-					EffectsController.SurfaceSound(_localOfSurface);
-					(_fallStarted, _fallDamage) = (false, 0F);
-					if (_invencibility && 0F >= _fadeTimer)
-						_fadeTimer = _timeToFadeShow;
-					else
-						(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
-				}
-			}
+			(_isOnGround, _offGround, _canDownStairs) = (false, _isOnGround, !_isOnGround);
 		}
 		private void OnCollisionStay2D(Collision2D collision)
 		{
 			if (!_instance || this != _instance)
 				return;
-			_isOnGround = CheckGround(collision);
-		}
-		private void OnCollisionExit2D(Collision2D collision)
-		{
-			if (!_instance || this != _instance)
-				return;
-			if (!CheckGround(collision))
-				_canDownStairs = !(_isOnGround = false);
+			if (WorldBuild.SCENE_LAYER == collision.gameObject.layer)
+			{
+				_jokerValue.y = Local.y - _collider.bounds.extents.y;
+				for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
+					if (_jokerValue.y + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.y && _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.y)
+					{
+						_isOnGround = true;
+						break;
+					}
+			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
 		{
