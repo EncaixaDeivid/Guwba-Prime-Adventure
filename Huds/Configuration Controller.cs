@@ -112,6 +112,8 @@ namespace GwambaPrimeAdventure.Hud
 		private void HideHudAction(InputAction.CallbackContext hideHud) => OpenCloseConfigurations();
 		private void CloseConfigurations()
 		{
+			_configurationHud.Confirmation.style.display = DisplayStyle.None;
+			_configurationHud.Settings.style.display = DisplayStyle.Flex;
 			_configurationHud.RootElement.style.display = DisplayStyle.None;
 			StateController.SetState(true);
 		}
