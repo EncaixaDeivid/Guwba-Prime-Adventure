@@ -30,8 +30,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_stopWorking || IsStunned || !_statistics.UseAlternatedTime && !_invencible)
 				return;
-			if (_timeOperation > 0F)
-				if ((_timeOperation -= Time.deltaTime) <= 0F)
+			if (0F < _timeOperation)
+				if (0F >= (_timeOperation -= Time.deltaTime))
 					if (_invencible)
 					{
 						_invencible = false;
@@ -56,7 +56,7 @@ namespace GwambaPrimeAdventure.Enemy
 		public new bool Hurt(ushort damage)
 		{
 			bool isHurted = false;
-			if (!_invencible && damage >= _statistics.BiggerDamage)
+			if (!_invencible && _statistics.BiggerDamage <= damage)
 				if ((isHurted = base.Hurt(damage)) && _statistics.InvencibleHurted)
 				{
 					_timeOperation = _statistics.TimeToDestructible;
@@ -71,7 +71,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
