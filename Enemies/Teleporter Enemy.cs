@@ -13,7 +13,7 @@ namespace GwambaPrimeAdventure.Enemy
 		[SerializeField, Tooltip("The teleporter statitics of this enemy.")] private TeleporterStatistics _statistics;
 		public IEnumerator Load()
 		{
-			for (ushort i = 0; i < _statistics.TeleportPointStructures.Length; i++)
+			for (ushort i = 0; _statistics.TeleportPointStructures.Length > i; i++)
 				Instantiate(_statistics.TeleportPointStructures[i].TeleportPointObject, _statistics.TeleportPointStructures[i].InstancePoint, Quaternion.identity).GetTouch(this, i);
 			yield return null;
 		}
@@ -21,8 +21,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			if (_teleportTime > 0F)
-				_canTeleport = (_teleportTime -= Time.deltaTime) <= 0F;
+			if (0F < _teleportTime)
+				_canTeleport = 0F >= (_teleportTime -= Time.deltaTime);
 		}
 		public void OnTeleport(ushort teleportIndex)
 		{
