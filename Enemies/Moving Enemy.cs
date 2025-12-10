@@ -38,7 +38,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_originCast.Set(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
 			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
 			_sizeCast.Set(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
-			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
+			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK);
 		}
 		public void Receive(MessageData message)
 		{
