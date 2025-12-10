@@ -27,7 +27,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_rigidbody = GetComponent<Rigidbody2D>();
 			_screenShaker = GetComponent<CinemachineImpulseSource>();
 			_destructibleEnemy = _selfEnemies[0];
-			for (ushort i = 0; i < _selfEnemies.Length - 1; i++)
+			for (ushort i = 0; _selfEnemies.Length - 1 > i; i++)
 				if (_selfEnemies[i + 1].DestructilbePriority > _selfEnemies[i].DestructilbePriority)
 					_destructibleEnemy = _selfEnemies[i + 1];
 			Sender.Include(this);
@@ -67,10 +67,10 @@ namespace GwambaPrimeAdventure.Enemy
 			if (SceneInitiator.IsInTrancision())
 				return;
 			if (_statistics.FadeOverTime)
-				if ((_fadeTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_fadeTime -= Time.deltaTime))
 					Destroy(gameObject);
 			if (_stunned)
-				if ((_stunTimer -= Time.deltaTime) <= 0F)
+				if (0F >= (_stunTimer -= Time.deltaTime))
 				{
 					_stunned = false;
 					Rigidbody.WakeUp();
@@ -87,7 +87,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (_statistics.NoDamage || damage <= 0)
+			if (_statistics.NoDamage || 0 >= damage)
 				return false;
 			return _destructibleEnemy.Hurt(damage);
 		}
