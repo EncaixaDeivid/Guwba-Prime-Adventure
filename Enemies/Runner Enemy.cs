@@ -51,7 +51,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopRunning)
-				if ((_stoppedTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_stoppedTime -= Time.deltaTime))
 				{
 					(_retreatTime, _dashedTime, _isDashing) = (_statistics.TimeToRetreat, _statistics.TimeDashing, !(_stopWorking = _stopRunning = false));
 					_sender.SetFormat(MessageFormat.State);
@@ -62,19 +62,19 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_stopWorking)
 				return;
 			if (_statistics.TimedDash && !_isDashing)
-				if ((_dashTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_dashTime -= Time.deltaTime))
 				{
 					(_dashedTime, _isDashing) = (_statistics.TimeDashing, true);
 					InvencibleDash();
 				}
 			if (_statistics.RunFromTarget)
 			{
-				if (_timeRun > 0F && !_isDashing)
+				if (0F < _timeRun && !_isDashing)
 				{
 					_isDashing = true;
 					InvencibleDash();
 				}
-				if ((_timeRun -= Time.deltaTime) <= 0F && _isDashing)
+				if (0F >= (_timeRun -= Time.deltaTime) && _isDashing)
 				{
 					if (_statistics.RunTowardsAfter && _runnedTimes >= _statistics.TimesToRun)
 						(_runnedTimes, _runTowards) = (0, true);
@@ -84,11 +84,11 @@ namespace GwambaPrimeAdventure.Enemy
 					InvencibleDash();
 				}
 			}
-			if (!_retreat && _retreatTime > 0F)
-				if ((_retreatTime -= Time.deltaTime) <= 0F)
+			if (!_retreat && 0F < _retreatTime)
+				if (0F >= (_retreatTime -= Time.deltaTime))
 					_canRetreat = true;
 			if (_isDashing)
-				if ((_dashedTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_dashedTime -= Time.deltaTime))
 				{
 					_dashTime = _statistics.TimeToDash;
 					_sender.SetFormat(MessageFormat.State);
@@ -119,7 +119,7 @@ namespace GwambaPrimeAdventure.Enemy
 			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x;
 			_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
 			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER);
-			if (_statistics.RunFromTarget && _timeRun <= 0F && _detected)
+			if (_statistics.RunFromTarget && 0F >= _timeRun && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
 				if (_runTowards)
@@ -203,7 +203,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
