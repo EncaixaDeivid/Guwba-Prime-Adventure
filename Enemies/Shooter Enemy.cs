@@ -35,8 +35,8 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_statistics.CircularDetection)
 					rotation = Quaternion.AngleAxis((Mathf.Atan2(_targetDirection.y, _targetDirection.x) * Mathf.Rad2Deg) - 90F, Vector3.forward);
 				else
-					rotation = Quaternion.AngleAxis(_statistics.RayAngleDirection * (_statistics.TurnRay ? (transform.localScale.x < 0F ? -1F : 1F) : 1F), Vector3.forward);
-			for (ushort i = 0; i < _statistics.Projectiles.Length; i++)
+					rotation = Quaternion.AngleAxis(_statistics.RayAngleDirection * (_statistics.TurnRay ? (0F > transform.localScale.x ? -1F : 1F) : 1F), Vector3.forward);
+			for (ushort i = 0; _statistics.Projectiles.Length > i; i++)
 				if (_statistics.PureInstance)
 					Instantiate(_statistics.Projectiles[i], _statistics.SpawnPoint, _statistics.Projectiles[i].transform.rotation, _projectileInstance).transform.SetParent(null);
 				else
@@ -52,16 +52,16 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_stopWorking || IsStunned)
 				return;
-			if (_shootInterval > 0F && !_isStopped)
+			if (0F < _shootInterval && !_isStopped)
 				_shootInterval -= Time.deltaTime;
-			if (_timeStop > 0F)
+			if (0F < _timeStop)
 			{
-				if ((_timeStop -= Time.deltaTime) <= _statistics.StopTime / 2F && _statistics.Stop && _canShoot)
+				if (_statistics.StopTime / 2F >= (_timeStop -= Time.deltaTime) && _statistics.Stop && _canShoot)
 				{
 					_canShoot = false;
 					Shoot();
 				}
-				if (_timeStop <= 0F && _isStopped)
+				if (0F >= _timeStop && _isStopped)
 				{
 					_isStopped = false;
 					_sender.SetFormat(MessageFormat.State);
@@ -73,7 +73,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private void FixedUpdate()
 		{
 			_hasTarget = false;
-			if (_shootInterval <= 0F)
+			if (0F >= _shootInterval)
 				if (_statistics.CircularDetection)
 				{
 					foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER))
@@ -89,10 +89,10 @@ namespace GwambaPrimeAdventure.Enemy
 				else
 				{
 					_originCast = (Vector2)transform.position + _collider.offset;
-					_originCast.x += _collider.bounds.extents.x * (transform.localScale.x < 0F ? -1F : 1F);
+					_originCast.x += _collider.bounds.extents.x * (0F > transform.localScale.x ? -1F : 1F);
 					_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
 					if (_statistics.TurnRay)
-						_directionCast *= transform.localScale.x < 0F ? -1F : 1F;
+						_directionCast *= 0F > transform.localScale.x ? -1F : 1F;
 					foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER))
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
@@ -100,7 +100,7 @@ namespace GwambaPrimeAdventure.Enemy
 							break;
 						}
 				}
-			if ((_hasTarget || _statistics.ShootInfinity) && _shootInterval <= 0F)
+			if ((_hasTarget || _statistics.ShootInfinity) && 0F >= _shootInterval)
 			{
 				_shootInterval = _statistics.IntervalToShoot;
 				if (_statistics.InvencibleShoot)
@@ -130,7 +130,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy && MessageFormat.Event == message.Format && _statistics.ReactToDamage)
 					{
