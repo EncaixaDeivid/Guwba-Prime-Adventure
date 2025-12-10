@@ -19,5 +19,6 @@ namespace GwambaPrimeAdventure
 			RootElement = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>(nameof(RootElement));
 			LoadingBar = RootElement.Q<ProgressBar>(nameof(LoadingBar));
 		}
+		public static bool Exists() => _instance;
 	};
 };
