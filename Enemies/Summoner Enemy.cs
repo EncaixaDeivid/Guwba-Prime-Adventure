@@ -39,11 +39,11 @@ namespace GwambaPrimeAdventure.Enemy
 			_structureTime = new float[_statistics.SummonPointStructures.Length];
 			_gravityScale = Rigidbody.gravityScale;
 			_randomSummonIndex = (ushort)Random.Range(0, _statistics.TimedSummons.Length + 1);
-			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
+			for (ushort i = 0; _statistics.TimedSummons.Length > i; i++)
 				_isSummonTime[i] = true;
-			for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
+			for (ushort i = 0; _statistics.TimedSummons.Length > i; i++)
 				_summonTime[i] = _statistics.TimedSummons[i].SummonTime;
-			for (ushort i = 0; i < _statistics.SummonPointStructures.Length; i++)
+			for (ushort i = 0; _statistics.SummonPointStructures.Length > i; i++)
 				Instantiate(_statistics.SummonPointStructures[i].SummonPointObject, _statistics.SummonPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
 			yield return null;
 		}
@@ -70,7 +70,7 @@ namespace GwambaPrimeAdventure.Enemy
 				Vector2 position;
 				Vector2Int summonIndex = new();
 				InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
-				for (ushort i = 0; i < summon.QuantityToSummon; i++)
+				for (ushort i = 0; summon.QuantityToSummon > i; i++)
 				{
 					if (summon.Self)
 						position = transform.position;
@@ -79,8 +79,8 @@ namespace GwambaPrimeAdventure.Enemy
 					else
 						position = summon.SummonPoints[summonIndex.y];
 					Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-					summonIndex.x = (ushort)(summonIndex.x < summon.Summons.Length - 1 ? summonIndex.x + 1 : 0);
-					summonIndex.y = (ushort)(summonIndex.y < summon.SummonPoints.Length - 1 ? summonIndex.y + 1 : 0);
+					summonIndex.x = (ushort)(summon.Summons.Length - 1 > summonIndex.x ? summonIndex.x + 1 : 0);
+					summonIndex.y = (ushort)(summon.SummonPoints.Length - 1 > summonIndex.y ? summonIndex.y + 1 : 0);
 				}
 				_summonEvent = null;
 			}
@@ -95,8 +95,8 @@ namespace GwambaPrimeAdventure.Enemy
 					_stopPermanently[summonIndex] = true;
 				return;
 			}
-			if (_summonTime[summonIndex] > 0F)
-				if ((_summonTime[summonIndex] -= Time.deltaTime) <= 0F)
+			if (0F < _summonTime[summonIndex])
+				if (0F >= (_summonTime[summonIndex] -= Time.deltaTime))
 				{
 					if (_isSummonTime[summonIndex])
 					{
@@ -114,14 +114,14 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned)
 				return;
-			for (ushort i = 0; i < _structureTime.Length; i++)
-				if (_structureTime[i] > 0F)
+			for (ushort i = 0; _structureTime.Length > i; i++)
+				if (0F < _structureTime[i])
 					_structureTime[i] -= Time.deltaTime;
-			if (_stopTime > 0F)
+			if (0F < _stopTime)
 			{
-				if ((_stopTime -= Time.deltaTime) <= _fullStopTime / 2F && !_waitStop && _summonEvent is not null)
+				if (_fullStopTime / 2F >= (_stopTime -= Time.deltaTime) && !_waitStop && _summonEvent is not null)
 					_summonEvent.MoveNext();
-				if (_stopTime <= 0F)
+				if (0F >= _stopTime)
 				{
 					_sender.SetToggle(true);
 					_sender.Send(MessagePath.Enemy);
@@ -130,7 +130,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_summonEvent?.MoveNext();
 				}
 			}
-			if (_statistics.RandomTimedSummons && _statistics.TimedSummons.Length > 0)
+			if (_statistics.RandomTimedSummons && 0 <_statistics.TimedSummons.Length)
 				IndexedSummon(_randomSummonIndex);
 			else
 				for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
@@ -138,23 +138,23 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public void OnSummon(ushort summonIndex)
 		{
-			if (_structureTime[summonIndex] > 0F)
+			if (0F < _structureTime[summonIndex])
 				return;
 			_structureTime[summonIndex] = _statistics.SummonPointStructures[summonIndex].TimeToUse;
 			Summon(_statistics.SummonPointStructures[summonIndex].Summon);
 		}
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_stopSummon = !message.ToggleValue.Value;
-						else if (MessageFormat.Event == message.Format && _statistics.HasEventSummon && _statistics.EventSummons.Length > 0)
+						else if (MessageFormat.Event == message.Format && _statistics.HasEventSummon && 0 < _statistics.EventSummons.Length)
 							if (_statistics.RandomReactSummons)
 								Summon(_statistics.EventSummons[Random.Range(0, _statistics.EventSummons.Length + 1)]);
-							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && message.NumberValue.Value >= 0)
+							else if (message.NumberValue.HasValue && message.NumberValue.Value < _statistics.EventSummons.Length && 0 >= message.NumberValue.Value)
 								Summon(_statistics.EventSummons[message.NumberValue.Value]);
 						return;
 					}
