@@ -35,7 +35,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			PolygonCollider2D trail = GetComponent<PolygonCollider2D>();
 			_trail = new Vector2[trail.points.Length];
-			for (ushort i = 0; i < trail.points.Length; i++)
+			for (ushort i = 0; trail.points.Length > i; i++)
 				if (transform.parent != null)
 					_trail[i] = trail.offset + trail.points[i] + (Vector2)transform.position;
 				else
@@ -82,7 +82,7 @@ namespace GwambaPrimeAdventure.Enemy
 				transform.TurnScaleX(_pointOrigin.x < Rigidbody.position.x);
 				_returnOrigin = Vector2.Distance(Rigidbody.position, _pointOrigin) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT;
 			}
-			else if (_trail.Length > 0)
+			else if (0 < _trail.Length)
 			{
 				if (Vector2.Distance(Rigidbody.position, _trail[_pointIndex]) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT)
 					if (_repeatWay)
@@ -107,7 +107,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (IsStunned)
 				return;
 			if (_statistics.DetectionStop && _stopWorking)
-				if ((_stoppedTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_stoppedTime -= Time.deltaTime))
 					(_isDashing, _afterDash, _stopWorking) = (!_afterDash, false, false);
 		}
 		private new void FixedUpdate()
@@ -145,7 +145,7 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						_targetPoint = verifyCollider.transform.position;
 						_originCast = Rigidbody.position + _selfCollider.offset;
-						for (ushort i = 0; i < Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _selfCollider.radius); i++)
+						for (ushort i = 0; Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _selfCollider.radius) > i; i++)
 						{
 							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER))
 								break;
@@ -165,7 +165,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
