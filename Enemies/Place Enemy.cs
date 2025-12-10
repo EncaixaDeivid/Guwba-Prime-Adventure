@@ -29,19 +29,19 @@ namespace GwambaPrimeAdventure.Enemy
 		private void Update() => _appearFadeEvent?.MoveNext();
 		public void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_appearFadeEvent = AppearFade(message.ToggleValue.Value);
 						else if (MessageFormat.Event == message.Format && _reactToDamage)
-							_appearFadeEvent = AppearFade(_tilemap.color.a <= 0F);
+							_appearFadeEvent = AppearFade(0F >= _tilemap.color.a);
 						IEnumerator AppearFade(bool appear)
 						{
 							Color color = _tilemap.color;
 							if (appear)
-								for (float i = 0F; _tilemap.color.a < 1F; i += 1E-1F)
+								for (float i = 0F; 1F > _tilemap.color.a; i += 1E-1F)
 								{
 									yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 									color.a = i;
@@ -49,7 +49,7 @@ namespace GwambaPrimeAdventure.Enemy
 									yield return null;
 								}
 							else
-								for (float i = 1F; _tilemap.color.a > 0F; i -= 1E-1F)
+								for (float i = 1F; 0F < _tilemap.color.a; i -= 1E-1F)
 								{
 									yield return new WaitUntil(() => isActiveAndEnabled && !IsStunned);
 									color.a = i;
