@@ -76,9 +76,9 @@ namespace GwambaPrimeAdventure.Enemy
 			if (0F >= _shootInterval)
 				if (_statistics.CircularDetection)
 				{
-					foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER))
+					foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER_MASK))
 						if (collider.TryGetComponent<IDestructible>(out _))
-							if (!Physics2D.Linecast(transform.position, collider.transform.position, WorldBuild.SCENE_LAYER))
+							if (!Physics2D.Linecast(transform.position, collider.transform.position, WorldBuild.SCENE_LAYER_MASK))
 							{
 								_targetDirection = (collider.transform.position - transform.position).normalized;
 								transform.TurnScaleX(transform.position.x < collider.transform.position.x);
@@ -93,7 +93,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_directionCast = Quaternion.AngleAxis(_statistics.RayAngleDirection, Vector3.forward) * Vector2.up;
 					if (_statistics.TurnRay)
 						_directionCast *= 0F > transform.localScale.x ? -1F : 1F;
-					foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER))
+					foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _directionCast, _statistics.PerceptionDistance, WorldBuild.CHARACTER_LAYER_MASK))
 						if (ray.collider.TryGetComponent<IDestructible>(out _))
 						{
 							_hasTarget = true;
