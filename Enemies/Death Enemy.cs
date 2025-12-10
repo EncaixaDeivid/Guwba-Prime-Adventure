@@ -12,7 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private void Update()
 		{
 			if (_isDead)
-				if ((_deathTime -= Time.deltaTime) <= 0F)
+				if (0F >= (_deathTime -= Time.deltaTime))
 				{
 					_isDead = false;
 					if (_statistics.ChildEnemy)
@@ -37,7 +37,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_isDead)
 				return false;
-			if (Health - (short)damage <= 0)
+			if (0 >= Health - (short)damage)
 			{
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
