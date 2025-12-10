@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private void CommonInstance()
 		{
 			Quaternion rotation;
-			for (ushort i = 0; i < _statistics.QuantityToSummon; i++)
+			for (ushort i = 0; _statistics.QuantityToSummon > i; i++)
 			{
 				if (_statistics.UseSelfRotation)
 					rotation = Quaternion.AngleAxis(transform.eulerAngles.z + _statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
@@ -40,7 +40,7 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_oldCellPosition != _cellPosition)
 			{
 				_oldCellPosition = _cellPosition;
-				if (_pointToJump == 0)
+				if (0 == _pointToJump)
 				{
 					if (_pointToBreak >= _internalBreakPoint)
 						if (_pointToReturn++ >= _internalReturnPoint)
@@ -64,7 +64,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_angleMulti++;
 					}
 				}
-				else if (_pointToJump > 0)
+				else if (0 < _pointToJump)
 					_pointToJump--;
 			}
 		}
@@ -73,7 +73,7 @@ namespace GwambaPrimeAdventure.Enemy
 			float distance = Physics2D.Raycast(transform.position, transform.up, _statistics.DistanceRay, WorldBuild.SCENE_LAYER).distance;
 			if (_statistics.UseQuantity)
 				distance = _statistics.QuantityToSummon;
-			for (ushort i = 0; i < distance; i++)
+			for (ushort i = 0; distance > i; i++)
 			{
 				_cellPosition.Set((int)(_cellPosition.x + transform.up.x), (int)(_cellPosition.y + transform.up.y));
 				CellInstance();
@@ -84,7 +84,7 @@ namespace GwambaPrimeAdventure.Enemy
 			float time = 0F;
 			float x;
 			float y;
-			while (time > _statistics.TimeToFade)
+			while (_statistics.TimeToFade > time)
 			{
 				time += Time.fixedDeltaTime;
 				x = Mathf.Cos(_statistics.BaseAngle * Mathf.Deg2Rad);
@@ -105,15 +105,15 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.RandomBreak)
 			{
 				_internalBreakPoint = (ushort)Random.Range(_statistics.BreakPoint, _statistics.ReturnPoint - _statistics.MinimumRandomValue);
-				if (_internalReturnPoint - _internalBreakPoint < _statistics.MinimumRandomValue)
-					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
-						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+				if (_statistics.MinimumRandomValue > _internalReturnPoint - _internalBreakPoint)
+					for (ushort i = 0; _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint) > i; i++)
+						if (_statistics.MinimumRandomValue >= _internalBreakPoint)
 							_internalReturnPoint++;
 						else
 							_internalBreakPoint--;
-				else if (_statistics.ExtrictRandom && _internalReturnPoint - _internalBreakPoint > _statistics.MinimumRandomValue)
-					for (ushort i = 0; i < _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint); i++)
-						if (_internalBreakPoint <= _statistics.MinimumRandomValue)
+				else if (_statistics.ExtrictRandom && _statistics.MinimumRandomValue < _internalReturnPoint - _internalBreakPoint)
+					for (ushort i = 0; _statistics.MinimumRandomValue - (_internalReturnPoint - _internalBreakPoint) > i; i++)
+						if (_statistics.MinimumRandomValue >= _internalBreakPoint)
 							_internalBreakPoint++;
 						else
 							_internalReturnPoint--;
@@ -150,9 +150,9 @@ namespace GwambaPrimeAdventure.Enemy
 		private void Update()
 		{
 			if (_rigidbody.IsSleeping())
-				if ((_stunTimer -= Time.deltaTime) <= 0F)
+				if (0F >= (_stunTimer -= Time.deltaTime))
 					_rigidbody.WakeUp();
-			if ((_deathTimer -= Time.deltaTime) <= 0F)
+			if (0F >= (_deathTimer -= Time.deltaTime))
 				Death();
 		}
 		private void FixedUpdate()
@@ -202,9 +202,9 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public bool Hurt(ushort damage)
 		{
-			if (_statistics.NoDamage || damage <= 0 || _statistics.Vitality <= 0)
+			if (_statistics.NoDamage || 0 >= damage || 0 >= _statistics.Vitality)
 				return false;
-			if ((_vitality -= (short)damage) <= 0)
+			if (0 >= (_vitality -= (short)damage))
 				Death();
 			return true;
 		}
