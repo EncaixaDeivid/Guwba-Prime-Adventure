@@ -444,7 +444,6 @@ namespace GwambaPrimeAdventure.Character
 				_sender.Send(MessagePath.Hud);
 				_sender.SetFormat(MessageFormat.None);
 				_sender.Send(MessagePath.Enemy);
-				return true;
 			}
 			return true;
 		}
