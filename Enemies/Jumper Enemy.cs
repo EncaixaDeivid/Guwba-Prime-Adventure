@@ -54,9 +54,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			_timedJumpTime = new float[_statistics.TimedJumps.Length];
 			_jumpCount = new short[_statistics.JumpPointStructures.Length];
-			for (ushort i = 0; i < _statistics.TimedJumps.Length; i++)
+			for (ushort i = 0; _statistics.TimedJumps.Length > i; i++)
 				_timedJumpTime[i] = _statistics.TimedJumps[i].TimeToExecute;
-			for (ushort i = 0; i < _statistics.JumpPointStructures.Length; i++)
+			for (ushort i = 0; _statistics.JumpPointStructures.Length > i; i++)
 			{
 				Instantiate(_statistics.JumpPointStructures[i].JumpPointObject, _statistics.JumpPointStructures[i].Point, Quaternion.identity).GetTouch(this, i);
 				_jumpCount[i] = (short)_statistics.JumpPointStructures[i].JumpCount;
@@ -65,7 +65,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void Jump(InputAction.CallbackContext jump)
 		{
-			if (isActiveAndEnabled && !IsStunned && _jumpTime <= 0F)
+			if (isActiveAndEnabled && !IsStunned && 0F >= _jumpTime)
 			{
 				_jumpTime = _statistics.TimeToJump;
 				_targetPosition = GwambaStateMarker.Localization;
@@ -90,8 +90,8 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private async void TimedJump(ushort jumpIndex)
 		{
-			if (_timedJumpTime[jumpIndex] > 0F)
-				if ((_timedJumpTime[jumpIndex] -= Time.deltaTime) <= 0F)
+			if (0F < _timedJumpTime[jumpIndex])
+				if (0F >= (_timedJumpTime[jumpIndex] -= Time.deltaTime))
 				{
 					Rigidbody.AddForceY(_statistics.TimedJumps[jumpIndex].Strength * Rigidbody.mass, ForceMode2D.Impulse);
 					while (OnGround)
@@ -118,8 +118,8 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (IsStunned || _stopWorking)
 				return;
-			if (_stopTime > 0F)
-				if ((_stopTime -= Time.deltaTime) <= 0F)
+			if (0F < _stopTime)
+				if (0F >= (_stopTime -= Time.deltaTime))
 				{
 					_isJumping = true;
 					Rigidbody.AddForceY(Rigidbody.mass * _statistics.JumpStrenght, ForceMode2D.Impulse);
@@ -128,12 +128,12 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			if (!OnGround || _detected || _isJumping)
 				return;
-			if (_jumpTime > 0F)
+			if (0F < _jumpTime)
 				_jumpTime -= Time.deltaTime;
 			if (!_isJumping)
 				if (_statistics.SequentialTimmedJumps)
 				{
-					if (_sequentialJumpIndex >= _statistics.TimedJumps.Length - 1)
+					if (_statistics.TimedJumps.Length - 1 <= _sequentialJumpIndex)
 						if (_statistics.RepeatTimmedJumps)
 							_sequentialJumpIndex = 0;
 						else
@@ -141,7 +141,7 @@ namespace GwambaPrimeAdventure.Enemy
 					TimedJump(_sequentialJumpIndex);
 				}
 				else
-					for (ushort i = 0; i < _timedJumpTime.Length; i++)
+					for (ushort i = 0; _timedJumpTime.Length > i; i++)
 						TimedJump(i);
 		}
 		private new void FixedUpdate()
@@ -208,9 +208,9 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			while (!OnGround || _detected || !isActiveAndEnabled || IsStunned)
 				await Task.Yield();
-			if (_stopJump || _jumpTime > 0F)
+			if (_stopJump || 0F < _jumpTime)
 				return;
-			if (_jumpCount[jumpIndex]-- <= 0)
+			if (0 >= _jumpCount[jumpIndex]--)
 			{
 				Rigidbody.AddForceY(_statistics.JumpPointStructures[jumpIndex].JumpStats.Strength * Rigidbody.mass, ForceMode2D.Impulse);
 				while (OnGround)
@@ -233,7 +233,7 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		public new async void Receive(MessageData message)
 		{
-			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && (message.AdditionalData as EnemyProvider[]).Length > 0)
+			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
 				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
 					if (enemy && this == enemy)
 					{
