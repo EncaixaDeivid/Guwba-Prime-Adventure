@@ -53,7 +53,6 @@ namespace GwambaPrimeAdventure.Character
 		private float _showInvencibilityTimer = 0F;
 		private float _stunTimer = 0F;
 		private float _fadeTimer = 0F;
-		private float _gravityScale = 0F;
 		private float _movementAction = 0F;
 		private float _lastGroundedTime = 0F;
 		private float _lastJumpTime = 0F;
@@ -80,8 +79,9 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets stunned.")] private AudioClip _stunSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba die.")] private AudioClip _deathSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
-		[SerializeField, BoxGroup("Control"), Tooltip("The amount of distance to get down stairs.")] private ushort _downStairsDistance;
+		[SerializeField, BoxGroup("Control"), Tooltip("The gravity applied to Gwamba.")] private float _gravityScale;
 		[SerializeField, BoxGroup("Control"), Tooltip("The size of the detector to climb the stairs.")] private float _upStairsSize;
+		[SerializeField, BoxGroup("Control"), Tooltip("The amount of distance to get down stairs.")] private ushort _downStairsDistance;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
@@ -203,8 +203,8 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
+			_rigidbody.gravityScale = _gravityScale;
 			_rigidbody.linearVelocity = _guardedLinearVelocity;
-			_rigidbody.WakeUp();
 		}
 		private void DisableInputs()
 		{
@@ -213,8 +213,9 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
 			_guardedLinearVelocity = _rigidbody.linearVelocity;
+			_rigidbody.gravityScale = 0F;
+			_rigidbody.linearVelocity = Vector2.zero;
 			_movementAction = 0F;
-			_rigidbody.Sleep();
 		}
 		private IEnumerator Start()
 		{
@@ -254,7 +255,6 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaDamagers[i].DamagerStun += DamagerStun;
 				_gwambaDamagers[i].DamagerAttack += DamagerAttack;
 			}
-			_gravityScale = _rigidbody.gravityScale;
 			SceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 			yield return null;
 		}
@@ -634,9 +634,9 @@ namespace GwambaPrimeAdventure.Character
 					if (_jokerValue.y + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.y && _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.y)
 					{
 						_isOnGround = true;
-						if (!_animator.GetBool(Idle) && 0F == _movementAction && Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall))
+						if (!_animator.GetBool(Idle) && (0F == _movementAction || Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall)))
 							_animator.SetBool(Idle, true);
-						else if (_animator.GetBool(Idle) && 0F != _movementAction && Mathf.Abs(_rigidbody.linearVelocityX) > _minimumVelocity)
+						else if (_animator.GetBool(Idle) || Mathf.Abs(_rigidbody.linearVelocityX) > _minimumVelocity)
 							_animator.SetBool(Idle, false);
 						if (!_animator.GetBool(Walk) && 0F != _movementAction)
 							_animator.SetBool(Walk, true);
