@@ -68,8 +68,8 @@ namespace GwambaPrimeAdventure.Character
 		private bool _isJumping = false;
 		private bool _canAirJump = true;
 		private bool _longJumping = false;
-		private bool _hopActive = false;
-		private bool _isHoping = false;
+		private bool _bunnyHopUsed = false;
+		private bool _offBunnyHop = false;
 		private bool _fallStarted = false;
 		private bool _invencibility = false;
 		[Space(WorldBuild.FIELD_SPACE_LENGTH * 2F)]
@@ -285,7 +285,7 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.StunResistance[i].style.backgroundColor = _gwambaCanvas.StunResistanceColor;
 			for (ushort i = _bunnyHopBoost = 0; _gwambaCanvas.BunnyHop.Length > i; i++)
 				_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
-			_animator.SetBool(Death, _hopActive = _isHoping = false);
+			_animator.SetBool(Death, _bunnyHopUsed = _offBunnyHop = false);
 		}
 		private void MovementInput(InputAction.CallbackContext movement)
 		{
@@ -328,9 +328,9 @@ namespace GwambaPrimeAdventure.Character
 			if (jump.started)
 			{
 				_lastJumpTime = _jumpBufferTime;
-				if (!_isOnGround && !_hopActive && !_animator.GetBool(AirJump))
+				if (!_isOnGround && !_bunnyHopUsed && !_animator.GetBool(AirJump))
 				{
-					_hopActive = true;
+					_bunnyHopUsed = true;
 					if (_gwambaCanvas.BunnyHop.Length <= (_bunnyHopBoost += 1))
 						_bunnyHopBoost = (ushort)_gwambaCanvas.BunnyHop.Length;
 				}
@@ -595,10 +595,10 @@ namespace GwambaPrimeAdventure.Character
 			if (!_isJumping && 0F < _lastJumpTime && 0F < _lastGroundedTime)
 			{
 				_animator.SetBool(AttackJump, _comboAttackBuffer);
-				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_hopActive = false), _animator.GetBool(DashSlide), _gravityScale, 0F);
+				(_isJumping, _longJumping, _rigidbody.gravityScale, _rigidbody.linearVelocityY) = (!(_bunnyHopUsed = false), _animator.GetBool(DashSlide), _gravityScale, 0F);
 				if (0 < _bunnyHopBoost)
 				{
-					_isHoping = true;
+					_offBunnyHop = true;
 					for (ushort i = 0; _bunnyHopBoost > i; i++)
 						_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.BunnyHopColor;
 				}
@@ -642,9 +642,9 @@ namespace GwambaPrimeAdventure.Character
 							if (_animator.GetBool(Fall))
 								_animator.SetBool(Fall, false);
 							(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), 0F < _lastJumpTime ? _bunnyHopBoost : (ushort)0);
-							if (0 >= _bunnyHopBoost && _isHoping)
+							if (0 >= _bunnyHopBoost && _offBunnyHop)
 							{
-								_hopActive = _isHoping = false;
+								_bunnyHopUsed = _offBunnyHop = false;
 								for (ushort j = 0; _gwambaCanvas.BunnyHop.Length > j; j++)
 									_gwambaCanvas.BunnyHop[j].style.backgroundColor = _gwambaCanvas.MissingColor;
 							}
