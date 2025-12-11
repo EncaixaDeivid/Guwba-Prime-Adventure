@@ -578,7 +578,7 @@ namespace GwambaPrimeAdventure.Character
 						if (_fallStarted)
 							(_fallStarted, _fallDamage) = (false, 0F);
 					}
-					if (_attackUsage)
+					if (_attackUsage && !_animator.GetBool(AttackJump))
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
 				}
 				if (!_animator.GetBool(AirJump))
