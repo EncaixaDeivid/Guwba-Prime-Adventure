@@ -24,8 +24,6 @@ namespace GwambaPrimeAdventure.Character
 		private readonly Sender _sender = Sender.Create();
 		private Vector2 _originCast = Vector2.zero;
 		private Vector2 _sizeCast = Vector2.zero;
-		private Vector2 _startCast = Vector2.zero;
-		private Vector2 _endCast = Vector2.zero;
 		private Vector2 _localOfSurface = Vector2.zero;
 		private Vector2 _guardedLinearVelocity = Vector2.zero;
 		private Vector3 _jokerValue = Vector3.zero;
@@ -81,9 +79,9 @@ namespace GwambaPrimeAdventure.Character
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets hurt.")] private AudioClip _hurtSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba gets stunned.")] private AudioClip _stunSound;
 		[SerializeField, BoxGroup("Control"), Tooltip("The sound to play when Gwamba die.")] private AudioClip _deathSound;
-		[SerializeField, BoxGroup("Control"), Tooltip("The offset and size of the bottom part of the wall checker to climb stairs.")] private Vector2 _stairsChecker;
 		[SerializeField, BoxGroup("Control"), Tooltip("The velocity of the shake on the fall.")] private Vector2 _fallShake;
 		[SerializeField, BoxGroup("Control"), Tooltip("The amount of distance to get down stairs.")] private ushort _downStairsDistance;
+		[SerializeField, BoxGroup("Control"), Tooltip("The size of the detector to climb the stairs.")] private float _upStairsSize;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of time the fall screen shake will be applied.")] private float _fallShakeTime;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of gravity to multiply on the fall.")] private float _fallGravityMultiply;
 		[SerializeField, BoxGroup("Control"), Min(0F), Tooltip("The amount of fall's distance to take damage.")] private float _fallDamageDistance;
@@ -644,14 +642,15 @@ namespace GwambaPrimeAdventure.Character
 					{
 						if (Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity)
 						{
-							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - _stairsChecker.x);
-							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _stairsChecker.y - WorldBuild.SNAP_LENGTH);
+							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - (_collider.size.x - _upStairsSize) / 2F);
+							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _upStairsSize - WorldBuild.SNAP_LENGTH);
 							if (Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK))
 							{
-								_startCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
-								_endCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
-								_castHit = Physics2D.Linecast(_startCast, _endCast, WorldBuild.SCENE_LAYER_MASK);
-								if (_castHit && _originCast.y + _sizeCast.y / 2F >= _castHit.point.y && _originCast.y - _sizeCast.y / 2F <= _castHit.point.y)
+								_jokerValue.x = _originCast.y + _sizeCast.y / 2F;
+								_jokerValue.y = _originCast.y - _sizeCast.y / 2F;
+								_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
+								_sizeCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
+								if ((_castHit = Physics2D.Linecast(_originCast, _sizeCast, WorldBuild.SCENE_LAYER_MASK)) && _jokerValue.x >= _castHit.point.y && _jokerValue.y <= _castHit.point.y)
 								{
 									_jokerValue.y = Mathf.Abs(_castHit.point.y - (transform.position.y - _collider.bounds.extents.y));
 									_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.y);
