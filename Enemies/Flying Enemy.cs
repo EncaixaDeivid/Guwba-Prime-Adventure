@@ -1,8 +1,7 @@
+using UnityEngine;
+using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
-using System.Collections;
-using UnityEngine;
-using static UnityEngine.UI.Image;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
