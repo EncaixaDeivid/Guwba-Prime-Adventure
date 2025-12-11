@@ -26,7 +26,7 @@ namespace GwambaPrimeAdventure.Character
 		private Vector2 _sizeCast = Vector2.zero;
 		private Vector2 _localOfSurface = Vector2.zero;
 		private Vector2 _guardedLinearVelocity = Vector2.zero;
-		private Vector3 _jokerValue = Vector3.zero;
+		private Vector4 _jokerValue = Vector4.zero;
 		private RaycastHit2D _castHit;
 		private readonly ContactPoint2D[] _groundContacts = new ContactPoint2D[(uint)WorldBuild.PIXELS_PER_UNIT];
 		private readonly LayerMask _interactionLayerMask = WorldBuild.SYSTEM_LAYER_MASK + WorldBuild.CHARACTER_LAYER_MASK + WorldBuild.SCENE_LAYER_MASK + WorldBuild.ITEM_LAYER_MASK;
@@ -295,62 +295,27 @@ namespace GwambaPrimeAdventure.Character
 			if (Mathf.Abs(movement.ReadValue<Vector2>().x) > _movementInputZone)
 				_movementAction = movement.ReadValue<Vector2>().x > 0F ? 1F : -1F;
 			if (0F != _movementAction && (!_attackUsage || _comboAttackBuffer))
-				if (movement.ReadValue<Vector2>().y > _airJumpInputZone && !_isOnGround && _canAirJump)
+				if (movement.ReadValue<Vector2>().y > _airJumpInputZone && !_isOnGround && _canAirJump && !_animator.GetBool(AirJump))
 				{
-					StartCoroutine(AirJumpEvent(_movementAction));
-					IEnumerator AirJumpEvent(float dashMovement)
-					{
-						_animator.SetBool(AirJump, !(_canAirJump = false));
-						_animator.SetBool(AttackAirJump, _comboAttackBuffer);
-						transform.TurnScaleX(dashMovement);
-						(_isJumping, _rigidbody.linearVelocity) = (false, Vector2.zero);
-						_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _movementAction * _rigidbody.mass, ForceMode2D.Impulse);
-						_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
-						EffectsController.SoundEffect(_airJumpSound, transform.position);
-						if (_comboAttackBuffer)
-							StartAttackSound();
-						while (!_isOnGround)
-						{
-							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
-							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK))
-								EffectsController.SurfaceSound(_castHit.point);
-							if (_castHit || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death))
-								break;
-							_lastGroundedTime = _jumpCoyoteTime;
-							yield return new WaitUntil(() => isActiveAndEnabled);
-							yield return new WaitForFixedUpdate();
-						}
-						_animator.SetBool(AirJump, false);
-						_animator.SetBool(AttackAirJump, false);
-					}
+					_animator.SetBool(AirJump, !(_canAirJump = false));
+					_animator.SetBool(AttackAirJump, _comboAttackBuffer);
+					transform.TurnScaleX(_jokerValue.z = _movementAction);
+					(_isJumping, _rigidbody.linearVelocity) = (false, Vector2.zero);
+					_rigidbody.AddForceX((_airJumpStrenght + BunnyHop(_jumpBoost)) * _jokerValue.z * _rigidbody.mass, ForceMode2D.Impulse);
+					_rigidbody.AddForceY((_airJumpStrenght + BunnyHop(_jumpBoost)) * _rigidbody.mass, ForceMode2D.Impulse);
+					EffectsController.SoundEffect(_airJumpSound, transform.position);
+					if (_comboAttackBuffer)
+						StartAttackSound();
 				}
-				else if (movement.ReadValue<Vector2>().y < _dashSlideInputZone && !_animator.GetBool(DashSlide) && _isOnGround)
+				else if (movement.ReadValue<Vector2>().y < _dashSlideInputZone && _isOnGround && !_animator.GetBool(DashSlide))
 				{
-					StartCoroutine(DashSlideEvent(_movementAction));
-					IEnumerator DashSlideEvent(float dashMovement)
-					{
-						_animator.SetBool(DashSlide, true);
-						_animator.SetBool(AttackSlide, _comboAttackBuffer);
-						transform.TurnScaleX(dashMovement);
-						_jokerValue.x = transform.position.x;
-						EffectsController.SoundEffect(_dashSlideSound, transform.position);
-						if (_comboAttackBuffer)
-							StartAttackSound();
-						while (Mathf.Abs(transform.position.x - _jokerValue.x) < _dashDistance)
-						{
-							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * dashMovement, Local.y);
-							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.size.y - WorldBuild.SNAP_LENGTH);
-							if (_castHit = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * dashMovement, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK))
-								EffectsController.SurfaceSound(_castHit.point);
-							if (_castHit || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death))
-								break;
-							yield return new WaitUntil(() => Mathf.Abs(_rigidbody.linearVelocityX = isActiveAndEnabled ? _dashSpeed * dashMovement : 0F) > WorldBuild.MINIMUM_TIME_SPACE_LIMIT);
-							yield return new WaitForFixedUpdate();
-						}
-						_animator.SetBool(DashSlide, false);
-						_animator.SetBool(AttackSlide, false);
-					}
+					_animator.SetBool(DashSlide, true);
+					_animator.SetBool(AttackSlide, _comboAttackBuffer);
+					transform.TurnScaleX(_jokerValue.z = _movementAction);
+					_jokerValue.w = transform.position.x;
+					EffectsController.SoundEffect(_dashSlideSound, transform.position);
+					if (_comboAttackBuffer)
+						StartAttackSound();
 				}
 		}
 		private void FootStepSound(float stepPositionX)
@@ -453,6 +418,11 @@ namespace GwambaPrimeAdventure.Character
 				_gwambaCanvas.StunResistance[i - 1].style.backgroundColor = _gwambaCanvas.MissingColor;
 			if (0 >= _stunResistance && !_animator.GetBool(Death))
 			{
+				_animator.SetBool(AirJump, false);
+				_animator.SetBool(DashSlide, false);
+				_animator.SetBool(AttackJump, false);
+				_animator.SetBool(AttackAirJump, false);
+				_animator.SetBool(AttackSlide, false);
 				_animator.SetBool(Stun, !(_invencibility = false));
 				for (ushort i = 0; _gwambaDamagers.Length > i; i++)
 					_gwambaDamagers[i].Alpha = 1F;
@@ -536,7 +506,15 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_instance || _instance != this)
 				return;
-			if (!_animator.GetBool(DashSlide))
+			if (_animator.GetBool(DashSlide))
+				if (Mathf.Abs(transform.position.x - _jokerValue.w) > _dashDistance || !_isOnGround || _isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death))
+				{
+					_animator.SetBool(DashSlide, false);
+					_animator.SetBool(AttackSlide, false);
+				}
+				else
+					_rigidbody.linearVelocityX = _dashSpeed * _jokerValue.z;
+			else
 			{
 				if (!_isOnGround && !_downStairs && Mathf.Abs(_rigidbody.linearVelocityY) > _minimumVelocity && !_animator.GetBool(AirJump))
 				{
@@ -581,7 +559,15 @@ namespace GwambaPrimeAdventure.Character
 					if (_attackUsage && !_animator.GetBool(AttackJump))
 						_rigidbody.linearVelocityY *= _attackVelocityCut;
 				}
-				if (!_animator.GetBool(AirJump))
+				if (_animator.GetBool(AirJump))
+					if (_isJumping || _animator.GetBool(Stun) || _animator.GetBool(Death))
+					{
+						_animator.SetBool(AirJump, false);
+						_animator.SetBool(AttackAirJump, false);
+					}
+					else
+						_lastGroundedTime = _jumpCoyoteTime;
+				else
 				{
 					_jokerValue.x = _longJumping ? _dashSpeed : _movementSpeed + BunnyHop(_velocityBoost);
 					_jokerValue.y = _jokerValue.x * _movementAction - _rigidbody.linearVelocityX;
@@ -634,6 +620,12 @@ namespace GwambaPrimeAdventure.Character
 					if (_jokerValue.y + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.y && _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.y)
 					{
 						_isOnGround = true;
+						if (_animator.GetBool(AirJump))
+						{
+							_animator.SetBool(AirJump, false);
+							_animator.SetBool(AttackAirJump, false);
+							EffectsController.SurfaceSound(_groundContacts[i].point);
+						}
 						if (!_animator.GetBool(Idle) && (0F == _movementAction || Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall)))
 							_animator.SetBool(Idle, true);
 						else if (_animator.GetBool(Idle) || Mathf.Abs(_rigidbody.linearVelocityX) > _minimumVelocity)
@@ -670,7 +662,7 @@ namespace GwambaPrimeAdventure.Character
 									(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
 							}
 						}
-						if (!_animator.GetBool(DashSlide) && 0F != _movementAction)
+						if (!_animator.GetBool(AirJump) && !_animator.GetBool(DashSlide) && 0F != _movementAction)
 							if (Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity)
 							{
 								_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - (_collider.size.x - _upStairsSize) / 2F);
@@ -707,6 +699,20 @@ namespace GwambaPrimeAdventure.Character
 							}
 						break;
 					}
+				if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
+				{
+					_jokerValue.x = Local.x + _collider.bounds.extents.x * _jokerValue.z;
+					for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
+						if (_jokerValue.x + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.x && _jokerValue.x - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.x)
+						{
+							_animator.SetBool(AirJump, false);
+							_animator.SetBool(DashSlide, false);
+							_animator.SetBool(AttackAirJump, false);
+							_animator.SetBool(AttackSlide, false);
+							EffectsController.SurfaceSound(_groundContacts[i].point);
+							break;
+						}
+				}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
