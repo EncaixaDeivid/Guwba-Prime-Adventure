@@ -22,6 +22,8 @@ namespace GwambaPrimeAdventure.Character
 		private CinemachineImpulseSource _screenShaker;
 		private InputController _inputController;
 		private readonly Sender _sender = Sender.Create();
+		private readonly Collider2D[] _interactions = new Collider2D[(uint)WorldBuild.PIXELS_PER_UNIT];
+		private IInteractable[] _interactionsPerObject;
 		private Vector2 _originCast = Vector2.zero;
 		private Vector2 _sizeCast = Vector2.zero;
 		private Vector2 _localOfSurface = Vector2.zero;
@@ -29,7 +31,12 @@ namespace GwambaPrimeAdventure.Character
 		private Vector4 _jokerValue = Vector4.zero;
 		private RaycastHit2D _castHit;
 		private readonly ContactPoint2D[] _groundContacts = new ContactPoint2D[(uint)WorldBuild.PIXELS_PER_UNIT];
-		private readonly LayerMask _interactionLayerMask = WorldBuild.SYSTEM_LAYER_MASK + WorldBuild.CHARACTER_LAYER_MASK + WorldBuild.SCENE_LAYER_MASK + WorldBuild.ITEM_LAYER_MASK;
+		private readonly ContactFilter2D _interactionFilter = new()
+		{
+			layerMask = WorldBuild.SYSTEM_LAYER_MASK + WorldBuild.CHARACTER_LAYER_MASK + WorldBuild.SCENE_LAYER_MASK + WorldBuild.ITEM_LAYER_MASK,
+			useLayerMask = true,
+			useTriggers = true
+		};
 		private readonly int IsOn = Animator.StringToHash(nameof(IsOn));
 		private readonly int Idle = Animator.StringToHash(nameof(Idle));
 		private readonly int Walk = Animator.StringToHash(nameof(Walk));
@@ -228,11 +235,9 @@ namespace GwambaPrimeAdventure.Character
 		public IEnumerator StartLoad()
 		{
 			DisableInputs();
-			_rigidbody.simulated = false;
 			transform.TurnScaleX(EffectsController.TurnToLeft);
 			transform.position = EffectsController.BeginingPosition;
 			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
-			_rigidbody.simulated = true;
 			if (_animator.GetBool(Death))
 			{
 				Reanimate();
@@ -355,11 +360,12 @@ namespace GwambaPrimeAdventure.Character
 		{
 			if (!_isOnGround || 0F != _movementAction || !isActiveAndEnabled || _animator.GetBool(AirJump) || _animator.GetBool(DashSlide) || _animator.GetBool(Stun))
 				return;
-			foreach (Collider2D other in Physics2D.OverlapBoxAll(Local, _collider.size, 0F, _interactionLayerMask))
-				if (other.TryGetComponent<IInteractable>(out _))
+			for (int i = Physics2D.OverlapCollider(_collider, _interactionFilter, _interactions); 0 < i; i--)
+				if (_interactions[i - 1].TryGetComponent<IInteractable>(out _))
 				{
-					foreach (IInteractable interactable in other.GetComponents<IInteractable>())
-						interactable.Interaction();
+					_interactionsPerObject = _interactions[i - 1].GetComponents<IInteractable>();
+					for (ushort j = 0; _interactionsPerObject.Length > j; j++)
+						_interactionsPerObject[j]?.Interaction();
 					return;
 				}
 		}
@@ -445,7 +451,7 @@ namespace GwambaPrimeAdventure.Character
 				gwambaDamager.damagedes.Add(destructible);
 				_attackDelay = _delayAfterAttack;
 				for (ushort amount = 0; (destructible.Health <= 0 ? gwambaDamager.AttackDamage + 1 : gwambaDamager.AttackDamage) > amount; amount++)
-					if (_recoverVitality >= _gwambaCanvas.RecoverVitality.Length && _vitality < _gwambaCanvas.Vitality.Length)
+					if (_gwambaCanvas.RecoverVitality.Length <= _recoverVitality && _gwambaCanvas.Vitality.Length > _vitality)
 					{
 						_vitality += 1;
 						for (ushort i = 0; _vitality > i; i++)
@@ -462,7 +468,7 @@ namespace GwambaPrimeAdventure.Character
 						for (ushort i = 0; _stunResistance > i; i++)
 							_gwambaCanvas.StunResistance[i].style.backgroundColor = _gwambaCanvas.StunResistanceColor;
 					}
-					else if (_recoverVitality < _gwambaCanvas.RecoverVitality.Length)
+					else if (_gwambaCanvas.RecoverVitality.Length > _recoverVitality)
 					{
 						_recoverVitality += 1;
 						for (ushort i = 0; _recoverVitality > i; i++)
@@ -624,7 +630,7 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_animator.SetBool(AirJump, false);
 							_animator.SetBool(AttackAirJump, false);
-							EffectsController.SurfaceSound(_groundContacts[i].point);
+							EffectsController.SurfaceSound(_groundContacts[i - 1].point);
 						}
 						if (!_animator.GetBool(Idle) && (0F == _movementAction || Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall)))
 							_animator.SetBool(Idle, true);
@@ -709,7 +715,7 @@ namespace GwambaPrimeAdventure.Character
 							_animator.SetBool(DashSlide, false);
 							_animator.SetBool(AttackAirJump, false);
 							_animator.SetBool(AttackSlide, false);
-							EffectsController.SurfaceSound(_groundContacts[i].point);
+							EffectsController.SurfaceSound(_groundContacts[i - 1].point);
 							break;
 						}
 				}
