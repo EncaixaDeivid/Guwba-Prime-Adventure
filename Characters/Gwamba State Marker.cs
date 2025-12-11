@@ -621,6 +621,20 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			if (WorldBuild.SCENE_LAYER == collision.gameObject.layer)
 			{
+				if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
+				{
+					_jokerValue.x = Local.x + _collider.bounds.extents.x * _jokerValue.z;
+					for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
+						if (_jokerValue.x + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.x && _jokerValue.x - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.x)
+						{
+							_animator.SetBool(AirJump, false);
+							_animator.SetBool(DashSlide, false);
+							_animator.SetBool(AttackAirJump, false);
+							_animator.SetBool(AttackSlide, false);
+							EffectsController.SurfaceSound(_groundContacts[i - 1].point);
+							break;
+						}
+				}
 				_jokerValue.y = Local.y - _collider.bounds.extents.y;
 				for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
 					if (_jokerValue.y + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.y && _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.y)
@@ -705,20 +719,6 @@ namespace GwambaPrimeAdventure.Character
 							}
 						break;
 					}
-				if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
-				{
-					_jokerValue.x = Local.x + _collider.bounds.extents.x * _jokerValue.z;
-					for (int i = collision.GetContacts(_groundContacts); 0 < i; i--)
-						if (_jokerValue.x + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i - 1].point.x && _jokerValue.x - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i - 1].point.x)
-						{
-							_animator.SetBool(AirJump, false);
-							_animator.SetBool(DashSlide, false);
-							_animator.SetBool(AttackAirJump, false);
-							_animator.SetBool(AttackSlide, false);
-							EffectsController.SurfaceSound(_groundContacts[i - 1].point);
-							break;
-						}
-				}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
