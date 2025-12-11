@@ -1,7 +1,8 @@
-using UnityEngine;
-using System.Collections;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
+using System.Collections;
+using UnityEngine;
+using static UnityEngine.UI.Image;
 namespace GwambaPrimeAdventure.Enemy
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(PolygonCollider2D))]
@@ -11,6 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private Vector2[] _trail;
 		private Vector2 _movementDirection = Vector2.zero;
 		private Vector2 _pointOrigin = Vector2.zero;
+		private Vector2 _sizeDetection = Vector2.one * 2F;
 		private Vector2 _targetPoint = Vector2.zero;
 		private bool _normal = true;
 		private bool _returnOrigin = false;
@@ -42,6 +44,7 @@ namespace GwambaPrimeAdventure.Enemy
 					_trail[i] = trail.points[i];
 			_movementDirection = Vector2.right * _movementSide;
 			_pointOrigin = Rigidbody.position;
+			_sizeDetection *= _statistics.LookDistance;
 			yield return null;
 		}
 		private void Chase()
@@ -140,21 +143,25 @@ namespace GwambaPrimeAdventure.Enemy
 			else
 				_detected = false;
 			if (_statistics.LookPerception && !_isDashing)
-				foreach (Collider2D verifyCollider in Physics2D.OverlapCircleAll(_pointOrigin, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK))
+				foreach (Collider2D verifyCollider in Physics2D.OverlapBoxAll(_pointOrigin, _sizeDetection, 0F, WorldBuild.CHARACTER_LAYER_MASK))
 					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
 					{
-						_targetPoint = verifyCollider.transform.position;
 						_originCast = Rigidbody.position + _selfCollider.offset;
-						for (ushort i = 0; Mathf.FloorToInt(Vector2.Distance(Rigidbody.position + _selfCollider.offset, _targetPoint) / _selfCollider.radius) > i; i++)
-						{
-							if (Physics2D.CircleCast(_originCast, _selfCollider.radius, (_targetPoint - _originCast).normalized, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK))
-								break;
-							if (_detected = Physics2D.OverlapCircle(_originCast, _selfCollider.radius, WorldBuild.CHARACTER_LAYER_MASK))
-								break;
-							_originCast += _selfCollider.radius * (_targetPoint - _originCast).normalized;
-						}
-						if (_detected)
-							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
+						_targetPoint = verifyCollider.transform.position;
+						for (short x = -1; 1 >= x; x++)
+							for (short y = -1; 1 >= y; y++)
+								if (0 == x && 0 == y || x != y && (0 == x || 0 == y))
+								{
+									_originCast.Set(_originCast.x + x * _selfCollider.radius, _originCast.y + y * _selfCollider.radius);
+									_targetPoint.Set(_targetPoint.x + x * _selfCollider.radius, _targetPoint.y + y * _selfCollider.radius);
+									if (_detected = !Physics2D.Linecast(_originCast, _targetPoint, WorldBuild.SCENE_LAYER_MASK))
+									{
+										transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
+										_targetPoint = verifyCollider.transform.position;
+										break;
+									}
+									_originCast = Rigidbody.position + _selfCollider.offset;
+								}
 						break;
 					}
 			if (_detected || _returnDash)
