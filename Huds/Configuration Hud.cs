@@ -6,7 +6,7 @@ using GwambaPrimeAdventure.Connection;
 namespace GwambaPrimeAdventure.Hud
 {
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(UIDocument))]
-	internal sealed class ConfigurationHud : MonoBehaviour, ILoader
+	internal sealed class ConfigurationHud : MonoBehaviour
 	{
 		private static ConfigurationHud _instance;
 		internal VisualElement RootElement { get; private set; }
@@ -62,10 +62,11 @@ namespace GwambaPrimeAdventure.Hud
 			No = RootElement.Q<Button>(nameof(No));
 			FrameRateText =  RootElement.Q<Label>(nameof(FrameRateText));
 		}
-		public IEnumerator Load()
+		public IEnumerator Start()
 		{
 			if (!_instance || this != _instance)
 				yield break;
+			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SettingsController.Load(out Settings settings);
 			if (!SettingsController.FileExists())
 				SettingsController.WriteSave(settings);
@@ -99,7 +100,6 @@ namespace GwambaPrimeAdventure.Hud
 			EffectsVolume.value = settings.EffectsVolume;
 			MusicVolume.value = settings.MusicVolume;
 			FrameRateText.text = settings.FrameRate.ToString();
-			yield return null;
 		}
 	};
 };
