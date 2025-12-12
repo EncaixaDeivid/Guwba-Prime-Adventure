@@ -147,20 +147,29 @@ namespace GwambaPrimeAdventure.Enemy
 					{
 						_originCast = Rigidbody.position + _selfCollider.offset;
 						_targetPoint = verifyCollider.transform.position;
+						_detected = true;
 						for (short x = -1; 1 >= x; x++)
+						{
 							for (short y = -1; 1 >= y; y++)
 								if (0 == x && 0 == y || x != y && (0 == x || 0 == y))
 								{
 									_originCast.Set(_originCast.x + x * _selfCollider.radius, _originCast.y + y * _selfCollider.radius);
 									_targetPoint.Set(_targetPoint.x + x * _selfCollider.radius, _targetPoint.y + y * _selfCollider.radius);
-									if (_detected = !Physics2D.Linecast(_originCast, _targetPoint, WorldBuild.SCENE_LAYER_MASK))
+									if (Physics2D.Linecast(_originCast, _targetPoint, WorldBuild.SCENE_LAYER_MASK))
 									{
-										transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
-										_targetPoint = verifyCollider.transform.position;
+										_detected = false;
 										break;
 									}
 									_originCast = Rigidbody.position + _selfCollider.offset;
 								}
+							if (!_detected)
+								break;
+						}
+						if (_detected)
+						{
+							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
+							_targetPoint = verifyCollider.transform.position;
+						}
 						break;
 					}
 			if (_detected || _returnDash)
