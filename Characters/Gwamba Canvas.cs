@@ -46,7 +46,7 @@ namespace GwambaPrimeAdventure.Character
 			LifeText = RootElement.Q<Label>(nameof(LifeText));
 			CoinText = RootElement.Q<Label>(nameof(CoinText));
 		}
-		internal IEnumerator StartCanvas()
+		internal IEnumerator LoadHud()
 		{
 			VisualElement vitality = RootElement.Q<VisualElement>(nameof(Vitality));
 			vitality.style.width = _totalWidth;
