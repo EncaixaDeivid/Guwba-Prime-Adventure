@@ -622,22 +622,23 @@ namespace GwambaPrimeAdventure.Character
 				return;
 			if (WorldBuild.SCENE_LAYER == collision.gameObject.layer)
 			{
-				_groundContacts.Clear();
-				collision.GetContacts(_groundContacts);
 				if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
 				{
+					_groundContacts.Clear();
+					collision.GetContacts(_groundContacts);
 					_jokerValue.x = Local.x + _collider.bounds.extents.x * _jokerValue.z;
-					for (ushort i = 0; _groundContacts.Count > i; i++)
-						if (_jokerValue.x + WorldBuild.SNAP_LENGTH / 2F >= _groundContacts[i].point.x && _jokerValue.x - WorldBuild.SNAP_LENGTH / 2F <= _groundContacts[i].point.x)
-						{
-							_animator.SetBool(AirJump, false);
-							_animator.SetBool(DashSlide, false);
-							_animator.SetBool(AttackAirJump, false);
-							_animator.SetBool(AttackSlide, false);
-							EffectsController.SurfaceSound(_groundContacts[i].point);
-							break;
-						}
+					_groundContacts.RemoveAll(contact => _jokerValue.x + WorldBuild.SNAP_LENGTH / 2F < contact.point.x || _jokerValue.x - WorldBuild.SNAP_LENGTH / 2F > contact.point.x);
+					if (0 < _groundContacts.Count)
+					{
+						_animator.SetBool(AirJump, false);
+						_animator.SetBool(DashSlide, false);
+						_animator.SetBool(AttackAirJump, false);
+						_animator.SetBool(AttackSlide, false);
+						EffectsController.SurfaceSound(_groundContacts[0].point);
+					}
 				}
+				_groundContacts.Clear();
+				collision.GetContacts(_groundContacts);
 				_jokerValue.y = Local.y - _collider.bounds.extents.y;
 				_groundContacts.RemoveAll(contact => _jokerValue.y + WorldBuild.SNAP_LENGTH / 2F < contact.point.y || _jokerValue.y - WorldBuild.SNAP_LENGTH / 2F > contact.point.y);
 				if (_isOnGround = 0 < _groundContacts.Count)
@@ -687,15 +688,21 @@ namespace GwambaPrimeAdventure.Character
 					if (!_animator.GetBool(AirJump) && !_animator.GetBool(DashSlide) && 0F != _movementAction)
 						if (Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity)
 						{
-							_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * _movementAction, Local.y - (_collider.size.x - _upStairsSize) / 2F);
-							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _upStairsSize - WorldBuild.SNAP_LENGTH);
-							if (Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementAction, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK))
+							_groundContacts.Clear();
+							collision.GetContacts(_groundContacts);
+							_originCast.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.x - _upStairsSize) / 2F);
+							_sizeCast.Set(WorldBuild.SNAP_LENGTH, _upStairsSize);
+							_groundContacts.RemoveAll(contact =>
+							_originCast.x + _sizeCast.x / 2F < contact.point.x || _originCast.x - _sizeCast.x / 2F > contact.point.x ||
+							_originCast.y + _sizeCast.y / 2F < contact.point.y || _originCast.y - _sizeCast.y / 2F > contact.point.y);
+							if (0 < _groundContacts.Count)
 							{
-								_jokerValue.x = _originCast.y + _sizeCast.y / 2F;
-								_jokerValue.y = _originCast.y - _sizeCast.y / 2F;
-								_originCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y + _collider.bounds.extents.y);
-								_sizeCast.Set(Local.x + (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH) * _movementAction, Local.y - _collider.bounds.extents.y);
-								if ((_castHit = Physics2D.Linecast(_originCast, _sizeCast, WorldBuild.SCENE_LAYER_MASK)) && _jokerValue.x >= _castHit.point.y && _jokerValue.y <= _castHit.point.y)
+								_jokerValue.x = (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * (0F < transform.localScale.x ? 1F : -1F);
+								_jokerValue.y = _originCast.y + _sizeCast.y / 2F;
+								_jokerValue.z = _originCast.y - _sizeCast.y / 2F;
+								_originCast.Set(Local.x + _jokerValue.x, Local.y + _collider.bounds.extents.y);
+								_sizeCast.Set(Local.x + _jokerValue.x, Local.y - _collider.bounds.extents.y);
+								if ((_castHit = Physics2D.Linecast(_originCast, _sizeCast, WorldBuild.SCENE_LAYER_MASK)) && _jokerValue.y >= _castHit.point.y && _jokerValue.z <= _castHit.point.y)
 								{
 									_jokerValue.y = Mathf.Abs(_castHit.point.y - (transform.position.y - _collider.bounds.extents.y));
 									_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _jokerValue.y);
