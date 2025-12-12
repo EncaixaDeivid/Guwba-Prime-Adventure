@@ -79,6 +79,7 @@ namespace GwambaPrimeAdventure.Hud
 			if (!Instance || this != Instance)
 				yield break;
 			yield return StartCoroutine(StartLoad());
+			yield return _configurationHud.LoadHud();
 			_configurationHud.Close.clicked += CloseConfigurations;
 			_configurationHud.OutLevel.clicked += OutLevel;
 			_configurationHud.SaveGame.clicked += SaveGame;
