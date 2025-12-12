@@ -708,14 +708,15 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_jokerValue.x = Local.x + (WorldBuild.SNAP_LENGTH / 2F * _downStairsDistance) * (0F < transform.localScale.x ? 1F : -1F);
 							_jokerValue.z = _collider.size.x - WorldBuild.SNAP_LENGTH * _downStairsDistance;
-							for (ushort i = 0; _groundContacts.Count > i; i++)
-								if (_jokerValue.x + _jokerValue.z / 2F >= _groundContacts[i].point.x && _jokerValue.x - _jokerValue.z / 2F <= _groundContacts[i].point.x)
-									return;
-							_jokerValue.x = Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _movementAction;
-							if (_downStairs = _castHit = Physics2D.Raycast(_jokerValue, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER_MASK))
+							_groundContacts.RemoveAll(contact => _jokerValue.x + _jokerValue.z / 2F < contact.point.x || _jokerValue.x - _jokerValue.z / 2F > contact.point.x);
+							if (0 >= _groundContacts.Count)
 							{
-								_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _downStairsDistance * _movementAction, transform.position.y - _castHit.distance);
-								transform.position = _localOfSurface;
+								_jokerValue.x = Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _movementAction;
+								if (_downStairs = _castHit = Physics2D.Raycast(_jokerValue, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER_MASK))
+								{
+									_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _downStairsDistance * _movementAction, transform.position.y - _castHit.distance);
+									transform.position = _localOfSurface;
+								}
 							}
 						}
 				}
