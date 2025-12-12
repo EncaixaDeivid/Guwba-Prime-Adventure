@@ -62,11 +62,8 @@ namespace GwambaPrimeAdventure.Hud
 			No = RootElement.Q<Button>(nameof(No));
 			FrameRateText =  RootElement.Q<Label>(nameof(FrameRateText));
 		}
-		public IEnumerator Start()
+		internal IEnumerator LoadHud()
 		{
-			if (!_instance || this != _instance)
-				yield break;
-			yield return new WaitWhile(() => SceneInitiator.IsInTrancision());
 			SettingsController.Load(out Settings settings);
 			if (!SettingsController.FileExists())
 				SettingsController.WriteSave(settings);
@@ -100,6 +97,7 @@ namespace GwambaPrimeAdventure.Hud
 			EffectsVolume.value = settings.EffectsVolume;
 			MusicVolume.value = settings.MusicVolume;
 			FrameRateText.text = settings.FrameRate.ToString();
+			yield return null;
 		}
 	};
 };
