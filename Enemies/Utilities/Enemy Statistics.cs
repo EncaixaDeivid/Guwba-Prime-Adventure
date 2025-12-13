@@ -5,8 +5,9 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 	[CreateAssetMenu(fileName = "Provider Enemy", menuName = "Enemy Statistics/Provider", order = 1)]
 	public sealed class EnemyStatistics : ScriptableObject
 	{
-		[field: SerializeField, Tooltip("If this enemy receives no type of damage."), Header("Providence Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
-		public bool NoDamage { get; private set; }
+		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The gravity applied to pull down the object."), Header("Providence Statistics", order = 0), Space(WorldBuild.FIELD_SPACE_LENGTH * 2F, order = 1)]
+		public float GravityScale { get; private set; }
+		[field: SerializeField, Tooltip("If this enemy receives no type of damage.")] public bool NoDamage { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoDamage)), Tooltip("The vitality of the enemy.")] public ushort Vitality { get; private set; }
 		[field: SerializeField, Tooltip("If this enemy won't get stunned.")] public bool NoStun { get; private set; }
 		[field: SerializeField, HideIf(nameof(NoStun)), Tooltip("The amount of stun that this enemy can resists.")] public ushort HitResistance { get; private set; }
