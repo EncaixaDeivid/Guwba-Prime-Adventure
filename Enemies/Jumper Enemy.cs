@@ -12,6 +12,7 @@ namespace GwambaPrimeAdventure.Enemy
 		private InputController _inputController;
 		private Vector2 _targetPosition = Vector2.zero;
 		private Vector2 _direction = Vector2.zero;
+		private readonly RaycastHit2D[] _perceptionRaycasts = new RaycastHit2D[(uint)WorldBuild.PIXELS_PER_UNIT];
 		private bool _isJumping = false;
 		private bool _onJump = false;
 		private bool _stopJump = false;
@@ -165,24 +166,22 @@ namespace GwambaPrimeAdventure.Enemy
 				if (!_detected && _statistics.LookPerception)
 					if (_statistics.CircularDetection)
 					{
-						foreach (Collider2D collider in Physics2D.OverlapCircleAll((Vector2)transform.position + _collider.offset, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK))
-							if (collider.TryGetComponent<IDestructible>(out _))
-							{
-								_targetPosition = collider.transform.position;
-								BasicJump();
-								return;
-							}
+						if (GwambaStateMarker.Localization.InsideCircle((Vector2)transform.position + _collider.offset, _statistics.LookDistance))
+						{
+							_targetPosition = GwambaStateMarker.Localization;
+							BasicJump();
+						}
 					}
 					else
 					{
 						_originCast.Set(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
 						_direction = Quaternion.AngleAxis(_statistics.DetectionAngle, Vector3.forward) * transform.right * (transform.localScale.x < 0F ? -1F : 1F);
-						foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, _direction, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK))
-							if (ray.collider.TryGetComponent<IDestructible>(out _))
+						for (int i = Physics2D.RaycastNonAlloc(_originCast, _direction, _perceptionRaycasts, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK); 0 < i; i--)
+							if (_perceptionRaycasts[i].collider.TryGetComponent<IDestructible>(out _))
 							{
-								_targetPosition = ray.collider.transform.position;
+								_targetPosition = _perceptionRaycasts[i].collider.transform.position;
 								BasicJump();
-								return;
+								break;
 							}
 					}
 			}
@@ -191,7 +190,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (_contunuosFollow)
 				{
 					if (_statistics.RandomFollow)
-						_targetPosition.x = UnityEngine.Random.Range(-1, 1) >= 0F ? GwambaStateMarker.Localization.x : _otherTarget;
+						_targetPosition.x = Random.Range(-1, 1) >= 0F ? GwambaStateMarker.Localization.x : _otherTarget;
 					else if (_useTarget)
 						_targetPosition.x = _otherTarget;
 					else
@@ -234,8 +233,8 @@ namespace GwambaPrimeAdventure.Enemy
 		public new async void Receive(MessageData message)
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
-				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && this == enemy)
+				for (ushort i = 0; (message.AdditionalData as EnemyProvider[]).Length > i; i++)
+					if ((message.AdditionalData as EnemyProvider[])[i] && this == (message.AdditionalData as EnemyProvider[])[i])
 					{
 						base.Receive(message);
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
