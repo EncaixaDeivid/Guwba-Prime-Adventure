@@ -46,15 +46,15 @@ namespace GwambaPrimeAdventure
 			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
 		}
 		public static void TurnScaleX(this Transform transform, bool conditionChanger) => TurnScaleX(transform, conditionChanger ? -1F : 1F);
-		public static bool IsBetween(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
+		public static bool InsideRect(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
 		{
-			return originPoint.x + sizePoint.x >= pointBetween.x && originPoint.x - sizePoint.x <= pointBetween.x &&
-				originPoint.y + sizePoint.y >= pointBetween.y && originPoint.y - sizePoint.y <= pointBetween.y;
+			return originPoint.x + sizePoint.x / 2F >= pointBetween.x && originPoint.x - sizePoint.x / 2F <= pointBetween.x &&
+				originPoint.y + sizePoint.y / 2F >= pointBetween.y && originPoint.y - sizePoint.y / 2F <= pointBetween.y;
 		}
-		public static bool IsNotBetween(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
+		public static bool NotInsideRect(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
 		{
-			return originPoint.x + sizePoint.x < pointBetween.x || originPoint.x - sizePoint.x > pointBetween.x ||
-				originPoint.y + sizePoint.y < pointBetween.y || originPoint.y - sizePoint.y > pointBetween.y;
+			return originPoint.x + sizePoint.x / 2F < pointBetween.x || originPoint.x - sizePoint.x / 2F > pointBetween.x ||
+				originPoint.y + sizePoint.y / 2F < pointBetween.y || originPoint.y - sizePoint.y / 2F > pointBetween.y;
 		}
 	};
 };
