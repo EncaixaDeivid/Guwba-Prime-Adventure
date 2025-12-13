@@ -4,7 +4,7 @@ namespace GwambaPrimeAdventure.Enemy
 	[RequireComponent(typeof(Transform), typeof(EnemyController), typeof(Collider2D))]
 	internal abstract class EnemyProvider : StateController, IDestructible
 	{
-		private EnemyController _controller;
+		protected EnemyController _controller;
 		protected Collider2D _collider;
 		protected readonly Sender _sender = Sender.Create();
 		protected bool _stopWorking = false;
@@ -40,12 +40,12 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (_controller.IsStunned = !_controller.ProvidenceStatistics.NoHitStun)
 			{
+				_controller.OnDisable();
 				_controller.StunTimer = stunTime;
-				_controller.Rigidbody.Sleep();
 			}
 			if (0 >= (_controller.ArmorResistance -= (short)stunStength))
 			{
-				_controller.Rigidbody.Sleep();
+				_controller.OnDisable();
 				_controller.StunTimer = _controller.ProvidenceStatistics.StunnedTime;
 				_controller.ArmorResistance = (short)_controller.ProvidenceStatistics.HitResistance;
 			}
