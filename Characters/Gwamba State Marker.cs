@@ -211,8 +211,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Enable();
 			_inputController.Commands.AttackUse.Enable();
 			_inputController.Commands.Interaction.Enable();
-			_rigidbody.gravityScale = _gravityScale;
-			_rigidbody.linearVelocity = _guardedLinearVelocity;
+			(_rigidbody.linearVelocity, _rigidbody.gravityScale) = (_guardedLinearVelocity, _gravityScale);
 		}
 		private void DisableInputs()
 		{
@@ -220,10 +219,7 @@ namespace GwambaPrimeAdventure.Character
 			_inputController.Commands.Jump.Disable();
 			_inputController.Commands.AttackUse.Disable();
 			_inputController.Commands.Interaction.Disable();
-			_guardedLinearVelocity = _rigidbody.linearVelocity;
-			_rigidbody.gravityScale = 0F;
-			_rigidbody.linearVelocity = Vector2.zero;
-			_movementAction = 0F;
+			(_guardedLinearVelocity, _rigidbody.linearVelocity, _rigidbody.gravityScale, _movementAction) = (_rigidbody.linearVelocity, Vector2.zero, 0F, 0F);
 		}
 		private IEnumerator Start()
 		{
