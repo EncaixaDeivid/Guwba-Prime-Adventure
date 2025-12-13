@@ -9,6 +9,8 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent, RequireComponent(typeof(Transform), typeof(SpriteRenderer), typeof(Rigidbody2D)), RequireComponent(typeof(CinemachineImpulseSource), typeof(Collider2D))]
 	internal sealed class EnemyProjectile : Projectile, IDestructible
 	{
+		private Vector2 _projectilePosition = Vector2.zero;
+		private Quaternion _projectileRotation = Quaternion.identity;
 		[Header("Projectile")]
 		[SerializeField, Tooltip("The statitics of this projectile.")] private ProjectileStatistics _statistics;
 		public short Health => _vitality;
@@ -25,14 +27,13 @@ namespace GwambaPrimeAdventure.Enemy
 		}
 		private void CommonInstance()
 		{
-			Quaternion rotation;
 			for (ushort i = 0; _statistics.QuantityToSummon > i; i++)
 			{
 				if (_statistics.UseSelfRotation)
-					rotation = Quaternion.AngleAxis(transform.eulerAngles.z + _statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
+					_projectileRotation = Quaternion.AngleAxis(transform.eulerAngles.z + _statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
 				else
-					rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
-				Instantiate(_statistics.SecondProjectile, transform.position, rotation);
+					_projectileRotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * i, Vector3.forward);
+				Instantiate(_statistics.SecondProjectile, transform.position, _projectileRotation);
 			}
 		}
 		private void CellInstance()
@@ -56,11 +57,12 @@ namespace GwambaPrimeAdventure.Enemy
 							_pointToReturn = 0;
 						}
 						_pointToJump = _statistics.JumpPoints;
-						Quaternion rotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
+						_projectileRotation = Quaternion.AngleAxis(_statistics.BaseAngle + _statistics.SpreadAngle * _angleMulti, Vector3.forward);
+						_projectilePosition.Set(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F);
 						if (_statistics.UseQuantity)
-							_projectiles.Add(Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation));
+							_projectiles.Add(Instantiate(_statistics.SecondProjectile, _projectilePosition, _projectileRotation));
 						else
-							Instantiate(_statistics.SecondProjectile, new Vector2(_cellPosition.x + 5E-1F, _cellPosition.y + 5E-1F), rotation);
+							Instantiate(_statistics.SecondProjectile, _projectilePosition, _projectileRotation);
 						_angleMulti++;
 					}
 				}
