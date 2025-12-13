@@ -30,10 +30,8 @@ namespace GwambaPrimeAdventure.Enemy
 		public void Receive(MessageData message)
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
-			{
-				_receivedEnemies = message.AdditionalData as EnemyProvider[];
-				for (ushort i = 0; _receivedEnemies.Length > i; i++)
-					if (_receivedEnemies[i] && this == _receivedEnemies[i])
+				for (ushort i = 0; (message.AdditionalData as EnemyProvider[]).Length > i; i++)
+					if ((message.AdditionalData as EnemyProvider[])[i] && this == (message.AdditionalData as EnemyProvider[])[i])
 					{
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_appearFadeEvent = AppearFade(message.ToggleValue.Value);
@@ -63,7 +61,6 @@ namespace GwambaPrimeAdventure.Enemy
 						}
 						return;
 					}
-			}
 		}
 	};
 };
