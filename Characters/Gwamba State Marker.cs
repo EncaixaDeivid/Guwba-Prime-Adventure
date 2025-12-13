@@ -618,121 +618,112 @@ namespace GwambaPrimeAdventure.Character
 		}
 		private void OnCollisionStay2D(Collision2D collision)
 		{
-			if (!_instance || this != _instance)
+			if (!_instance || this != _instance || WorldBuild.SCENE_LAYER != collision.gameObject.layer)
 				return;
-			if (WorldBuild.SCENE_LAYER == collision.gameObject.layer)
+			if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
 			{
-				if (_animator.GetBool(AirJump) || _animator.GetBool(DashSlide))
-				{
-					_groundContacts.Clear();
-					collision.GetContacts(_groundContacts);
-					_localOfStart.Set(Local.x + _collider.bounds.extents.x * _localOfAny.z, Local.y);
-					_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _collider.size.y);
-					_groundContacts.RemoveAll(contact =>
-					_localOfStart.x + _localOfEnd.x / 2F < contact.point.x || _localOfStart.x - _localOfEnd.x / 2F > contact.point.x ||
-					_localOfStart.y + _localOfEnd.y / 2F < contact.point.y || _localOfStart.y - _localOfEnd.y / 2F > contact.point.y);
-					if (0 < _groundContacts.Count)
-					{
-						_animator.SetBool(AirJump, false);
-						_animator.SetBool(DashSlide, false);
-						_animator.SetBool(AttackAirJump, false);
-						_animator.SetBool(AttackSlide, false);
-						EffectsController.SurfaceSound(_groundContacts[0].point);
-					}
-				}
 				_groundContacts.Clear();
 				collision.GetContacts(_groundContacts);
-				_localOfStart.Set(Local.x, Local.y - _collider.bounds.extents.y);
-				_localOfEnd.Set(_collider.size.x, WorldBuild.SNAP_LENGTH);
-				_groundContacts.RemoveAll(contact =>
-				_localOfStart.x + _localOfEnd.x / 2F < contact.point.x || _localOfStart.x - _localOfEnd.x / 2F > contact.point.x ||
-				_localOfStart.y + _localOfEnd.y / 2F < contact.point.y || _localOfStart.y - _localOfEnd.y / 2F > contact.point.y);
-				if (_isOnGround = 0 < _groundContacts.Count)
+				_localOfStart.Set(Local.x + _collider.bounds.extents.x * _localOfAny.z, Local.y);
+				_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _collider.size.y);
+				_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+				if (0 < _groundContacts.Count)
 				{
-					if (_animator.GetBool(AirJump))
-					{
-						_animator.SetBool(AirJump, false);
-						_animator.SetBool(AttackAirJump, false);
-						EffectsController.SurfaceSound(_groundContacts[0].point);
-					}
-					if (!_animator.GetBool(Idle) && (0F == _movementAction || Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall)))
-						_animator.SetBool(Idle, true);
-					else if (_animator.GetBool(Idle) || Mathf.Abs(_rigidbody.linearVelocityX) > _minimumVelocity)
-						_animator.SetBool(Idle, false);
-					if (!_animator.GetBool(Walk) && 0F != _movementAction)
-						_animator.SetBool(Walk, true);
-					else if (_animator.GetBool(Walk) && 0F == _movementAction)
-						_animator.SetBool(Walk, false);
-					if (_offGround)
-					{
-						_offGround = false;
-						if (_animator.GetBool(Jump))
-							_animator.SetBool(Jump, false);
-						if (_animator.GetBool(Fall))
-							_animator.SetBool(Fall, false);
-						(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), 0F < _lastJumpTime ? _bunnyHopBoost : (ushort)0);
-						if (0 >= _bunnyHopBoost && _offBunnyHop)
-						{
-							_bunnyHopUsed = _offBunnyHop = false;
-							for (ushort i = 0; _gwambaCanvas.BunnyHop.Length > i; i++)
-								_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
-						}
-						if (_fallStarted && 0 >= _bunnyHopBoost && !_isHubbyWorld)
-						{
-							_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
-							_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
-							DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
-							_localOfSurface.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
-							EffectsController.SurfaceSound(_localOfSurface);
-							(_fallStarted, _fallDamage) = (false, 0F);
-							if (_invencibility && 0F >= _fadeTimer)
-								_fadeTimer = _timeToFadeShow;
-							else
-								(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
-						}
-					}
-					if (!_animator.GetBool(AirJump) && !_animator.GetBool(DashSlide) && 0F != _movementAction)
-						if (Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity)
-						{
-							_groundContacts.Clear();
-							collision.GetContacts(_groundContacts);
-							_localOfStart.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.y - _upStairsLength) / 2F);
-							_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _upStairsLength);
-							_groundContacts.RemoveAll(contact =>
-							_localOfStart.x + _localOfEnd.x / 2F < contact.point.x || _localOfStart.x - _localOfEnd.x / 2F > contact.point.x ||
-							_localOfStart.y + _localOfEnd.y / 2F < contact.point.y || _localOfStart.y - _localOfEnd.y / 2F > contact.point.y);
-							if (0 < _groundContacts.Count)
-							{
-								_localOfAny.x = (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * (0F < transform.localScale.x ? 1F : -1F);
-								_localOfAny.y = _localOfStart.y + _localOfEnd.y / 2F;
-								_localOfAny.z = _localOfStart.y - _localOfEnd.y / 2F;
-								_localOfStart.Set(Local.x + _localOfAny.x, Local.y + _collider.bounds.extents.y);
-								_localOfEnd.Set(Local.x + _localOfAny.x, Local.y - _collider.bounds.extents.y);
-								_castHit = Physics2D.Linecast(_localOfStart, _localOfEnd, WorldBuild.SCENE_LAYER_MASK);
-								if (_castHit && _localOfAny.y >= _castHit.point.y && _localOfAny.z <= _castHit.point.y)
-								{
-									_localOfAny.y = Mathf.Abs(_castHit.point.y - (transform.position.y - _collider.bounds.extents.y));
-									_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _localOfAny.y);
-									transform.position = _localOfSurface;
-									_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
-								}
-							}
-						}
-						else if (0F >= _lastJumpTime)
-						{
-							_localOfAny.x = Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH / 2F * _downStairsDistance) * (0F < transform.localScale.x ? 1F : -1F);
-							_localOfAny.y = WorldBuild.SNAP_LENGTH * _downStairsDistance;
-							if (_groundContacts.TrueForAll(contact => _localOfAny.x + _localOfAny.y / 2F >= contact.point.x && _localOfAny.x - _localOfAny.y / 2F <= contact.point.x))
-							{
-								_localOfStart.Set(Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _movementAction, Local.y - _collider.bounds.extents.y);
-								if (_downStairs = _castHit = Physics2D.Raycast(_localOfStart, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER_MASK))
-								{
-									_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _downStairsDistance * _movementAction, transform.position.y - _castHit.distance);
-									transform.position = _localOfSurface;
-								}
-							}
-						}
+					_animator.SetBool(AirJump, false);
+					_animator.SetBool(DashSlide, false);
+					_animator.SetBool(AttackAirJump, false);
+					_animator.SetBool(AttackSlide, false);
+					EffectsController.SurfaceSound(_groundContacts[0].point);
 				}
+			}
+			_groundContacts.Clear();
+			collision.GetContacts(_groundContacts);
+			_localOfStart.Set(Local.x, Local.y - _collider.bounds.extents.y);
+			_localOfEnd.Set(_collider.size.x, WorldBuild.SNAP_LENGTH);
+			_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+			if (_isOnGround = 0 < _groundContacts.Count)
+			{
+				if (_animator.GetBool(AirJump))
+				{
+					_animator.SetBool(AirJump, false);
+					_animator.SetBool(AttackAirJump, false);
+					EffectsController.SurfaceSound(_groundContacts[0].point);
+				}
+				if (!_animator.GetBool(Idle) && (0F == _movementAction || Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity || _animator.GetBool(Fall)))
+					_animator.SetBool(Idle, true);
+				else if (_animator.GetBool(Idle) || Mathf.Abs(_rigidbody.linearVelocityX) > _minimumVelocity)
+					_animator.SetBool(Idle, false);
+				if (!_animator.GetBool(Walk) && 0F != _movementAction)
+					_animator.SetBool(Walk, true);
+				else if (_animator.GetBool(Walk) && 0F == _movementAction)
+					_animator.SetBool(Walk, false);
+				if (_offGround)
+				{
+					_offGround = false;
+					if (_animator.GetBool(Jump))
+						_animator.SetBool(Jump, false);
+					if (_animator.GetBool(Fall))
+						_animator.SetBool(Fall, false);
+					(_lastGroundedTime, _canAirJump, _bunnyHopBoost) = (_jumpCoyoteTime, !(_longJumping = _isJumping = false), 0F < _lastJumpTime ? _bunnyHopBoost : (ushort)0);
+					if (0 >= _bunnyHopBoost && _offBunnyHop)
+					{
+						_bunnyHopUsed = _offBunnyHop = false;
+						for (ushort i = 0; _gwambaCanvas.BunnyHop.Length > i; i++)
+							_gwambaCanvas.BunnyHop[i].style.backgroundColor = _gwambaCanvas.MissingColor;
+					}
+					if (_fallStarted && 0 >= _bunnyHopBoost && !_isHubbyWorld)
+					{
+						_screenShaker.ImpulseDefinition.ImpulseDuration = _fallShakeTime;
+						_screenShaker.GenerateImpulse(_fallDamage / _fallDamageDistance * _fallShake);
+						DamagerHurt((ushort)Mathf.FloorToInt(_fallDamage / _fallDamageDistance));
+						_localOfSurface.Set(transform.position.x, transform.position.y - _collider.bounds.extents.y);
+						EffectsController.SurfaceSound(_localOfSurface);
+						(_fallStarted, _fallDamage) = (false, 0F);
+						if (_invencibility && 0F >= _fadeTimer)
+							_fadeTimer = _timeToFadeShow;
+						else
+							(_gwambaCanvas.FallDamageText.style.opacity, _gwambaCanvas.FallDamageText.text) = (0F, $"X 0");
+					}
+				}
+				if (!_animator.GetBool(AirJump) && !_animator.GetBool(DashSlide) && 0F != _movementAction)
+					if (Mathf.Abs(_rigidbody.linearVelocityX) <= _minimumVelocity)
+					{
+						_groundContacts.Clear();
+						collision.GetContacts(_groundContacts);
+						_localOfStart.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.y - _upStairsLength) / 2F);
+						_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _upStairsLength);
+						_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+						if (0 < _groundContacts.Count)
+						{
+							_localOfAny.x = (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * (0F < transform.localScale.x ? 1F : -1F);
+							_localOfAny.y = _localOfStart.y + _localOfEnd.y / 2F;
+							_localOfAny.z = _localOfStart.y - _localOfEnd.y / 2F;
+							_localOfStart.Set(Local.x + _localOfAny.x, Local.y + _collider.bounds.extents.y);
+							_localOfEnd.Set(Local.x + _localOfAny.x, Local.y - _collider.bounds.extents.y);
+							_castHit = Physics2D.Linecast(_localOfStart, _localOfEnd, WorldBuild.SCENE_LAYER_MASK);
+							if (_castHit && _localOfAny.y >= _castHit.point.y && _localOfAny.z <= _castHit.point.y)
+							{
+								_localOfAny.y = Mathf.Abs(_castHit.point.y - (transform.position.y - _collider.bounds.extents.y));
+								_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _movementAction, transform.position.y + _localOfAny.y);
+								transform.position = _localOfSurface;
+								_rigidbody.linearVelocityX = _movementSpeed * _movementAction;
+							}
+						}
+					}
+					else if (0F >= _lastJumpTime)
+					{
+						_localOfAny.x = Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH / 2F * _downStairsDistance) * (0F < transform.localScale.x ? 1F : -1F);
+						_localOfAny.y = WorldBuild.SNAP_LENGTH * _downStairsDistance;
+						if (_groundContacts.TrueForAll(contact => _localOfAny.x + _localOfAny.y / 2F >= contact.point.x && _localOfAny.x - _localOfAny.y / 2F <= contact.point.x))
+						{
+							_localOfStart.Set(Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _movementAction, Local.y - _collider.bounds.extents.y);
+							if (_downStairs = _castHit = Physics2D.Raycast(_localOfStart, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER_MASK))
+							{
+								_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _downStairsDistance * _movementAction, transform.position.y - _castHit.distance);
+								transform.position = _localOfSurface;
+							}
+						}
+					}
 			}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
