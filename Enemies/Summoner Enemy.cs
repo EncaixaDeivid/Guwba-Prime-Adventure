@@ -8,6 +8,9 @@ namespace GwambaPrimeAdventure.Enemy
 	internal sealed class SummonerEnemy : EnemyProvider, ILoader, ISummoner, IConnector
 	{
 		private IEnumerator _summonEvent;
+		private Vector2 _summonPosition = Vector2.zero;
+		private Vector2Int _summonIndex = Vector2Int.zero;
+		private InstantiateParameters _instantiateParameters = new();
 		private bool[] _isSummonTime;
 		private bool[] _stopPermanently;
 		private bool _stopSummon = false;
@@ -67,20 +70,20 @@ namespace GwambaPrimeAdventure.Enemy
 					_fullStopTime = _stopTime = summon.TimeToStop;
 					yield return null;
 				}
-				Vector2 position;
-				Vector2Int summonIndex = new();
-				InstantiateParameters instantiateParameters = new() { parent = summon.LocalPoints ? transform : null, worldSpace = !summon.LocalPoints };
+				_summonIndex.Set(0, 0);
+				_instantiateParameters.parent = summon.LocalPoints ? transform : null;
+				_instantiateParameters.worldSpace = !summon.LocalPoints;
 				for (ushort i = 0; summon.QuantityToSummon > i; i++)
 				{
 					if (summon.Self)
-						position = transform.position;
+						_summonPosition = transform.position;
 					else if (summon.Random)
-						position = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length + 1)];
+						_summonPosition = summon.SummonPoints[Random.Range(0, summon.SummonPoints.Length + 1)];
 					else
-						position = summon.SummonPoints[summonIndex.y];
-					Instantiate(summon.Summons[summonIndex.x], position, summon.Summons[summonIndex.x].transform.rotation, instantiateParameters).transform.SetParent(null);
-					summonIndex.x = (ushort)(summon.Summons.Length - 1 > summonIndex.x ? summonIndex.x + 1 : 0);
-					summonIndex.y = (ushort)(summon.SummonPoints.Length - 1 > summonIndex.y ? summonIndex.y + 1 : 0);
+						_summonPosition = summon.SummonPoints[_summonIndex.y];
+					Instantiate(summon.Summons[_summonIndex.x], _summonPosition, summon.Summons[_summonIndex.x].transform.rotation, _instantiateParameters).transform.SetParent(null);
+					_summonIndex.x = (ushort)(summon.Summons.Length - 1 > _summonIndex.x ? _summonIndex.x + 1 : 0);
+					_summonIndex.y = (ushort)(summon.SummonPoints.Length - 1 > _summonIndex.y ? _summonIndex.y + 1 : 0);
 				}
 				_summonEvent = null;
 			}
@@ -130,7 +133,7 @@ namespace GwambaPrimeAdventure.Enemy
 						_summonEvent?.MoveNext();
 				}
 			}
-			if (_statistics.RandomTimedSummons && 0 <_statistics.TimedSummons.Length)
+			if (_statistics.RandomTimedSummons && 0 < _statistics.TimedSummons.Length)
 				IndexedSummon(_randomSummonIndex);
 			else
 				for (ushort i = 0; i < _statistics.TimedSummons.Length; i++)
@@ -146,8 +149,8 @@ namespace GwambaPrimeAdventure.Enemy
 		public void Receive(MessageData message)
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
-				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && this == enemy)
+				for (ushort i = 0; (message.AdditionalData as EnemyProvider[]).Length > i; i++)
+					if ((message.AdditionalData as EnemyProvider[])[i] && this == (message.AdditionalData as EnemyProvider[])[i])
 					{
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue)
 							_stopSummon = !message.ToggleValue.Value;
