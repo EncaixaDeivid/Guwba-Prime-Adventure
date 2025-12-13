@@ -7,9 +7,10 @@ namespace GwambaPrimeAdventure.Enemy
 	[DisallowMultipleComponent]
 	internal sealed class RunnerEnemy : MovingEnemy, ILoader, IConnector, IDestructible
 	{
-		private RaycastHit2D _blockCast;
+		private readonly RaycastHit2D[] _detectionRaycasts = new RaycastHit2D[(uint)WorldBuild.PIXELS_PER_UNIT];
 		private bool _stopRunning = false;
-		private bool _edgeCast = false;
+		private bool _offEdge = false;
+		private bool _wayBlocked = false;
 		private bool _invencibility = false;
 		private bool _canRetreat = true;
 		private bool _retreat = false;
@@ -108,17 +109,13 @@ namespace GwambaPrimeAdventure.Enemy
 			if (_statistics.LookPerception && !_detected)
 			{
 				_originCast.Set(transform.position.x + _collider.offset.x + _collider.bounds.extents.x * _movementSide, transform.position.y + _collider.offset.y);
-				foreach (RaycastHit2D ray in Physics2D.RaycastAll(_originCast, transform.right * _movementSide, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK))
-					if (ray.collider.TryGetComponent<IDestructible>(out _))
+				for (int i = Physics2D.RaycastNonAlloc(_originCast, transform.right * _movementSide, _detectionRaycasts, _statistics.LookDistance, WorldBuild.CHARACTER_LAYER_MASK) - 1; 0 < i; i--)
+					if (_detectionRaycasts[i].collider.TryGetComponent<IDestructible>(out _))
 					{
 						_detected = true;
 						break;
 					}
 			}
-			_originCast = (Vector2)transform.position + _collider.offset;
-			_originCast.x += (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2f) * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x;
-			_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y - WorldBuild.SNAP_LENGTH);
-			_blockCast = Physics2D.BoxCast(_originCast, _sizeCast, 0F, transform.right * _movementSide, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK);
 			if (_statistics.RunFromTarget && 0F >= _timeRun && _detected)
 			{
 				_timeRun = _statistics.RunOfTime;
@@ -152,9 +149,10 @@ namespace GwambaPrimeAdventure.Enemy
 				}
 			}
 			_originCast = (Vector2)transform.position + _collider.offset;
-			_originCast.Set(_originCast.x + _collider.bounds.extents.x * ((_retreat ? -1F : 1F) * _movementSide * transform.right).x, _originCast.y + _collider.bounds.extents.y * -transform.up.y);
-			_edgeCast = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK);
-			if (OnGround && !_statistics.TurnOffEdge && _edgeCast || _blockCast && _blockCast.collider.CanContact(_collider))
+			_originCast.x += _collider.bounds.extents.x * (_retreat ? -1F : 1F) * _movementSide * transform.right.x;
+			_originCast.y -= _collider.bounds.extents.y * transform.up.y;
+			_offEdge = !Physics2D.Raycast(_originCast, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK);
+			if (OnGround && !_statistics.TurnOffEdge && _offEdge || _wayBlocked && Mathf.Abs(Rigidbody.linearVelocityX) <= WorldBuild.MINIMUM_TIME_SPACE_LIMIT * 10F)
 				if (_retreat)
 					RetreatUse();
 				else
@@ -164,6 +162,7 @@ namespace GwambaPrimeAdventure.Enemy
 				Rigidbody.linearVelocityX = (transform.right * _movementSide).x * -_statistics.RetreatSpeed;
 				if (Mathf.Abs(transform.position.x - _retreatLocation) >= _statistics.RetreatDistance)
 					RetreatUse();
+				base.FixedUpdate();
 				return;
 			}
 			if (_statistics.DetectionStop && _detected && !_isDashing)
@@ -172,6 +171,7 @@ namespace GwambaPrimeAdventure.Enemy
 				_sender.SetFormat(MessageFormat.State);
 				_sender.SetToggle(false);
 				_sender.Send(MessagePath.Enemy);
+				base.FixedUpdate();
 				return;
 			}
 			else if (_detected && !_isDashing)
@@ -185,6 +185,19 @@ namespace GwambaPrimeAdventure.Enemy
 			transform.TurnScaleX(_movementSide);
 			Rigidbody.linearVelocityX = (transform.right * _movementSide).x * (_isDashing ? _statistics.DashSpeed : _statistics.MovementSpeed);
 			base.FixedUpdate();
+		}
+		private new void OnCollisionStay2D(Collision2D collision)
+		{
+			if (WorldBuild.SCENE_LAYER != collision.gameObject.layer)
+				return;
+			base.OnCollisionStay2D(collision);
+			_originCast = (Vector2)transform.position + _collider.offset;
+			_originCast.x += _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F) * transform.right.x;
+			_sizeCast.Set(WorldBuild.SNAP_LENGTH, _collider.bounds.size.y);
+			_groundContacts.Clear();
+			collision.GetContacts(_groundContacts);
+			_groundContacts.RemoveAll(contact => contact.point.OutsideRectangle(_originCast, _sizeCast));
+			_wayBlocked = 0 < _groundContacts.Count;
 		}
 		public new bool Hurt(ushort damage)
 		{
@@ -204,8 +217,8 @@ namespace GwambaPrimeAdventure.Enemy
 		public new void Receive(MessageData message)
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
-				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && this == enemy)
+				for (ushort i = 0; (message.AdditionalData as EnemyProvider[]).Length > i; i++)
+					if ((message.AdditionalData as EnemyProvider[])[i] && this == (message.AdditionalData as EnemyProvider[])[i])
 					{
 						base.Receive(message);
 						if (MessageFormat.State == message.Format && message.ToggleValue.HasValue && !message.ToggleValue.Value)
