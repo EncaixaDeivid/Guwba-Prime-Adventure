@@ -9,7 +9,8 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected Rigidbody2D _rigidbody;
 		protected CinemachineImpulseSource _screenShaker;
 		protected IDestructible _destructibleEnemy;
-		protected short _vitality;
+		protected Vector2 _guardedLinearVelocity = Vector2.zero;
+		protected short _vitality = 0;
 		protected short _armorResistance = 0;
 		protected float _fadeTime = 0F;
 		protected float _stunTimer = 0F;
@@ -23,7 +24,7 @@ namespace GwambaPrimeAdventure.Enemy.Utility
 		protected IEnumerator _parabolicEvent;
 		protected Vector2Int _oldCellPosition = Vector2Int.zero;
 		protected Vector2Int _cellPosition = Vector2Int.zero;
-		protected short _vitality;
+		protected short _vitality = 0;
 		protected ushort _angleMulti = 0;
 		protected ushort _pointToJump = 0;
 		protected ushort _pointToBreak = 0;
