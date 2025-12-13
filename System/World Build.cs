@@ -46,15 +46,17 @@ namespace GwambaPrimeAdventure
 			transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * valueChanger, transform.localScale.y, transform.localScale.z);
 		}
 		public static void TurnScaleX(this Transform transform, bool conditionChanger) => TurnScaleX(transform, conditionChanger ? -1F : 1F);
-		public static bool InsideRectangle(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
+		public static bool InsideRectangle(this Vector2 pointInside, Vector2 originPoint, Vector2 sizePoint)
 		{
-			return originPoint.x + sizePoint.x / 2F >= pointBetween.x && originPoint.x - sizePoint.x / 2F <= pointBetween.x &&
-				originPoint.y + sizePoint.y / 2F >= pointBetween.y && originPoint.y - sizePoint.y / 2F <= pointBetween.y;
+			return originPoint.x + sizePoint.x / 2F >= pointInside.x && originPoint.x - sizePoint.x / 2F <= pointInside.x &&
+				originPoint.y + sizePoint.y / 2F >= pointInside.y && originPoint.y - sizePoint.y / 2F <= pointInside.y;
 		}
-		public static bool OutsideRectangle(this Vector2 pointBetween, Vector2 originPoint, Vector2 sizePoint)
+		public static bool OutsideRectangle(this Vector2 pointOutside, Vector2 originPoint, Vector2 sizePoint)
 		{
-			return originPoint.x + sizePoint.x / 2F < pointBetween.x || originPoint.x - sizePoint.x / 2F > pointBetween.x ||
-				originPoint.y + sizePoint.y / 2F < pointBetween.y || originPoint.y - sizePoint.y / 2F > pointBetween.y;
+			return originPoint.x + sizePoint.x / 2F < pointOutside.x || originPoint.x - sizePoint.x / 2F > pointOutside.x ||
+				originPoint.y + sizePoint.y / 2F < pointOutside.y || originPoint.y - sizePoint.y / 2F > pointOutside.y;
 		}
+		public static bool InsideCircle(this Vector2 pointInside, Vector2 originPoint, float radius) => Vector2.Distance(originPoint, pointInside) < radius;
+		public static bool OutsideCircle(this Vector2 pointOutside, Vector2 originPoint, float radius) => Vector2.Distance(originPoint, pointOutside) > radius;
 	};
 };
