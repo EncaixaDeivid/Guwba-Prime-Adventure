@@ -716,11 +716,11 @@ namespace GwambaPrimeAdventure.Character
 						_localOfAny.y = WorldBuild.SNAP_LENGTH * _downStairsDistance;
 						if (_groundContacts.TrueForAll(contact => _localOfAny.x + _localOfAny.y / 2F >= contact.point.x && _localOfAny.x - _localOfAny.y / 2F <= contact.point.x))
 						{
-							_localOfStart.Set(Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _movementAction, Local.y - _collider.bounds.extents.y);
+							_localOfAny.x = (0F < transform.localScale.x ? 1F : -1F);
+							_localOfStart.Set(Local.x - (_collider.bounds.extents.x - WorldBuild.SNAP_LENGTH * _downStairsDistance) * _localOfAny.x, Local.y - _collider.bounds.extents.y);
 							if (_downStairs = _castHit = Physics2D.Raycast(_localOfStart, -transform.up, WorldBuild.SNAP_LENGTH + 1F, WorldBuild.SCENE_LAYER_MASK))
 							{
-								_localOfAny.x = WorldBuild.SNAP_LENGTH * _downStairsDistance * (0F < transform.localScale.x ? 1F : -1F);
-								_localOfSurface.Set(transform.position.x + _localOfAny.x, transform.position.y - _castHit.distance);
+								_localOfSurface.Set(transform.position.x + WorldBuild.SNAP_LENGTH * _downStairsDistance * _localOfAny.x, transform.position.y - _castHit.distance);
 								transform.position = _localOfSurface;
 							}
 						}
