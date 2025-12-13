@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using GwambaPrimeAdventure.Character;
 using GwambaPrimeAdventure.Enemy.Utility;
 namespace GwambaPrimeAdventure.Enemy
 {
 	internal abstract class MovingEnemy : EnemyProvider, IConnector
 	{
+		protected readonly List<ContactPoint2D> _groundContacts = new((int)WorldBuild.PIXELS_PER_UNIT);
 		protected Vector2 _originCast = Vector2.zero;
 		protected Vector2 _sizeCast = Vector2.zero;
 		private bool _onGround = false;
@@ -35,10 +37,14 @@ namespace GwambaPrimeAdventure.Enemy
 		protected void FixedUpdate() => _onGround = false;
 		protected void OnCollisionStay2D(Collision2D collision)
 		{
-			_originCast.Set(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y);
-			_originCast.y += (_collider.bounds.extents.y + WorldBuild.SNAP_LENGTH / 2f) * -transform.up.y;
-			_sizeCast.Set(_collider.bounds.size.x - WorldBuild.SNAP_LENGTH, WorldBuild.SNAP_LENGTH);
-			_onGround = Physics2D.BoxCast(_originCast, _sizeCast, 0F, -transform.up, WorldBuild.SNAP_LENGTH, WorldBuild.SCENE_LAYER_MASK);
+			if (WorldBuild.SCENE_LAYER != collision.gameObject.layer)
+				return;
+			_groundContacts.Clear();
+			collision.GetContacts(_groundContacts);
+			_originCast.Set(transform.position.x + _collider.offset.x, transform.position.y + _collider.offset.y - _collider.bounds.extents.y * transform.up.y);
+			_sizeCast.Set(_collider.bounds.size.x, WorldBuild.SNAP_LENGTH);
+			_groundContacts.RemoveAll(contact => contact.point.OutsideRectangle(_originCast, _sizeCast));
+			_onGround = 0 < _groundContacts.Count;
 		}
 		public void Receive(MessageData message)
 		{
