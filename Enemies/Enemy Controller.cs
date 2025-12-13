@@ -43,8 +43,8 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			Sender.Exclude(this);
 		}
-		private void OnEnable() => Rigidbody.simulated = true;
-		private void OnDisable() => Rigidbody.simulated = false;
+		internal void OnEnable() => (_rigidbody.linearVelocity, _rigidbody.gravityScale) = (_guardedLinearVelocity, _statistics.GravityScale);
+		internal void OnDisable() => (_guardedLinearVelocity, _rigidbody.linearVelocity, _rigidbody.gravityScale) = (_rigidbody.linearVelocity, Vector2.zero, 0F);
 		private IEnumerator Start()
 		{
 			SaveController.Load(out SaveFile saveFile);
@@ -73,7 +73,7 @@ namespace GwambaPrimeAdventure.Enemy
 				if (0F >= (_stunTimer -= Time.deltaTime))
 				{
 					_stunned = false;
-					Rigidbody.WakeUp();
+					OnEnable();
 				}
 		}
 		private void OnTriggerEnter2D(Collider2D other)
@@ -101,7 +101,7 @@ namespace GwambaPrimeAdventure.Enemy
 		{
 			if (MessageFormat.None == message.Format && message.ToggleValue.HasValue)
 			{
-				Rigidbody.Sleep();
+				OnDisable();
 				for (ushort i = 0; _selfEnemies.Length > i; i++)
 					_selfEnemies[i].enabled = message.ToggleValue.Value;
 			}
