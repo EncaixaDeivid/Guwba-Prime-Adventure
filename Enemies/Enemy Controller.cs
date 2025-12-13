@@ -102,8 +102,8 @@ namespace GwambaPrimeAdventure.Enemy
 			if (MessageFormat.None == message.Format && message.ToggleValue.HasValue)
 			{
 				Rigidbody.Sleep();
-				foreach (EnemyProvider enemy in _selfEnemies)
-					enemy.enabled = message.ToggleValue.Value;
+				for (ushort i = 0; _selfEnemies.Length > i; i++)
+					_selfEnemies[i].enabled = message.ToggleValue.Value;
 			}
 		}
 	};
