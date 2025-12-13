@@ -53,8 +53,8 @@ namespace GwambaPrimeAdventure.Character
 		private readonly int AttackSlide = Animator.StringToHash(nameof(AttackSlide));
 		private readonly int Stun = Animator.StringToHash(nameof(Stun));
 		private readonly int Death = Animator.StringToHash(nameof(Death));
-		private short _vitality;
-		private short _stunResistance;
+		private short _vitality = 0;
+		private short _stunResistance = 0;
 		private ushort _recoverVitality = 0;
 		private ushort _bunnyHopBoost = 0;
 		private float _timerOfInvencibility = 0F;
