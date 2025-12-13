@@ -141,48 +141,43 @@ namespace GwambaPrimeAdventure.Enemy
 			}
 			else
 				_detected = false;
-			if (_statistics.LookPerception && !_isDashing)
-				foreach (Collider2D verifyCollider in Physics2D.OverlapBoxAll(_pointOrigin, _sizeDetection, 0F, WorldBuild.CHARACTER_LAYER_MASK))
-					if (GwambaStateMarker.EqualObject(verifyCollider.gameObject))
-					{
-						_originCast = Rigidbody.position + _selfCollider.offset;
-						_targetPoint = verifyCollider.transform.position;
-						_detected = true;
-						for (short x = -1; 1 >= x; x++)
+			if (_statistics.LookPerception && !_isDashing && GwambaStateMarker.Localization.InsideRectangle(_pointOrigin, _sizeDetection))
+			{
+				_detected = true;
+				for (short x = -1; 1 >= x; x++)
+				{
+					for (short y = -1; 1 >= y; y++)
+						if (0 == x && 0 == y || x != y && (0 == x || 0 == y))
 						{
-							for (short y = -1; 1 >= y; y++)
-								if (0 == x && 0 == y || x != y && (0 == x || 0 == y))
-								{
-									_originCast.Set(_originCast.x + x * _selfCollider.radius, _originCast.y + y * _selfCollider.radius);
-									_targetPoint.Set(_targetPoint.x + x * _selfCollider.radius, _targetPoint.y + y * _selfCollider.radius);
-									if (Physics2D.Linecast(_originCast, _targetPoint, WorldBuild.SCENE_LAYER_MASK))
-									{
-										_detected = false;
-										break;
-									}
-									_originCast = Rigidbody.position + _selfCollider.offset;
-								}
-							if (!_detected)
+							_originCast = Rigidbody.position + _selfCollider.offset;
+							_targetPoint = GwambaStateMarker.Localization;
+							_originCast.Set(_originCast.x + x * _selfCollider.radius, _originCast.y + y * _selfCollider.radius);
+							_targetPoint.Set(_targetPoint.x + x * _selfCollider.radius, _targetPoint.y + y * _selfCollider.radius);
+							if (Physics2D.Linecast(_originCast, _targetPoint, WorldBuild.SCENE_LAYER_MASK))
+							{
+								_detected = false;
 								break;
+							}
 						}
-						if (_detected)
-						{
-							transform.TurnScaleX(verifyCollider.transform.position.x < transform.position.x);
-							_targetPoint = verifyCollider.transform.position;
-						}
+					if (!_detected)
 						break;
-					}
+				}
+				if (_detected)
+				{
+					transform.TurnScaleX(GwambaStateMarker.Localization.x < transform.position.x);
+					_targetPoint = GwambaStateMarker.Localization;
+				}
+			}
 			if (_detected || _returnDash)
 				Chase();
 			else
 				Trail();
-			base.FixedUpdate();
 		}
 		public new void Receive(MessageData message)
 		{
 			if (message.AdditionalData is not null && message.AdditionalData is EnemyProvider[] && 0 < (message.AdditionalData as EnemyProvider[]).Length)
-				foreach (EnemyProvider enemy in message.AdditionalData as EnemyProvider[])
-					if (enemy && this == enemy)
+				for (ushort i = 0; (message.AdditionalData as EnemyProvider[]).Length > i; i++)
+					if ((message.AdditionalData as EnemyProvider[])[i] && this == (message.AdditionalData as EnemyProvider[])[i])
 					{
 						base.Receive(message);
 						return;
