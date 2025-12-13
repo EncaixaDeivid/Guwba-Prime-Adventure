@@ -626,7 +626,7 @@ namespace GwambaPrimeAdventure.Character
 				collision.GetContacts(_groundContacts);
 				_localOfStart.Set(Local.x + _collider.bounds.extents.x * _localOfAny.z, Local.y);
 				_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _collider.size.y);
-				_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+				_groundContacts.RemoveAll(contact => contact.point.NotInsideRect(_localOfStart, _localOfEnd));
 				if (0 < _groundContacts.Count)
 				{
 					_animator.SetBool(AirJump, false);
@@ -640,7 +640,7 @@ namespace GwambaPrimeAdventure.Character
 			collision.GetContacts(_groundContacts);
 			_localOfStart.Set(Local.x, Local.y - _collider.bounds.extents.y);
 			_localOfEnd.Set(_collider.size.x, WorldBuild.SNAP_LENGTH);
-			_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+			_groundContacts.RemoveAll(contact => contact.point.NotInsideRect(_localOfStart, _localOfEnd));
 			if (_isOnGround = 0 < _groundContacts.Count)
 			{
 				if (_animator.GetBool(AirJump))
@@ -692,7 +692,7 @@ namespace GwambaPrimeAdventure.Character
 						collision.GetContacts(_groundContacts);
 						_localOfStart.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.y - _upStairsLength) / 2F);
 						_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _upStairsLength);
-						_groundContacts.RemoveAll(contact => contact.point.IsNotBetween(_localOfStart, _localOfEnd));
+						_groundContacts.RemoveAll(contact => contact.point.NotInsideRect(_localOfStart, _localOfEnd));
 						if (0 < _groundContacts.Count)
 						{
 							_localOfAny.x = (_collider.bounds.extents.x + WorldBuild.SNAP_LENGTH / 2F) * (0F < transform.localScale.x ? 1F : -1F);
