@@ -690,7 +690,7 @@ namespace GwambaPrimeAdventure.Character
 						{
 							_groundContacts.Clear();
 							collision.GetContacts(_groundContacts);
-							_localOfStart.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.x - _upStairsSize) / 2F);
+							_localOfStart.Set(Local.x + _collider.bounds.extents.x * (0F < transform.localScale.x ? 1F : -1F), Local.y - (_collider.size.y - _upStairsSize) / 2F);
 							_localOfEnd.Set(WorldBuild.SNAP_LENGTH, _upStairsSize);
 							_groundContacts.RemoveAll(contact =>
 							_localOfStart.x + _localOfEnd.x / 2F < contact.point.x || _localOfStart.x - _localOfEnd.x / 2F > contact.point.x ||
